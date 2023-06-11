@@ -1,0 +1,31 @@
+<div class="col">
+    <div class="form-row">
+        <div class="form-group col mt-3">
+            <label title="@if($usersTabs['currentTab'] === 'users') Sélectionner les utilisateurs à retirer @endif
+                          @if($usersTabs['currentTab'] === 'roles') Sélectionner les utilisateurs dont les rôles sont à attribuer ou à désattribuer @endif"
+                   for="right-users">Utilisateurs associés</label>
+            <select id="right-users" multiple wire:model="selectedAttachedUsers" class="form-control" size="15">
+              @foreach($right->users as $user)
+                <option value="{{ $user->id.$user->rightsResourceable() }}">
+                    {{ $user->identity().$user->rightsResourceableString() }}
+                </option>
+              @endforeach
+            </select>
+        </div>
+        <div class="d-flex form-group col-1 my-auto">
+            <div class="btn-group-vertical btn-group-sm mx-auto" role="group">
+                <button wire:click="add('usersTabs')" class="d-flex btn btn-sm btn-success p-0" type="button"
+                        title ="@if($usersTabs['currentTab'] === 'users') Associer les utilisateurs sélectionnés aux droits utilisateurs @endif
+                                @if($usersTabs['currentTab'] === 'roles') Attribuer les rôles aux utilisateurs selectionnés @endif">
+                    <span class="material-icons md-18">arrow_left</span>
+                </button>
+                <button wire:click="remove('usersTabs')" class="d-flex btn btn-sm btn-danger p-0" type="button"
+                        title ="@if($usersTabs['currentTab'] === 'users') Dissocier les utilisateurs selectionnés des droits utilisateurs @endif
+                                @if($usersTabs['currentTab'] === 'roles') Retirer les rôles des utilisateurs selectionnés @endif">
+                    <span class="material-icons md-18">arrow_right</span>
+                </button>
+            </div>
+        </div>
+        @include('includes.tabs', ['tabsSystem' => $usersTabs])
+    </div>
+</div>
