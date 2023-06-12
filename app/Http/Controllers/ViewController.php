@@ -18,6 +18,7 @@ class ViewController extends Controller
      */
     private function getViewBag(Request $request, string $template = 'posts', string $mode = NULL)
     {
+        //dd($request);
         $rubricStr = $request->route()->parameter('rubric');
         $rubricSegments = explode(AP::RUBRIC_SEPARATOR, $rubricStr);
 
