@@ -13,7 +13,7 @@ class AP // Application Parameters
 
     const ID_REGEX = '[0-9]+';
 
-    const RUBRIC_SEPARATOR = '»';
+    const RUBRIC_SEPARATOR = '⇒';
     const RUBRIC_REGEX = '[-\w'.self::RUBRIC_SEPARATOR.']+';
     const SUBDASHBOARD_REGEX = '[-\w]+';
     const RUBRIC_POSITIONS = [
