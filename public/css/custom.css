@@ -93,7 +93,7 @@ label>.material-icons, label>.material-icons-outlined {
 
 .search-form {
     padding: 50px 0;
-    background: #f3f5fa;
+    background: var(--select-color-10);
     text-align: center;
     font-size: 15px;
     color: #444444;
@@ -104,7 +104,7 @@ label>.material-icons, label>.material-icons-outlined {
     padding: 0;
     line-height: 1;
     font-weight: 600;
-    color: #37517e;
+    color: var(--select-color-3);
 }
 .search-form form {
     margin-top: 30px;
@@ -129,14 +129,14 @@ label>.material-icons, label>.material-icons-outlined {
     background: none;
     font-size: 16px;
     padding: 0 20px;
-    background: #47b2e4;
+    background: var(--select-color-1);
     color: #fff;
     transition: 0.3s;
     border-radius: 50px;
     box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
 }
 .search-form form input[type=submit]:hover {
-    background: #209dd8;
+    background: var(--select-color-9);
 }
 
 .comment-form {
@@ -167,7 +167,7 @@ label>.material-icons, label>.material-icons-outlined {
     background: none;
     font-size: 16px;
     padding: 0 20px;
-    background: #47b2e4;
+    background: var(--select-color-1);
     color: #fff;
     transition: 0.3s;
     border-radius: 50px;
@@ -175,29 +175,34 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .comment-form button:hover {
-    background: #209dd8;
+    background: var(--select-color-9);
 }
 
 .navbar .myapps, .navbar .myapps:focus {
-    padding: 8px 20px;
-    margin-left: 30px;
+    padding: 8px;
     border-radius: 50px;
     font-size: 14px;
-    border: 2px solid #47b2e4;
+    border: 2px solid var(--select-color-1);
     font-weight: 600;
 }
 .navbar .myapps:hover, .navbar .myapps:focus:hover {
     color: #fff !important;
-    background: #31a9e1;
+    background: var(--select-color-6);
 }
 
 .navbar-mobile .myapps, .navbar-mobile .myapps:focus {
     margin: 15px;
     justify-content: start;
-    color: #37517e;
+    color: var(--select-color-3);
 }
 
-@media (992px <= width <= 1641px) {
+@media (992px <= width < 1260px) {
+    .navbar a {
+        padding-left: 10px !important;
+    }
+}
+
+@media (1260px <= width < 1422px) {
     .navbar a {
         padding-left: 20px !important;
     }
@@ -210,7 +215,7 @@ label>.material-icons, label>.material-icons-outlined {
 
 .title-icon i {
     vertical-align: top;
-    color: #47b2e4;
+    color: var(--select-color-1);
     transition: 0.3s;
 }
 
@@ -220,7 +225,7 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .box.featured:hover {
-    background-color:rgba(55, 81, 126, 0.125)
+    background-color: var(--select-color-22);
 }
 
 table {
