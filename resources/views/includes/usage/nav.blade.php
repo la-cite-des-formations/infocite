@@ -36,18 +36,20 @@
         <!-- A laisser en dur à la fin du menu -->
        @can('viewAny', 'App\\App')
         <li>
-            <a href="#apps" class="myapps nav-link scrollto ms-3" title="Mes applications">
-                <span class="bx bx-extension me-1"></span>Mes applis
+            <a href="#apps" class="nav-link scrollto py-0" title="Mes applications">
+                <div class="myapps">
+                    <span class="bx bx-extension me-1"></span>Mes applis
+                </div>
             </a>
         </li>
        @endcan
         <li>
-            <a href="#search" class="nav-link scrollto" title="Rechercher...">
+            <a href="#search" class="nav-link scrollto py-0" title="Rechercher...">
                 <span class="bx bx-search-alt display-6"></span>
             </a>
         </li>
-        <li class="dropdown text-white" role="button">
-            <a>
+        <li class="dropdown text-white me-4" role="button">
+            <a class="py-0">
                 <span class="bx bx-user-circle display-6"></span>
                 <i class="bi bi-chevron-down"></i>
             </a>
