@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class Actor extends Model
@@ -42,12 +43,12 @@ class Actor extends Model
         return $this->user->functionsList(['P']);
     }
 
-    public function getBoxFormatAttribute() {
-        $process = $this->processes()->first();
+    public function getManagerBoxFormatAttribute() {
+        $format = Format::find($this->format_id);
 
         return
-            "<p class='fw-bold {$process->format->title_color}'>{$this->identity}</p>".
-            "<p class='{$process->format->subtitle_font_style} {$process->format->subtitle_color}'>{$this->functionsList}</p>";
+            "<p class='fw-bold {$format->title_color}'>{$this->identity}</p>".
+            "<p class='{$format->subtitle_color}'>{$this->functionsList}</p>";
     }
 
     public function manager() {
@@ -59,36 +60,59 @@ class Actor extends Model
         return $this->user->processes();
     }
 
+    public function getFullSubordinatesListBoxFormatAttribute() {
+        $formatedFullSubordinates = new Collection();
+
+        $this->user->subordinates->filter(function ($subordinate) {
+            return !$subordinate->isManager();
+        })->each(function ($subordinate) use ($formatedFullSubordinates) {
+            $formatedFullSubordinates->add(
+                '<p>'.
+                    '<div class="text-danger">'.$subordinate->identity().'</div>'.
+                    $subordinate->functionsList(['P']).
+                '</p>'
+            );
+        });
+
+        return $formatedFullSubordinates->implode('');
+    }
+
     public function getIsManagerAttribute() {
         return $this->user->isManager();
     }
 
     public static function getManagers() {
-        return User::query()
-            ->whereIn('id', static::all()
-                ->filter(function($actor) {
-                    return $actor->isManager;
-                })
-                ->pluck('id')
-            )
-            ->get();
+        return static::query()
+            ->distinct()
+            ->join('processes', 'actors.id', '=', 'processes.manager_id')
+            ->whereNotNull('processes.manager_id')
+            ->orderBy('rank')
+            ->get(['actors.*', 'processes.format_id']);
     }
 
     public static function getOrgChart() {
         $orgChartBoxes = new Collection();
 
-        self::all()->each(function ($actor) use ($orgChartBoxes) {
-
+        self::getManagers()->each(function ($manager) use ($orgChartBoxes) {
             $orgChartBoxes->add([
                 'data' => [
                     [
-                        'v' => (string) $actor->id,
-                        'f' => $actor->boxFormat
+                        'v' => (string) $manager->id,
+                        'f' => $manager->managerBoxFormat
                     ],
-                    (string) $actor->manager_id,
+                    (string) $manager->manager_id,
                     '',
                 ],
-                'style' => $actor->processes()->first()->format->style
+                'style' => Format::find($manager->format_id)->style
+            ]);
+
+            $orgChartBoxes->add([
+                'data' => [
+                    $manager->fullSubordinatesListBoxFormat,
+                    (string) $manager->id,
+                    '',
+                ],
+                'style' => Format::firstWhere('name', 'Default')->style,
             ]);
         });
 

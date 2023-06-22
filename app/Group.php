@@ -29,6 +29,11 @@ class Group extends Model
             ->withPivot('function');
     }
 
+    public function actors() {
+        return $this
+            ->belongsToMany('App\Actor', 'group_user', 'group_id', 'user_id');
+    }
+
     public function rubrics() {
         return $this
             ->belongsToMany('App\Rubric')

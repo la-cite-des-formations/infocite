@@ -36,6 +36,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function actor() {
+        return $this
+            ->belongsTo('App\Actor', 'id');
+    }
+
     public function myPosts() {
         return $this
             ->hasMany('App\Post', 'author_id')
@@ -148,23 +153,18 @@ class User extends Authenticatable
     }
 
     public function processes() {
-        $processes = new Collection();
-
-        $this
-            ->groups(['P'])
-            ->get()
-            ->each(function ($group) use (&$processes) {
-                if (is_object($group->process)) {
-                    $processes->add($group->process);
-                }
-            });
-
-        return $processes;
+        return $this
+            ->groups(['P'])->get()
+            ->filter(function ($group) {
+                return is_object($group->process);
+            })
+            ->pluck('process');
     }
 
     public function subordinates() {
         return $this
-            ->hasManyThrough('App\User', 'App\Actor', 'manager_id', 'id', 'id', 'id');
+            ->hasManyThrough('App\User', 'App\Actor', 'manager_id', 'id', 'id', 'id')
+            ->orderByRaw('name ASC, first_name ASC');
     }
 
     public function manager() {
@@ -291,6 +291,7 @@ class User extends Authenticatable
     public function functionsList(array $types, string $format = "%%", string $noResult = '') {
         $result = $this
             ->groups($types)
+            ->whereNotNull('function')
             ->pluck('function')
             ->implode(', ');
 
@@ -321,7 +322,7 @@ class User extends Authenticatable
     public function isManager() {
         $isManager = FALSE;
 
-        $this->processes()->each(function ($process) use(&$isManager) {
+        Process::all()->each(function ($process) use(&$isManager) {
             if ($this->id == $process->manager_id) {
                 return $isManager = TRUE;
             }

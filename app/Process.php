@@ -27,11 +27,19 @@ class Process extends Model
         'parent_id' => NullableField::class,
     ];
 
+    public function getActorsListAttribute() {
+        return $this->actors->pluck('identity')->implode(', ');
+    }
+
     public function getBoxFormatAttribute() {
         return
-            "<p class='fw-bold {$this->format->title_color}'>{$this->name}</p>".($this->manager ?
-            "<p class='{$this->format->subtitle_font_style} {$this->format->subtitle_color}'>{$this->manager->identity}</p>" :
-            "");
+            "<p class='fw-bold {$this->format->title_color}'>{$this->name}</p>".
+            "<p class='{$this->format->subtitle_font_style} {$this->format->subtitle_color}'>".
+                ($this->manager ?
+                    $this->manager->identity :
+                    $this->actorsList
+                ).
+            "</p>";
     }
 
     public function format() {
@@ -50,7 +58,7 @@ class Process extends Model
     }
 
     public function actors() {
-        return $this->group->users();
+        return $this->group->actors();
     }
 
     public function parent() {
@@ -58,22 +66,30 @@ class Process extends Model
             ->belongsTo('App\Process', 'parent_id');
     }
 
+    public function childs() {
+        return $this
+            ->hasMany('App\Process', 'parent_id');
+    }
+
     public static function getOrgChart() {
         $orgChartBoxes = new Collection();
 
-        self::all()->each(function ($process) use ($orgChartBoxes) {
-            $orgChartBoxes->add([
-                'data' => [
-                    [
-                        'v' => (string) $process->id,
-                        'f' => $process->boxFormat
+        self::query()
+            ->orderBy('rank')
+            ->get()
+            ->each(function ($process) use ($orgChartBoxes) {
+                $orgChartBoxes->add([
+                    'data' => [
+                        [
+                            'v' => (string) $process->id,
+                            'f' => $process->boxFormat
+                        ],
+                        (string) $process->parent_id,
+                        '',
                     ],
-                    (string) $process->parent_id,
-                    '',
-                ],
-                'style' => $process->format->style,
-            ]);
-        });
+                    'style' => $process->format->style,
+                ]);
+            });
 
         return $orgChartBoxes;
     }
