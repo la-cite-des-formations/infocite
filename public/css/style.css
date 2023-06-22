@@ -9,13 +9,86 @@
 # Variables
 --------------------------------------------------------------*/
 :root {
+    /* original */
+    /* --theme-r1: 0;
+    --theme-g1: 174;
+    --theme-b1: 255;
+
+    --theme-r2: 0;
+    --theme-g2: 94;
+    --theme-b2: 255; */
+
+      /* proposition 1 */
+    /* --theme-r1: 255;
+    --theme-g1: 101;
+    --theme-b1: 0;
+
+    --theme-r2: 255;
+    --theme-g2: 21;
+    --theme-b2: 0; */
+
+    /* proposition 2 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 0;
+
+    --theme-r2: 255;
+    --theme-g2: 0;
+    --theme-b2: 70; */
+
+    /* proposition 3 */
     --theme-r1: 255;
     --theme-g1: 21;
     --theme-b1: 0;
 
     --theme-r2: 0;
-    --theme-g2: 94;
-    --theme-b2: 255;
+    --theme-g2: 0;
+    --theme-b2: 0;
+
+    /* proposition 4 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 0;
+
+    --theme-r2: 100;
+    --theme-g2: 255;
+    --theme-b2: 0; */
+
+    /* proposition 5 */
+    /* --theme-r1: 0;
+    --theme-g1: 0;
+    --theme-b1: 0;
+
+    --theme-r2: 255;
+    --theme-g2: -255;
+    --theme-b2: -255; */
+
+    /* proposition 6 */
+    /* --theme-r1: 0;
+    --theme-g1: 0;
+    --theme-b1: 0;
+
+    --theme-r2: 680;
+    --theme-g2: 1;
+    --theme-b2: 1; */
+
+     /* proposition 7 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 70;
+
+    --theme-r2: 255;
+    --theme-g2: 0;
+    --theme-b2: 255; */
+
+    /* proposition 8 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 0;
+
+    --theme-r2: -520;
+    --theme-g2: 0;
+    --theme-b2: 90; */
 
     --select-color-1: rgb(calc(0.615 * var(--theme-r1) + 71) calc(0.615 * var(--theme-g1) + 71) calc(0.615 * var(--theme-b1) + 71));
     --select-color-2: rgb(calc(0.471 * var(--theme-r1) + 115) calc(0.471 * var(--theme-g1) + 115) calc(0.471 * var(--theme-b1) + 115));
