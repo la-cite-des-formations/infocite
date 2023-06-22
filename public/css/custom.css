@@ -179,7 +179,7 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .navbar .myapps, .navbar .myapps:focus {
-    padding: 6px 10px;
+    padding: 8px 20px;
     border-radius: 50px;
     font-size: 14px;
     border: 2px solid var(--select-color-1);
