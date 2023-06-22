@@ -4,7 +4,6 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
-
 /*--------------------------------------------------------------
 # Variables
 --------------------------------------------------------------*/
@@ -1602,7 +1601,6 @@ section {
   font-weight: bold;
   color: var(--select-color-3);
   position: relative;
-  padding-bottom: 12px;
 }
 #footer .footer-top .footer-links {
   margin-bottom: 30px;
@@ -1622,6 +1620,7 @@ section {
   padding: 10px 0;
   display: flex;
   align-items: center;
+  flex-direction: row;
 }
 #footer .footer-top .footer-links ul li:first-child {
   padding-top: 0;
@@ -1635,6 +1634,15 @@ section {
 #footer .footer-top .footer-links ul a:hover {
   text-decoration: none;
   color: var(--select-color-1);
+}
+@media (max-width: 991px) {
+    #footer .footer-links {
+        display: block;
+        flex-direction: column;
+    }
+    #footer .footer-top h4{
+        margin-top: 25px;
+    }
 }
 #footer .footer-top .social-links a {
   font-size: 18px;
