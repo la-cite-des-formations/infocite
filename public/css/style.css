@@ -1144,6 +1144,22 @@ section {
   font-size: 18px;
   display: block;
 }
+@media (max-width: 992px) {
+    .pricing h3 {
+        font-size: 16px;
+      }
+    .pricing h4 span {
+        font-size: 14px;
+    }
+}
+@media (max-width: 991px) {
+    .pricing h3 {
+        font-size: 20px;
+      }
+    .pricing h4 span {
+        font-size: 18px;
+    }
+}
 .pricing ul {
   padding: 20px 0;
   list-style: none;
