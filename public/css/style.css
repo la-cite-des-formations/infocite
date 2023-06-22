@@ -1609,7 +1609,6 @@ section {
 }
 @media (max-width: 991px) {
     #footer .footer-links {
-        display: block;
         flex-direction: column;
     }
     #footer .footer-top h4{
