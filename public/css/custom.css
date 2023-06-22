@@ -179,8 +179,7 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .navbar .myapps, .navbar .myapps:focus {
-    padding: 8px 20px;
-    margin-left: 30px;
+    padding: 6px 10px;
     border-radius: 50px;
     font-size: 14px;
     border: 2px solid #47b2e4;
@@ -197,7 +196,13 @@ label>.material-icons, label>.material-icons-outlined {
     color: #37517e;
 }
 
-@media (992px <= width <= 1641px) {
+@media (992px <= width < 1260px) {
+    .navbar a {
+        padding-left: 10px !important;
+    }
+}
+
+@media (1260px <= width < 1422px) {
     .navbar a {
         padding-left: 20px !important;
     }
