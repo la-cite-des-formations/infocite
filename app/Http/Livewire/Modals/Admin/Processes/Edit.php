@@ -14,7 +14,7 @@ class Edit extends Component
     use WithAlert;
 
     public $process;
-    public $createProcessGroup = FALSE;
+    public $createProcessGroup;
     public $newProcessGroup = NULL;
     public $managers;
     public $mode;
@@ -27,13 +27,18 @@ class Edit extends Component
         'process.parent_id' => 'nullable|integer',
         'process.manager_id' => 'nullable|integer',
         'process.format_id' => 'required|integer',
-        'process.rank' => 'required|integer|min:0',
+        'process.rank' => 'required|string|max:20',
         'newProcessGroup.name' => 'string|max:255',
         'newProcessGroup.type' => 'string|size:1',
     ];
 
     public function setProcess($id = NULL) {
         $this->process = $this->process ?? Process::findOrNew($id);
+
+        if (is_null($id)) {
+            $this->process->rank = '-';
+            $this->createProcessGroup = FALSE;
+        }
 
         $this->formTabs = [
             'name' => 'formTabs',
@@ -52,10 +57,11 @@ class Edit extends Component
 
     public function mount($data) {
         extract($data);
+        $id = $id ?? ($this->process ? $this->process->id : NULL);
 
         $this->mode = $mode ?? 'view';
         $this->setProcess($id ?? NULL);
-        $this->setManagersList();
+        $this->setManagers();
     }
 
     public function refresh() {
@@ -127,22 +133,35 @@ class Edit extends Component
     }
 
     public function updatedProcessGroupId() {
-        $this->setManagersList();
+        $this->setManagers();
     }
 
     public function updatedProcessParentId() {
-        $this->setManagersList();
+        $this->setManagers();
+        $this->process->rank = $this->process->parent_id ?
+            Process::find($this->process->parent_id)->rank.'-' :
+            '-';
     }
 
-    private function setManagersList() {
+    private function setManagers() {
         $this->managers = [];
 
         if ($this->process->group_id) {
             $this->managers = Group::find($this->process->group_id)->users;
         }
+
         if ($this->process->parent_id) {
-            $this->managers = Process::find($this->process->parent_id)->actors
+            $parentProcess = Process::find($this->process->parent_id);
+
+            $this->managers = $parentProcess
+                ->actors
                 ->merge($this->managers);
+
+            if ($parentProcess->parent_id) {
+                $this->managers = Process::find($parentProcess->parent_id)
+                    ->actors
+                    ->merge($this->managers);
+            }
         }
     }
 

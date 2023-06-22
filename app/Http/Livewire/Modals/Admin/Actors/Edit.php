@@ -73,8 +73,14 @@ class Edit extends Component
 
         $actor = Actor::findOrNew($this->user->id);
         $actor->id = $actor->id ?? $this->user->id;
-        $actor->manager_id = $this->manager_id;
-        $actor->save();
+
+        if ($this->manager_id) {
+            $actor->manager_id = $this->manager_id;
+            $actor->save();
+        }
+        else {
+            $actor->delete();
+        }
 
         $this->sendAlert([
             'alertClass' => 'success',
