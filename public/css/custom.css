@@ -202,7 +202,7 @@ label>.material-icons, label>.material-icons-outlined {
 
 .search-form {
     padding: 50px 0;
-    background: var(--select-color-10);
+    background: #f3f5fa;
     text-align: center;
     font-size: 15px;
     color: #444444;
@@ -213,7 +213,7 @@ label>.material-icons, label>.material-icons-outlined {
     padding: 0;
     line-height: 1;
     font-weight: 600;
-    color: var(--select-color-3);
+    color: #37517e;
 }
 .search-form form {
     margin-top: 30px;
@@ -238,14 +238,14 @@ label>.material-icons, label>.material-icons-outlined {
     background: none;
     font-size: 16px;
     padding: 0 20px;
-    background: var(--select-color-1);
+    background: #47b2e4;
     color: #fff;
     transition: 0.3s;
     border-radius: 50px;
     box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
 }
 .search-form form input[type=submit]:hover {
-    background: var(--select-color-9);
+    background: #209dd8;
 }
 
 .comment-form {
@@ -276,7 +276,7 @@ label>.material-icons, label>.material-icons-outlined {
     background: none;
     font-size: 16px;
     padding: 0 20px;
-    background: var(--select-color-1);
+    background: #47b2e4;
     color: #fff;
     transition: 0.3s;
     border-radius: 50px;
@@ -284,25 +284,25 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .comment-form button:hover {
-    background: var(--select-color-9);
+    background: #209dd8;
 }
 
 .navbar .myapps, .navbar .myapps:focus {
     padding: 6px 10px;
     border-radius: 50px;
     font-size: 14px;
-    border: 2px solid var(--select-color-1);
+    border: 2px solid #47b2e4;
     font-weight: 600;
 }
 .navbar .myapps:hover, .navbar .myapps:focus:hover {
     color: #fff !important;
-    background: var(--select-color-6);
+    background: #31a9e1;
 }
 
 .navbar-mobile .myapps, .navbar-mobile .myapps:focus {
     margin: 15px;
     justify-content: start;
-    color: var(--select-color-3);
+    color: #37517e;
 }
 
 @media (992px <= width < 1260px) {
@@ -324,7 +324,7 @@ label>.material-icons, label>.material-icons-outlined {
 
 .title-icon i {
     vertical-align: top;
-    color: var(--select-color-1);
+    color: #47b2e4;
     transition: 0.3s;
 }
 
@@ -334,7 +334,7 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .box.featured:hover {
-    background-color: var(--select-color-22);
+    background-color:rgba(55, 81, 126, 0.125)
 }
 
 table {
