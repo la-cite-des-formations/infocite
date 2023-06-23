@@ -1,4 +1,4 @@
-<div class="col-6 footer-links d-flex flex-row flex-wrap justify-content-around mt-4">
+<div class="col-6 footer-links d-flex flex-wrap justify-content-around mt-4">
  @foreach ($rubrics as $rubric)
   @can('view', $rubric)
    @if($rubric->hasChilds())
@@ -22,3 +22,4 @@
   @endcan
  @endforeach
 </div>
+
