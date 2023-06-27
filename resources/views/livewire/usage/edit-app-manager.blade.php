@@ -12,7 +12,7 @@
                 Ce formulaire vous permet de {{ $mode === 'edition' ? 'modifier' : 'créer' }} une application personnelle accessible depuis l'intranet
             </p>
         </div>
-        <form id="appForm">
+        <form id="appForm" wire:submit.prevent="save">
           @error('app.name')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
           @enderror
@@ -69,11 +69,11 @@
                   @if ($mode === 'edition')
                     <a href="{{ $rubricRoute.'/personal-apps/create' }}" title="Ajouter une nouvelle application personnelle"
                             type="button" class="d-flex btn btn-sm btn-success me-1">
-                        <span class="material-icons">add</span>
-                    </a>
-                  @endif
+                            <span class="material-icons">add</span>
+                        </a>
+                        @endif
+                    </div>
                 </div>
-            </div>
         </form>
     </section>
 </div>

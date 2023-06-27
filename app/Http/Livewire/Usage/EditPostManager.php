@@ -100,7 +100,7 @@ class EditPostManager extends Component
         // sauvegarde et redirection
         $this->post->save();
 
-        redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit");
+        redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit") -> with('success','Item created successfully!');
     }
 
     public function render() {

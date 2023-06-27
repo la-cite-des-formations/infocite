@@ -19,6 +19,17 @@
     @include('includes.usage.header', ['fixedTop' => TRUE])
     @include("includes.usage.main", ['viewBag' => $viewBag])
     @include('includes.usage.footer')
+
+    @if ($viewBag->template == 'edit-post' || $viewBag->template == 'edit-app')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                @livewire($component)
+            </div>
+        </div>
+    </div>
+    @livewire('modal-manager', ['parent' => $component])
+    @endif
 @endsection
 
 @if ($viewBag->template == 'edit-post')
@@ -26,6 +37,13 @@
         <!-- tinyMCE JS Files -->
         <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
         <script src="{{ asset('js/tiny_editor_SC.js') }}" defer></script>
+    @endsection
+@endif
+
+@if ($viewBag->template == 'edit-post' || $viewBag->template == 'edit-app')
+    @section('addJSFiles')
+        <!-- modal Files -->
+    <script src="{{ asset('js/modalManager.js') }}"></script>
     @endsection
 @endif
 

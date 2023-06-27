@@ -40,7 +40,7 @@ class EditAppManager extends Component
             $this->app->save();
         }
 
-        redirect($this->rubricRoute."/personal-apps/{$this->app->id}/edit");
+        redirect($this->rubricRoute."/personal-apps/{$this->app->id}/edit") -> with('error','You have no permission for this page!');
     }
 
     public function render() {

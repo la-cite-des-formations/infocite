@@ -1,3 +1,5 @@
+@extends('layouts.modal')
+
 <div wire:key='postEdit' id="lw-edit-post">
     <section id="breadcrumbs" class="breadcrumbs">
     </section>
@@ -53,6 +55,19 @@
                     </select>
                 </div>
             </div>
+            {{-- <div class="row mb-3">
+                <label class="col-2 fw-bold text-end my-auto" for="post-icon">Icône</label>
+                <div class="col-8">
+                    <div id="post-icon" wire:model="post.icon" type="input" class="form-control material-icons md-24 iconContainer">
+                        <div class="choiceIcon" label="..."></div>
+                        <div value="" class="iconsbox">
+                            @foreach(AP::getMaterialIconsCodes() as $miName => $miCode)
+                                <button type="button" class="icons" value='{{ $miName }}'>{!! "&#x{$miCode};" !!}</button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
           @error('post.content')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
             <script>initEditor()</script>
