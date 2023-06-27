@@ -6,9 +6,12 @@ use App\Comment;
 use App\Post;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Http\Livewire\WithModal;
+
 
 class PostManager extends Component
 {
+    use WithModal;
     public $post;
     public $newComment = '';
     public $firstLoad = TRUE;

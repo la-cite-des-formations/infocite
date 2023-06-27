@@ -1,9 +1,9 @@
 <main id="main">
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
-  @can('viewAny', 'App\\App')
+    @can('viewAny', 'App\\App')
     @livewire('usage.apps-manager', ['viewBag' => $viewBag])
-  @endcan
+    @endcan
 
     <section id="search" class="search-form">
         <div class="container">
@@ -19,4 +19,8 @@
             </div>
         </div>
     </section>
+    @if ($viewBag->template == 'edit-post' || $viewBag->template == 'edit-app')
+        @livewire('modal-manager', ['parent' => "usage.{$viewBag->template}-manager"])
+    @endif
 </main>
+

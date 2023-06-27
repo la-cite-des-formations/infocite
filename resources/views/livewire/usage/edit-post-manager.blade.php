@@ -116,7 +116,7 @@
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
-                    <button wire:click="save" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                    <button wire:click="showModal('confirm')" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
                         {{ $mode === 'edition' ? 'Modifier' : 'Créer' }}
                     </button>
                   @if ($mode === 'edition')

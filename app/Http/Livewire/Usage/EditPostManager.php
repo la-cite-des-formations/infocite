@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Group;
+use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
 use App\Roles;
@@ -11,6 +12,7 @@ use Livewire\Component;
 
 class EditPostManager extends Component
 {
+    use WithModal;
     public $backRoute;
     public $currentRubric;
     public $mode;

@@ -26,6 +26,13 @@
         <!-- tinyMCE JS Files -->
         <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
         <script src="{{ asset('js/tiny_editor_SC.js') }}" defer></script>
+        <script src="{{ asset('js/modalManager.js') }}"></script>
+    @endsection
+@endif
+
+@if ($viewBag->template == 'edit-app')
+    @section('addJSFiles')
+        <script src="{{ asset('js/modalManager.js') }}"></script>
     @endsection
 @endif
 
