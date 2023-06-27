@@ -367,6 +367,10 @@ table {
     }
 }
 
+#header .logo img {
+    max-height: 48px;
+}
+
 /* changement de coleur */
     a {
         color: var(--select-color-1);
@@ -412,7 +416,7 @@ table {
     color: var(--select-color-8) !important;
     }
 
-    .navbar .dropdown ul a:hover, .navbar .dropdown ul .active:hover, .navbar .dropdown ul li:hover > a {
+    .navbar .dropdown ul a:hover, .navbar .dropdown ul .active, .navbar .dropdown ul li:hover > a {
     color: var(--select-color-1) !important;
     }
 

@@ -10,7 +10,7 @@
             </a>
           @else
             <a  @if ($currentRoute == $rubric->route())
-                    href="#breadcrumbs" class="nav-link scrollto"
+                    href="#{{ $viewBag->template }}" class="nav-link scrollto"
                 @else
                     href="{{ $rubric->route() }}" class="nav-link"
                 @endif>{{ $rubric->name }}</a>
@@ -21,7 +21,7 @@
                @can('view', $childRubric)
                 <li>
                     <a  @if ($currentRoute == $childRubric->route())
-                            href="#breadcrumbs" class="nav-link scrollto"
+                            href="#{{ $viewBag->template }}" class="nav-link scrollto"
                         @else
                             href="{{ $childRubric->route() }}" class="nav-link"
                         @endif>{{ $childRubric->name }}</a>
