@@ -8,15 +8,12 @@ use Livewire\Component;
 class Confirm extends Component
 {
     use WithModal;
-    protected $listeners = ['modalClosed', 'render'];
     public function confirm()
     {
-
+        $this->emit('save');
     }
     public function render()
     {
-        return view('livewire.modals.usage.confirm', [
-
-        ]);
+        return view('livewire.modals.usage.confirm');
     }
 }

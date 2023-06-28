@@ -31,12 +31,6 @@
     @endsection
 @endif
 
-@if ($viewBag->template == 'edit-app')
-    @section('addJSFiles')
-        <script src="{{ asset('js/confirmManager.js') }}"></script>
-    @endsection
-@endif
-
 @if ($viewBag->template == 'org-chart')
     @section('addJSFiles')
         <!-- Google org-chart JS Files -->

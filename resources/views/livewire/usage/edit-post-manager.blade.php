@@ -12,7 +12,14 @@
                 Ce formulaire vous permet de {{ $mode === 'edition' ? 'modifier' : 'créer' }} un article consultable sur l'intranet
             </p>
         </div>
-        <form id="postForm">
+        <form id="postForm" wire:submit.prevent="confirm">
+            <div class="col-3 m-auto text-center">
+                @if (session()->has('message'))
+                    <div class="alert alert-success">
+                        {{ session('message') }}
+                    </div>
+                @endif
+            </div>
           @error('post.rubric_id')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
           @enderror

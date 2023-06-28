@@ -5,12 +5,12 @@
                 <h5 class="modal-title">@yield('modal-title')</h5>
                 <div class="btn-group">
                     @yield('modal-header-options')
-                    {{-- @if ($viewBag->template == 'edit-app' || $viewBag->template == 'edit-post')
-                        <a role="button" class="text-secondary" data-bs-dismiss="modal" aria-label="Fermer" title="Fermer">
+                    {{-- @if ('/admin')
+                        <a role="button" class="text-secondary" data-dismiss="modal" aria-label="Fermer" title="Fermer">
                             <span class="material-icons">close</span>
                         </a>
                     @else
-                        <a role="button" class="text-secondary" data-dismiss="modal" aria-label="Fermer" title="Fermer">
+                        <a role="button" class="text-secondary" data-bs-dismiss="modal" aria-label="Fermer" title="Fermer">
                             <span class="material-icons">close</span>
                         </a>
                     @endif --}}

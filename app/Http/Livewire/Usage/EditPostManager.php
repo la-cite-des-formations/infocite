@@ -19,7 +19,7 @@ class EditPostManager extends Component
     public $post;
     public $blockComments;
 
-    protected $listeners = ['contentChange'];
+    protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -103,6 +103,16 @@ class EditPostManager extends Component
         $this->post->save();
 
         redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit");
+
+        if ($this->mode === 'creation') {
+            // création
+            session()->flash('message', 'Création réussi !');
+        }
+        else{
+            // modification
+            session()->flash('message', 'Bien modifier !');
+        }
+
     }
 
     public function render() {
