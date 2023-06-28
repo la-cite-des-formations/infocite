@@ -10,5 +10,5 @@
 
 @section('modal-footer')
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-    <button type="button" class="btn btn-secondary" wire:click='confirm'>OK</button>
+    <button type="button" class="btn btn-primary" wire:click='confirm'>OK</button>
 @endsection
