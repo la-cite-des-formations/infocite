@@ -3,17 +3,19 @@
 namespace App\Http\Livewire\Usage;
 
 use App\App;
+use App\Http\Livewire\WithModal;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class AppsManager extends Component
 {
     use WithPagination;
+    use WithModal;
 
     public $rubricSegment;
     public $firstLoad = TRUE;
 
-    protected $listeners = ['render'];
+    protected $listeners = ['deleteApp', 'render'];
 
     public function mount($viewBag) {
         $this->rubricSegment = $viewBag->rubricSegment;
