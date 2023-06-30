@@ -12,28 +12,53 @@ class Confirm extends Component
     use WithAlert;
 
     public $handling;
-
+    public $commentId;
+    public $appId;
+    public $message;
 
 
     public function mount($data) {
         extract($data);
 
         $this->handling = $handling;
-        $this->id = $id ?? NULL;
+        $this->commentId = $id ?? NULL;
+        $this->appId = $appId ?? NULL;
+
+        switch($handling){
+            case 'deletePost':
+                $this->message = "Êtes-vous sûr de vouloir supprimer cet article ?";
+                break;
+            case 'deleteComment':
+                $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
+                break;
+            case 'deleteApp':
+                $this->message = "Êtes-vous sûr de vouloir supprimer cet application ?";
+                break;
+            case 'update':
+                $this->message = "Êtes-vous sûr de vouloir modifier ?";
+                break;
+            case 'create':
+                $this->message = "Êtes-vous sûr de vouloir créer ?";
+                break;
+        }
     }
 
     public function confirm() {
-       if ($this->handling === 'deletePost'){
-            $this->emit('deletePost')->to('PostManager');
-        }elseif($this->handling === 'deleteComment'){
-            $this->emit('deleteComment')->to('PostManager');
-        }elseif($this->handling === 'deleteApp'){
-            $this->emit('deleteApp')->to('AppsManager');
-        }elseif($this->handling === 'modifier'){
+    switch($this->handling){
+        case('deletePost'):
+             $this->emit('deletePost')->to('PostManager');
+        break;
+        case('deleteComment'):
+             $this->emit('deleteComment', $this->commentId)->to('PostManager');
+        break;
+        case('deleteApp'):
+            $this->emit('deleteApp', $this->appId)->to('AppsManager');
+        break;
+        case('update'):
+        case('create'):
             $this->emit('save');
-        }elseif($this->handling === 'create'){
-            $this->emit('save');
-        }
+        break;
+    }
     }
 
     public function render()

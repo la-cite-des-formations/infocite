@@ -65,7 +65,7 @@
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
                     @if ($mode === 'edition')
-                    <button wire:click="showModal('confirm', {handling : 'modifier'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                    <button wire:click="showModal('confirm', {handling : 'update'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
                         Modifier
                     </button>
                     @else
