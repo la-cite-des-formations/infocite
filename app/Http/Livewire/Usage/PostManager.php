@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Comment;
+use App\Http\Livewire\WithAlert;
 use App\Post;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -12,11 +13,12 @@ use App\Http\Livewire\WithModal;
 class PostManager extends Component
 {
     use WithModal;
+    use WithAlert;
     public $post;
     public $newComment = '';
     public $firstLoad = TRUE;
 
-    protected $listeners = ['render'];
+    protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
 
     public function mount($viewBag) {
         $this->post = Post::find($viewBag->post_id);

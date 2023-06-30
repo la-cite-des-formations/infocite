@@ -12,14 +12,8 @@
                 Ce formulaire vous permet de {{ $mode === 'edition' ? 'modifier' : 'créer' }} un article consultable sur l'intranet
             </p>
         </div>
-        <form id="postForm" wire:submit.prevent="confirm">
-            <div class="col-3 m-auto text-center">
-                @if (session()->has('message'))
-                    <div class="alert alert-success">
-                        {{ session('message') }}
-                    </div>
-                @endif
-            </div>
+        <form id="postForm">
+            @includeWhen(session()->has('message'), 'includes.confirm-message')
           @error('post.rubric_id')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
           @enderror
@@ -123,9 +117,15 @@
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
-                    <button wire:click="showModal('confirm')" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
-                        {{ $mode === 'edition' ? 'Modifier' : 'Créer' }}
+                    @if ($mode === 'edition')
+                    <button wire:click="showModal('confirm', {handling : 'modifier'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                        Modifier
                     </button>
+                    @else
+                    <button wire:click="showModal('confirm', {handling : 'create'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                        Créer
+                    </button>
+                    @endif
                   @if ($mode === 'edition')
                    @can('create', ['App\\Post', $currentRubric->id])
                     <a href="{{ $currentRubric->route().'/create' }}" title="Commencer un nouvel article"

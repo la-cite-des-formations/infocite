@@ -13,8 +13,7 @@ trait WithModal
     public function showModal($action, $data = NULL) {
         if($action == 'confirm'){
             $component = "usage.confirm";
-        }
-        else{
+        }else{
             $component = "admin.{$this->models}.$action";
         }
         $this->emit('show', [

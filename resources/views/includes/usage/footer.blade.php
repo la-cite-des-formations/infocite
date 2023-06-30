@@ -51,12 +51,8 @@
 
 <!-- Template Main JS File -->
 <script src="{{ asset('js/main.js') }}" defer></script>
-{{-- 
-@if ($viewBag->template == 'edit-app')
-<!--  Modal JS File -->
-    @section('addJSFiles')
-        <script src="{{ asset('js/confirmManager.js') }}"></script>
-    @endsection
-@endif --}}
+<!-- Modal JS File -->
+<script src="{{ asset('js/confirmManager.js') }}"></script>
+
 
 @livewireScripts

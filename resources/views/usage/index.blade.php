@@ -26,8 +26,6 @@
         <!-- tinyMCE JS Files -->
         <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
         <script src="{{ asset('js/tiny_editor_SC.js') }}" defer></script>
-        <!-- modal JS File -->
-        <script src="{{ asset('js/confirmManager.js') }}"></script>
     @endsection
 @endif
 

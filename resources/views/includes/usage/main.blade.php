@@ -19,8 +19,8 @@
             </div>
         </div>
     </section>
-    @if ($viewBag->template == 'edit-post' || $viewBag->template == 'edit-app')
+    {{-- @if ($viewBag->template == 'edit-post' || $viewBag->template == 'edit-app' || ) --}}
         @livewire('modal-manager', ['parent' => "usage.{$viewBag->template}-manager"])
-    @endif
+    {{-- @endif --}}
 </main>
 

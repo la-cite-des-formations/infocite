@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Group;
+use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
@@ -13,6 +14,7 @@ use Livewire\Component;
 class EditPostManager extends Component
 {
     use WithModal;
+    use WithAlert;
     public $backRoute;
     public $currentRubric;
     public $mode;
@@ -93,26 +95,26 @@ class EditPostManager extends Component
         if ($this->mode === 'creation') {
             // création
             $this->post->author_id = auth()->user()->id;
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Création de la mise en forme effectuée avec succès."
+                ]);
         }
         else{
             // modification
             $this->post->corrector_id = auth()->user()->id;
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Modification de la mise en forme effectuée avec succès."
+                ]);
         }
 
         // sauvegarde et redirection
         $this->post->save();
 
         redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit");
-
-        if ($this->mode === 'creation') {
-            // création
-            session()->flash('message', 'Création réussi !');
-        }
-        else{
-            // modification
-            session()->flash('message', 'Bien modifier !');
-        }
-
     }
 
     public function render() {
