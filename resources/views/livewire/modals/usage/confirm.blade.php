@@ -3,19 +3,9 @@
 @section('modal-title', "Confirmation")
 
 @section('modal-body')
-@if ($handling === 'modifier')
-        <div class="alert alert-success mb-3">
-            <p>Êtes-vous sûr de vouloir modifier ?</p>
-        </div>
-@elseif($handling === 'create')
-<div class="alert alert-success mb-3">
-    <p>Êtes-vous sûr de vouloir créer ?</p>
-</div>
-@else
-    <div class="alert alert-danger mb-3">
-        <p>Êtes-vous sûr de vouloir supprimer ?</p>
+    <div class="alert alert-success mb-3">
+        <p>{{$message}}</p>
     </div>
-@endif
 @endsection
 
 @section('modal-footer')
