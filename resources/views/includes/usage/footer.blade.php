@@ -51,5 +51,8 @@
 
 <!-- Template Main JS File -->
 <script src="{{ asset('js/main.js') }}" defer></script>
+<!-- Modal JS File -->
+<script src="{{ asset('js/confirmManager.js') }}"></script>
+
 
 @livewireScripts

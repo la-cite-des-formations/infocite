@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Group;
+use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
 use App\Roles;
@@ -11,13 +13,15 @@ use Livewire\Component;
 
 class EditPostManager extends Component
 {
+    use WithModal;
+    use WithAlert;
     public $backRoute;
     public $currentRubric;
     public $mode;
     public $post;
     public $blockComments;
 
-    protected $listeners = ['contentChange'];
+    protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -91,10 +95,20 @@ class EditPostManager extends Component
         if ($this->mode === 'creation') {
             // création
             $this->post->author_id = auth()->user()->id;
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Création de la mise en forme effectuée avec succès."
+                ]);
         }
         else{
             // modification
             $this->post->corrector_id = auth()->user()->id;
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Modification de la mise en forme effectuée avec succès."
+                ]);
         }
 
         // sauvegarde et redirection

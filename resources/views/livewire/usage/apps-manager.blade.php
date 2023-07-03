@@ -30,7 +30,7 @@
                                 <a href="{{ "/{$rubricSegment}/personal-apps/{$app->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
                                     <i class="bx bx-pencil"></i>
                                 </a>
-                                <button wire:click='deleteApp({{ $app->id }})' type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                <button wire:click="showModal('confirm', {handling : 'deleteApp', appId : {{ $app->id }}})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                     <i class="bx bx-trash"></i>
                                 </button>
                             </div>

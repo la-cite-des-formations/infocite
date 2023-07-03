@@ -50,7 +50,7 @@ class ViewController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+     public function index(Request $request)
     {
         return view("usage.index", ['viewBag' => $this->getViewBag($request)]);
     }

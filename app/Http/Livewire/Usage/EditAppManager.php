@@ -3,15 +3,19 @@
 namespace App\Http\Livewire\Usage;
 
 use App\App;
+use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithModal;
 use Livewire\Component;
 
 class EditAppManager extends Component
 {
+    use WithModal;
+    use WithAlert;
     public $backRoute;
     public $rubricRoute;
     public $mode;
     public $app;
-
+    protected $listeners = ['modalClosed', 'save'];
     protected $rules = [
         'app.name' => 'required|string|max:255',
         'app.description' => 'required|string',
@@ -34,10 +38,20 @@ class EditAppManager extends Component
             $this->app->owner_id = auth()->user()->id;
             $this->app->save();
             $this->app->users()->attach(auth()->user()->id);
+            $this
+            ->sendAlert([
+                'alertClass' => 'success',
+                'message' => "Création de la mise en forme effectuée avec succès."
+            ]);
         }
         else {
             // modification
             $this->app->save();
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Modification de la mise en forme effectuée avec succès."
+                ]);
         }
 
         redirect($this->rubricRoute."/personal-apps/{$this->app->id}/edit");
