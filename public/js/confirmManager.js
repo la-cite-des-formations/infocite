@@ -5,10 +5,3 @@ window.addEventListener('showModal', () => {
     modal.show()
     document.getElementById('modal').addEventListener('hidden.bs.modal', () => Livewire.emitTo('modal-manager', 'unload'))
 })
-
-window.addEventListener('hideModal', () => {
-    const modal = new bootstrap.Modal('#modal')
-
-    console.log("hide")
-    modal.hide()
-})
