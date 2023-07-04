@@ -14,15 +14,17 @@
         <input id="post-icon" wire:model="post.icon" type="input"
                class="col-10 form-control" placeholder="Icône de l'article">
     </div>
-  @error('post.content')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
-  @enderror
+    <div>
+      @error('post.content')
+        @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
+      @enderror
+    </div>
     <div class="form-group row">
         <label class="col-1 text-right mt-2" for="post-content">Contenu</label>
-        <div wire:ignore class="col-10">
-          <textarea id="post-content" wire:model="post.content" type="input"
-                    class="form-control tinymce" placeholder="Contenu de l'article">
-          </textarea>
+        <div wire:ignore class="col-10 p-0">
+            <textarea id="post-content" wire:model="post.content" type="input"
+                      class="form-control tinymce" placeholder="Contenu de l'article">
+            </textarea>
         </div>
     </div>
   @error('post.rubric_id')

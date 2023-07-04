@@ -77,12 +77,14 @@ const initEditor = function () {
             editor.on('change', () => {
                 Livewire.emit('contentChange', editor.getContent());
             })
+            Livewire.on('deleteContent', () => {
+                editor.setContent('')
+            });
         }
     });
 };
 
 initEditor();
-
 
 addEventListener('initTinymce', () => {
     tinymce.remove();

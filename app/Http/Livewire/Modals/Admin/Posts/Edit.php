@@ -29,6 +29,10 @@ class Edit extends Component
         $this->post->content = $content;
     }
     public function setPost($id = NULL) {
+        if (is_null($id)) {
+            $this->emit('deleteContent');
+        }
+
         $this->post = $this->post ?? Post::findOrNew($id);
 
         if ($this->mode === 'creation') $this->post->published = FALSE;
