@@ -32,7 +32,7 @@ class Confirm extends Component
                 $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
             break;
             case 'deleteApp':
-                $this->message = "Êtes-vous sûr de vouloir supprimer cet application ?";
+                $this->message = "Êtes-vous sûr de vouloir supprimer cette application ?";
             break;
             case 'update':
                 $this->message = "Êtes-vous sûr de vouloir modifier ?";

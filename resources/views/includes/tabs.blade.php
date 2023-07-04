@@ -2,9 +2,9 @@
     <ul class="nav nav-tabs" id="{{ $tabsSystem['name'] }}" role="tablist">
       @foreach($tabsSystem['tabs'] as $id => $tab)
         <li wire:click="setCurrentTab('{{ $tabsSystem['name'] }}', '{{ $id }}')"
-            class="nav-item" role="presentation" title="{{ $tab['title'] }}"
+            class="nav-item admin-nav-hover" role="presentation" title="{{ $tab['title'] }}"
             @if($tab['hidden']) hidden @endif>
-            <a class="d-flex nav-link @if($tabsSystem['currentTab'] === $id) active @endif" id="{{ $id }}Tab"
+            <a class="d-flex nav-link admin-nav-icons @if($tabsSystem['currentTab'] === $id) active @endif" id="{{ $id }}Tab"
                data-toggle="tab" href="#{{ $id }}Pane" role="tab" aria-controls="{{ $id }}"
                aria-selected="@if($tabsSystem['currentTab'] === $id) true @else false @endif">
                 <span class="material-icons">{{ $tab['icon'] }}</span>

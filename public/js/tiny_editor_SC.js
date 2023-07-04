@@ -36,7 +36,6 @@ const initEditor = function () {
         toolbar: [
             "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media  | emoticons charmap | searchreplace preview code fullscreen"
         ],
-
         video_template_callback: function(data) {
             console.log(data);
                 return  '<div class="embed-responsive embed-responsive-4by3">' +
@@ -83,3 +82,9 @@ const initEditor = function () {
 };
 
 initEditor();
+
+
+addEventListener('initTinymce', () => {
+    tinymce.remove();
+    initEditor();
+})

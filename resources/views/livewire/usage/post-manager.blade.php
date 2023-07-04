@@ -13,7 +13,7 @@
             <div class="card mx-lg-5">
                 <div class="card-header d-flex justify-content-end">
                     <div id="post-actions">
-                        <div class="input-group" role="group" aria-label="Actions">
+                        <div class="input-group btn-cleargreen-hover" role="group" aria-label="Actions">
                           @can('update', $post)
                             <a href="{{ "{$post->rubric->route()}/{$post->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
                                 <i class="bx bx-pencil"></i>
@@ -46,7 +46,7 @@
                       @endif
                       @can('create', ['App\\Comment', $post->id])
                         <div class="comment-form my-2">
-                            <input wire:model='newComment' type="text" placeholder="Ajouter un commentaire">
+                            <input wire:model='newComment' wire:keydown.enter="commentPost" type="text" placeholder="Ajouter un commentaire">
                             <button wire:click='commentPost' title="Ajouter">
                                 <i class="icofont-plus"></i>
                             </button>

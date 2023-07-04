@@ -56,7 +56,6 @@
             </div>
           @error('post.content')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
-            <script>initEditor()</script>
           @enderror
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto mt-1" for="post-content">Contenu</label>
@@ -113,7 +112,7 @@
           @endif
          @endcan
             <div class="row">
-                <div class="col-10 d-flex justify-content-end">
+                <div class="col-10 d-flex justify-content-end btn-none-hover">
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>

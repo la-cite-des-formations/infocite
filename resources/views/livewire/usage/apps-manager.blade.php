@@ -3,7 +3,7 @@
       @can('add', 'App\\App')
         <div class="container d-flex flex-column">
             <div class="align-self-end">
-                <div class="input-group" role="group">
+                <div class="input-group btn-cleargreen-hover" role="group">
                     <a href="{{ "/{$rubricSegment}/personal-apps/create" }}" title="Ajouter une application personnelle"
                        type="button" class="d-flex input-group-text btn btn-sm btn-success">
                         <span class="material-icons">add</span>
@@ -26,7 +26,7 @@
                         <h4><span>{{ $app->description }}</span></h4>
                       @can('handle', $app)
                         <div class="position-absolute bottom-0 end-0 mb-3 me-3">
-                            <div class="input-group" role="group" aria-label="Actions">
+                            <div class="input-group bbtn-cleargreen-hover" role="group" aria-label="Actions">
                                 <a href="{{ "/{$rubricSegment}/personal-apps/{$app->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
                                     <i class="bx bx-pencil"></i>
                                 </a>
