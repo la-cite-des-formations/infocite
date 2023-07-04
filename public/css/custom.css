@@ -732,10 +732,6 @@ table {
         background: var(--select-color-9) !important;
     }
 
-    .btn-cleargreen-hover > a:hover{
-        color: rgb(197, 255, 110) !important;
-    }
-
     .btn-none-hover > a:hover{
         color: white !important;
     }

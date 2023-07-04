@@ -5,7 +5,7 @@
     <section id="posts" class="services section-bg">
         <div class="container d-flex flex-column">
             <div class="align-self-end">
-                <div class="input-group btn-cleargreen-hover" role="group">
+                <div class="input-group btn-none-hover" role="group">
                     <button class="btn @if ($rubric->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
                             title="@if ($rubric->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
                             wire:click="switchFavoriteRubric" type="button">
