@@ -3,7 +3,7 @@
 @endsection
 
   @error('post.title')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+    @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
     <div class="form-group row">
         <label class="col-1 text-right my-auto" for="post-title">Titre</label>
@@ -11,7 +11,7 @@
                class="col-10 form-control" placeholder="Titre de l'article">
     </div>
   @error('post.icon')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+    @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
     <div class="form-group row">
         <label class="col-1 text-right my-auto" for="post-icon">Icône</label>
@@ -19,18 +19,18 @@
                class="col-10 form-control" placeholder="Icône de l'article">
     </div>
   @error('post.content')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+    @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
     <div class="form-group row">
         <label class="col-1 text-right mt-2" for="post-content">Contenu</label>
-        <div class="col-10" wire:ignore>
-          <textarea id="post-content" wire:model="post.content" type="input" rows="5"
+        <div wire:ignore class="col-10">
+          <textarea id="post-content" wire:model="post.content" type="input"
                     class="form-control tinymce" placeholder="Contenu de l'article">
           </textarea>
-      </div>
+        </div>
     </div>
   @error('post.rubric_id')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+    @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
     <div class="form-group row">
         <label class="col-1 text-right my-auto" for="post-rubric-id">Rubrique</label>
@@ -42,7 +42,7 @@
         </select>
     </div>
   @error('post.published')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+    @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
     <div class="form-group row">
         <div class="col-1"></div>

@@ -113,7 +113,7 @@
           @endif
          @endcan
             <div class="row">
-                <div class="col-10 d-flex justify-content-end">
+                <div class="col-10 d-flex justify-content-end btn-none-hover">
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
