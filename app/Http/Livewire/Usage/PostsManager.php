@@ -41,14 +41,14 @@ class PostsManager extends Component
             $isFavorite = TRUE;
         }
         if (isset($isFavorite)) {
-            $post->users()->syncWithoutDetaching([
+            $post->readers()->syncWithoutDetaching([
                 auth()->user()->id => [
                     'is_favorite' => $isFavorite
                 ]
             ]);
         }
         else {
-            $post->users()->detach(auth()->user()->id);
+            $post->readers()->detach(auth()->user()->id);
         }
         $this->emitSelf('render');
     }
