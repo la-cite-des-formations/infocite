@@ -1,7 +1,3 @@
-@section('wire-init')
-    wire:init='initTinymce'
-@endsection
-
   @error('post.title')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror

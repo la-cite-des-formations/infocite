@@ -56,7 +56,6 @@
             </div>
           @error('post.content')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
-            <script>initEditor()</script>
           @enderror
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto mt-1" for="post-content">Contenu</label>

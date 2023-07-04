@@ -142,7 +142,8 @@ class Edit extends Component
                     ->where('rank', '!=', '0')
                     ->orderByRaw('position ASC, rank ASC')
                     ->get(),
-                'modalSize' => 'modal-xl'
+                'modalSize' => 'modal-xl',
+                'haveTiny' => TRUE
             ]);
     }
 }
