@@ -27,19 +27,19 @@ class Confirm extends Component
         switch($handling){
             case 'deletePost':
                 $this->message = "Êtes-vous sûr de vouloir supprimer cet article ?";
-                break;
+            break;
             case 'deleteComment':
                 $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
-                break;
+            break;
             case 'deleteApp':
                 $this->message = "Êtes-vous sûr de vouloir supprimer cette application ?";
-                break;
+            break;
             case 'update':
                 $this->message = "Êtes-vous sûr de vouloir modifier ?";
-                break;
+            break;
             case 'create':
                 $this->message = "Êtes-vous sûr de vouloir créer ?";
-                break;
+            break;
         }
     }
 
