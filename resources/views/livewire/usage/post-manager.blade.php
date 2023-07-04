@@ -46,7 +46,7 @@
                       @endif
                       @can('create', ['App\\Comment', $post->id])
                         <div class="comment-form my-2">
-                            <input wire:model='newComment' type="text" placeholder="Ajouter un commentaire">
+                            <input wire:model='newComment' wire:keydown.enter="commentPost" type="text" placeholder="Ajouter un commentaire">
                             <button wire:click='commentPost' title="Ajouter">
                                 <i class="icofont-plus"></i>
                             </button>

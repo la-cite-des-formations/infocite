@@ -14,6 +14,11 @@
 @section('addJs')
     <script src="{{ asset('js/selectionManager.js') }}"></script>
     <script src="{{ asset('js/modalManager.js') }}"></script>
+    @if ($component == 'admin.posts-manager')
+        <!-- tinyMCE JS Files -->
+        <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+        <script src="{{ asset('js/tiny_editor_SC.js') }}" defer></script>
+    @endif
     @if ($component == 'admin.formats-manager')
         <!-- Google org-chart JS Files -->
         <script src="{{ asset('js/charts/loader.js') }}" referrerpolicy="origin"></script>

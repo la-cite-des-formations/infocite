@@ -32,7 +32,7 @@ class Confirm extends Component
                 $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
                 break;
             case 'deleteApp':
-                $this->message = "Êtes-vous sûr de vouloir supprimer cet application ?";
+                $this->message = "Êtes-vous sûr de vouloir supprimer cette application ?";
                 break;
             case 'update':
                 $this->message = "Êtes-vous sûr de vouloir modifier ?";
@@ -44,21 +44,21 @@ class Confirm extends Component
     }
 
     public function confirm() {
-    switch($this->handling){
-        case('deletePost'):
-             $this->emit('deletePost')->to('PostManager');
-        break;
-        case('deleteComment'):
-             $this->emit('deleteComment', $this->commentId)->to('PostManager');
-        break;
-        case('deleteApp'):
-            $this->emit('deleteApp', $this->appId)->to('AppsManager');
-        break;
-        case('update'):
-        case('create'):
-            $this->emit('save');
-        break;
-    }
+        switch($this->handling){
+            case('deletePost'):
+                $this->emit('deletePost')->to('PostManager');
+            break;
+            case('deleteComment'):
+                $this->emit('deleteComment', $this->commentId)->to('PostManager');
+            break;
+            case('deleteApp'):
+                $this->emit('deleteApp', $this->appId)->to('AppsManager');
+            break;
+            case('update'):
+            case('create'):
+                $this->emit('save');
+            break;
+        }
     }
 
     public function render()

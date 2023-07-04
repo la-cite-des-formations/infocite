@@ -16,8 +16,7 @@ class Edit extends Component
     public $mode;
     public $canAdd = TRUE;
     public $formTabs;
-
-    protected $listeners = ['render'];
+    protected $listeners = ['render', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -26,6 +25,9 @@ class Edit extends Component
         'post.published' => 'required|boolean',
     ];
 
+    public function contentChange($content) {
+        $this->post->content = $content;
+    }
     public function setPost($id = NULL) {
         $this->post = $this->post ?? Post::findOrNew($id);
 
@@ -51,6 +53,11 @@ class Edit extends Component
 
         $this->mode = $mode ?? 'view';
         $this->setPost($id ?? NULL);
+        $this->dispatchBrowserEvent('initTinymce');
+
+    }
+    public function initTinymce(){
+        $this->dispatchBrowserEvent('initTinymce');
     }
 
     public function refresh() {
@@ -119,8 +126,7 @@ class Edit extends Component
             ->save();
     }
 
-    public function render($messageBag = NULL)
-    {
+    public function render($messageBag = NULL){
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -136,6 +142,7 @@ class Edit extends Component
                     ->where('rank', '!=', '0')
                     ->orderByRaw('position ASC, rank ASC')
                     ->get(),
+                'modalSize' => 'modal-xl'
             ]);
     }
 }
