@@ -46,13 +46,64 @@
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto" for="post-icon">Icône</label>
                 <div class="col-8">
+                    <div class="dropend">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-icons fs-6 me-1 mt-1">zoom_out_map</span>
+                        </button>
+                        <div class="dropdown-menu p-4 text-muted ms-3" style="max-width: 900px;">
+                            <div class="row container">
+                                <div class="row mb-3 text-center ms-2">
+                                    {{-- {{ $elements->links() }} --}}
+                                    <button class="btn btn-arrow btn-previous btn-primary col"><span class="material-icons md-18 mt-1">arrow_back</span></button>
+                                        <p class="col-10">1/23</p>
+                                    <button class="btn btn-arrow btn-previous btn-primary col"><span class="material-icons md-18 mt-1">arrow_forward</span></button>
+                                </div>
+                                {{-- <div class="col text-muted"> --}}
+                                    {{-- <div class="form-inline d-flex justify-content-end">
+                                        <select wire:model="perPage" class="form-control-sm">
+                                          @foreach($perPageOptions as $perPageOption)
+                                            <option>{{ $perPageOption }}</option>
+                                          @endforeach
+                                        </select>
+                                        &nbsp; résultats par page
+                                    </div> --}}
+
+                                {{-- </div> --}}
+                            </div>
+
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text text-secondary">
+                                            <span class="material-icons lg-18">search</span>
+                                        </div>
+                                    </div>
+                                    <input wire:model='filter.search' type="text" class="form-control" placeholder="Rechercher...">
+                                </div>
+                            </div>
+                            <p><hr class="dropdown-divider"></p>
+                            <div id="post-icon" wire:model="post.icon" type="input" class="form-control material-icons md-24 iconContainer d-flex flex-wrap overflow-scroll justify-content-center align-items-center" style="max-height: 220px;">
+                                <div class="choiceIcon" label="..."></div>
+                                        @foreach(AP::getMaterialIconsCodes() as $miName => $miCode)
+                                            <button class='icons border-0 btn-outline-secondary m-1 rounded' type="button" value='{{ $miName }}' title='{{ $miName }}'>{!! "&#x{$miCode};" !!}</button>
+                                        @endforeach
+                                </div>
+                                <div class="text-right text-end">
+                                    {{-- de {{ $elements->firstItem() ?? 0 }} à {{ $elements->lastItem() ?? 0 }} sur {{ $elements->total() }} --}}
+                                    <p class="text-center mt-4 mb-1"> de 0 à 100 sur 2260</p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                {{-- <div class="col-8">
                     <select id="post-icon" wire:model="post.icon" type="input" class="form-select material-icons md-24">
                         <option label="..."></option>
                       @foreach(AP::getMaterialIconsCodes() as $miName => $miCode)
                         <option value='{{ $miName }}'>{!! "&#x{$miCode};" !!}</option>
                       @endforeach
                     </select>
-                </div>
+                </div> --}}
+
             </div>
           @error('post.content')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])

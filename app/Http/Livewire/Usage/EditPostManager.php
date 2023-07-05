@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Usage;
 
 use App\Group;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
@@ -15,6 +16,7 @@ class EditPostManager extends Component
 {
     use WithModal;
     use WithAlert;
+    use WithFilter;
     public $backRoute;
     public $currentRubric;
     public $mode;
@@ -39,7 +41,10 @@ class EditPostManager extends Component
         $this->post = Post::findOrNew($viewBag->post_id);
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
     }
-
+    public $filter = [
+        'search' => '',
+        //'is_parent' => NULL,
+    ];
     public function contentChange($content) {
         $this->post->content = $content;
     }
