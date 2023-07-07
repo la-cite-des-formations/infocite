@@ -26,6 +26,7 @@ Route::redirect('/admin', '/dashboard');
 // Route::get('/search', 'ViewController@search')
 //     ->name('post.search');
 
+
 $admin = Route::namespace('Admin')
     ->prefix('admin')
     ->name('admin.');

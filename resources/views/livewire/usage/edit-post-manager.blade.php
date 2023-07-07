@@ -44,13 +44,13 @@
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
           @enderror
             <div class="row mb-3">
-                <label class="col-2 fw-bold text-end my-auto" for="post-icon">Icône</label>
+                <label class="col-2 fw-bold text-end my-auto">Icône</label>
                 <div class="col-8">
                     <div class="dropend">
-                        <button id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" type="button" class="btn btn-light choice-icon-btn dropdown-toggle">
+                        <button wire:ignore.self id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" type="button" class="btn btn-light choice-icon-btn dropdown-toggle">
                             <span class="material-icons me-1 mt-1">{{$post->icon}}</span>
                         </button>
-                        <div wire:ignore.self class="dropdown-menu text-muted ms-1 p-3"
+                        <div wire:ignore.self class="dropdown-menu text-muted bg-icon-picker ms-1 p-3"
                             style="max-width: 436px;">
                             <div class="input-group mb-2">
                                 <div class="input-group-text text-secondary">

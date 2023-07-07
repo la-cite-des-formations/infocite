@@ -753,5 +753,10 @@ table {
     }
 
     .choice-icon-div{
-        background-color: #E45447;
+        background-color: var(--select-color-1);
+    }
+
+    .bg-icon-picker{
+        background-color: var(--select-color-1);
+        max-width: 436px;
     }
