@@ -2,9 +2,9 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\CustomFacades\AP;
 use App\Group;
 use App\Http\Livewire\WithAlert;
-use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
@@ -16,13 +16,12 @@ class EditPostManager extends Component
 {
     use WithModal;
     use WithAlert;
-    use WithFilter;
     public $backRoute;
     public $currentRubric;
     public $mode;
     public $post;
     public $blockComments;
-
+    public $searchIcons = '';
     protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
@@ -41,12 +40,12 @@ class EditPostManager extends Component
         $this->post = Post::findOrNew($viewBag->post_id);
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
     }
-    public $filter = [
-        'search' => '',
-        //'is_parent' => NULL,
-    ];
     public function contentChange($content) {
         $this->post->content = $content;
+    }
+
+    public function choiceIcon($miName){
+        $this->post->icon = $miName;
     }
 
     public function updatedPostPublished() {
@@ -123,12 +122,19 @@ class EditPostManager extends Component
     }
 
     public function render() {
+        $searchIcons = $this->searchIcons;
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()
                 ->where('contains_posts', TRUE)
                 ->where('rank', '!=', '0')
                 ->orderByRaw('position ASC, rank ASC')
                 ->get(),
+            'icons' => AP::getMaterialIconsCodes()
+                ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                })
         ]);
     }
 }
