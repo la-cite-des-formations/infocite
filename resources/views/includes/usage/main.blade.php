@@ -12,15 +12,14 @@
                     <h4 class='title-icon'><i class="bx bx-search-alt me-1"></i>Rechercher sur le site</h4>
                     <p>Saisissez vos mots clés pour rechercher un contenu sur l'intranet</p>
                     <form action="/search-result" method="post">
+                    {{-- <form action="{{ route('post.search') }}"> --}}
                         @csrf
-                        <input type="text" name="search"><input type="submit" value="Rechercher" title="Lancer la recherche">
+                        <input type="text" name="resultat"><input type="submit" value="Rechercher" title="Lancer la recherche">
                     </form>
                 </div>
             </div>
         </div>
     </section>
-    {{-- @if ($viewBag->template == 'edit-post' || $viewBag->template == 'edit-app' || ) --}}
         @livewire('modal-manager', ['parent' => "usage.{$viewBag->template}-manager"])
-    {{-- @endif --}}
 </main>
 

@@ -3,108 +3,108 @@
 --------------------------------------------------------------*/
 :root {
     /* Original */
-/* --theme-r1: 0;
---theme-g1: 174;
---theme-b1: 255;
+    /* --theme-r1: 0;
+    --theme-g1: 174;
+    --theme-b1: 255;
 
---theme-r2: 0;
---theme-g2: 93;
---theme-b2: 255; */
+    --theme-r2: 0;
+    --theme-g2: 93;
+    --theme-b2: 255; */
 
     /* proposition 1 */
-/* --theme-r1: 255;
---theme-g1: 101;
---theme-b1: 0;
+    /* --theme-r1: 255;
+    --theme-g1: 101;
+    --theme-b1: 0;
 
---theme-r2: 255;
---theme-g2: 21;
---theme-b2: 0; */
+    --theme-r2: 255;
+    --theme-g2: 21;
+    --theme-b2: 0; */
 
     /* proposition 2 */
-/* --theme-r1: 255;
---theme-g1: 0;
---theme-b1: 70;
+    /* --theme-r1: 255;
+    --theme-g1: 0;
+    --theme-b1: 70;
 
---theme-r2: 255;
---theme-g2: 21;
---theme-b2: 0; */
+    --theme-r2: 255;
+    --theme-g2: 21;
+    --theme-b2: 0; */
 
-/* proposition 3 */
---theme-r1: 255;
---theme-g1: 21;
---theme-b1: 0;
+    /* proposition 3 */
+    --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 0;
 
---theme-r2: 0;
---theme-g2: 0;
---theme-b2: 0;
+    --theme-r2: 0;
+    --theme-g2: 0;
+    --theme-b2: 0;
 
-/* proposition 4 */
-/* --theme-r1: 255;
---theme-g1: 21;
---theme-b1: 0;
+    /* proposition 4 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 0;
 
---theme-r2: 100;
---theme-g2: 255;
---theme-b2: 0; */
+    --theme-r2: 100;
+    --theme-g2: 255;
+    --theme-b2: 0; */
 
-/* proposition 5 */
-/* --theme-r1: 0;
---theme-g1: 0;
---theme-b1: 0;
+    /* proposition 5 */
+    /* --theme-r1: 0;
+    --theme-g1: 0;
+    --theme-b1: 0;
 
---theme-r2: 255;
---theme-g2: -255;
---theme-b2: -255; */
+    --theme-r2: 255;
+    --theme-g2: -255;
+    --theme-b2: -255; */
 
-/* proposition 6 */
-/* --theme-r1: 0;
---theme-g1: 0;
---theme-b1: 0;
+    /* proposition 6 */
+    /* --theme-r1: 0;
+    --theme-g1: 0;
+    --theme-b1: 0;
 
---theme-r2: 680;
---theme-g2: 1;
---theme-b2: 1; */
+    --theme-r2: 680;
+    --theme-g2: 1;
+    --theme-b2: 1; */
 
- /* proposition 7 */
-/* --theme-r1: 255;
---theme-g1: 21;
---theme-b1: 70;
+    /* proposition 7 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 70;
 
---theme-r2: 255;
---theme-g2: 0;
---theme-b2: 255; */
+    --theme-r2: 255;
+    --theme-g2: 0;
+    --theme-b2: 255; */
 
-/* proposition 8 */
-/* --theme-r1: 255;
---theme-g1: 21;
---theme-b1: 0;
+    /* proposition 8 */
+    /* --theme-r1: 255;
+    --theme-g1: 21;
+    --theme-b1: 0;
 
---theme-r2: -520;
---theme-g2: 0;
---theme-b2: 90; */
+    --theme-r2: -520;
+    --theme-g2: 0;
+    --theme-b2: 90; */
 
---select-color-1: rgb(calc(0.615 * var(--theme-r1) + 71) calc(0.615 * var(--theme-g1) + 71) calc(0.615 * var(--theme-b1) + 71));
---select-color-2: rgb(calc(0.471 * var(--theme-r1) + 115) calc(0.471 * var(--theme-g1) + 115) calc(0.471 * var(--theme-b1) + 115));
---select-color-3: rgb(calc(0.279 * var(--theme-r2) + 55) calc(0.279 * var(--theme-g2) + 55) calc(0.279 * var(--theme-b2) + 55));
---select-color-4: rgb(calc(0.494 * var(--theme-r1) + 107) calc(0.494 * var(--theme-g1) + 107) calc(0.494 * var(--theme-b1) + 107));
---select-color-5: rgba(calc(0.196 * var(--theme-r2) + 40), calc(0.196 * var(--theme-g2) + 40), calc(0.196 * var(--theme-b2) + 40), 0.9);
---select-color-6: rgb(calc(0.69 * var(--theme-r1) + 49) calc(0.69 * var(--theme-g1) + 49) calc(0.69 * var(--theme-b1) + 49));
---select-color-7: rgba(calc(0.133 * var(--theme-r2) + 127), calc(0.133 * var(--theme-g2) + 127), calc(0.133 * var(--theme-b2) + 127), 0.25);
---select-color-8: rgb(calc(0.279 * var(--theme-r1) + 12) calc(0.279 * var(--theme-g1) + 12) calc(0.279 * var(--theme-b1) + 12));
---select-color-9: rgb(calc(0.722 * var(--theme-r1) + 32) calc(0.722 * var(--theme-g1) + 32) calc(0.722 * var(--theme-b1) + 32));
---select-color-10: rgb(calc(0.027 * var(--theme-r2) + 243) calc(0.027 * var(--theme-g2) + 243) calc(0.027 * var(--theme-b2) + 243));
---select-color-11: rgb(calc(0.047 * var(--theme-r2) + 52) calc(0.047 * var(--theme-g2) + 52) calc(0.047 * var(--theme-b2) + 52));
---select-color-12: rgb(calc(0.05 * var(--theme-r2) + 232) calc(0.05 * var(--theme-g2) + 232) calc(0.05 * var(--theme-b2) + 232));
---select-color-13: rgb(calc(0.361 * var(--theme-r2) + 70) calc(0.361 * var(--theme-g2) + 70) calc(0.361 * var(--theme-b2) + 70));
---select-color-14: rgb(calc(0.117 * var(--theme-r2) + 203) calc(0.117 * var(--theme-g2) + 203) calc(0.117 * var(--theme-b2) + 203));
---select-color-15: rgb(calc(0.035 * var(--theme-r2) + 239) calc(0.035 * var(--theme-g2) + 239) calc(0.035 * var(--theme-b2) + 239));
---select-color-16: rgba(calc(0.313 * var(--theme-r2) + 20), calc(0.313 * var(--theme-g2) + 20), calc(0.313 * var(--theme-b2) + 20), 0.1);
---select-color-17: rgb(calc(0.736 * var(--theme-r1) + 35) calc(0.736 * var(--theme-g1) + 35) calc(0.736 * var(--theme-b1) + 35));
---select-color-18: rgb(calc(0.078 * var(--theme-r1) + 231) calc(0.078 * var(--theme-g1) + 231) calc(0.078 * var(--theme-b1) + 231));
---select-color-19: rgb(calc(0.348 * var(--theme-r2) + 97) calc(0.348 * var(--theme-g2) + 97) calc(0.348 * var(--theme-b2) + 97));
---select-color-20: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.8);
---select-color-21: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.08);
---select-color-22: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.125)
+    --select-color-1: rgb(calc(0.615 * var(--theme-r1) + 71) calc(0.615 * var(--theme-g1) + 71) calc(0.615 * var(--theme-b1) + 71));
+    --select-color-2: rgb(calc(0.471 * var(--theme-r1) + 115) calc(0.471 * var(--theme-g1) + 115) calc(0.471 * var(--theme-b1) + 115));
+    --select-color-3: rgb(calc(0.279 * var(--theme-r2) + 55) calc(0.279 * var(--theme-g2) + 55) calc(0.279 * var(--theme-b2) + 55));
+    --select-color-4: rgb(calc(0.494 * var(--theme-r1) + 107) calc(0.494 * var(--theme-g1) + 107) calc(0.494 * var(--theme-b1) + 107));
+    --select-color-5: rgba(calc(0.196 * var(--theme-r2) + 40), calc(0.196 * var(--theme-g2) + 40), calc(0.196 * var(--theme-b2) + 40), 0.9);
+    --select-color-6: rgb(calc(0.69 * var(--theme-r1) + 49) calc(0.69 * var(--theme-g1) + 49) calc(0.69 * var(--theme-b1) + 49));
+    --select-color-7: rgba(calc(0.133 * var(--theme-r2) + 127), calc(0.133 * var(--theme-g2) + 127), calc(0.133 * var(--theme-b2) + 127), 0.25);
+    --select-color-8: rgb(calc(0.279 * var(--theme-r1) + 12) calc(0.279 * var(--theme-g1) + 12) calc(0.279 * var(--theme-b1) + 12));
+    --select-color-9: rgb(calc(0.722 * var(--theme-r1) + 32) calc(0.722 * var(--theme-g1) + 32) calc(0.722 * var(--theme-b1) + 32));
+    --select-color-10: rgb(calc(0.027 * var(--theme-r2) + 243) calc(0.027 * var(--theme-g2) + 243) calc(0.027 * var(--theme-b2) + 243));
+    --select-color-11: rgb(calc(0.047 * var(--theme-r2) + 52) calc(0.047 * var(--theme-g2) + 52) calc(0.047 * var(--theme-b2) + 52));
+    --select-color-12: rgb(calc(0.05 * var(--theme-r2) + 232) calc(0.05 * var(--theme-g2) + 232) calc(0.05 * var(--theme-b2) + 232));
+    --select-color-13: rgb(calc(0.361 * var(--theme-r2) + 70) calc(0.361 * var(--theme-g2) + 70) calc(0.361 * var(--theme-b2) + 70));
+    --select-color-14: rgb(calc(0.117 * var(--theme-r2) + 203) calc(0.117 * var(--theme-g2) + 203) calc(0.117 * var(--theme-b2) + 203));
+    --select-color-15: rgb(calc(0.035 * var(--theme-r2) + 239) calc(0.035 * var(--theme-g2) + 239) calc(0.035 * var(--theme-b2) + 239));
+    --select-color-16: rgba(calc(0.313 * var(--theme-r2) + 20), calc(0.313 * var(--theme-g2) + 20), calc(0.313 * var(--theme-b2) + 20), 0.1);
+    --select-color-17: rgb(calc(0.736 * var(--theme-r1) + 35) calc(0.736 * var(--theme-g1) + 35) calc(0.736 * var(--theme-b1) + 35));
+    --select-color-18: rgb(calc(0.078 * var(--theme-r1) + 231) calc(0.078 * var(--theme-g1) + 231) calc(0.078 * var(--theme-b1) + 231));
+    --select-color-19: rgb(calc(0.348 * var(--theme-r2) + 97) calc(0.348 * var(--theme-g2) + 97) calc(0.348 * var(--theme-b2) + 97));
+    --select-color-20: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.8);
+    --select-color-21: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.08);
+    --select-color-22: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.125)
 }
 
 /* Rules for sizing the icon. */
@@ -344,7 +344,7 @@ table {
 @media (max-width: 992px) {
     .pricing h3 {
         font-size: 16px;
-      }
+    }
     .pricing h4 span {
         font-size: 14px;
     }
@@ -352,7 +352,7 @@ table {
 @media (max-width: 991px) {
     .pricing h3 {
         font-size: 20px;
-      }
+    }
     .pricing h4 span {
         font-size: 18px;
     }
@@ -371,375 +371,399 @@ table {
     max-height: 48px;
 }
 
-/* changement de coleur */
-    a {
-        color: var(--select-color-1);
-    }
+/* changement de couleur */
+a {
+    color: var(--select-color-1);
+}
 
-    a:hover {
+a:hover {
   color: var(--select-color-2) !important;
-    }
+}
 
-    #preloader {
+#preloader {
     background: var(--select-color-3) !important;
-    }
+}
 
-    .back-to-top {
+.back-to-top {
     background: var(--select-color-1) !important;
-    }
+}
 
-    .back-to-top:hover {
+.back-to-top:hover {
     background: var(--select-color-4) !important;
-    }
+}
 
-    #header.header-scrolled, #header.header-inner-pages {
+#header.header-scrolled, #header.header-inner-pages {
     background: var(--select-color-5) !important;
-    }
+}
 
-    .navbar a:hover, .navbar .active, .navbar .active:focus, .navbar li:hover > a {
+.navbar a:hover, .navbar .active, .navbar .active:focus, .navbar li:hover > a {
     color: var(--select-color-1) !important;
-    }
+}
 
-    .navbar .getstarted, .navbar .getstarted:focus {
+.navbar .getstarted, .navbar .getstarted:focus {
     border: 2px solid var(--select-color-1) !important;
-    }
+}
 
-    .navbar .getstarted:hover, .navbar .getstarted:focus:hover {
+.navbar .getstarted:hover, .navbar .getstarted:focus:hover {
     background: var(--select-color-6) !important;
-    }
+}
 
-    .navbar .dropdown ul {
+.navbar .dropdown ul {
     box-shadow: 0px 0px 30px var(--select-color-7) !important;
-    }
+}
 
-    .navbar .dropdown ul a {
+.navbar .dropdown ul a {
     color: var(--select-color-8) !important;
-    }
+}
 
-    .navbar .dropdown ul a:hover, .navbar .dropdown ul .active, .navbar .dropdown ul li:hover > a {
+.navbar .dropdown ul a:hover, .navbar .dropdown ul .active, .navbar .dropdown ul li:hover > a {
     color: var(--select-color-1) !important;
-    }
+}
 
-    .navbar-mobile {
+.navbar-mobile {
     background: var(--select-color-5) !important;
-    }
+}
 
-    .navbar-mobile a, .navbar-mobile a:focus {
+.navbar-mobile a, .navbar-mobile a:focus {
     color: var(--select-color-3) !important;
-    }
+}
 
-    .navbar-mobile a:hover, .navbar-mobile .active, .navbar-mobile li:hover > a {
+.navbar-mobile a:hover, .navbar-mobile .active, .navbar-mobile li:hover > a {
     color: var(--select-color-1) !important;
-    }
+}
 
-    .navbar-mobile .getstarted, .navbar-mobile .getstarted:focus {
+.navbar-mobile .getstarted, .navbar-mobile .getstarted:focus {
     color: var(--select-color-3) !important;
-    }
+}
 
-    .navbar-mobile .dropdown ul {
+.navbar-mobile .dropdown ul {
     box-shadow: 0px 0px 30px var(--select-color-7) !important;
-    }
+}
 
-    .navbar-mobile .dropdown ul a:hover, .navbar-mobile .dropdown ul .active:hover, .navbar-mobile .dropdown ul li:hover > a {
+.navbar-mobile .dropdown ul a:hover, .navbar-mobile .dropdown ul .active:hover, .navbar-mobile .dropdown ul li:hover > a {
     color: var(--select-color-1) !important;
-    }
+}
 
-    #hero {
+#hero {
     background: var(--select-color-3) !important;
-    }
+}
 
-    #hero .btn-get-started {
+#hero .btn-get-started {
     background: var(--select-color-1) !important;
-    }
+}
 
-    #hero .btn-get-started:hover {
+#hero .btn-get-started:hover {
     background: var(--select-color-9) !important;
-    }
+}
 
-    #hero .btn-watch-video:hover i {
+#hero .btn-watch-video:hover i {
     color: var(--select-color-1) !important;
-    }
+}
 
-    .section-bg {
+.section-bg {
     background-color: var(--select-color-10) !important;
-    }
+}
 
-    .section-title h2 {
+.section-title h2 {
     color: var(--select-color-3) !important;
-    }
+}
 
-    .section-title h2::after {
+.section-title h2::after {
     background: var(--select-color-1) !important;
-    }
+}
 
-    .about .content ul i {
+.about .content ul i {
     color: var(--select-color-1) !important;
-    }
+}
 
-    .about .content .btn-learn-more {
+.about .content .btn-learn-more {
     color: var(--select-color-1) !important;
     border: 2px solid var(--select-color-1) !important;
-    }
+}
 
-    .about .content .btn-learn-more:hover {
+.about .content .btn-learn-more:hover {
     background: var(--select-color-1) !important;
-    }
+}
 
-    .why-us .content h3 {
+.why-us .content h3 {
     color: var(--select-color-3) !important;
-    }
+}
 
-    .why-us .accordion-list span {
+.why-us .accordion-list span {
     color: var(--select-color-1) !important;
-    }
+}
 
-    .why-us .accordion-list a.collapsed {
+.why-us .accordion-list a.collapsed {
     color: var(--select-color-11) !important;
-    }
+}
 
-    .why-us .accordion-list a.collapsed:hover {
-        color: var(--select-color-1) !important;
-    }
+.why-us .accordion-list a.collapsed:hover {
+    color: var(--select-color-1) !important;
+}
 
-    .skills .content h3 {
-        color: var(--select-color-3) !important;
-    }
+.skills .content h3 {
+    color: var(--select-color-3) !important;
+}
 
-    .skills .content ul i {
-        color: var(--select-color-1) !important;
-    }
+.skills .content ul i {
+    color: var(--select-color-1) !important;
+}
 
-    .skills .progress .skill {
-        color: var(--select-color-3) !important;
-    }
+.skills .progress .skill {
+    color: var(--select-color-3) !important;
+}
 
-    .skills .progress-bar-wrap {
-        background: var(--select-color-12) !important;
-    }
+.skills .progress-bar-wrap {
+    background: var(--select-color-12) !important;
+}
 
-    .skills .progress-bar {
-        background-color: var(--select-color-13) !important;
-    }
+.skills .progress-bar {
+    background-color: var(--select-color-13) !important;
+}
 
-    .services .icon-box .icon i {
-        color: var(--select-color-1) !important;
-    }
+.services .icon-box .icon i {
+    color: var(--select-color-1) !important;
+}
 
-    .services .icon-box h4 a {
-        color: var(--select-color-3) !important;
-    }
+.services .icon-box h4 a {
+    color: var(--select-color-3) !important;
+}
 
-    .services .icon-box:hover h4 a {
-        color: var(--select-color-1) !important;
-    }
+.services .icon-box:hover h4 a {
+    color: var(--select-color-1) !important;
+}
 
-    .cta {
-        background: linear-gradient(var(--select-color-5), var(--select-color-5)), url("../img/cta-bg.jpg") fixed center center !important;
-    }
+.cta {
+    background: linear-gradient(var(--select-color-5), var(--select-color-5)), url("../img/cta-bg.jpg") fixed center center !important;
+}
 
-    .cta .cta-btn:hover {
-        background: var(--select-color-1) !important;
-        border: 2px solid var(--select-color-1) !important;
-    }
+.cta .cta-btn:hover {
+    background: var(--select-color-1) !important;
+    border: 2px solid var(--select-color-1) !important;
+}
 
-    .portfolio #portfolio-flters li:hover, .portfolio #portfolio-flters li.filter-active {
-        background: var(--select-color-1) !important;
-    }
+.portfolio #portfolio-flters li:hover, .portfolio #portfolio-flters li.filter-active {
+    background: var(--select-color-1) !important;
+}
 
-    .portfolio .portfolio-item .portfolio-info {
-        background: var(--select-color-20) !important;
-    }
+.portfolio .portfolio-item .portfolio-info {
+    background: var(--select-color-20) !important;
+}
 
-    .portfolio .portfolio-item .portfolio-info .preview-link:hover, .portfolio .portfolio-item .portfolio-info .details-link:hover {
-        color: var(--select-color-1) !important;
-    }
+.portfolio .portfolio-item .portfolio-info .preview-link:hover, .portfolio .portfolio-item .portfolio-info .details-link:hover {
+    color: var(--select-color-1) !important;
+}
 
-    .portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet {
-        border: 1px solid var(--select-color-1) !important;
-    }
+.portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet {
+    border: 1px solid var(--select-color-1) !important;
+}
 
-    .portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet-active {
-        background-color: var(--select-color-1) !important;
-    }
+.portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet-active {
+    background-color: var(--select-color-1) !important;
+}
 
-    .portfolio-details .portfolio-info {
-        box-shadow: 0px 0 30px var(--select-color-21) !important;
-    }
+.portfolio-details .portfolio-info {
+    box-shadow: 0px 0 30px var(--select-color-21) !important;
+}
 
-    .team .member h4 {
-        color: var(--select-color-3) !important;
-    }
+.team .member h4 {
+    color: var(--select-color-3) !important;
+}
 
-    .team .member span::after {
-        background: var(--select-color-14) !important;
-    }
+.team .member span::after {
+    background: var(--select-color-14) !important;
+}
 
-    .team .member .social a {
-        background: var(--select-color-15) !important;
-    }
-    .team .member .social a i {
-        color: var(--select-color-3) !important;
-    }
-    .team .member .social a:hover {
-        background: var(--select-color-1) !important;
-    }
+.team .member .social a {
+    background: var(--select-color-15) !important;
+}
+.team .member .social a i {
+    color: var(--select-color-3) !important;
+}
+.team .member .social a:hover {
+    background: var(--select-color-1) !important;
+}
 
-    .pricing .box {
-        box-shadow: 0 3px 20px -2px var(--select-color-16) !important;
-    }
+.pricing .box {
+    box-shadow: 0 3px 20px -2px var(--select-color-16) !important;
+}
 
-    .pricing h3 {
-        color: var(--select-color-3) !important;
-    }
+.pricing h3 {
+    color: var(--select-color-3) !important;
+}
 
-    .pricing h4 {
-        color: var(--select-color-3) !important;
-    }
+.pricing h4 {
+    color: var(--select-color-3) !important;
+}
 
-    .pricing h4 span {
-        color: var(--select-color-1) !important;
-    }
+.pricing h4 span {
+    color: var(--select-color-1) !important;
+}
 
-    .pricing .buy-btn {
-        color: var(--select-color-1) !important;
-        border: 1px solid var(--select-color-1) !important;
-    }
+.pricing .buy-btn {
+    color: var(--select-color-1) !important;
+    border: 1px solid var(--select-color-1) !important;
+}
 
-    .pricing .buy-btn:hover {
-        background: var(--select-color-1) !important;
-    }
+.pricing .buy-btn:hover {
+    background: var(--select-color-1) !important;
+}
 
-    .pricing .featured {
-        border-top-color: var(--select-color-1) !important;
-    }
+.pricing .featured {
+    border-top-color: var(--select-color-1) !important;
+}
 
-    .pricing .featured .buy-btn {
-        background: var(--select-color-1) !important;
-    }
+.pricing .featured .buy-btn {
+    background: var(--select-color-1) !important;
+}
 
-    .pricing .featured .buy-btn:hover {
-        background: var(--select-color-17) !important;
-    }
+.pricing .featured .buy-btn:hover {
+    background: var(--select-color-17) !important;
+}
 
-    .faq .faq-list .icon-help {
-        color: var(--select-color-1) !important;
-    }
+.faq .faq-list .icon-help {
+    color: var(--select-color-1) !important;
+}
 
-    .faq .faq-list a.collapsed {
-        color: var(--select-color-3) !important;
-    }
+.faq .faq-list a.collapsed {
+    color: var(--select-color-3) !important;
+}
 
-    .faq .faq-list a.collapsed:hover {
-        color: var(--select-color-1) !important;
-    }
+.faq .faq-list a.collapsed:hover {
+    color: var(--select-color-1) !important;
+}
 
-    .contact .info {
-        border-top: 3px solid var(--select-color-1) !important;
-        border-bottom: 3px solid var(--select-color-1) !important;
-    }
+.contact .info {
+    border-top: 3px solid var(--select-color-1) !important;
+    border-bottom: 3px solid var(--select-color-1) !important;
+}
 
-    .contact .info i {
-        color: var(--select-color-1) !important;
-        background: var(--select-color-18) !important;
-    }
+.contact .info i {
+    color: var(--select-color-1) !important;
+    background: var(--select-color-18) !important;
+}
 
-    .contact .info h4 {
-        color: var(--select-color-3) !important;
-    }
+.contact .info h4 {
+    color: var(--select-color-3) !important;
+}
 
-    .contact .info p {
-        color: var(--select-color-19) !important;
-    }
+.contact .info p {
+    color: var(--select-color-19) !important;
+}
 
-    .contact .info .social-links a:hover {
-        background: var(--select-color-1) !important;
-    }
+.contact .info .social-links a:hover {
+    background: var(--select-color-1) !important;
+}
 
-    .contact .info .email:hover i, .contact .info .address:hover i, .contact .info .phone:hover i {
-        background: var(--select-color-1) !important;
-    }
+.contact .info .email:hover i, .contact .info .address:hover i, .contact .info .phone:hover i {
+    background: var(--select-color-1) !important;
+}
 
-    .contact .php-email-form {
-        border-top: 3px solid var(--select-color-1) !important;
-        border-bottom: 3px solid var(--select-color-1) !important;
-    }
+.contact .php-email-form {
+    border-top: 3px solid var(--select-color-1) !important;
+    border-bottom: 3px solid var(--select-color-1) !important;
+}
 
-    .contact .php-email-form input:focus, .contact .php-email-form textarea:focus {
-        border-color: var(--select-color-1) !important;
-    }
+.contact .php-email-form input:focus, .contact .php-email-form textarea:focus {
+    border-color: var(--select-color-1) !important;
+}
 
-    .contact .php-email-form button[type=submit] {
-        background: var(--select-color-1) !important;
-    }
+.contact .php-email-form button[type=submit] {
+    background: var(--select-color-1) !important;
+}
 
-    .contact .php-email-form button[type=submit]:hover {
-        background: var(--select-color-9) !important;
-    }
+.contact .php-email-form button[type=submit]:hover {
+    background: var(--select-color-9) !important;
+}
 
-    .breadcrumbs {
-        background: var(--select-color-10) !important;
-    }
+.breadcrumbs {
+    background: var(--select-color-10) !important;
+}
 
-    .breadcrumbs h2 {
-        color: var(--select-color-3) !important;
-    }
+.breadcrumbs h2 {
+    color: var(--select-color-3) !important;
+}
 
-    .breadcrumbs ol li + li::before {
-        color: var(--select-color-13) !important;
-    }
+.breadcrumbs ol li + li::before {
+    color: var(--select-color-13) !important;
+}
 
-    #footer {
-        background: var(--select-color-3) !important;
-    }
+#footer {
+    background: var(--select-color-3) !important;
+}
 
-    #footer .footer-newsletter {
-        background: var(--select-color-10) !important;
-    }
+#footer .footer-newsletter {
+    background: var(--select-color-10) !important;
+}
 
-    #footer .footer-newsletter h4 {
-        color: var(--select-color-3) !important;
-    }
+#footer .footer-newsletter h4 {
+    color: var(--select-color-3) !important;
+}
 
-    #footer .footer-newsletter form input[type=submit] {
-        background: var(--select-color-1) !important;
-    }
+#footer .footer-newsletter form input[type=submit] {
+    background: var(--select-color-1) !important;
+}
 
-    #footer .footer-newsletter form input[type=submit]:hover {
-        background: var(--select-color-9) !important;
-    }
+#footer .footer-newsletter form input[type=submit]:hover {
+    background: var(--select-color-9) !important;
+}
 
-    #footer .footer-top .footer-contact h3 {
-        color: var(--select-color-3) !important;
-    }
+#footer .footer-top .footer-contact h3 {
+    color: var(--select-color-3) !important;
+}
 
-    #footer .footer-top h4 {
-        color: var(--select-color-3) !important;
-    }
+#footer .footer-top h4 {
+    color: var(--select-color-3) !important;
+}
 
-    #footer .footer-top .footer-links ul i {
-        color: var(--select-color-1) !important;
-    }
+#footer .footer-top .footer-links ul i {
+    color: var(--select-color-1) !important;
+}
 
-    #footer .footer-top .footer-links ul a:hover {
-        color: var(--select-color-1) !important;
-    }
+#footer .footer-top .footer-links ul a:hover {
+    color: var(--select-color-1) !important;
+}
 
-    #footer .footer-top .social-links a {
-        background: var(--select-color-1) !important;
-    }
+#footer .footer-top .social-links a {
+    background: var(--select-color-1) !important;
+}
 
-    #footer .footer-top .social-links a:hover {
-        background: var(--select-color-9) !important;
-    }
+#footer .footer-top .social-links a:hover {
+    background: var(--select-color-9) !important;
+}
 
-    .btn-none-hover > a:hover{
-        color: white !important;
-    }
+.btn-none-hover > a:hover{
+    color: white !important;
+}
 
-    .admin-nav-icons{
-        color: white;
-    }
+.admin-nav-icons{
+    color: white;
+}
 
-    .admin-nav-hover > a:hover{
-        color: #495057 !important;
-    }
+.admin-nav-hover > a:hover{
+    color: #495057 !important;
+}
+
+.overflow-auto::-webkit-scrollbar {
+    display: none;
+        }
+
+.choice-icon-btn {
+    border: 1px solid rgba(108, 117, 125, 0.25);
+}
+
+.choice-icon-div {
+    background-color: var(--select-color-1);
+}
+
+.choice-icon-div:hover {
+    background-color: var(--select-color-2);
+}
+
+.bg-icon-picker {
+    background-color: var(--select-color-1);
+}
+
+.search-icons:focus {
+    box-shadow: none;
+}

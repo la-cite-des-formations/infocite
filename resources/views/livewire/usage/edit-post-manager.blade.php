@@ -24,7 +24,9 @@
                         <option label="Choisir la rubrique..."></option>
                       @foreach($rubrics as $rubric)
                        @can('create', ['App\\Post', $rubric->id])
-                        <option value='{{ $rubric->id }}'>{{ (is_object($rubric->parent) ? $rubric->parent->name.' / ' : '').$rubric->name }}</option>
+                        <option value='{{ $rubric->id }}'>
+                            {{ (is_object($rubric->parent) ? $rubric->parent->name.' / ' : '').$rubric->name }}
+                        </option>
                        @endcan
                       @endforeach
                     </select>
@@ -44,14 +46,9 @@
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
           @enderror
             <div class="row mb-3">
-                <label class="col-2 fw-bold text-end my-auto" for="post-icon">Icône</label>
+                <label class="col-2 fw-bold text-end my-auto">Icône</label>
                 <div class="col-8">
-                    <select id="post-icon" wire:model="post.icon" type="input" class="form-select material-icons md-24">
-                        <option label="..."></option>
-                      @foreach(AP::getMaterialIconsCodes() as $miName => $miCode)
-                        <option value='{{ $miName }}'>{!! "&#x{$miCode};" !!}</option>
-                      @endforeach
-                    </select>
+                    @include('includes.icon-picker')
                 </div>
             </div>
           @error('post.content')
@@ -113,22 +110,25 @@
          @endcan
             <div class="row">
                 <div class="col-10 d-flex justify-content-end btn-none-hover">
-                    <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">
+                    <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1"
+                       title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
                     @if ($mode === 'edition')
-                    <button wire:click="showModal('confirm', {handling : 'update'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                    <button wire:click="showModal('confirm', {handling : 'update'})" type="button"
+                            class="btn btn-primary me-1" title="Enregistrer les modifications">
                         Modifier
                     </button>
                     @else
-                    <button wire:click="showModal('confirm', {handling : 'create'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                    <button wire:click="showModal('confirm', {handling : 'create'})" type="button"
+                            class="btn btn-primary me-1" title="Enregistrer les modifications">
                         Créer
                     </button>
                     @endif
                   @if ($mode === 'edition')
                    @can('create', ['App\\Post', $currentRubric->id])
                     <a href="{{ $currentRubric->route().'/create' }}" title="Commencer un nouvel article"
-                            type="button" class="d-flex btn btn-sm btn-success me-1">
+                       type="button" class="d-flex btn btn-sm btn-success me-1">
                         <span class="material-icons">add</span>
                     </a>
                    @endcan

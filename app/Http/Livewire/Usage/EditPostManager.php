@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\CustomFacades\AP;
 use App\Group;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
@@ -15,6 +17,8 @@ class EditPostManager extends Component
 {
     use WithModal;
     use WithAlert;
+    use WithIconpicker;
+
     public $backRoute;
     public $currentRubric;
     public $mode;
@@ -39,7 +43,6 @@ class EditPostManager extends Component
         $this->post = Post::findOrNew($viewBag->post_id);
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
     }
-
     public function contentChange($content) {
         $this->post->content = $content;
     }
@@ -118,12 +121,19 @@ class EditPostManager extends Component
     }
 
     public function render() {
+        $searchIcons = $this->searchIcons;
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()
                 ->where('contains_posts', TRUE)
                 ->where('rank', '!=', '0')
                 ->orderByRaw('position ASC, rank ASC')
                 ->get(),
+            'icons' => AP::getMaterialIconsCodes()
+                ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                })
         ]);
     }
 }

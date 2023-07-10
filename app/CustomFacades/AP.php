@@ -2,7 +2,8 @@
 
 namespace App\CustomFacades;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
+
 //use Illuminate\Support\Facades\DB;
 
 class AP // Application Parameters
@@ -429,7 +430,7 @@ class AP // Application Parameters
     }
 
     public static function getMaterialIconsCodes() {
-        return json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE);
+        return new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
     }
 
     public static function getBorderStyles() {
