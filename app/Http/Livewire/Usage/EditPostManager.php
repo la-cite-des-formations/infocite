@@ -18,11 +18,13 @@ class EditPostManager extends Component
     use WithModal;
     use WithAlert;
     use WithIconpicker;
+
     public $backRoute;
     public $currentRubric;
     public $mode;
     public $post;
     public $blockComments;
+    
     protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',

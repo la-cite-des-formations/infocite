@@ -16,6 +16,7 @@ class Edit extends Component
     public $mode;
     public $canAdd = TRUE;
     public $formTabs;
+    
     protected $listeners = ['render', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
