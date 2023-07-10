@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Usage;
 use App\CustomFacades\AP;
 use App\Group;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Right;
@@ -16,12 +17,12 @@ class EditPostManager extends Component
 {
     use WithModal;
     use WithAlert;
+    use WithIconpicker;
     public $backRoute;
     public $currentRubric;
     public $mode;
     public $post;
     public $blockComments;
-    public $searchIcons = '';
     protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
@@ -42,10 +43,6 @@ class EditPostManager extends Component
     }
     public function contentChange($content) {
         $this->post->content = $content;
-    }
-
-    public function choiceIcon($miName){
-        $this->post->icon = $miName;
     }
 
     public function updatedPostPublished() {
