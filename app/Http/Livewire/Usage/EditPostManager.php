@@ -24,7 +24,7 @@ class EditPostManager extends Component
     public $mode;
     public $post;
     public $blockComments;
-    
+
     protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
