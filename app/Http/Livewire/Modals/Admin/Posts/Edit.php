@@ -2,21 +2,24 @@
 
 namespace App\Http\Livewire\Modals\Admin\Posts;
 
+use App\CustomFacades\AP;
 use App\Post;
 use App\Rubric;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Edit extends Component
 {
     use WithAlert;
+    use WithIconpicker;
 
     public $post;
     public $mode;
     public $canAdd = TRUE;
     public $formTabs;
-    
+
     protected $listeners = ['render', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
@@ -132,6 +135,7 @@ class Edit extends Component
     }
 
     public function render($messageBag = NULL){
+        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -148,7 +152,13 @@ class Edit extends Component
                     ->orderByRaw('position ASC, rank ASC')
                     ->get(),
                 'modalSize' => 'modal-xl',
-                'haveTiny' => TRUE
+                'haveTiny' => TRUE,
+                'icons' => AP::getMaterialIconsCodes()
+                    ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                })
             ]);
     }
 }
