@@ -377,7 +377,7 @@ a {
 }
 
 a:hover {
-  color: var(--select-color-2) !important;
+    color: var(--select-color-2);
 }
 
 #preloader {
@@ -746,7 +746,7 @@ a:hover {
 
 .overflow-auto::-webkit-scrollbar {
     display: none;
-        }
+}
 
 .choice-icon-btn {
     border: 1px solid rgba(108, 117, 125, 0.25);
