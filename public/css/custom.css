@@ -732,10 +732,6 @@ a:hover {
     background: var(--select-color-9) !important;
 }
 
-.btn-none-hover > a:hover{
-    color: white !important;
-}
-
 .admin-nav-icons{
     color: white;
 }
