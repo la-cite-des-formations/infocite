@@ -4,18 +4,26 @@ namespace App\Http\Livewire\Usage;
 
 use App\Post;
 use Livewire\Component;
+// use Livewire\WithPagination;
 
 
 class SearchPostManager extends Component
 {
-    public $resultat;
+    // use WithPagination;
+
+    public $rubric;
+    public $foundPosts;
+    public $searchedStr;
+    // public $perPageOptions = [8, 12, 16];
+    // public $perPage = 8;
+
     public function mount($viewBag) {
-        $resultat = request()->input('resultat');
-        $posts = Post::query()
-        ->where('title', 'like', "%$resultat%")
-        ->orWhere('content', 'like', "%$resultat%")
+        $this->searchedStr = request()->input('resultat');
+        $this->foundPosts = Post::query()
+        ->where('title', 'like', "%$this->searchedStr%")
+        ->orWhere('content', 'like', "%$this->searchedStr%")
         ->get();
-        // dd($resultat);
+        // ->paginate($this->perPage);
     }
 
     public function render() {

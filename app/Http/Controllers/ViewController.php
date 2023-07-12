@@ -96,7 +96,6 @@ class ViewController extends Controller
      */
     public function search(Request $request)
     {
-
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'search-post')]);
     }
 

@@ -367,6 +367,17 @@ table {
     }
 }
 
+.search-card:hover {
+        transform: translate(5px, -5px) !important;
+        transition: all ease-in-out 0.4s !important;
+}
+
+@media (max-width: 1220px) {
+    .serach-infos {
+        position: relative !important;
+    }
+}
+
 #header .logo img {
     max-height: 48px;
 }
