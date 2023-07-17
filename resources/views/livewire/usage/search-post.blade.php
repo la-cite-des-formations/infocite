@@ -1,18 +1,20 @@
-<section id="breadcrumbs" class="breadcrumbs my-4 mt-5">
-</section>
+<div>
+    <section id="breadcrumbs" class="breadcrumbs my-4 mt-5">
+    </section>
 
-<section id="result" class="services section-bg">
+    <section id="result" class="services section-bg">
         <div class="section-title">
-            <h2>Résultat de Recherche</h2>
-            @if ($foundPosts->count() == 0)
+            <h2 class="title-icon"><i class="bx bx-search-alt me-1 mt-1"></i>Résultat de Recherche</h2>
+            @if ($foundPosts->total() == 0)
                 <p> 0 résultat pour la recherche "{{$searchedStr}}"</p>
             @else
-                <p> "{{$searchedStr}}" a été trouvé dans {{$foundPosts->count()}} article(s)</p>
+                <p> "{{$searchedStr}}" a été trouvé dans {{$foundPosts->total()}} article(s)</p>
             @endif
         </div>
         <div class="container col-6 d-flex flex-column">
+            <div class="container mb-2">
             @foreach($foundPosts as $i => $post)
-                <div class="card my-1 flex-wrap p-3 search-card" data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}">
+                <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in" data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}">
                     <div class="container">
                         <h4>
                             <a href="{{ $post->rubric->route().'/'.$post->id }}">
@@ -33,7 +35,8 @@
                             </a>
                         </h4>
 
-                        <div class="d-inline-flex">{!! str_replace($searchedStr, " &thinsp; <strong>$searchedStr</strong> &thinsp;", $post->preview()) !!}</div>
+                        <div class="d-inline-flex">{!! preg_replace($replaceStr, " &thinsp; <strong>$searchedStr</strong> &thinsp;", $post->preview()) !!}</div>
+
 
                         <div class="position-absolute bottom-0 end-0 mt-2 me-2 serach-infos">
                             <p class="m-0"><i>Rubric : {{ $post->rubric->name }}</i></p>
@@ -42,7 +45,9 @@
                     </div>
                 </div>
             @endforeach
-            {{-- @include('includes.pagination', ['elements' => $posts]) --}}
+            </div>
+            @include('includes.pagination', ['elements' => $foundPosts])
         </div>
-</section>
+    </section>
+</div>
 

@@ -367,6 +367,10 @@ table {
     }
 }
 
+.search-card {
+    box-shadow: 0px 0 25px 0 rgba(0, 0, 0, 0.1);
+}
+
 .search-card:hover {
         transform: translate(5px, -5px) !important;
         transition: all ease-in-out 0.4s !important;
@@ -388,7 +392,7 @@ a {
 }
 
 a:hover {
-  color: var(--select-color-2) !important;
+  color: var(--select-color-2);
 }
 
 #preloader {
@@ -741,10 +745,6 @@ a:hover {
 
 #footer .footer-top .social-links a:hover {
     background: var(--select-color-9) !important;
-}
-
-.btn-none-hover > a:hover{
-    color: white !important;
 }
 
 .admin-nav-icons{
