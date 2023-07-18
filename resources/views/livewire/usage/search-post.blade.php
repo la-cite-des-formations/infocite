@@ -5,16 +5,19 @@
     <section id="result" class="services section-bg">
         <div class="section-title">
             <h2 class="title-icon"><i class="bx bx-search-alt me-1 mt-1"></i>Résultat de Recherche</h2>
+        @if ($searchedStr != "")
             @if ($foundPosts->total() == 0)
                 <p> 0 résultat pour la recherche "{{$searchedStr}}"</p>
             @else
                 <p> "{{$searchedStr}}" a été trouvé dans {{$foundPosts->total()}} article(s)</p>
             @endif
         </div>
-        <div class="container col-6 d-flex flex-column">
-            <div class="container mb-2">
-            @foreach($foundPosts as $i => $post)
-                <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in" data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}">
+            <div class="container col-6 d-flex flex-column">
+                <div class="container mb-2">
+            {{-- @foreach($foundPosts as $i => $post) --}}
+            @foreach($foundPosts as $post)
+                {{-- <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in" data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}"> --}}
+                <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in">
                     <div class="container">
                         <h4>
                             <a href="{{ $post->rubric->route().'/'.$post->id }}">
@@ -46,9 +49,11 @@
                     </div>
                 </div>
             @endforeach
+
+                </div>
+                @include('includes.pagination', ['elements' => $foundPosts])
             </div>
-            @include('includes.pagination', ['elements' => $foundPosts])
-        </div>
+        @endif
     </section>
 </div>
 

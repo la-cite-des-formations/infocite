@@ -373,7 +373,9 @@ table {
 
 .search-card:hover {
         transform: translate(5px, -5px) !important;
-        transition: all ease-in-out 0.4s !important;
+        transition: all ease-in-out 0.2s !important;
+        transition-delay: 0s !important;
+        transition-duration: 0.2s !important;
 }
 
 @media (max-width: 1220px) {

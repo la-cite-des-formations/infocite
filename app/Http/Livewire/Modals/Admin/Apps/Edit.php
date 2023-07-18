@@ -7,11 +7,13 @@ use App\CustomFacades\AP;
 use App\Group;
 use App\User;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
 use Livewire\Component;
 
 class Edit extends Component
 {
     use WithAlert;
+    use WithIconpicker;
 
     public $app;
     public $mode;
@@ -258,6 +260,7 @@ class Edit extends Component
 
     public function render($messageBag = NULL)
     {
+        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -274,6 +277,12 @@ class Edit extends Component
                     ->where('name', '<>', AP::PROFILE)
                     ->where('is_frozen', 0)
                     ->get(),
+                'icons' => AP::getMaterialIconsCodes()
+                    ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                }),
             ]);
     }
 }

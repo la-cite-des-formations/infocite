@@ -158,7 +158,7 @@ class Edit extends Component
                     return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
                         return str_contains($miName, $searchIcons);
                     });
-                })
+                }),
             ]);
     }
 }

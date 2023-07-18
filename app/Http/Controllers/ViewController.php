@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
-    /** 
+    /**
      * return the current view data bag
      *
      * @param  \Illuminate\Http\Request $request
@@ -96,7 +96,7 @@ class ViewController extends Controller
      */
     public function search(Request $request)
     {
-        return view("usage.index", ['viewBag' => $this->getViewBag($request, 'search-post')]);
+            return view("usage.index", ['viewBag' => $this->getViewBag($request, 'search-post')]);
     }
 
     /**
