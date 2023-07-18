@@ -23,9 +23,6 @@ Route::get('login/google/callback', 'Auth\LoginController@handleProviderCallback
 Route::redirect('/', '/une')->name('home');
 Route::redirect('/admin', '/dashboard');
 
-// Route::get('/search', 'ViewController@search')
-//     ->name('post.search');
-
 
 $admin = Route::namespace('Admin')
     ->prefix('admin')
@@ -77,5 +74,8 @@ Route::get('{rubric}/{post_id}/edit', 'ViewController@editPost')
 Route::get('{rubric}', 'ViewController@index')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('rubric.index');
+
+Route::get('{rubric}/search', 'ViewController@search')
+    ->name('post.search');
 
 

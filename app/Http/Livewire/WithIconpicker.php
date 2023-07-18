@@ -7,7 +7,9 @@ trait WithIconpicker
 {
     public $searchIcons = '';
 
-    public function choiceIcon($miName){
-        $this->post->icon = $miName;
+    public function choiceIcon($miName, string $model){
+        if(isset($this->$model)){
+            $this->$model->icon = $miName;
+        }
     }
 }

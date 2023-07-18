@@ -3,7 +3,9 @@
 namespace App\Http\Livewire\Usage;
 
 use App\App;
+use App\CustomFacades\AP;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
 
@@ -11,16 +13,19 @@ class EditAppManager extends Component
 {
     use WithModal;
     use WithAlert;
+    use WithIconpicker;
+
     public $backRoute;
     public $rubricRoute;
     public $mode;
     public $app;
+
     protected $listeners = ['modalClosed', 'save'];
     protected $rules = [
         'app.name' => 'required|string|max:255',
         'app.description' => 'required|string',
         'app.icon' => 'required|string|max:255',
-        'app.url' => 'required|url|string|max:255',
+        'app.url' => 'required|url|string|max:255'
     ];
 
     public function mount($viewBag) {
@@ -58,6 +63,14 @@ class EditAppManager extends Component
     }
 
     public function render() {
-        return view('livewire.usage.edit-app-manager');
+        $searchIcons = $this->searchIcons;
+        return view('livewire.usage.edit-app-manager', [
+            'icons' => AP::getMaterialIconsCodes()
+                ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                }),
+        ]);
     }
 }

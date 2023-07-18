@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
-    /**
+    /** 
      * return the current view data bag
      *
      * @param  \Illuminate\Http\Request $request
@@ -77,19 +77,6 @@ class ViewController extends Controller
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-post', 'creation')]);
     }
 
-        /**
-     * Display a post search form.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    // public function search(Request $request)
-    // {
-    //     $resultat = request()->input('resultat');
-    //         dd($resultat);
-    //     return view("usage.index", ['viewBag' => $this->getViewBag($request, 'search-post', 'search')]);
-    // }
-
     /**
      * Display a post edition form.
      *
@@ -99,6 +86,17 @@ class ViewController extends Controller
     public function editPost(Request $request)
     {
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-post', 'edition')]);
+    }
+
+    /**
+     * Display a post search form.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        return view("usage.index", ['viewBag' => $this->getViewBag($request, 'search-post')]);
     }
 
     /**

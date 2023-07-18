@@ -41,12 +41,7 @@
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto" for="app-icon">Icône</label>
                 <div class="col-8">
-                    <select id="app-icon" wire:model.defer="app.icon" type="input" class="form-select material-icons md-24">
-                        <option label="..."></option>
-                      @foreach(AP::getMaterialIconsCodes() as $miName => $miCode)
-                        <option value='{{ $miName }}'>{!! "&#x{$miCode};" !!}</option>
-                      @endforeach
-                    </select>
+                    @include('includes.icon-picker', ['model' => 'app'])
                 </div>
             </div>
           @error('app.url')
@@ -59,6 +54,15 @@
                            class="form-control" placeholder="Url d'accès à l'application">
                 </div>
             </div>
+            {{-- <div class="row mb-3">
+                <label class="col-2 fw-bold text-end my-auto" for="app-url-favicon">Url Favicon</label>
+                <div class="col-8">
+                    <form action="EditAppManager.php" for="getFavicon" method="get">
+                        <input wire:keydown.enter="getFavicon" id="app-url-favicon" type="text" name="url"
+                                class="form-control" placeholder="Url d'accès aux Favicon">
+                    </form>
+                </div>
+            </div> --}}
             <div class="row">
                 <div class="col-10 d-flex justify-content-end">
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">

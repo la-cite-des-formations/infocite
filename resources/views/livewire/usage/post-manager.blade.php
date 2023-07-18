@@ -13,7 +13,7 @@
             <div class="card mx-lg-5">
                 <div class="card-header d-flex justify-content-end">
                     <div id="post-actions">
-                        <div class="input-group btn-none-hover" role="group" aria-label="Actions">
+                        <div class="input-group" role="group" aria-label="Actions">
                           @can('update', $post)
                             <a href="{{ "{$post->rubric->route()}/{$post->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
                                 <i class="bx bx-pencil"></i>

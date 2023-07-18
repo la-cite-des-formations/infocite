@@ -48,7 +48,7 @@
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto">Icône</label>
                 <div class="col-8">
-                    @include('includes.icon-picker')
+                    @include('includes.icon-picker', ['model' => 'post'])
                 </div>
             </div>
           @error('post.content')
@@ -109,7 +109,7 @@
           @endif
          @endcan
             <div class="row">
-                <div class="col-10 d-flex justify-content-end btn-none-hover">
+                <div class="col-10 d-flex justify-content-end">
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1"
                        title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}

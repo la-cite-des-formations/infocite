@@ -20,6 +20,7 @@ class AP // Application Parameters
     const RUBRIC_POSITIONS = [
         'N' => 'Barre de navigation',
         'F' => 'Pied de page',
+        'U' => 'Position indéfinie',
     ];
 
     const DASHBOARD_MODELS_RIGHTS = [
