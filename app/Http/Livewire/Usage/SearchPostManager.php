@@ -24,6 +24,14 @@ class SearchPostManager extends Component
         $this->resetPage();
     }
 
+    // public function highlightResearch($string)
+    // {
+    //     if (strtolower($string) || strtoupper($string[0]))
+    //     {
+    //         str_replace($string, " &thinsp; <strong>$$string</strong> &thinsp;", Post::preview());
+    //     }
+    // }
+
     public function render() {
         return view('livewire.usage.search-post', [
             'foundPosts' => Post::query()

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
-    /**
+    /** 
      * return the current view data bag
      *
      * @param  \Illuminate\Http\Request $request

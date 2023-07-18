@@ -36,6 +36,7 @@
                         </h4>
 
                         <div class="d-inline-flex">{!! preg_replace($replaceStr, " &thinsp; <strong>$searchedStr</strong> &thinsp;", $post->preview()) !!}</div>
+                        {{-- <div class="d-inline-flex">{!! $searchPostManager->highlightResearch($searchedStr) !!}</div> --}}
 
 
                         <div class="position-absolute bottom-0 end-0 mt-2 me-2 serach-infos">
