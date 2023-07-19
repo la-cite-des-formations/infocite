@@ -75,7 +75,5 @@ Route::get('{rubric}', 'ViewController@index')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('rubric.index');
 
-Route::get('{rubric}/search', 'ViewController@search')
-    ->name('post.search');
 
 
