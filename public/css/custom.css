@@ -384,6 +384,16 @@ table {
     }
 }
 
+@media (max-width: 1625px) {
+    .infos-img{
+        width: 15%;
+        margin: 1rem !important;
+    }
+    .infos-card{
+        flex-direction: column !important;
+    }
+}
+
 #header .logo img {
     max-height: 48px;
 }
