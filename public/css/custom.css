@@ -384,13 +384,34 @@ table {
     }
 }
 
-@media (max-width: 1625px) {
+.infos-card{
+    box-shadow: inset 0 3px 7px -2px rgba(0, 0, 0, 0.5);
+}
+
+.infos-img{
+    width: 100%;
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
     .infos-img{
-        width: 15%;
-        margin: 1rem !important;
+        width: 35%;
+    }
+    .infos-div{
+        display: flex;
+        justify-content: flex-end;
+    }
+    .infos-dl2{
+        padding-right: 180px;
+    }
+}
+
+@media (max-width: 575px) {
+    .infos-img{
+        width: 45%;
     }
     .infos-card{
-        flex-direction: column !important;
+        text-align: center !important;
+        padding-bottom: 50px;
     }
 }
 

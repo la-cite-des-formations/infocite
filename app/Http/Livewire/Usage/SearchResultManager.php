@@ -13,6 +13,7 @@ class SearchResultManager extends Component
     use WithPagination;
 
     public $rubric;
+    public $firstLoad = TRUE;
     public $searchedStr;
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 10, 25];

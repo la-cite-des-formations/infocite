@@ -15,12 +15,10 @@
           @endif
         </div>
           @if ($searchedStr != "")
-            <div class="container col-6 d-flex flex-column">
+            <div class="container col-6 d-flex flex-column" @if ($firstLoad) data-aos="fade-up" @endif>
                 <div class="container mb-2">
             @foreach($foundPosts as $i => $post)
-            {{-- @foreach($foundPosts as $post) --}}
-                <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in" data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}">
-                {{-- <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in"> --}}
+                <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in" @if ($firstLoad) data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}" @endif>
                     <div class="container">
                         <h4>
                             <a href="{{ $post->rubric->route().'/'.$post->id }}">

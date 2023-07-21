@@ -7,43 +7,33 @@
             <h2 class="title-icon"><i class="material-icons fs-1 me-2">{{ $rubric->icon }}</i>{{ $rubric->title }}</h2>
             <p>{{ $rubric->description }}</p>
         </div>
-        <div class="container row col-8 ms-auto me-auto">
-            <div class="card rounded-pill d-flex flex-row justify-content-around align-items-center infos-card"> {{-- ou rounded-4 --}}
-                <div class="col-md-2 m-5 infos-img">
+        <div class="container row ms-auto me-auto">
+            <div class="card rounded-pill d-flex flex-row flex-wrap text-wrap justify-content-around align-items-center infos-card"> {{-- ou rounded-4 --}}
+                <div class="col-8 col-sm-3 col-lg col-xl-2 m-3 p-3 infos-div">
                     @if ($user->avatar)
-                        <img src="{{asset('img')}}/{{$user->avatar}}" width="100%" />
+                        <img src="{{asset('img')}}/{{$user->avatar}}" class="infos-img" />
                     @else
-                        <img src="{{asset('img/dummy.png')}}" width="100%" class="opacity-50" />
+                        <img src="{{asset('img/dummy.png')}}" class="opacity-50 infos-img" />
                         {{-- <img src="{{asset('img/fou.png')}}" width="100%" /> --}}
                     @endif
                 </div>
-                {{-- <div class="col-md-4 m-5 pt-5">
-                    <p>{{ $user->gender == 'F' ? 'Mme.' : 'M.' }} {{ $user->name }}</p>
-                    <p>Prénom : {{ $user->first_name }}</p>
-                    <p>E-mail : {{ $user->email }}</p>
 
-                    @foreach($user->profiles as $profile)
-                        <option value="{{ $profile->id }}">
-                            {{ $profile->first_name }}
-                        </option>
-                    @endforeach
-                </div> --}}
-
-                <dl class="position-relative py-3 ps-3 pe-5 me-3">
-                    <h5>{{ $user->gender == 'F' ? 'Mme.' : 'M.' }} {{ "$user->first_name $user->name" }}
-                        <span class="material-icons mt-2 ps-2">
+                <dl class="row col-12 col-sm-9 col-lg col-xl-4 infos-dl2 my-3">
+                    <dt class="col-3 align-self-center text-end" >{{ $user->gender == 'F' ? 'Mme.' : 'M.' }}</dt>
+                    <dd class="col-9 text-start">{{ "$user->first_name $user->name" }}
+                        <span class="col material-icons text-end mt-2 ms-4">
                             {{ $user->is_staff ? 'corporate_fare' : 'school' }}
                         </span>
-                    </h5>
+                    </dd>
                       @if(!empty($user->google_account))
-                        <a class="alert-link" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
+                        <a class="col-12 alert-link align-self-center text-center mb-3" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
                       @endif
                       @if(!empty($user->birthday))
                         <!-- Né(e) le __/__/____ -->
-                        <dt class="col-3 text-right pe-0">
+                        <dt class="col-6 col-sm-3 text-end">
                             {{ empty($user->gender) ? 'Naissance' : ($user->gender == 'M' ? 'Né le' : 'Née le') }}
                         </dt>
-                        <dd class="col-9 pe-0">{{ $user->birthday->format('d/m/Y') }}</dd>
+                        <dd class="col-6 col-sm-9 text-start">{{ $user->birthday->format('d/m/Y') }}</dd>
                       @endif
                       {{-- @if(!$user->is_staff)
                         <!-- Email _____@____.__ -->
@@ -54,73 +44,156 @@
                         <dd class="col-9 pe-0"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></dd>
                        @endif
                       @endif --}}
-                      @if($user->email)
-                        <!-- Email _____@____.__ -->
-                            <dt class="col text-right">Email</dt>
-                            <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
+                      @if(!empty($user->email))
+                            <!-- Email _____@____.__ -->
+                            <dt class="col-3 text-end">Email</dt>
+                            <a href="mailto:{{ $user->email }}" class="col-9 text-start">{{ $user->email }}</a>
                         @else
-                            <dd class="col-9 pe-0 font-italic">Aucun mail personnel</dd>
+                            <dd class="col-sm-9 font-italic">Aucun mail personnel</dd>
                       @endif
                       @if(count($user->profiles) > 0)
-                        <dt>Status</dt>
-                        @foreach($user->profiles as $profile)
-                            <dd value="{{ $profile->id }}">
-                                {{ $profile->first_name }}
-                            </dd>
-                        @endforeach
+                        <dt class="col-6 col-sm-3 text-end">Status</dt>
+                        <div class="col-6 col-sm-9 text-start">
+                            @foreach($user->profiles as $profile)
+                                <dd value="{{ $profile->id }}" class="col-12">
+                                    {{ $profile->first_name }}
+                                </dd>
+                            @endforeach
+                        </div>
+                      @endif
+                      @if(!empty($user->language))
+                        <!-- Language -->
+                        <dt class="col-6 col-sm-3 text-end">Langue</dt>
+                        <dd class="col-6 col-sm-9 text-start">{{ $user->language }}</dd>
+                      @endif
+                      {{-- @if(!empty($user->status))
+                        <!-- Statut __________  ...  -->
+                        <dt class="col-3 align-self-center text-center">Statut</dt>
+                        <dd class="col-{{ 2 + 7 * empty($user->quality)}} pe-0">{{ $user->status }}</dd>
+                      @endif --}}
+                      @if(!empty($user->quality))
+                        <!-- ...  Qualité __________  -->
+                        <dt class="col-6 col-sm-3 text-end">Qualité</dt>
+                        {{-- <dd class="col-{{ 4 + 5 * empty($user->status) }} pe-0">{{ AP::getQuality($user->quality) }}</dd> --}}
+                        <dd class="col-6 col-sm-9 text-start">{{ AP::getQuality($user->quality) }}</dd>
                       @endif
                 </dl>
-                    @if(!empty($user->status))
-                  <!-- Statut __________  ...  -->
-                  <dt class="col-3 text-right pe-0">Statut</dt>
-                  <dd class="col-{{ 2 + 7 * empty($user->quality)}} pe-0">{{ $user->status }}</dd>
-                @endif
-                @if(!empty($user->quality))
-                  <!-- ...  Qualité __________  -->
-                  <dt class="col-3 text-right">Qualité</dt>
-                  <dd class="col-{{ 4 + 5 * empty($user->status) }} pe-0">{{ AP::getQuality($user->quality) }}</dd>
-                @endif
-                <dl class="row mb-0 mx-0 flex-wrap">
-                    @if($user->groupsList(['P']))
-                      <!-- Équipe _________  -->
-                      <dt class="col-3 text-right pe-0">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
-                      <dd class="col-{{ 2 + 7 * empty($user->functionsList(['P']))}} pe-0">
-                          {{ $user->groupsList(['P']) }}
-                      </dd>
-                    @endif
-                    @if($user->functionsList(['P']))
-                      <!-- ...  Fonction __________  -->
-                      <dt class="col-3 text-right">Fonction</dt>
-                      <dd class="col-4 pe-0">{{ $user->functionsList(['P']) }}</dd>
-                    @endif
-                    {{-- @if($user->groupsList(['C']) || $user->groupsList(['E']))
-                      <!-- Classe(s) ______, ______, ... -->
-                      <dt class="col-3 text-right pe-0">{{ $userNbClasses > 1 ? 'Classes' : 'Classe' }}</dt>
-                      <dd class="col-9 pe-0 @if($truncateClassesList) text-truncate @endif"
-                        @if($userNbClasses > $classesMin)
-                          wire:click="switchClasses" role="button"
-                        @endif>{{ $user->groupsList(['C']) ?: $user->groupsList(['E']) }}</dd>
-                    @endif --}}
+                <dl class="row col-md-11 col-xl my-3">
                     @if(empty($user->code_ypareo))
-                      <p class="col-12">Utilisateur externe non répertorié dans YParéo.</p>
+                      <p class="col-12 text-center">Utilisateur externe non répertorié dans YParéo.</p>
                     @else
                       <!-- Code YParéo _____  Code Net YParéo _____ -->
-                      <dt class="col-3 text-right pe-0">Code YParéo</dt>
-                      <dd class="col-2 pe-0">{{ $user->code_ypareo  }}</dd>
-                      <dt class="col-4 text-right pe-0">Code Net YParéo</dt>
-                      <dd class="col-3 pe-0 @if(empty($user->code_netypareo)) font-italic @endif">{{ $user->code_netypareo ?: 'non généré' }}</dd>
+                      <dt class="text-end col-6">Code YParéo</dt>
+                      <dd class="col-6 text-start">{{ $user->code_ypareo  }}</dd>
+                      <dt class="col-6 text-end">Code Net YParéo</dt>
+                      <dd class="col-6 text-start align-self-center @if(empty($user->code_netypareo)) font-italic @endif">{{ $user->code_netypareo ?: 'non généré' }}</dd>
                       <!-- Login YParéo _____ -->
-                      <dt class="col-3 text-right pe-0">Login YParéo</dt>
-                      <dd class="col-9 pe-0 @if(empty($user->login)) font-italic @endif">{{ $user->login ?: 'non généré' }}</dd>
+                      <dt class="col-6 text-end">Login YParéo</dt>
+                      <dd class="col-6 text-start @if(empty($user->login)) font-italic @endif">{{ $user->login ?: 'non généré' }}</dd>
                       <!-- Mdp YParéo _____ -->
-                      <dt class="col-3 text-right pe-0">Mdp YParéo</dt>
-                      <dd class="col-9 pe-0 @if(empty($user->ypareo_pwd)) font-italic @endif">{{ $user->ypareo_pwd ?: 'sécurisé' }}</dd>
+                      <dt class="col-6 text-end">Mdp YParéo</dt>
+                      <dd class="col-6 text-start @if(empty($user->ypareo_pwd)) font-italic @endif">{{ $user->ypareo_pwd ?: 'sécurisé' }}</dd>
                       <!-- N° Badge _____ -->
-                      <dt class="col-3 text-right pe-0">N° Badge</dt>
-                      <dd class="col-9 pe-0 @if(empty($user->badge)) font-italic @endif">{{ $user->badge ?: 'non défini' }}</dd>
+                      <dt class="col-6 text-end">N° Badge</dt>
+                      <dd class="col-6 text-start @if(empty($user->badge)) font-italic @endif">{{ $user->badge ?: 'non défini' }}</dd>
+                    </dl>
                     @endif
-                  </dl>
+                    <dl class="row col-12 col-sm-10 col-md-11 col-xl text-wrap pe-3">
+                        @if($user->groupsList(['P']))
+                            <!-- Équipe _________  -->
+                            <dt class="col-6 col-sm-3 text-end">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
+                            {{-- <dd class="col-{{ 2 + 7 * empty($user->functionsList(['P']))}} pe-0"> --}}
+                            <dd class="col-6 col-sm-9 text-start">
+                                {{ $user->groupsList(['P']) }}
+                            </dd>
+                        @endif
+                        @if($user->functionsList(['P']))
+                            <!-- ...  Fonction __________  -->
+                            <dt class="col-6 col-sm-3 text-end">Fonction</dt>
+                            <dd class="col-6 col-sm-4 text-start">{{ $user->functionsList(['P']) }}</dd>
+                        @endif
+                        @if($user->groupsList(['C']) || $user->groupsList(['E']))
+                            <!-- Classe(s) ______, ______, ... -->
+                            <dt class="col-6 col-xl-3 text-end">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
+                            <dd class="col-6 col-xl-9 text-start">{{ $user->groupsList(['C']) }}</dd>
+                            <dd class="col-6 col-xl-9 text-start">{{ $user->groupsList(['E']) }}</dd>
+                        @endif
+                    </dl>
+                          {{-- <dt class="col-3 text-right pe-0">{{ $userNbClasses > 1 ? 'Classes' : 'Classe' }}</dt> --}}
+                          {{-- <dd class="col-9 pe-0 @if($truncateClassesList) text-truncate @endif"
+                            @if($userNbClasses > $classesMin)
+                              wire:click="switchClasses" role="button"
+                            @endif>{{ $user->groupsList(['C']) ?: $user->groupsList(['E']) }}</dd> --}}
             </div>
+                <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
+                    <div class="row">
+                    @foreach ($posts as $i => $post)
+                        @if ($post->isFavorite() == 1)
+                       @can('view', $post)
+                        <div class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
+                                @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
+                            <div class="position-relative icon-box d-flex flex-column">
+                                <!-- Titre de l'article -->
+                                <h4>
+                                    <a href="{{ $post->rubric->route().'/'.$post->id }}">
+                                        <!-- Icone -->
+                                        <div class="d-flex flex-row justify-content-between">
+                                            <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
+                                          @if(!$post->published)
+                                            <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="non publié">unpublished</i>
+                                          @endif
+                                          @if($post->expired())
+                                            <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="expiré">auto_delete</i>
+                                          @endif
+                                          @if($post->forthcoming())
+                                            <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="à venir">schedule_send</i>
+                                          @endif
+                                        </div>
+                                        <div>{{ $post->title }}</div>
+                                    </a>
+                                </h4>
+                                <!-- Sous Titre de l'article -->
+                                    <p>{!! $post->preview() !!}</p>
+                                <!-- Boutons d'actions -->
+
+                                <div class="align-self-end mt-auto">
+                                    <div class="input-group" role="group" aria-label="Actions">
+                                      @if($post->isCommentable())
+                                        <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
+                                        <div class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
+                                            type="text" title="Commentaires">
+                                          @if ($post->comments->count() > 0)
+                                            <span class="me-1">{{ $post->comments->count() }}</span>
+                                          @endif
+                                            <i class="bx bx-comment-detail"></i>
+                                        </div>
+                                      @endif
+                                        <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
+                                        <button class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
+                                                title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                                                wire:click="switchFavoritePost({{ $post->id }})" type="button">
+                                            <i class="bx bx-star"></i>
+                                        </button>
+                                        <!-- Article deja lu ? : class success si deja lu -->
+                                        <div class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
+                                                type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
+                                            <i class="bx bx-message-alt-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       @endcan
+                       @else
+                        <div></div>
+                       @endif
+                       @endforeach
+                    </div>
+                    @include('includes.pagination', ['elements' => $posts])
+                </div>
+                    {{-- @foreach($posts as $posts) --}}
+                            {{-- {{ $user->favorites() }} --}}
+                    {{-- @endforeach --}}
         </div>
     </section>
 </div>
