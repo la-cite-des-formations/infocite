@@ -80,7 +80,7 @@
                 </dl>
                 <dl class="row col-md-11 col-xl my-3">
                     @if(empty($user->code_ypareo))
-                      <p class="col-12 text-center">Utilisateur externe non répertorié dans YParéo.</p>
+                      <p class="col-12 text-start no-ypareo">Utilisateur externe non répertorié dans YParéo.</p>
                     @else
                       <!-- Code YParéo _____  Code Net YParéo _____ -->
                       <dt class="text-end col-6">Code YParéo</dt>
@@ -114,7 +114,7 @@
                         @endif
                         @if($user->groupsList(['C']) || $user->groupsList(['E']))
                             <!-- Classe(s) ______, ______, ... -->
-                            <dt class="col-6 col-xl-3 text-end">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
+                            <dt class="col-6 col-xl-3 text-start dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
                             <dd class="col-6 col-xl-9 text-start">{{ $user->groupsList(['C']) }}</dd>
                             <dd class="col-6 col-xl-9 text-start">{{ $user->groupsList(['E']) }}</dd>
                         @endif

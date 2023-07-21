@@ -405,6 +405,16 @@ table {
     }
 }
 
+@media (max-width: 1199px) {
+    .dt-class{
+        text-align: right !important;
+    }
+    .no-ypareo{
+        text-align: center !important;
+    }
+}
+
+
 @media (max-width: 575px) {
     .infos-img{
         width: 45%;
