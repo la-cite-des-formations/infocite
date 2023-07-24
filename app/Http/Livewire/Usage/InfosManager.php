@@ -6,16 +6,15 @@ use Livewire\Component;
 use App\Post;
 use App\Rubric;
 use App\User;
+use Livewire\WithPagination;
 
 class InfosManager extends Component
 {
+    use WithPagination;
     public $rubric;
     // public $elements;
     public $firstLoad = TRUE;
     protected $paginationTheme = 'bootstrap';
-    public $filter = [
-        'search' => '',
-    ];
     public $perPageOptions = [4, 8, 16];
     public $perPage = 8;
 
@@ -76,10 +75,10 @@ class InfosManager extends Component
         $this->resetPage();
     }
     public function render() {
+        $user = User::find(auth()->user()->id);
         return view('livewire.usage.infos-manager', [
-            'user' => User::find(auth()->user()->id),
-            'posts' => Post::filter($this->filter)
-                ->orderByRaw('title ASC')
+            'user' => $user,
+            'favorites' => $user->myFavorites()
                 ->paginate($this->perPage),
         ]);
     }

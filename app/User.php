@@ -58,27 +58,19 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC');
     }
 
-    private function favorites() {
+    public function myReadOrFavoritesPosts() {
         return $this
-            ->belongsToMany('App\Post', 'favorites')
+            ->belongsToMany('App\Post', 'post_user')
             ->orderBy('created_at', 'DESC')
-            ->withPivot(['tags']);
+            ->withPivot(['is_favorite']);
     }
 
-    public function myFavorites($tags = NULL) {
-        $tags = is_array($tags) ? implode('', $tags) : (string)$tags;
-
-        return $this->favorites->filter(
-            function ($favorite) use ($tags) {
-                if (is_null($tags)) return TRUE;
-
-                foreach (json_decode($favorite->pivot->tags, TRUE) as $tag) {
-                    if (stripos($tags, $tag)) return TRUE;
+    public function myFavorites() {
+            return $this->myReadOrFavoritesPosts->filter(
+                function ($post) {
+                        return $post->isFavorite();
                 }
-
-                return FALSE;
-            }
-        );
+            )->toQuery();
     }
 
     public function myComments() {
