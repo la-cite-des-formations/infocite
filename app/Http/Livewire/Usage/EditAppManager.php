@@ -8,6 +8,7 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
 
 class EditAppManager extends Component
 {
@@ -19,6 +20,7 @@ class EditAppManager extends Component
     public $rubricRoute;
     public $mode;
     public $app;
+    public $url;
 
     protected $listeners = ['modalClosed', 'save'];
     protected $rules = [
@@ -33,6 +35,13 @@ class EditAppManager extends Component
         $this->rubricRoute = '/'.$viewBag->rubricSegment;
         $this->mode = $viewBag->mode;
         $this->app = App::findOrNew($viewBag->app_id);
+    }
+
+    public function getFavicon(){
+        dd(HTTP::get("https://www.google.com/s2/favicons?domain="));
+
+        // $url = $this->url;
+        // return redirect()->to('https://www.google.com/s2/favicons?domain=' . $url);
     }
 
     public function save() {

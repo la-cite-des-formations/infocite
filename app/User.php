@@ -58,19 +58,12 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC');
     }
 
-    public function myReadOrFavoritesPosts() {
+    public function myFavorites() {
         return $this
             ->belongsToMany('App\Post', 'post_user')
             ->orderBy('created_at', 'DESC')
-            ->withPivot(['is_favorite']);
-    }
-
-    public function myFavorites() {
-            return $this->myReadOrFavoritesPosts->filter(
-                function ($post) {
-                        return $post->isFavorite();
-                }
-            )->toQuery();
+            ->withPivot(['is_favorite'])
+            ->where('is_favorite', TRUE);
     }
 
     public function myComments() {

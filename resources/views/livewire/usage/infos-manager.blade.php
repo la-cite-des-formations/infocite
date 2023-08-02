@@ -121,6 +121,9 @@
             <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
                 <div class="row mb-3">
                     <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">collections</i>Mes articles favoris</h3>
+                    @if ($favorites->total() == 0)
+                        <p class="text-center">Aucun article dans les favoris</p>
+                    @endif
                 @foreach ($favorites as $i => $post)
                 @can('view', $post)
                     <div class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
