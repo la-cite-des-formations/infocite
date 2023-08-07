@@ -38,11 +38,11 @@
                     @if(!$user->is_staff)
                     <!-- Email _____@____.__ -->
                     <dt class="col-sm-3 text-end">Email</dt>
-                    @if(empty($user->email))
-                    <dd class="col-sm-9 pe-0 font-italic">non communiqué</dd>
-                    @else
-                    <a href="mailto:{{ $user->email }}" class="col-sm-9 text-start">{{ $user->email }}</a>
-                    @endif
+                     @if(empty($user->email))
+                      <dd class="col-sm-9 pe-0 font-italic">non communiqué</dd>
+                     @else
+                      <a href="mailto:{{ $user->email }}" class="col-sm-9 text-start">{{ $user->email }}</a>
+                     @endif
                     @endif
                     @if(count($user->profiles) > 0)
                     <dt class="col-6 col-sm-3 text-end">Status</dt>

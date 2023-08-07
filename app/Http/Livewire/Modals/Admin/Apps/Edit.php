@@ -8,6 +8,7 @@ use App\Group;
 use App\User;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
+use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
 class Edit extends Component
@@ -207,6 +208,7 @@ class Edit extends Component
     }
 
     public function save() {
+        $this->app->favicon = Http::get("https://www.google.com/s2/favicons?domain=" . $this->app->url)->header("Content-Location");
         if ($this->mode === 'view') return;
 
         $this->validate();
