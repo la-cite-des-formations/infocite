@@ -34,7 +34,7 @@
                 </div>
             </div>
             <h4 class="text-center mb-4">{{ $orgChartTitle }}</h4>
-            <div id="orgchart"></div>
+            <div id="orgchart" class="overflow-auto"></div>
         </div>
     </section>
 </div>
