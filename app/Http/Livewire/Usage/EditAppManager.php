@@ -50,7 +50,7 @@ class EditAppManager extends Component
                     $this
                     ->sendAlert([
                         'alertClass' => 'danger',
-                        'message' => "Aucun favicon trouvé, mettez des icône s'il vous plaît."
+                        'message' => "Aucun favicon trouvé, sélectionnez une icône s'il-vous-plaît."
                 ]);
                 }else {
                     $this
@@ -59,7 +59,7 @@ class EditAppManager extends Component
                         'message' => "Création de la mise en forme effectuée avec succès."
                     ]);
                 }
-                
+
             }else {
                 // modification
                 $this->app->save();
@@ -67,7 +67,7 @@ class EditAppManager extends Component
                     $this
                     ->sendAlert([
                         'alertClass' => 'danger',
-                        'message' => "Aucun favicon trouvé, mettez une icon s'il vous plaît."
+                        'message' => "Aucun favicon trouvé, sélectionnez une icône s'il-vous-plaît."
                 ]);
                 }else {
                     $this
