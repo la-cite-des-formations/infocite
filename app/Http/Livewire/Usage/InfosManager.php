@@ -78,7 +78,7 @@ class InfosManager extends Component
         $user = User::find(auth()->user()->id);
         return view('livewire.usage.infos-manager', [
             'user' => $user,
-            'favorites' => $user->myFavorites()
+            'favoritesPosts' => $user->myFavoritesPosts()
                 ->paginate($this->perPage),
         ]);
     }

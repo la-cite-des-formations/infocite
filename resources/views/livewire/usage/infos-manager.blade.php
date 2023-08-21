@@ -23,7 +23,7 @@
                                 </span>
                                 <a class="col-6 col-sm-9 alert-link text-start" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
                               @else
-                                <span class="material-icons text-start mb-3">
+                                <span class="material-icons text-start mb-3 ms-5">
                                     {{ $user->is_staff ? 'corporate_fare' : 'school' }}
                                 </span>
                               @endif
@@ -125,10 +125,10 @@
             <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
                 <div class="row mb-3">
                     <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">category</i>Mes rubriques favoris</h3>
-                    @if ($favorites->total() == 0)
-                        <p class="text-center">Aucun rubrique dans les favoris</p>
-                    @endif
-                @foreach ($favorites as $i => $post)
+                    <p class="text-center">Aucun rubrique dans les favoris</p>
+                    {{-- @if ($favorites->total() == 0)
+                    @endif --}}
+                {{-- @foreach ($favorites as $i => $post)
                 @can('view', $post)
                     <div class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                             @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
@@ -154,47 +154,20 @@
                             </h4>
                             <!-- Sous Titre de l'article -->
                                 <p>{!! $post->preview() !!}</p>
-                            <!-- Boutons d'actions -->
-
-                            <div class="align-self-end mt-auto">
-                                <div class="input-group" role="group" aria-label="Actions">
-                                @if($post->isCommentable())
-                                    <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
-                                    <div class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
-                                        type="text" title="Commentaires">
-                                    @if ($post->comments->count() > 0)
-                                        <span class="me-1">{{ $post->comments->count() }}</span>
-                                    @endif
-                                        <i class="bx bx-comment-detail"></i>
-                                    </div>
-                                @endif
-                                    <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
-                                    <button class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                                            title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                            wire:click="switchFavoritePost({{ $post->id }})" type="button">
-                                        <i class="bx bx-star"></i>
-                                    </button>
-                                    <!-- Article deja lu ? : class success si deja lu -->
-                                    <div class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
-                                            type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
-                                        <i class="bx bx-message-alt-check"></i>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 @endcan
-                @endforeach
+                @endforeach --}}
                 </div>
             </div>
             <!-- Mes articles favoris -->
             <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
                 <div class="row mb-3">
                     <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">collections</i>Mes articles favoris</h3>
-                    @if ($favorites->total() == 0)
+                    @if ($favoritesPosts->total() == 0)
                         <p class="text-center">Aucun article dans les favoris</p>
                     @endif
-                @foreach ($favorites as $i => $post)
+                @foreach ($favoritesPosts as $i => $post)
                 @can('view', $post)
                     <div class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                             @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
@@ -252,7 +225,7 @@
                 @endcan
                 @endforeach
                 </div>
-                @include('includes.pagination', ['elements' => $favorites])
+                @include('includes.pagination', ['elements' => $favoritesPosts])
             </div>
         </div>
     </section>

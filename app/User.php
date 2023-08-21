@@ -63,7 +63,7 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC');
     }
 
-    public function myFavorites() {
+    public function myFavoritesPosts() {
         return $this
             ->belongsToMany('App\Post', 'post_user')
             ->orderBy('created_at', 'DESC')
