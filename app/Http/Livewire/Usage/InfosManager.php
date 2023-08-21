@@ -2,29 +2,30 @@
 
 namespace App\Http\Livewire\Usage;
 
+use Livewire\Component;
 use App\Post;
 use App\Rubric;
 use App\User;
-use Livewire\Component;
 use Livewire\WithPagination;
 
-class PostsManager extends Component
+class InfosManager extends Component
 {
     use WithPagination;
-
+    public $rubric;
+    // public $elements;
+    public $firstLoad = TRUE;
     protected $paginationTheme = 'bootstrap';
-    public $perPageOptions = [8, 12, 16];
+    public $perPageOptions = [4, 8, 16];
     public $perPage = 8;
 
-    public $rubric;
-    public $firstLoad = TRUE;
-
-    protected $listeners = ['render'];
-
+    // public $truncateClassesList;
     public function mount($viewBag) {
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+        // $this->truncateClassesList = $this->userNbClasses > $this->classesMin;
     }
+    // public function countFavoritePosts(){
 
+    // }
     public function switchFavoritePost($post_id) {
         if ($this->firstLoad) {
             $this->firstLoad = FALSE;
@@ -73,28 +74,11 @@ class PostsManager extends Component
     public function updatedPerPage() {
         $this->resetPage();
     }
-
     public function render() {
-        return view('livewire.usage.posts-manager', [
-            'posts' => Post::query()
-                ->whereIn('id', Post::query()
-                    ->when($this->rubric->segment != 'une', function ($query) {
-                        $query
-                            ->where('rubric_id', $this->rubric->id)
-                            ->orderByRaw('published_at DESC, created_at DESC');
-                    })
-                    ->when($this->rubric->segment == 'une', function ($query) {
-                        $query
-                            ->whereIn('rubric_id', User::find(auth()->user()->id)->myRubrics()->pluck('id'))
-                            ->orderByRaw('published_at DESC, created_at DESC');
-                    })
-                    ->get()
-                    ->filter(function ($post) {
-                        return User::find(auth()->user()->id)->can('view', $post);
-                    })
-                    ->pluck('id')
-                )
-                ->orderByRaw('created_at DESC')
+        $user = User::find(auth()->user()->id);
+        return view('livewire.usage.infos-manager', [
+            'user' => $user,
+            'favorites' => $user->myFavorites()
                 ->paginate($this->perPage),
         ]);
     }

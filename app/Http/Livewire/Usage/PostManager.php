@@ -3,22 +3,26 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Comment;
+use App\Http\Livewire\WithAlert;
 use App\Post;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Http\Livewire\WithModal;
+
 
 class PostManager extends Component
 {
+    use WithModal;
+    use WithAlert;
     public $post;
     public $newComment = '';
     public $firstLoad = TRUE;
 
-    protected $listeners = ['render'];
+    protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
 
     public function mount($viewBag) {
         $this->post = Post::find($viewBag->post_id);
         $this->post->readers()->syncWithoutDetaching([
-            Auth::user()->id => [
+            auth()->user()->id => [
                 'is_read' => TRUE
             ]
         ]);
@@ -39,13 +43,13 @@ class PostManager extends Component
         }
         if (isset($isFavorite)) {
             $this->post->readers()->syncWithoutDetaching([
-                Auth::user()->id => [
+                auth()->user()->id => [
                     'is_favorite' => $isFavorite
                 ]
             ]);
         }
         else {
-            $this->post->readers()->detach(Auth::user()->id);
+            $this->post->readers()->detach(auth()->user()->id);
         }
         $this->emitSelf('render');
     }
@@ -54,7 +58,7 @@ class PostManager extends Component
         $newComment = trim($this->newComment);
         $comment = $newComment ? new Comment([
             'content' => $newComment,
-            'user_id' => Auth::user()->id,
+            'user_id' => auth()->user()->id,
         ]) : NULL;
 
         if ($comment) {

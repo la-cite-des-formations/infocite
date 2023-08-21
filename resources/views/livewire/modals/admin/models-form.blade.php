@@ -1,5 +1,11 @@
 @extends('layouts.modal')
 
+@if ($haveTiny ?? FALSE)
+    @section('wire-init')
+        wire:init='initTinymce'
+    @endsection
+@endif
+
 @section('body-p', 'py-0')
 
 @section('modal-size', $modalSize ?? '')
@@ -44,3 +50,6 @@
       @endif
     </div>
 @endsection
+
+
+

@@ -13,6 +13,7 @@
             </p>
         </div>
         <form id="appForm">
+            @includeWhen(session()->has('message'), 'includes.confirm-message')
           @error('app.name')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
           @enderror
@@ -40,12 +41,7 @@
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto" for="app-icon">Icône</label>
                 <div class="col-8">
-                    <select id="app-icon" wire:model.defer="app.icon" type="input" class="form-select material-icons md-24">
-                        <option label="..."></option>
-                      @foreach(AP::getMaterialIconsCodes() as $miName => $miCode)
-                        <option value='{{ $miName }}'>{!! "&#x{$miCode};" !!}</option>
-                      @endforeach
-                    </select>
+                    @include('includes.icon-picker', ['model' => 'app'])
                 </div>
             </div>
           @error('app.url')
@@ -63,9 +59,15 @@
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
-                    <button wire:click="save" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
-                        {{ $mode === 'edition' ? 'Modifier' : 'Créer' }}
+                    @if ($mode === 'edition')
+                    <button wire:click="showModal('confirm', {handling : 'update'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                        Modifier
                     </button>
+                    @else
+                    <button wire:click="showModal('confirm', {handling : 'create'})" type="button" class="btn btn-primary me-1" title="Enregistrer les modifications">
+                        Créer
+                    </button>
+                    @endif
                   @if ($mode === 'edition')
                     <a href="{{ $rubricRoute.'/personal-apps/create' }}" title="Ajouter une nouvelle application personnelle"
                             type="button" class="d-flex btn btn-sm btn-success me-1">

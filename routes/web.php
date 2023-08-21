@@ -3,6 +3,7 @@
 use App\CustomFacades\AP;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,13 @@ Route::get('login/google/callback', 'Auth\LoginController@handleProviderCallback
 
 Route::redirect('/', '/une')->name('home');
 Route::redirect('/admin', '/dashboard');
+
+// Route::get('/', function() {
+//     $url = 'laravel.com';
+
+//     return HTTP::get("https://www.google.com/s2/favicons?domain={$url}");
+// })->name('get.favicon');
+
 
 $admin = Route::namespace('Admin')
     ->prefix('admin')
@@ -73,3 +81,6 @@ Route::get('{rubric}/{post_id}/edit', 'ViewController@editPost')
 Route::get('{rubric}', 'ViewController@index')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('rubric.index');
+
+
+

@@ -2,22 +2,25 @@
 
 namespace App\Http\Livewire\Modals\Admin\Posts;
 
+use App\CustomFacades\AP;
 use App\Post;
 use App\Rubric;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Edit extends Component
 {
     use WithAlert;
+    use WithIconpicker;
 
     public $post;
     public $mode;
     public $canAdd = TRUE;
     public $formTabs;
 
-    protected $listeners = ['render'];
+    protected $listeners = ['render', 'contentChange'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -26,7 +29,14 @@ class Edit extends Component
         'post.published' => 'required|boolean',
     ];
 
+    public function contentChange($content) {
+        $this->post->content = $content;
+    }
     public function setPost($id = NULL) {
+        if (is_null($id)) {
+            $this->emit('deleteContent');
+        }
+
         $this->post = $this->post ?? Post::findOrNew($id);
 
         if ($this->mode === 'creation') $this->post->published = FALSE;
@@ -51,6 +61,11 @@ class Edit extends Component
 
         $this->mode = $mode ?? 'view';
         $this->setPost($id ?? NULL);
+        $this->dispatchBrowserEvent('initTinymce');
+
+    }
+    public function initTinymce(){
+        $this->dispatchBrowserEvent('initTinymce');
     }
 
     public function refresh() {
@@ -119,8 +134,8 @@ class Edit extends Component
             ->save();
     }
 
-    public function render($messageBag = NULL)
-    {
+    public function render($messageBag = NULL){
+        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -136,6 +151,14 @@ class Edit extends Component
                     ->where('rank', '!=', '0')
                     ->orderByRaw('position ASC, rank ASC')
                     ->get(),
+                'modalSize' => 'modal-xl',
+                'haveTiny' => TRUE,
+                'icons' => AP::getMaterialIconsCodes()
+                    ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                }),
             ]);
     }
 }

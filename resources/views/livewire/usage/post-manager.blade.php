@@ -20,7 +20,7 @@
                             </a>
                           @endcan
                           @can('delete', $post)
-                            <button wire:click='deletePost' type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                            <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
                           @endcan
@@ -46,7 +46,7 @@
                       @endif
                       @can('create', ['App\\Comment', $post->id])
                         <div class="comment-form my-2">
-                            <input wire:model='newComment' type="text" placeholder="Ajouter un commentaire">
+                            <input wire:model='newComment' wire:keydown.enter="commentPost" type="text" placeholder="Ajouter un commentaire">
                             <button wire:click='commentPost' title="Ajouter">
                                 <i class="icofont-plus"></i>
                             </button>
@@ -70,7 +70,7 @@
                                             </div>
                                         </li>
                                       @can('delete', $comment)
-                                        <button wire:click='deleteComment({{ $comment->id }})' title="Supprimer ce commentaire"
+                                        <button wire:click="showModal('confirm',  {handling : 'deleteComment', id : {{ $comment->id }}})" title="Supprimer ce commentaire"
                                                 class="px-1 pb-0 ms-1 me-1 align-self-center btn btn-sm btn-danger">
                                             <i class="bx bx-trash"></i>
                                         </button>
