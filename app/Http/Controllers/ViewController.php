@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
-    /** 
+    /**
      * return the current view data bag
      *
      * @param  \Illuminate\Http\Request $request
@@ -18,17 +18,17 @@ class ViewController extends Controller
      */
     private function getViewBag(Request $request, string $template = 'posts', string $mode = NULL)
     {
-        $rubricStr = $request->route()->parameter('rubric');
+        $route = $request->route();
+        $rubricStr = $route->parameter('rubric');
         $rubricSegments = explode(AP::RUBRIC_SEPARATOR, $rubricStr);
-
         $rubric = Rubric::firstWhere('segment', $rubricSegments[0]);
 
         if (count($rubricSegments) > 1) {
             $rubric = $rubric->childs()->firstWhere('segment', $rubricSegments[1]);
         }
 
-        $post_id = $request->route()->parameter('post_id');
-        $app_id = $request->route()->parameter('app_id');
+        $post_id = $route->parameter('post_id');
+        $app_id = $route->parameter('app_id');
 
         return (object) [
             'navRubrics' => Rubric::getRubrics('N'),
@@ -86,17 +86,6 @@ class ViewController extends Controller
     public function editPost(Request $request)
     {
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-post', 'edition')]);
-    }
-
-    /**
-     * Display a post search form.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        return view("usage.index", ['viewBag' => $this->getViewBag($request, 'search-post')]);
     }
 
     /**

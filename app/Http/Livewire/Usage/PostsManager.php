@@ -94,6 +94,7 @@ class PostsManager extends Component
                     })
                     ->pluck('id')
                 )
+                ->orderByRaw('created_at DESC')
                 ->paginate($this->perPage),
         ]);
     }

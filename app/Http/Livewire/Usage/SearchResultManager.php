@@ -3,37 +3,33 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Post;
+use App\Rubric;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 
-class SearchPostManager extends Component
+class SearchResultManager extends Component
 {
     use WithPagination;
 
     public $rubric;
+    public $firstLoad = TRUE;
     public $searchedStr;
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 10, 25];
     public $perPage = 8;
 
-    public function mount() {
+
+    public function mount($viewBag) {
+        $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->searchedStr = request()->input('resultat');
     }
     public function updatedPerPage() {
         $this->resetPage();
     }
 
-    // public function highlightResearch($string)
-    // {
-    //     if (strtolower($string) || strtoupper($string[0]))
-    //     {
-    //         str_replace($string, " &thinsp; <strong>$$string</strong> &thinsp;", Post::preview());
-    //     }
-    // }
-
     public function render() {
-        return view('livewire.usage.search-post', [
+        return view('livewire.usage.search-result-manager', [
             'foundPosts' => Post::query()
                 ->where('title', 'like', "%$this->searchedStr%")
                 ->orWhere('content', 'like', "%$this->searchedStr%")

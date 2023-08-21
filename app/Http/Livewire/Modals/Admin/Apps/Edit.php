@@ -7,11 +7,14 @@ use App\CustomFacades\AP;
 use App\Group;
 use App\User;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithIconpicker;
+use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
 class Edit extends Component
 {
     use WithAlert;
+    use WithIconpicker;
 
     public $app;
     public $mode;
@@ -205,6 +208,7 @@ class Edit extends Component
     }
 
     public function save() {
+        $this->app->favicon = Http::get("https://www.google.com/s2/favicons?domain=" . $this->app->url)->header("Content-Location");
         if ($this->mode === 'view') return;
 
         $this->validate();
@@ -258,6 +262,7 @@ class Edit extends Component
 
     public function render($messageBag = NULL)
     {
+        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -274,6 +279,12 @@ class Edit extends Component
                     ->where('name', '<>', AP::PROFILE)
                     ->where('is_frozen', 0)
                     ->get(),
+                'icons' => AP::getMaterialIconsCodes()
+                    ->when($searchIcons, function ($icons) use ($searchIcons) {
+                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
+                        return str_contains($miName, $searchIcons);
+                    });
+                }),
             ]);
     }
 }

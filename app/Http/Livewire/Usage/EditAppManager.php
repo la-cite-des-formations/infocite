@@ -8,6 +8,7 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
 
 class EditAppManager extends Component
 {
@@ -20,11 +21,12 @@ class EditAppManager extends Component
     public $mode;
     public $app;
 
+
     protected $listeners = ['modalClosed', 'save'];
     protected $rules = [
         'app.name' => 'required|string|max:255',
         'app.description' => 'required|string',
-        'app.icon' => 'required|string|max:255',
+        'app.icon' => 'nullable|string|max:255',
         'app.url' => 'required|url|string|max:255'
     ];
 
@@ -37,27 +39,44 @@ class EditAppManager extends Component
 
     public function save() {
         $this->validate();
+        $this->app->favicon = HTTP::get("https://www.google.com/s2/favicons?domain=" . $this->app->url)->header("Content-Location");
+            if ($this->mode === 'creation') {
+                // création
+                $this->app->owner_id = auth()->user()->id;
+                $this->app->save();
+                $this->app->users()->attach(auth()->user()->id);
 
-        if ($this->mode === 'creation') {
-            // création
-            $this->app->owner_id = auth()->user()->id;
-            $this->app->save();
-            $this->app->users()->attach(auth()->user()->id);
-            $this
-            ->sendAlert([
-                'alertClass' => 'success',
-                'message' => "Création de la mise en forme effectuée avec succès."
-            ]);
-        }
-        else {
-            // modification
-            $this->app->save();
-            $this
-                ->sendAlert([
-                    'alertClass' => 'success',
-                    'message' => "Modification de la mise en forme effectuée avec succès."
+                if (empty($this->app->favicon) && empty($this->app->icon)){
+                    $this
+                    ->sendAlert([
+                        'alertClass' => 'danger',
+                        'message' => "Aucun favicon trouvé, sélectionnez une icône s'il-vous-plaît."
                 ]);
-        }
+                }else {
+                    $this
+                    ->sendAlert([
+                        'alertClass' => 'success',
+                        'message' => "Création de la mise en forme effectuée avec succès."
+                    ]);
+                }
+
+            }else {
+                // modification
+                $this->app->save();
+                if (empty($this->app->favicon) && empty($this->app->icon)){
+                    $this
+                    ->sendAlert([
+                        'alertClass' => 'danger',
+                        'message' => "Aucun favicon trouvé, sélectionnez une icône s'il-vous-plaît."
+                ]);
+                }else {
+                    $this
+                    ->sendAlert([
+                        'alertClass' => 'success',
+                        'message' => "Modification de la mise en forme effectuée avec succès."
+                    ]);
+                }
+            }
 
         redirect($this->rubricRoute."/personal-apps/{$this->app->id}/edit");
     }

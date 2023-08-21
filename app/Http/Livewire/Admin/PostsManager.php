@@ -17,7 +17,7 @@ class PostsManager extends Component
 
     public $models = 'posts';
     public $elements = 'posts';
-
+    
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['modalClosed', 'render'];
 

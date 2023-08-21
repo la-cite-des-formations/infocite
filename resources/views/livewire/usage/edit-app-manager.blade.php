@@ -54,15 +54,6 @@
                            class="form-control" placeholder="Url d'accès à l'application">
                 </div>
             </div>
-            {{-- <div class="row mb-3">
-                <label class="col-2 fw-bold text-end my-auto" for="app-url-favicon">Url Favicon</label>
-                <div class="col-8">
-                    <form action="EditAppManager.php" for="getFavicon" method="get">
-                        <input wire:keydown.enter="getFavicon" id="app-url-favicon" type="text" name="url"
-                                class="form-control" placeholder="Url d'accès aux Favicon">
-                    </form>
-                </div>
-            </div> --}}
             <div class="row">
                 <div class="col-10 d-flex justify-content-end">
                     <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1" title="Revenir à la page précédente sans enregistrer">

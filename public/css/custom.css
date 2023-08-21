@@ -373,12 +373,55 @@ table {
 
 .search-card:hover {
         transform: translate(5px, -5px) !important;
-        transition: all ease-in-out 0.4s !important;
+        transition: all ease-in-out 0.2s !important;
+        transition-delay: 0s !important;
+        transition-duration: 0.2s !important;
 }
 
 @media (max-width: 1220px) {
     .serach-infos {
         position: relative !important;
+    }
+}
+
+.infos-card{
+    box-shadow: inset 0 3px 7px -2px rgba(0, 0, 0, 0.5);
+}
+
+.infos-img{
+    width: 100%;
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .infos-img{
+        width: 35%;
+    }
+    .infos-div{
+        display: flex;
+        justify-content: flex-end;
+    }
+    .infos-dl2{
+        padding-right: 180px;
+    }
+}
+
+@media (max-width: 1199px) {
+    .dt-class{
+        text-align: right !important;
+    }
+    .no-ypareo{
+        text-align: center !important;
+    }
+}
+
+
+@media (max-width: 575px) {
+    .infos-img{
+        width: 45%;
+    }
+    .infos-card{
+        text-align: center !important;
+        padding-bottom: 50px;
     }
 }
 
