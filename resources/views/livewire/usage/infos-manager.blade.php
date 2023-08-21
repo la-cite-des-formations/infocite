@@ -8,7 +8,7 @@
             <p>{{ $rubric->description }}</p>
         </div>
         <div class="container ms-auto me-auto">
-            <div class="card rounded-pill d-flex flex-row flex-wrap text-wrap justify-content-around align-items-center infos-card pt-5 pb-5">
+            <div class="card rounded-pill d-flex flex-row flex-wrap text-wrap justify-content-around align-items-center infos-card py-5 ps-2 pe-2">
                     <div class="col-8 col-sm-3 col-lg col-xl-2 m-3 p-3 infos-div">
                         @if ($user->avatar)
                             <img src="{{asset('img')}}/{{$user->avatar}}" class="infos-img" />
@@ -16,104 +16,110 @@
                             <img src="{{asset('img/dummy.png')}}" class="opacity-50 infos-img" />
                         @endif
                     </div>
-                        <dl class="row col-12 col-sm-9 col-lg col-xl-4 infos-dl2">
-                            <span class="material-icons text-center ms-4">
-                                {{ $user->is_staff ? 'corporate_fare' : 'school' }}
-                            </span>
+                        <dl class="row col-12 col-sm-9 col-lg col-xl infos-dl2">
+                              @if(!empty($user->google_account))
+                                <span class="col-6 col-sm-3 material-icons text-start">
+                                    {{ $user->is_staff ? 'corporate_fare' : 'school' }}
+                                </span>
+                                <a class="col-6 col-sm-9 alert-link text-start" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
+                              @else
+                                <span class="material-icons text-start mb-3">
+                                    {{ $user->is_staff ? 'corporate_fare' : 'school' }}
+                                </span>
+                              @endif
                             <dt class="col-6 col-sm-3 text-end" >{{ $user->gender == 'F' ? 'Mme.' : 'M.' }}</dt>
                             <dd class="col-6 col-sm-9 text-start">{{ "$user->first_name $user->name" }}</dd>
-                            @if(!empty($user->google_account))
-                            <a class="col-12 alert-link align-self-center text-center mb-3" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
-                            @endif
-                            @if(!empty($user->birthday))
+                              @if(!empty($user->birthday))
                             <!-- Né(e) le __/__/____ -->
-                            <dt class="col-6 col-sm-3 text-end">
-                                {{ empty($user->gender) ? 'Naissance' : ($user->gender == 'M' ? 'Né le' : 'Née le') }}
-                            </dt>
-                            <dd class="col-6 col-sm-9 text-start">{{ $user->birthday->format('d/m/Y') }}</dd>
-                            @endif
-                            @if(!$user->is_staff)
+                                <dt class="col-6 col-sm-3 text-end">
+                                    {{ empty($user->gender) ? 'Naissance' : ($user->gender == 'M' ? 'Né le' : 'Née le') }}
+                                </dt>
+                                <dd class="col-6 col-sm-9 text-start">{{ $user->birthday->format('d/m/Y') }}</dd>
+                              @endif
+                              @if(!$user->is_staff)
                             <!-- Email _____@____.__ -->
-                            <dt class="col-6 col-sm-3 text-end">Email</dt>
-                            @if(empty($user->email))
-                            <dd class="col-6 col-sm-9 pe-0 font-italic">non communiqué</dd>
-                            @else
-                            <a href="mailto:{{ $user->email }}" class="col-sm-9 text-center">{{ $user->email }}</a>
-                            @endif
-                            @endif
-                            @if(count($user->profiles) > 0)
-                            <dt class="col-6 col-sm-3 text-end">Status</dt>
-                            <div class="col-6 col-sm-9 text-start">
-                                @foreach($user->profiles as $profile)
+                                <dt class="col-6 col-sm-3 text-end">Email</dt>
+                              @if(empty($user->email))
+                                <dd class="col-6 col-sm-9 pe-0 font-italic">non communiqué</dd>
+                              @else
+                                <a href="mailto:{{ $user->email }}" class="col-6 col-sm-9 text-start">{{ $user->email }}</a>
+                              @endif
+                              @endif
+                              @if(count($user->profiles) > 0)
+                                <dt class="col-6 col-sm-3 text-end">Status</dt>
+                                <div class="col-6 col-sm-9 text-start">
+                                  @foreach($user->profiles as $profile)
                                     <dd value="{{ $profile->id }}" class="col-12">
                                         {{ $profile->first_name }}
                                     </dd>
-                                @endforeach
-                            </div>
+                                  @endforeach
+                                </div>
+                              @endif
+                              @if(!empty($user->language))
+                                <!-- Language -->
+                                <dt class="col-6 col-sm-3 text-end">Langue</dt>
+                                <dd class="col-6 col-sm-9 text-start">{{ $user->language }}</dd>
+                              @endif
+                                {{-- @if(!empty($user->status))
+                                <!-- Statut __________  ...  -->
+                                <dt class="col-3 align-self-center text-center">Statut</dt>
+                                <dd class="col-{{ 2 + 7 * empty($user->quality)}} pe-0">{{ $user->status }}</dd>
+                                @endif --}}
+                              @if(!empty($user->quality))
+                                <!-- ...  Qualité __________  -->
+                                <dt class="col-6 col-sm-3 text-end">Qualité</dt>
+                                {{-- <dd class="col-{{ 4 + 5 * empty($user->status) }} pe-0">{{ AP::getQuality($user->quality) }}</dd> --}}
+                                <dd class="col-6 col-sm-9 text-start">{{ AP::getQuality($user->quality) }}</dd>
+                              @endif
+                        </dl>
+                              @if(!empty($user->code_ypareo))
+                            <dl class="row col-12 col-xl">
+                                <!-- Code YParéo _____  Code Net YParéo _____ -->
+                                <dt class="text-end col-6">Code YParéo</dt>
+                                <dd class="col-6 text-start">{{ $user->code_ypareo  }}</dd>
+                                <dt class="col-6 text-end">Code Net YParéo</dt>
+                                <dd class="col-6 text-start align-self-center @if(empty($user->code_netypareo)) font-italic @endif">{{ $user->code_netypareo ?: 'non généré' }}</dd>
+                                <!-- Login YParéo _____ -->
+                                <dt class="col-6 text-end">Login YParéo</dt>
+                                <dd class="col-6 text-start @if(empty($user->login)) font-italic @endif">{{ $user->login ?: 'non généré' }}</dd>
+                                <!-- Mdp YParéo _____ -->
+                                <dt class="col-6 text-end">Mdp YParéo</dt>
+                                <dd class="col-6 text-start @if(empty($user->ypareo_pwd)) font-italic @endif">{{ $user->ypareo_pwd ?: 'sécurisé' }}</dd>
+                                <!-- N° Badge _____ -->
+                                <dt class="col-6 text-end">N° Badge</dt>
+                                <dd class="col-6 text-start @if(empty($user->badge)) font-italic @endif">{{ $user->badge ?: 'non défini' }}</dd>
+                            </dl>
+                              @else
+                            <dl class="row col-12 col-sm-10 col-md-11 col-xl text-wrap pe-3">
+                                <p class="col-12 no-ypareo">Utilisateur externe non répertorié dans YParéo.</p>
+                              @endif
+                            <dl class="row col-12 col-sm-10 col-md-11 col-xl text-wrap pe-3">
+                            @if($user->groupsList(['P']))
+                                <!-- Équipe _________  -->
+                                <dt class="col-6 col-xl-4 text-start dt-class">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
+                                {{-- <dd class="col-{{ 2 + 7 * empty($user->functionsList(['P']))}} pe-0"> --}}
+                                <dd class="col-6 col-xl-8 text-start">
+                                    {{ $user->groupsList(['P']) }}
+                                </dd>
                             @endif
-                            @if(!empty($user->language))
-                            <!-- Language -->
-                            <dt class="col-6 col-sm-3 text-end">Langue</dt>
-                            <dd class="col-6 col-sm-9 text-start">{{ $user->language }}</dd>
+                            @if($user->functionsList(['P']))
+                                <!-- ...  Fonction __________  -->
+                                <dt class="col-6 col-sm-4 text-end">Fonction</dt>
+                                <dd class="col-6 col-sm-8 text-start">{{ $user->functionsList(['P']) }}</dd>
                             @endif
-                            {{-- @if(!empty($user->status))
-                            <!-- Statut __________  ...  -->
-                            <dt class="col-3 align-self-center text-center">Statut</dt>
-                            <dd class="col-{{ 2 + 7 * empty($user->quality)}} pe-0">{{ $user->status }}</dd>
-                            @endif --}}
-                            @if(!empty($user->quality))
-                            <!-- ...  Qualité __________  -->
-                            <dt class="col-6 col-sm-3 text-end">Qualité</dt>
-                            {{-- <dd class="col-{{ 4 + 5 * empty($user->status) }} pe-0">{{ AP::getQuality($user->quality) }}</dd> --}}
-                            <dd class="col-6 col-sm-9 text-start">{{ AP::getQuality($user->quality) }}</dd>
+                            @if($user->groupsList(['C']) || $user->groupsList(['E']))
+                                <!-- Classe(s) ______, ______, ... -->
+                                <dt class="col-6 col-sm-4 text-start dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
+                                <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['C']) }}</dd>
+                                <dt class="col-6 col-sm-4"></dt>
+                                <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['E']) }}</dd>
                             @endif
                         </dl>
-                    <dl class="row col-md-11 col-xl">
-                        @if(empty($user->code_ypareo))
-                        <p class="col-12 text-start no-ypareo mt-5 pt-3">Utilisateur externe non répertorié dans YParéo.</p>
-                        @else
-                        <!-- Code YParéo _____  Code Net YParéo _____ -->
-                        <dt class="text-end col-6">Code YParéo</dt>
-                        <dd class="col-6 text-start">{{ $user->code_ypareo  }}</dd>
-                        <dt class="col-6 text-end">Code Net YParéo</dt>
-                        <dd class="col-6 text-start align-self-center @if(empty($user->code_netypareo)) font-italic @endif">{{ $user->code_netypareo ?: 'non généré' }}</dd>
-                        <!-- Login YParéo _____ -->
-                        <dt class="col-6 text-end">Login YParéo</dt>
-                        <dd class="col-6 text-start @if(empty($user->login)) font-italic @endif">{{ $user->login ?: 'non généré' }}</dd>
-                        <!-- Mdp YParéo _____ -->
-                        <dt class="col-6 text-end">Mdp YParéo</dt>
-                        <dd class="col-6 text-start @if(empty($user->ypareo_pwd)) font-italic @endif">{{ $user->ypareo_pwd ?: 'sécurisé' }}</dd>
-                        <!-- N° Badge _____ -->
-                        <dt class="col-6 text-end">N° Badge</dt>
-                        <dd class="col-6 text-start @if(empty($user->badge)) font-italic @endif">{{ $user->badge ?: 'non défini' }}</dd>
-                    </dl>
-                        @endif
-                    <dl class="row col-12 col-sm-10 col-md-11 col-xl text-wrap pe-3">
-                        @if($user->groupsList(['P']))
-                            <!-- Équipe _________  -->
-                            <dt class="col-6 col-xl-3 text-start dt-class">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
-                            {{-- <dd class="col-{{ 2 + 7 * empty($user->functionsList(['P']))}} pe-0"> --}}
-                            <dd class="col-6 col-xl-9 text-start">
-                                {{ $user->groupsList(['P']) }}
-                            </dd>
-                        @endif
-                        @if($user->functionsList(['P']))
-                            <!-- ...  Fonction __________  -->
-                            <dt class="col-6 col-sm-3 text-end">Fonction</dt>
-                            <dd class="col-6 col-sm-9 text-start">{{ $user->functionsList(['P']) }}</dd>
-                        @endif
-                        @if($user->groupsList(['C']) || $user->groupsList(['E']))
-                            <!-- Classe(s) ______, ______, ... -->
-                            <dt class="col-6 col-xl-3 text-start dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
-                            <dd class="col-6 col-xl-4 text-start">{{ $user->groupsList(['C']) }}</dd>
-                            <dd class="col-6 col-xl-4 text-start">{{ $user->groupsList(['E']) }}</dd>
-                        @endif
-                    </dl>
-                        {{-- <dt class="col-3 text-right pe-0">{{ $userNbClasses > 1 ? 'Classes' : 'Classe' }}</dt> --}}
-                        {{-- <dd class="col-9 pe-0 @if($truncateClassesList) text-truncate @endif"
-                        @if($userNbClasses > $classesMin)
-                            wire:click="switchClasses" role="button"
-                        @endif>{{ $user->groupsList(['C']) ?: $user->groupsList(['E']) }}</dd> --}}
+                            {{-- <dt class="col-3 text-right pe-0">{{ $userNbClasses > 1 ? 'Classes' : 'Classe' }}</dt> --}}
+                            {{-- <dd class="col-9 pe-0 @if($truncateClassesList) text-truncate @endif"
+                            @if($userNbClasses > $classesMin)
+                                wire:click="switchClasses" role="button"
+                            @endif>{{ $user->groupsList(['C']) ?: $user->groupsList(['E']) }}</dd> --}}
             </div>
 
             <!-- Mes articles favoris -->
