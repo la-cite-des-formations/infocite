@@ -18,8 +18,8 @@
             <div class="container col-6 d-flex flex-column" @if ($firstLoad) data-aos="fade-up" @endif>
                 <div class="container mb-2">
             @foreach($foundPosts as $i => $post)
-                <div class="card my-1 flex-wrap search-card p-3" data-aos="zoom-in" @if ($firstLoad) data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}" @endif>
-                    <div class="container">
+                <div class="flex-wrap" data-aos="zoom-in" @if ($firstLoad) data-aos-delay="{{ ($i  % $perPage + 1) * 100 }}" @endif>
+                    <div class="card container search-card my-1 p-3">
                         <h4>
                             <a href="{{ $post->rubric->route().'/'.$post->id }}">
                                 <!-- Icone -->
