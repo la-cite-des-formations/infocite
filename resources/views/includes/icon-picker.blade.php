@@ -1,4 +1,4 @@
-<div class="dropend">
+<div id="icon-picker" class="dropend">
     <button wire:ignore.self id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" type="button"
             class="btn btn-light choice-icon-btn dropdown-toggle">
         <span class="material-icons mr-1 mt-1">{{ (!($$model->icon) ? '...' : $$model->icon) }}</span>

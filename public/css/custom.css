@@ -755,7 +755,7 @@ a:hover {
     color: #495057 !important;
 }
 
-.overflow-auto::-webkit-scrollbar {
+#icon-picker .overflow-auto::-webkit-scrollbar {
     display: none;
 }
 
