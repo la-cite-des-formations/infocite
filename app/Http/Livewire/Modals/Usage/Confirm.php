@@ -54,6 +54,9 @@ class Confirm extends Component
             case('deleteApp'):
                 $this->emit('deleteApp', $this->appId)->to('AppsManager');
             break;
+            case('notification'):
+                $this->emit('notification')->to('PostsManager');
+            break;
             case('update'):
             case('create'):
                 $this->emit('save');

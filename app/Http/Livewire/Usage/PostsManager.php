@@ -7,10 +7,12 @@ use App\Rubric;
 use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Http\Livewire\WithModal;
 
 class PostsManager extends Component
 {
     use WithPagination;
+    use WithModal;
 
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 12, 16];
@@ -68,6 +70,9 @@ class PostsManager extends Component
         }
 
         $this->emitSelf('render');
+    }
+    public function notification() {
+        dd("notice!!!notice!!!");
     }
 
     public function updatedPerPage() {

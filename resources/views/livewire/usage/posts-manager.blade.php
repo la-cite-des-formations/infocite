@@ -6,6 +6,9 @@
         <div class="container d-flex flex-column">
             <div class="align-self-end">
                 <div class="input-group" role="group">
+                    <button class="btn btn-secondary" wire:click="showModal('confirm', {handling : 'notification'})" type="button">
+                        <i class="bi bi-bell"></i>
+                    </button>
                     <button class="btn @if ($rubric->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
                             title="@if ($rubric->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
                             wire:click="switchFavoriteRubric" type="button">
