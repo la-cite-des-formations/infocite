@@ -18,7 +18,7 @@
                     </div>
                         <dl class="row col-12 col-sm-9 col-lg col-xl infos-dl2">
                               @if(!empty($user->google_account))
-                                <span class="col-6 col-sm-3 material-icons text-start">
+                                <span class="col-6 col-sm-3 material-icons text-end">
                                     {{ $user->is_staff ? 'corporate_fare' : 'school' }}
                                 </span>
                                 <a class="col-6 col-sm-9 alert-link text-start" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
