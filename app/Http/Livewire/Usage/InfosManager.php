@@ -80,6 +80,8 @@ class InfosManager extends Component
             'user' => $user,
             'favoritesPosts' => $user->myFavoritesPosts()
                 ->paginate($this->perPage),
+            'favoritesRubrics' => $user->rubrics()
+                ->paginate($this->perPage),
         ]);
     }
 }

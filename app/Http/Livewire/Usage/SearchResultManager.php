@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Usage;
 
 use App\Post;
 use App\Rubric;
+use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -31,8 +32,15 @@ class SearchResultManager extends Component
     public function render() {
         return view('livewire.usage.search-result-manager', [
             'foundPosts' => Post::query()
-                ->where('title', 'like', "%$this->searchedStr%")
-                ->orWhere('content', 'like', "%$this->searchedStr%")
+                ->whereIn('id', Post::query()
+                    ->where('title', 'like', "%$this->searchedStr%")
+                    ->orWhere('content', 'like', "%$this->searchedStr%")
+                    ->get()
+                    ->filter(function ($post) {
+                        return User::find(auth()->user()->id)->can('view', $post);
+                    })
+                    ->pluck('id')
+                )
                 ->paginate($this->perPage),
             'replaceStr' => '/'. $this->searchedStr . '/i',
         ]);
