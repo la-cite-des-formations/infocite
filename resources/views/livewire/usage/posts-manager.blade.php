@@ -6,7 +6,10 @@
         <div class="container d-flex flex-column">
             <div class="align-self-end">
                 <div class="input-group" role="group">
-                    <button class="btn btn-secondary" wire:click="showModal('confirm', {handling : 'notification'})" type="button">
+                    <button class="btn btn-sm @if($alertPosts->total() == 0) btn-secondary @else btn-danger" @endif wire:click="showModal('confirm', {handling : 'notification'})" type="button">
+                          @if ($alertPosts->count() > 0)
+                            <span class="me-1">{{ $alertPosts->count() }}</span>
+                          @endif
                         <i class="bi bi-bell"></i>
                     </button>
                     <button class="btn @if ($rubric->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
@@ -80,8 +83,19 @@
                                         type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
                                     <i class="bx bx-message-alt-check"></i>
                                 </div>
+                                  @can('delete', $post)
+                                    <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                  @endcan
+                                  @can('update', $post)
+                                    <a href="{{ "{$post->rubric->route()}/{$post->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
+                                        <i class="bx bx-pencil"></i>
+                                    </a>
+                                  @endcan
                             </div>
                         </div>
+
                     </div>
                 </div>
                @endcan

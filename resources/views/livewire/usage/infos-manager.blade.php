@@ -116,28 +116,25 @@
             <!-- Mes rubriques favoris -->
             <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
                     <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">category</i>Mes rubriques favoris</h3>
-                    {{-- <p class="text-center">Aucun rubrique dans les favoris</p> --}}
                       @if ($favoritesRubrics->total() == 0)
                         <p class="text-center">Aucun rubrique dans les favoris</p>
                       @else
-                        {{-- <ul> --}}
-                            @foreach ($user->rubrics as $i => $rubric)
+                              @foreach ($user->rubrics as $i => $rubric)
                             <div class="column aos-init aos-animate mt-2 mb-3"
-                            @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
+                              @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                                 <div class="rubrics-div">
-                                <p class="fs-5 text-center">
-                                <a href="{{ $rubric->route() }}">{{ $rubric->name }}</a>
-                                <button class="btn @if ($rubric->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                                    title="@if ($rubric->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                    wire:click="switchFavoriteRubric({{ $rubric->id }})" type="button">
-                                <i class="bx bx-star"></i>
-                                </button>
-                                </p>
+                                    <p class="fs-5 text-center">
+                                        <a href="{{ $rubric->route() }}">{{ $rubric->name }}</a>
+                                        <button class="btn @if ($rubric->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
+                                        title="@if ($rubric->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                                        wire:click="switchFavoriteRubric({{ $rubric->id }})" type="button">
+                                        <i class="bx bx-star"></i>
+                                        </button>
+                                    </p>
                                 </div>
                             </div>
-                            @endforeach
-                        {{-- </ul> --}}
-                      @endif
+                              @endforeach
+                              @endif
             </div>
 
             <!-- Mes articles favoris -->
@@ -168,6 +165,7 @@
                                         <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="à venir">schedule_send</i>
                                     @endif
                                     </div>
+                                    <p class="m-1 fs-6"><i>Rubrique : {{ $post->rubric->name }}</i></p>
                                     <div>{{ $post->title }}</div>
                                 </a>
                             </h4>
@@ -177,16 +175,16 @@
 
                             <div class="align-self-end mt-auto">
                                 <div class="input-group" role="group" aria-label="Actions">
-                                @if($post->isCommentable())
+                                  @if($post->isCommentable())
                                     <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
                                     <div class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
                                         type="text" title="Commentaires">
-                                    @if ($post->comments->count() > 0)
+                                      @if ($post->comments->count() > 0)
                                         <span class="me-1">{{ $post->comments->count() }}</span>
-                                    @endif
+                                      @endif
                                         <i class="bx bx-comment-detail"></i>
                                     </div>
-                                @endif
+                                  @endif
                                     <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
                                     <button class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
                                             title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
@@ -198,6 +196,16 @@
                                             type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
                                         <i class="bx bx-message-alt-check"></i>
                                     </div>
+                                  @can('delete', $post)
+                                    <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                  @endcan
+                                  @can('update', $post)
+                                    <a href="{{ "{$post->rubric->route()}/{$post->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
+                                        <i class="bx bx-pencil"></i>
+                                    </a>
+                                  @endcan
                                 </div>
                             </div>
                         </div>

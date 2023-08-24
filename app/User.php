@@ -71,6 +71,14 @@ class User extends Authenticatable
             ->where('is_favorite', TRUE);
     }
 
+    public function alertPosts() {
+        return $this
+            ->belongsToMany('App\Post', 'post_user')
+            ->orderBy('created_at', 'DESC')
+            ->withPivot(['is_favorite'])
+            ->where('is_favorite', TRUE);
+    }
+
     public function myComments() {
         return $this
             ->hasMany('App\Comment')

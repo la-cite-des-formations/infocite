@@ -80,6 +80,7 @@ class PostsManager extends Component
     }
 
     public function render() {
+        $user = User::find(auth()->user()->id);
         return view('livewire.usage.posts-manager', [
             'posts' => Post::query()
                 ->whereIn('id', Post::query()
@@ -100,6 +101,9 @@ class PostsManager extends Component
                     ->pluck('id')
                 )
                 ->orderByRaw('created_at DESC')
+                ->paginate($this->perPage),
+            'user' => $user,
+            'alertPosts' => $user->alertPosts()
                 ->paginate($this->perPage),
         ]);
     }

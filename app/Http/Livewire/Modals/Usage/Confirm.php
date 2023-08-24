@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Modals\Usage;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
+use App\User;
 
 class Confirm extends Component
 {
@@ -15,6 +16,7 @@ class Confirm extends Component
     public $commentId;
     public $appId;
     public $message;
+    public $perPage = 8;
 
 
     public function mount($data) {
@@ -66,6 +68,11 @@ class Confirm extends Component
 
     public function render()
     {
-        return view('livewire.modals.usage.confirm');
+        $user = User::find(auth()->user()->id);
+        return view('livewire.modals.usage.confirm', [
+            'user' => $user,
+            'alertPosts' => $user->alertPosts()
+                ->paginate($this->perPage),
+        ]);
     }
 }
