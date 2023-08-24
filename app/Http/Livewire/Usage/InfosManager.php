@@ -11,8 +11,9 @@ use Livewire\WithPagination;
 class InfosManager extends Component
 {
     use WithPagination;
-    public $rubric;
+
     // public $elements;
+    public $rubric;
     public $firstLoad = TRUE;
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [4, 8, 16];
@@ -54,8 +55,10 @@ class InfosManager extends Component
         $this->emitSelf('render');
     }
 
-    public function switchFavoriteRubric() {
+    public function switchFavoriteRubric($rubric_id) {
         if ($this->firstLoad) $this->firstLoad = FALSE;
+
+        $this->rubric = Rubric::find($rubric_id);
 
         if ($this->rubric->isFavorite()) {
             $this->rubric
