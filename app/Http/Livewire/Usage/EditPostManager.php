@@ -7,6 +7,7 @@ use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
+use App\Notification;
 use App\Post;
 use App\Right;
 use App\Roles;
@@ -97,6 +98,7 @@ class EditPostManager extends Component
 
         if ($this->mode === 'creation') {
             // création
+            $notificationContentType = 'NP';
             $this->post->author_id = auth()->user()->id;
             $this
                 ->sendAlert([
@@ -106,6 +108,7 @@ class EditPostManager extends Component
         }
         else{
             // modification
+            $notificationContentType = 'UP';
             $this->post->corrector_id = auth()->user()->id;
             $this
                 ->sendAlert([
@@ -116,6 +119,12 @@ class EditPostManager extends Component
 
         // sauvegarde et redirection
         $this->post->save();
+
+        // notification associée
+        Notification::create([
+            'content_type' => $notificationContentType,
+            'post_id' => $this->post->id,
+        ]);
 
         redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit");
     }

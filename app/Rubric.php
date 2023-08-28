@@ -54,6 +54,12 @@ class Rubric extends Model
             ->belongsToMany('App\User')
             ->orderByRaw('name ASC, first_name ASC');
     }
+    public function notifications()
+    {
+        return $this
+            ->hasManyThrough('App\Notification', 'App\Post')
+            ->orderBy('created_at', 'DESC');
+    }
 
     public function isFavorite() {
         return $this->users->find(auth()->user()->id) ? TRUE : FALSE;
