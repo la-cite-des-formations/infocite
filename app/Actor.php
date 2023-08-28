@@ -60,23 +60,6 @@ class Actor extends Model
         return $this->user->processes();
     }
 
-    public function getFullSubordinatesListBoxFormatAttribute() {
-        $formatedFullSubordinates = new Collection();
-
-        $this->user->subordinates->filter(function ($subordinate) {
-            return !$subordinate->isManager();
-        })->each(function ($subordinate) use ($formatedFullSubordinates) {
-            $formatedFullSubordinates->add(
-                '<p>'.
-                    '<div class="text-danger">'.$subordinate->identity.'</div>'.
-                    $subordinate->functionsList(['P']).
-                '</p>'
-            );
-        });
-
-        return $formatedFullSubordinates->implode('');
-    }
-
     public function getIsManagerAttribute() {
         return $this->user->isManager();
     }
