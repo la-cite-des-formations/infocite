@@ -12,7 +12,7 @@ class Notification extends Model
      *
      * @var array
      */
-    protected $fillable = ['content_type', 'created_at', 'post_id', 'updated_at'];
+    protected $fillable = ['post_id', 'content_type'];
     public function post()
     {
         return $this->belongsTo('App\Post');
