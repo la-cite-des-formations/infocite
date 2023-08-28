@@ -397,17 +397,7 @@ table {
     .dt-class{
         text-align: right !important;
     }
-    .no-ypareo{
-        text-align: center;
-    }
 }
-
-@media (min-width: 1200px) {
-    .no-ypareo{
-        text-align: left;
-    }
-}
-
 
 @media (max-width: 575px) {
     .infos-card{

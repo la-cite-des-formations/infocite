@@ -9,7 +9,7 @@
         </div>
         <div class="container m-auto">
             <div class="card rounded-pill d-flex flex-row flex-wrap text-wrap infos-card py-5 pl-2">
-                <div class="col-12 infos-div mb-5">
+                <div class="col-12 infos-div mb-4">
                     <div class="d-flex justify-content-center my-auto ml-auto">
                         <div class="my-auto me-3">
                           @if($user->avatar)
@@ -28,6 +28,9 @@
                             <span class="material-icons-outlined ms-1">@if($user->is_staff) corporate_fare @else school @endif</span>
                         </div>
                     </div>
+                    @if (empty($user->code_ypareo))
+                        <p class="col-12 text-center fst-italic mt-2">Utilisateur externe non répertorié dans YParéo</p>
+                    @endif
                 </div>
                     <dl class="row col-12 col-xl">
                         <dt class="col-6 text-end" >{{ $user->gender == 'F' ? 'Mme.' : 'M.' }}</dt>
@@ -69,7 +72,7 @@
                         <dd class="col-6 col-sm-9 text-start">{{ AP::getQuality($user->quality) }}</dd>
                       @endif
                     </dl>
-                      @if(!empty($user->code_ypareo))
+                  @if(!empty($user->code_ypareo))
                     <dl class="row col-12 col-xl">
                         <!-- Code YParéo _____  Code Net YParéo _____ -->
                         <dt class="col-6 text-end">Code YParéo</dt>
@@ -86,14 +89,11 @@
                         <dt class="col-6 text-end">N° Badge</dt>
                         <dd class="col-6 text-start @if(empty($user->badge)) font-italic @endif">{{ $user->badge ?: 'non défini' }}</dd>
                     </dl>
-                      @else
-                    <dl class="row col-12 col-xl text-wrap pe-3">
-                        <p class="col-12 no-ypareo">Utilisateur externe non répertorié dans YParéo.</p>
-                      @endif
+                  @endif
                     <dl class="row col-12 col-xl text-wrap pe-3">
                       @if($user->groupsList(['P']))
                         <!-- Équipe _________  -->
-                        <dt class="col-6 col-sm-4 text-start dt-class">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
+                        <dt class="col-6 col-sm-4 text-end dt-class">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
                         <dd class="col-6 col-sm-8 text-start">
                             {{ $user->groupsList(['P']) }}
                         </dd>
@@ -105,7 +105,7 @@
                       @endif
                       @if($user->groupsList(['C']) || $user->groupsList(['E']))
                         <!-- Classe(s) ______, ______, ... -->
-                        <dt class="col-6 col-sm-4 text-start dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
+                        <dt class="col-6 col-sm-4 text-end dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
                         <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['C']) }}</dd>
                         <dt class="col-6 col-sm-4"></dt>
                         <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['E']) }}</dd>
@@ -117,7 +117,7 @@
             <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
                     <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">category</i>Mes rubriques favoris</h3>
                       @if ($favoritesRubrics->total() == 0)
-                        <p class="text-center">Aucun rubrique dans les favoris</p>
+                        <p class="text-center">Aucune rubrique dans les favoris</p>
                       @else
                               @foreach ($user->rubrics as $i => $rubric)
                             <div class="column aos-init aos-animate mt-2 mb-3"
