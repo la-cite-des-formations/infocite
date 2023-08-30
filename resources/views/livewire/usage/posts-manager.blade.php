@@ -89,7 +89,7 @@
                                     <i class="bx bx-message-alt-check"></i>
                                 </div>
                                   @can('delete', $post)
-                                    <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                    <button wire:click="showModal('confirm', {handling : 'deletePostUne', postId : {{ $post->id }}})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                         <i class="bx bx-trash"></i>
                                     </button>
                                   @endcan

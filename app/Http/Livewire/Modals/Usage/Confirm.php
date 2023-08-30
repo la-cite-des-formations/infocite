@@ -13,6 +13,7 @@ class Confirm extends Component
     use WithAlert;
 
     public $handling;
+    public $postId;
     public $commentId;
     public $appId;
     public $message;
@@ -23,11 +24,13 @@ class Confirm extends Component
         extract($data);
 
         $this->handling = $handling;
+        $this->postId = $postId ?? NULL;
         $this->commentId = $id ?? NULL;
         $this->appId = $appId ?? NULL;
 
         switch($handling){
             case 'deletePost':
+            case 'deletePostUne':
                 $this->message = "Êtes-vous sûr de vouloir supprimer cet article ?";
             break;
             case 'deleteComment':
@@ -50,6 +53,9 @@ class Confirm extends Component
             case('deletePost'):
                 $this->emit('deletePost')->to('PostManager');
             break;
+            case('deletePostUne'):
+                $this->emit('deletePostUne', $this->postId)->to('PostsManager');
+            break;
             case('deleteComment'):
                 $this->emit('deleteComment', $this->commentId)->to('PostManager');
             break;
@@ -65,11 +71,8 @@ class Confirm extends Component
 
     public function render()
     {
-        $user = User::find(auth()->user()->id);
         return view('livewire.modals.usage.confirm', [
-            'user' => $user,
-            'alertPosts' => $user->alertPosts()
-                ->paginate($this->perPage),
+            
         ]);
     }
 }

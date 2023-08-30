@@ -23,7 +23,7 @@ class PostsManager extends Component
     public $firstLoad = TRUE;
 
     protected $closedModalCallback = ['updateNotifications', 'setNotifications'];
-    protected $listeners = ['modalClosed', 'render'];
+    protected $listeners = ['modalClosed','deletePostUne', 'render'];
 
     public function setNotifications() {
         $this->notifications = auth()->user()
@@ -94,6 +94,10 @@ class PostsManager extends Component
 
     public function updatedPerPage() {
         $this->resetPage();
+    }
+
+    public function deletePostUne($postId) {
+        Post::find($postId)->delete();
     }
 
     public function render() {
