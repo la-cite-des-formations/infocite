@@ -13,10 +13,36 @@ class Notification extends Model
      * @var array
      */
     protected $fillable = ['post_id', 'content_type'];
+
+    public function getMessageAttribute() {
+        $message = AP::getNotifications($this->content_type);
+
+        if ($this->content_type == 'UP') {
+            $message = str_replace('@date', today()->format('d/m/Y'), $message);
+        }
+
+        return $message;
+    }
+
+    public function geHReftAttribute() {
+        switch ($this->content_type) {
+            case 'NP' :
+            case 'UP' :
+            case 'CP' :
+                return $this->post->route;
+            case 'NA' :
+            case 'UA' :
+                return '#apps';
+            case 'UO' :
+                return 'rh.org-chart';
+        }
+    }
+
     public function post()
     {
         return $this->belongsTo('App\Post');
     }
+
     public function rubric()
     {
         return $this->hasOneThrough('App\Rubric', 'App\Post');
