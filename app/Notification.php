@@ -24,7 +24,7 @@ class Notification extends Model
         return $message;
     }
 
-    public function geHReftAttribute() {
+    public function getHRefAttribute() {
         switch ($this->content_type) {
             case 'NP' :
             case 'UP' :

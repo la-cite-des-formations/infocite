@@ -63,6 +63,7 @@ class PostsManager extends Component
         else {
             $post->readers()->detach(auth()->user()->id);
         }
+        $this->setNotifications();
         $this->emitSelf('render');
     }
 
@@ -80,6 +81,7 @@ class PostsManager extends Component
                 ->attach(auth()->user()->id);
         }
 
+        $this->setNotifications();
         $this->emitSelf('render');
     }
 
