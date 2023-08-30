@@ -4,7 +4,6 @@ namespace App\Http\Livewire\Usage;
 
 use App\Post;
 use App\Rubric;
-use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
