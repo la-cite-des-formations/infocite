@@ -46,11 +46,16 @@ class Post extends Model
             ->belongsToMany('App\User')
             ->withPivot(['is_favorite', 'is_read', 'tags']);
     }
+
     public function notifications()
     {
         return $this
             ->hasMany('App\Notification')
             ->orderBy('created_at', 'DESC');
+    }
+
+    public function getRouteAttribute() {
+        return $this->rubric->route()."/{$this->id}";
     }
 
     public function isCommentable() {

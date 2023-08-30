@@ -1,20 +1,24 @@
 @extends('layouts.usage-modal')
 
-    @section('modal-title', "Notification")
-    @section('modal-body')
-        <div class="alert alert-danger mb-3">
-            <ul>
-              @foreach ($alertPosts as $post)
-              {{-- @if (!($post->isRead())) --}}
-                <li>{{ $post->title }}<i> ( depuis {{ $post->updated_at->format('d/m/Y') }} )</i></li>
-              {{-- @endif --}}
-                {{-- <div class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
-                    type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
-                    <i class="bx bx-message-alt-check"></i>
-                </div> --}}
-              @endforeach
-            </ul>
-        </div>
-    @endsection
+@section('modal-title', "Notifications")
+@section('modal-size', 'modal-lg')
 
+@section('modal-body')
+    <ul>
+      @foreach ($notifications as $notification)
+       @if (!$notification->consulted)
+        <li class="alert alert-danger">{{ $notification->message }}
+            <a href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
+        </li>
+       @else
+        <li class="alert alert-info">{{ $notification->message }}
+            <a href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
+        </li>
+       @endif
+      @endforeach
+    </ul>
+@endsection
 
+@section('modal-footer')
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+@endsection

@@ -79,6 +79,20 @@ class User extends Authenticatable
             ->where('is_favorite', TRUE);
     }
 
+    public function myNotifications() {
+        $myNotifications = new Collection();
+
+        $this->rubrics->each(function ($rubric) use (&$myNotifications) {
+            $myNotifications = $myNotifications->merge($rubric->notifications);
+        });
+
+        $this->myFavoritesPosts->each(function ($post) use (&$myNotifications) {
+            $myNotifications = $myNotifications->merge($post->notifications);
+        });
+
+        return $myNotifications;
+    }
+
     public function myComments() {
         return $this
             ->hasMany('App\Comment')

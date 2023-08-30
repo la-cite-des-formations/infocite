@@ -8,6 +8,7 @@ use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
+use App\Notification;
 
 class PostsManager extends Component
 {
@@ -19,12 +20,22 @@ class PostsManager extends Component
     public $perPage = 8;
 
     public $rubric;
+    public $notifications;
     public $firstLoad = TRUE;
 
-    protected $listeners = ['render'];
+    protected $closedModalCallback = ['updateNotifications', 'setNotifications'];
+    protected $listeners = ['modalClosed', 'render'];
+
+    public function setNotifications() {
+        $this->notifications = auth()->user()
+            ->myNotifications()
+            ->where('consulted', FALSE)
+            ->sortByDesc('created_at');
+    }
 
     public function mount($viewBag) {
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+        $this->setNotifications();
     }
 
     public function switchFavoritePost($post_id) {
@@ -71,8 +82,13 @@ class PostsManager extends Component
 
         $this->emitSelf('render');
     }
-    public function notification() {
-        dd("notice!!!notice!!!");
+
+    public function updateNotifications() {
+        $notificationsIds = $this->notifications->pluck('id');
+
+        Notification::query()
+            ->whereIn('id', $notificationsIds)
+            ->update(['consulted' => TRUE]);
     }
 
     public function updatedPerPage() {
@@ -80,7 +96,8 @@ class PostsManager extends Component
     }
 
     public function render() {
-        $user = User::find(auth()->user()->id);
+        $user = auth()->user();
+
         return view('livewire.usage.posts-manager', [
             'posts' => Post::query()
                 ->whereIn('id', Post::query()
@@ -89,21 +106,18 @@ class PostsManager extends Component
                             ->where('rubric_id', $this->rubric->id)
                             ->orderByRaw('published_at DESC, created_at DESC');
                     })
-                    ->when($this->rubric->segment == 'une', function ($query) {
+                    ->when($this->rubric->segment == 'une', function ($query) use ($user) {
                         $query
-                            ->whereIn('rubric_id', User::find(auth()->user()->id)->myRubrics()->pluck('id'))
+                            ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
                             ->orderByRaw('published_at DESC, created_at DESC');
                     })
                     ->get()
-                    ->filter(function ($post) {
-                        return User::find(auth()->user()->id)->can('view', $post);
+                    ->filter(function ($post) use ($user) {
+                        return $user->can('view', $post);
                     })
                     ->pluck('id')
                 )
                 ->orderByRaw('created_at DESC')
-                ->paginate($this->perPage),
-            'user' => $user,
-            'alertPosts' => $user->alertPosts()
                 ->paginate($this->perPage),
         ]);
     }

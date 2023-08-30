@@ -323,13 +323,13 @@ class AP // Application Parameters
         'dark' => 0x212529,
     ];
 
-    const NOTIFICATINS = [
+    const NOTIFICATIONS = [
         'NP' => 'Nouvel article disponible : ',
-        'UP' => 'Article mis à jour le @date :',
-        'CP' => 'Article commenté',
-        'NA' => '',
-        'UA' =>'',
-        'UO' => '',
+        'UP' => 'Article mis à jour le @date : ',
+        'CP' => 'Article commenté : ',
+        'NA' => 'Nouvelle application disponible : ',
+        'UA' => 'Application mise à jour : ',
+        'UO' => 'Organigramme mis à jour : ',
     ];
 
     /*public static function getFieldEnum($table, $field) {
@@ -490,7 +490,7 @@ class AP // Application Parameters
         }, static::BS_COLORS);
     }
     public static function getNotifications($contentType) {
-        return static::NOTIFICATINS[$contentType];
+        return static::NOTIFICATIONS[$contentType];
     }
 
 }

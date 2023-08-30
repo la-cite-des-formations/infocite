@@ -6,9 +6,9 @@
         <div class="container d-flex flex-column">
             <div class="align-self-end">
                 <div class="input-group" role="group">
-                    <button class="btn btn-sm @if($alertPosts->total() == 0) btn-secondary @else btn-danger" @endif wire:click="showModal('confirm', {handling : 'notification'})" type="button">
-                          @if ($alertPosts->count() > 0)
-                            <span class="me-1">{{ $alertPosts->count() }}</span>
+                    <button class="btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif" wire:click="showModal('notify')" type="button">
+                          @if ($notifications->count() > 0)
+                            <span class="me-1">{{ $notifications->count() }}</span>
                           @endif
                         <i class="bi bi-bell"></i>
                     </button>
