@@ -61,7 +61,7 @@ class Post extends Model
     {
         return $this
             ->hasMany('App\Notification')
-            ->orderBy('release_at', 'DESC');
+            ->orderByRaw('release_at DESC, created_at DESC');
     }
 
     public function getRouteAttribute() {

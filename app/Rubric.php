@@ -58,7 +58,7 @@ class Rubric extends Model
     {
         return $this
             ->hasManyThrough('App\Notification', 'App\Post')
-            ->orderBy('release_at', 'DESC');
+            ->orderByRaw('release_at DESC, created_at DESC');
     }
 
     public function isFavorite() {
