@@ -12,19 +12,20 @@ class Notification extends Model
      *
      * @var array
      */
-    protected $fillable = ['post_id', 'content_type'];
+    protected $fillable = ['post_id', 'content_type', 'release_at'];
+    protected $casts = ['release_at' => 'date:Y-m-d'];
 
     public function getMessageAttribute() {
         $message = AP::getNotifications($this->content_type);
 
         if ($this->content_type == 'UP') {
-            $message = str_replace('@date', today()->format('d/m/Y'), $message);
+            $message = str_replace('@date', $this->release_at->format('d/m/Y'), $message);
         }
 
         return $message;
     }
 
-    public function geHReftAttribute() {
+    public function getHRefAttribute() {
         switch ($this->content_type) {
             case 'NP' :
             case 'UP' :
@@ -36,6 +37,11 @@ class Notification extends Model
             case 'UO' :
                 return 'rh.org-chart';
         }
+    }
+
+    public function users() {
+        return $this
+            ->belongsToMany('App\User');
     }
 
     public function post()

@@ -71,14 +71,6 @@ class User extends Authenticatable
             ->where('is_favorite', TRUE);
     }
 
-    public function alertPosts() {
-        return $this
-            ->belongsToMany('App\Post', 'post_user')
-            ->orderBy('created_at', 'DESC')
-            ->withPivot(['is_favorite'])
-            ->where('is_favorite', TRUE);
-    }
-
     public function myNotifications() {
         $myNotifications = new Collection();
 
@@ -91,6 +83,17 @@ class User extends Authenticatable
         });
 
         return $myNotifications;
+    }
+
+    public function oldNotifications() {
+        return $this->myNotifications()->reject(function ($notification) {
+            return $this->newNotifications->contains('id', $notification->id);
+        });
+    }
+
+    public function newNotifications() {
+        return $this
+            ->belongsToMany('App\Notification');
     }
 
     public function myComments() {

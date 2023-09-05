@@ -64,11 +64,14 @@ class PostManager extends Component
 
         if ($comment) {
             $this->post->comments()->save($comment);
+
             // notification associée
-            Notification::create([
-                'content_type' => 'CP',
-                'post_id' => $this->post->id,
-            ]);
+            $newNotification = Notification::updateOrCreate(
+                ['content_type' => 'CP', 'post_id' => $this->post->id],
+                ['release_at' => today()->format('Y-m-d')]
+            );
+            $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
+
             $this->emitSelf('render');
         }
 

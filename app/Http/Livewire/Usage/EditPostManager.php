@@ -44,6 +44,7 @@ class EditPostManager extends Component
         $this->post = Post::findOrNew($viewBag->post_id);
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
     }
+
     public function contentChange($content) {
         $this->post->content = $content;
     }
@@ -98,7 +99,6 @@ class EditPostManager extends Component
 
         if ($this->mode === 'creation') {
             // création
-            $notificationContentType = 'NP';
             $this->post->author_id = auth()->user()->id;
             $this
                 ->sendAlert([
@@ -106,10 +106,10 @@ class EditPostManager extends Component
                     'message' => "Création de la mise en forme effectuée avec succès."
                 ]);
         }
-        else{
+        else {
             // modification
-            $notificationContentType = 'UP';
             $this->post->corrector_id = auth()->user()->id;
+
             $this
                 ->sendAlert([
                     'alertClass' => 'success',
@@ -117,15 +117,34 @@ class EditPostManager extends Component
                 ]);
         }
 
-        // sauvegarde et redirection
+        // sauvegarde
         $this->post->save();
 
         // notification associée
-        Notification::create([
-            'content_type' => $notificationContentType,
-            'post_id' => $this->post->id,
-        ]);
+        if ($this->post->published) {
+            $newPostNotification = Notification::query()
+                ->where('content_type', 'NP')
+                ->where('post_id', $this->post->id);
 
+            if ($newPostNotification->exists()) {
+                $newPostNotification->update(['release_at' => $this->post->published_at]);
+
+                $postNotification = Notification::updateOrCreate(
+                    ['content_type' => 'UP', 'post_id' => $this->post->id],
+                    ['release_at' => $this->post->published_at]
+                );
+            }
+            else {
+                $postNotification = Notification::create(
+                    ['content_type' => 'NP', 'post_id' => $this->post->id, 'release_at' => $this->post->published_at]
+                );
+            }
+            $postNotification
+                ->users()
+                ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
+        }
+
+        // redirection
         redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit");
     }
 

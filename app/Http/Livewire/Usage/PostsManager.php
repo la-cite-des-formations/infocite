@@ -4,11 +4,10 @@ namespace App\Http\Livewire\Usage;
 
 use App\Post;
 use App\Rubric;
-use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
-use App\Notification;
+//use App\Notification;
 
 class PostsManager extends Component
 {
@@ -20,21 +19,22 @@ class PostsManager extends Component
     public $perPage = 8;
 
     public $rubric;
+    public $isFavoriteRubric;
     public $notifications;
     public $firstLoad = TRUE;
 
-    protected $closedModalCallback = ['updateNotifications', 'setNotifications'];
-    protected $listeners = ['modalClosed', 'render'];
+    protected $closedModalCallback = [/*'updateNotifications',*/ 'setNotifications'];
+    protected $listeners = ['modalClosed', 'deletePost'];
 
     public function setNotifications() {
         $this->notifications = auth()->user()
-            ->myNotifications()
-            ->where('consulted', FALSE)
-            ->sortByDesc('created_at');
+            ->newNotifications
+            ->where('release_at', '<=', today());
     }
 
     public function mount($viewBag) {
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+        $this->isFavoriteRubric = $this->rubric->isFavorite();
         $this->setNotifications();
     }
 
@@ -63,7 +63,6 @@ class PostsManager extends Component
         else {
             $post->readers()->detach(auth()->user()->id);
         }
-        $this->emitSelf('render');
     }
 
     public function switchFavoriteRubric() {
@@ -80,19 +79,21 @@ class PostsManager extends Component
                 ->attach(auth()->user()->id);
         }
 
-        $this->emitSelf('render');
+        $this->isFavoriteRubric = !$this->isFavoriteRubric;
     }
 
-    public function updateNotifications() {
-        $notificationsIds = $this->notifications->pluck('id');
+    // public function updateNotifications() {
+    //     $notificationsIds = $this->notifications->pluck('id');
 
-        Notification::query()
-            ->whereIn('id', $notificationsIds)
-            ->update(['consulted' => TRUE]);
-    }
+    //     auth()->user()->newNotifications()->detach($notificationsIds);
+    // }
 
     public function updatedPerPage() {
         $this->resetPage();
+    }
+
+    public function deletePost($postId) {
+        Post::find($postId)->delete();
     }
 
     public function render() {

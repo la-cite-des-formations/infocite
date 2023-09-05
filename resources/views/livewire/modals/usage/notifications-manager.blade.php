@@ -5,16 +5,15 @@
 
 @section('modal-body')
     <ul>
-      @foreach ($notifications as $notification)
-       @if (!$notification->consulted)
+      @foreach ($newNotifications as $notification)
         <li class="alert alert-danger">{{ $notification->message }}
-            <a href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
+            <a wire:click='consumedNotif({{ $notification->id }})' href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
         </li>
-       @else
+      @endforeach
+      @foreach ($oldNotifications as $notification)
         <li class="alert alert-info">{{ $notification->message }}
             <a href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
         </li>
-       @endif
       @endforeach
     </ul>
 @endsection

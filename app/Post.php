@@ -47,11 +47,21 @@ class Post extends Model
             ->withPivot(['is_favorite', 'is_read', 'tags']);
     }
 
+    public function notificableReaders() {
+        return $this->rubric
+            ->users
+            ->merge($this
+                ->readers()
+                ->where('is_favorite', TRUE)
+                ->get(['users.*'])
+            );
+    }
+
     public function notifications()
     {
         return $this
             ->hasMany('App\Notification')
-            ->orderBy('created_at', 'DESC');
+            ->orderBy('release_at', 'DESC');
     }
 
     public function getRouteAttribute() {
@@ -59,7 +69,7 @@ class Post extends Model
     }
 
     public function isCommentable() {
-        return User::find(auth()->user()->id)
+        return auth()->user()
             ->hasRole('comments', Roles::IS_EDITR, 'Post', $this->id);
     }
 
