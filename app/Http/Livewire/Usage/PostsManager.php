@@ -23,7 +23,7 @@ class PostsManager extends Component
     public $notifications;
     public $firstLoad = TRUE;
 
-    protected $closedModalCallback = [/*'updateNotifications',*/ 'setNotifications'];
+    protected $closedModalCallback = ['updateNotifications', 'setNotifications'];
     protected $listeners = ['modalClosed', 'deletePost'];
 
     public function setNotifications() {
@@ -82,11 +82,11 @@ class PostsManager extends Component
         $this->isFavoriteRubric = !$this->isFavoriteRubric;
     }
 
-    // public function updateNotifications() {
-    //     $notificationsIds = $this->notifications->pluck('id');
+    public function updateNotifications() {
+        $notificationsIds = $this->notifications->pluck('id');
 
-    //     auth()->user()->newNotifications()->detach($notificationsIds);
-    // }
+        auth()->user()->newNotifications()->detach($notificationsIds);
+    }
 
     public function updatedPerPage() {
         $this->resetPage();
