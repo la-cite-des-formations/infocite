@@ -58,11 +58,11 @@ Route::post('upload', 'ViewController@upload')->name('upload');
  //!\\ l'ordre des routes suivantes est important.
 //===\\
 
-Route::get('{rubric}/personal-apps/create', 'ViewController@createPersonalApp')
+Route::get('personal-apps/create', 'ViewController@createPersonalApp')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('personal-apps.create');
 
-Route::get('{rubric}/personal-apps/{app_id}/edit', 'ViewController@editPersonalApp')
+Route::get('personal-apps/{app_id}/edit', 'ViewController@editPersonalApp')
     ->where(['rubric' => AP::RUBRIC_REGEX, 'app_id' => AP::ID_REGEX])
     ->name('personal-apps.edit');
 
@@ -81,6 +81,3 @@ Route::get('{rubric}/{post_id}/edit', 'ViewController@editPost')
 Route::get('{rubric}', 'ViewController@index')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('rubric.index');
-
-
-
