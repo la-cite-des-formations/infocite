@@ -6,10 +6,10 @@
         <div class="section-title">
             <h2 class="title-icon">
                 <i class="material-icons-outlined md-36">extension</i>
-                Applications personnelles - {{ $mode === 'edition' ? 'Édition' : 'Ajout' }}
+                Applications personnelles - {{ $mode === 'edition' ? 'Modification' : 'Ajout' }}
             </h2>
             <p>
-                Ce formulaire vous permet {{ $mode === 'edition' ? 'de modifier' : "d'ajouter" }} une application personnelle accessible depuis l'intranet
+                Ce formulaire vous permet {{ $mode === 'edition' ? "de modifier" : "d'ajouter" }} une application personnelle accessible depuis l'intranet
             </p>
         </div>
         <form id="appForm">

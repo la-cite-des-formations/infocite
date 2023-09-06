@@ -105,11 +105,20 @@ class PostPolicy
         // vérification de l'accès à la rubrique de l'arcticle concerné
         if ($user->myRubrics()->contains('id', $post->rubric_id)) {
 
-            // vérification des droits de l'utilisateur en édition ('Editeur')
+            // vérification des droits de l'utilisateur en édition ('Editeur' / 'Modérateur')
             // sur l'article concerné
-            $canUpdatePost = $user->hasRole('posts', Roles::IS_EDITR, 'Post', $post->id, AP::STRICTLY);
+            if ($post->released()) {
+                $canUpdatePost = $user->hasRole('posts', Roles::IS_EDITR & Roles::IS_MODER, 'Post', $post->id, AP::STRICTLY);
 
-            return $canUpdatePost ?? $this->create($user, $post->rubric_id);
+                return $canUpdatePost ??
+                    $this->create($user, $post->rubric_id) &&
+                    $this->publish($user, $post->rubric_id);
+            }
+            else {
+                $canUpdatePost = $user->hasRole('posts', Roles::IS_EDITR, 'Post', $post->id, AP::STRICTLY);
+
+                return $canUpdatePost ?? $this->create($user, $post->rubric_id);
+            }
         }
 
         return FALSE;

@@ -96,7 +96,7 @@ class Post extends Model
     }
 
     public function expired() {
-        return isset($this->expired_at) && (new DateTime($this->expired_at) <= today());
+        return isset($this->expired_at) && (new DateTime($this->expired_at) < today());
     }
 
     public function released() {
