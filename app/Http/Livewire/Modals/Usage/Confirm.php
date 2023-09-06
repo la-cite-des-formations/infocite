@@ -12,21 +12,25 @@ class Confirm extends Component
     use WithAlert;
 
     public $handling;
+    public $postId;
     public $commentId;
     public $appId;
     public $message;
+    public $perPage = 8;
 
 
     public function mount($data) {
         extract($data);
 
         $this->handling = $handling;
+        $this->postId = $postId ?? NULL;
         $this->commentId = $id ?? NULL;
         $this->appId = $appId ?? NULL;
 
         switch($handling){
             case 'deletePost':
-                $this->message = "Êtes-vous sûr de vouloir supprimer cet article ?";
+            case 'deletePostFromRubric':
+                    $this->message = "Êtes-vous sûr de vouloir supprimer cet article ?";
             break;
             case 'deleteComment':
                 $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
@@ -47,6 +51,9 @@ class Confirm extends Component
         switch($this->handling){
             case('deletePost'):
                 $this->emit('deletePost')->to('PostManager');
+            break;
+            case('deletePostFromRubric'):
+                $this->emit('deletePost', $this->postId)->to('PostsManager');
             break;
             case('deleteComment'):
                 $this->emit('deleteComment', $this->commentId)->to('PostManager');

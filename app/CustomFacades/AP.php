@@ -323,6 +323,15 @@ class AP // Application Parameters
         'dark' => 0x212529,
     ];
 
+    const NOTIFICATIONS = [
+        'NP' => 'Nouvel article disponible : ',
+        'UP' => 'Article mis à jour le @date : ',
+        'CP' => 'Article commenté : ',
+        'NA' => 'Nouvelle application disponible : ',
+        'UA' => 'Application mise à jour : ',
+        'UO' => 'Organigramme mis à jour : ',
+    ];
+
     /*public static function getFieldEnum($table, $field) {
         return explode(
             ',',
@@ -480,4 +489,9 @@ class AP // Application Parameters
                 'color: '.static::gradeColor($color, 0.4);
         }, static::BS_COLORS);
     }
+    public static function getNotifications($contentType) {
+        return static::NOTIFICATIONS[$contentType];
+    }
+
 }
+

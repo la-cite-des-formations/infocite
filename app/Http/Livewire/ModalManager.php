@@ -19,7 +19,9 @@ class ModalManager extends Component
     }
 
     public function unload() {
-        if ($this->client) $this->emit('modalClosed', $this->modal)->to($this->client);
+        if ($this->client) {
+            $this->emit('modalClosed', $this->modal)->to($this->client);
+        }
         $this->emit('modalClosed', $this->modal)->to($this->parent);
         $this->reset('modal', 'data', 'client');
     }

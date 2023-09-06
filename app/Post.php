@@ -47,8 +47,29 @@ class Post extends Model
             ->withPivot(['is_favorite', 'is_read', 'tags']);
     }
 
+    public function notificableReaders() {
+        return $this->rubric
+            ->users
+            ->merge($this
+                ->readers()
+                ->where('is_favorite', TRUE)
+                ->get(['users.*'])
+            );
+    }
+
+    public function notifications()
+    {
+        return $this
+            ->hasMany('App\Notification')
+            ->orderByRaw('release_at DESC, created_at DESC');
+    }
+
+    public function getRouteAttribute() {
+        return $this->rubric->route()."/{$this->id}";
+    }
+
     public function isCommentable() {
-        return User::find(auth()->user()->id)
+        return auth()->user()
             ->hasRole('comments', Roles::IS_EDITR, 'Post', $this->id);
     }
 

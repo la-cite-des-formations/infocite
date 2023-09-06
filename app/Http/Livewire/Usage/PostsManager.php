@@ -4,25 +4,38 @@ namespace App\Http\Livewire\Usage;
 
 use App\Post;
 use App\Rubric;
-use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Http\Livewire\WithModal;
+//use App\Notification;
 
 class PostsManager extends Component
 {
     use WithPagination;
+    use WithModal;
 
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 12, 16];
     public $perPage = 8;
 
     public $rubric;
+    public $isFavoriteRubric;
+    public $notifications;
     public $firstLoad = TRUE;
 
-    protected $listeners = ['render'];
+    protected $closedModalCallback = [/*'updateNotifications',*/ 'setNotifications'];
+    protected $listeners = ['modalClosed', 'deletePost'];
+
+    public function setNotifications() {
+        $this->notifications = auth()->user()
+            ->newNotifications
+            ->where('release_at', '<=', today());
+    }
 
     public function mount($viewBag) {
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+        $this->isFavoriteRubric = $this->rubric->isFavorite();
+        $this->setNotifications();
     }
 
     public function switchFavoritePost($post_id) {
@@ -50,7 +63,6 @@ class PostsManager extends Component
         else {
             $post->readers()->detach(auth()->user()->id);
         }
-        $this->emitSelf('render');
     }
 
     public function switchFavoriteRubric() {
@@ -67,14 +79,26 @@ class PostsManager extends Component
                 ->attach(auth()->user()->id);
         }
 
-        $this->emitSelf('render');
+        $this->isFavoriteRubric = !$this->isFavoriteRubric;
     }
+
+    // public function updateNotifications() {
+    //     $notificationsIds = $this->notifications->pluck('id');
+
+    //     auth()->user()->newNotifications()->detach($notificationsIds);
+    // }
 
     public function updatedPerPage() {
         $this->resetPage();
     }
 
+    public function deletePost($postId) {
+        Post::find($postId)->delete();
+    }
+
     public function render() {
+        $user = auth()->user();
+
         return view('livewire.usage.posts-manager', [
             'posts' => Post::query()
                 ->whereIn('id', Post::query()
@@ -83,14 +107,14 @@ class PostsManager extends Component
                             ->where('rubric_id', $this->rubric->id)
                             ->orderByRaw('published_at DESC, created_at DESC');
                     })
-                    ->when($this->rubric->segment == 'une', function ($query) {
+                    ->when($this->rubric->segment == 'une', function ($query) use ($user) {
                         $query
-                            ->whereIn('rubric_id', User::find(auth()->user()->id)->myRubrics()->pluck('id'))
+                            ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
                             ->orderByRaw('published_at DESC, created_at DESC');
                     })
                     ->get()
-                    ->filter(function ($post) {
-                        return User::find(auth()->user()->id)->can('view', $post);
+                    ->filter(function ($post) use ($user) {
+                        return $user->can('view', $post);
                     })
                     ->pluck('id')
                 )

@@ -63,12 +63,37 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC');
     }
 
-    public function myFavorites() {
+    public function myFavoritesPosts() {
         return $this
             ->belongsToMany('App\Post', 'post_user')
             ->orderBy('created_at', 'DESC')
             ->withPivot(['is_favorite'])
             ->where('is_favorite', TRUE);
+    }
+
+    public function myNotifications() {
+        $myNotifications = new Collection();
+
+        $this->rubrics->each(function ($rubric) use (&$myNotifications) {
+            $myNotifications = $myNotifications->merge($rubric->notifications);
+        });
+
+        $this->myFavoritesPosts->each(function ($post) use (&$myNotifications) {
+            $myNotifications = $myNotifications->merge($post->notifications);
+        });
+
+        return $myNotifications;
+    }
+
+    public function oldNotifications() {
+        return $this->myNotifications()->reject(function ($notification) {
+            return $this->newNotifications->contains('id', $notification->id);
+        });
+    }
+
+    public function newNotifications() {
+        return $this
+            ->belongsToMany('App\Notification');
     }
 
     public function myComments() {

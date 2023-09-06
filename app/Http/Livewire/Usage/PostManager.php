@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Usage;
 
 use App\Comment;
 use App\Http\Livewire\WithAlert;
+use App\Notification;
 use App\Post;
 use Livewire\Component;
 use App\Http\Livewire\WithModal;
@@ -63,6 +64,14 @@ class PostManager extends Component
 
         if ($comment) {
             $this->post->comments()->save($comment);
+
+            // notification associée
+            $newNotification = Notification::updateOrCreate(
+                ['content_type' => 'CP', 'post_id' => $this->post->id],
+                ['release_at' => today()->format('Y-m-d')]
+            );
+            $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
+
             $this->emitSelf('render');
         }
 
