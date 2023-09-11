@@ -18,11 +18,11 @@ class CreateRubricsTable extends Migration
             $table->string('name');
             $table->string('title');
             $table->text('description');
-            $table->string('icon')->nullable();
+            $table->string('icon')->nullable()->default(NULL);
             $table->boolean('is_parent')->default(FALSE);
             $table->unsignedInteger('parent_id')->nullable()->index();
             $table->foreign('parent_id')->references('id')->on('rubrics');
-            $table->enum('position', ['N', 'F']);
+            $table->enum('position', ['N', 'F', 'U']);
             $table->string('rank', 10);
             $table->boolean('contains_posts')->default(TRUE);
             $table->string('segment');
