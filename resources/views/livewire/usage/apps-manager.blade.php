@@ -4,7 +4,7 @@
         <div class="container d-flex flex-column">
             <div class="align-self-end">
                 <div class="input-group" role="group">
-                    <a href="{{ "/{$rubricSegment}/personal-apps/create" }}" title="Ajouter une application personnelle"
+                    <a href="{{ "/personal-apps/create" }}" title="Ajouter une application personnelle"
                        type="button" class="d-flex input-group-text btn btn-sm btn-success">
                         <span class="material-icons">add</span>
                     </a>
@@ -36,7 +36,7 @@
                       @can('handle', $app)
                         <div class="position-absolute bottom-0 end-0 mb-3 me-3">
                             <div class="input-group" role="group" aria-label="Actions">
-                                <a href="{{ "/{$rubricSegment}/personal-apps/{$app->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
+                                <a href="{{ "/personal-apps/{$app->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
                                     <i class="bx bx-pencil"></i>
                                 </a>
                                 <button wire:click="showModal('confirm', {handling : 'deleteApp', appId : {{ $app->id }}})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
