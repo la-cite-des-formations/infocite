@@ -9,6 +9,24 @@ use Illuminate\Http\Request;
 class ViewController extends Controller
 {
     /**
+     * return the existing rubric of the current route
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return object|NULL
+     */
+    private function getRubric(Request $request) {
+        $rubricStr = $request->route()->parameter('rubric');
+        $rubricSegments = explode(AP::RUBRIC_SEPARATOR, $rubricStr);
+        $rubric = Rubric::firstWhere('segment', $rubricSegments[0]);
+
+        if (count($rubricSegments) > 1) {
+            $rubric = $rubric->childs()->firstWhere('segment', $rubricSegments[1]);
+        }
+
+        return $rubric;
+    }
+
+    /**
      * return the current view data bag
      *
      * @param  \Illuminate\Http\Request $request
@@ -19,14 +37,7 @@ class ViewController extends Controller
     private function getViewBag(Request $request, string $template = 'posts', string $mode = NULL)
     {
         $route = $request->route();
-        $rubricStr = $route->parameter('rubric');
-        $rubricSegments = explode(AP::RUBRIC_SEPARATOR, $rubricStr);
-        $rubric = Rubric::firstWhere('segment', $rubricSegments[0]);
-
-        if (count($rubricSegments) > 1) {
-            $rubric = $rubric->childs()->firstWhere('segment', $rubricSegments[1]);
-        }
-
+        $rubric = $this->getRubric($request);
         $post_id = $route->parameter('post_id');
         $app_id = $route->parameter('app_id');
 
@@ -52,6 +63,10 @@ class ViewController extends Controller
      */
      public function index(Request $request)
     {
+        $rubric = $this->getRubric($request);
+        if (is_object($rubric) && $rubric->posts->count() == 1) {
+            return redirect()->route('post.index', ['rubric' => $rubric->route(), 'post_id' => $rubric->posts->first()->id]);
+        }
         return view("usage.index", ['viewBag' => $this->getViewBag($request)]);
     }
 
