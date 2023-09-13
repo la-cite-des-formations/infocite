@@ -519,10 +519,12 @@ class Edit extends Component
                 ->self();
         }
         else {
-            $rightablesTabs = $this->{$this->rightables['models'].'Tabs'};
+            if ($this->formTabs['currentTab'] != 'general') {
+                $rightablesTabs = $this->{$this->rightables['models'].'Tabs'};
 
-            if ($this->formTabs['currentTab'] != 'general' && $rightablesTabs['currentTab'] == $this->rightables['models']) {
-                $this->updateRightables();
+                if ($rightablesTabs['currentTab'] == $this->rightables['models']) {
+                    $this->updateRightables();
+                }
             }
 
             $this
