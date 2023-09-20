@@ -106,6 +106,30 @@
                         class="form-control" placeholder="Date d'expiration">
                 </div>
             </div>
+            <div class="row mb-0">
+                <div class="col-4"></div>
+                <div class="col-6">
+                    <div class="form-check">
+                        <input id="radioPostAutoDeleteFalse" name="radioPostAutoDelete" type="radio" class="form-check-input" value='0'
+                               wire:model='post.auto_delete' @if (!($post->expired_at)) disabled @endif>
+                        <label class="form-check-label" for="radioPostAutoDeleteFalse">
+                            Archiver à l'expiration
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4"></div>
+                <div class="col-6">
+                    <div class="form-check">
+                        <input id="radioPostAutoDeleteTrue" name="radioPostAutoDelete" type="radio" class="form-check-input" value='1'
+                               wire:model='post.auto_delete' @if (!($post->expired_at)) disabled @endif>
+                        <label class="form-check-label" for="radioPostAutoDeleteTrue">
+                            Supprimer à l'expiration
+                        </label>
+                    </div>
+                </div>
+            </div>
           @endif
          @endcan
             <div class="row">
@@ -114,21 +138,29 @@
                        title="Revenir à la page précédente sans enregistrer">
                         {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
                     </a>
-                    @if ($mode === 'edition')
+                  @if ($mode === 'edition')
+                    <button wire:click="showModal('confirm', {handling : 'update', redirectionRoute : 'post.index'})" type="button"
+                            class="btn btn-primary me-1" title="Enregistrer les modifications et Visualiser l'article">
+                        Modifier et Voir
+                    </button>
                     <button wire:click="showModal('confirm', {handling : 'update'})" type="button"
                             class="btn btn-primary me-1" title="Enregistrer les modifications">
                         Modifier
                     </button>
-                    @else
+                  @else
+                    <button wire:click="showModal('confirm', {handling : 'create', redirectionRoute : 'post.index'})" type="button"
+                            class="btn btn-primary me-1" title="Créer et Visualiser l'article">
+                        Créer et Voir
+                    </button>
                     <button wire:click="showModal('confirm', {handling : 'create'})" type="button"
-                            class="btn btn-primary me-1" title="Enregistrer les modifications">
+                            class="btn btn-primary me-1" title="Créer l'article">
                         Créer
                     </button>
-                    @endif
+                  @endif
                   @if ($mode === 'edition')
                    @can('create', ['App\\Post', $currentRubric->id])
-                    <a href="{{ $currentRubric->route().'/create' }}" title="Commencer un nouvel article"
-                       type="button" class="d-flex btn btn-sm btn-success me-1">
+                    <a href="{{ route('post.create', ['rubric' => $currentRubric->route(), 'backRoute' => $backRoute]) }}"
+                       title="Commencer un nouvel article" type="button" class="d-flex btn btn-sm btn-success me-1">
                         <span class="material-icons">add</span>
                     </a>
                    @endcan

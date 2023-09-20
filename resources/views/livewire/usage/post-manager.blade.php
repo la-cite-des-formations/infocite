@@ -3,30 +3,69 @@
     </section>
 
     <section id="post" class="services section-bg">
+        <div class="container d-flex flex-column">
+            <div class="align-self-end">
+                <div class="input-group" role="group">
+                    <button class="btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
+                            wire:click="showModal('notify')" type="button">
+                          @if ($notifications->count() > 0)
+                            <span class="me-1">{{ $notifications->count() }}</span>
+                          @endif
+                        <i class="bi bi-bell"></i>
+                    </button>
+                  @can('edit', ['App\\Post', $post->rubric_id])
+                    <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
+                            title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
+                        <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
+                    </button>
+                  @endcan
+                  @if($post->rubric->name != 'Une')
+                    <button class="btn @if ($isFavoriteRubric) btn-warning @else btn-secondary @endif btn-sm"
+                            @if ($isFavoriteRubric) title="Retirer la rubrique {{ $post->rubric->name }} des favoris"
+                            @else title="Ajouter la rubrique {{ $post->rubric->name }} aux favoris"
+                            @endif
+                            wire:click="switchFavoriteRubric" type="button">
+                        <i class="bx bx-star"></i>
+                    </button>
+                  @endif
+                  @if ($mode == 'edition')
+                   @can('create', ['App\\Post', $post->rubric_id])
+                    <a href="{{ route('post.create', ['rubric' => $post->rubric->route()]) }}" title="Commencer un nouvel article"
+                       type="button" class="d-flex input-group-text btn btn-sm btn-success">
+                        <span class="material-icons">add</span>
+                    </a>
+                   @endcan
+                  @endif
+                </div>
+            </div>
+        </div>
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
                 <h2 class="title-icon"><i class="material-icons md-36 me-2">{{ $post->icon }}</i>{{ $post->title }}</h2>
                 <p>@if($post->published) Publié dans @else Non publié - @endif
-                    <a href="{{ $post->rubric->route() }}">{{ $post->rubric->identity() }}</a>
+                    <a href="{{ route('rubric.index', ['rubric' => $post->rubric->route()]) }}">{{ $post->rubric->identity() }}</a>
                 </p>
             </div>
             <div class="card mx-lg-5">
                 <div class="card-header d-flex justify-content-end">
                     <div id="post-actions">
                         <div class="input-group" role="group" aria-label="Actions">
-                          @can('update', $post)
-                            <a href="{{ "{$post->rubric->route()}/{$post->id}/edit" }}" role="button" class="btn btn-sm btn-success" title="Modifier">
+                          @if ($mode == 'edition')
+                           @can('update', $post)
+                            <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                               role="button" class="btn btn-sm btn-success" title="Modifier">
                                 <i class="bx bx-pencil"></i>
                             </a>
-                          @endcan
-                          @can('delete', $post)
+                           @endcan
+                           @can('delete', $post)
                             <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
-                          @endcan
-                            <button class="btn btn-sm @if ($post->isFavorite()) btn-warning @else btn-secondary @endif"
-                                    title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                    wire:click="switchFavorite" type="button">
+                           @endcan
+                          @endif
+                           <button class="btn btn-sm @if ($isFavoritePost) btn-warning @else btn-secondary @endif"
+                                    title="@if ($isFavoritePost) Retirer des favoris @else Ajouter aux favoris @endif"
+                                    wire:click="switchFavoritePost" type="button">
                                 <i class="bx bx-star"></i>
                             </button>
                             <div type="text" class="input-group-text btn-sm btn-primary">

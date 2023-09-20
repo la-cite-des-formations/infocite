@@ -15,6 +15,7 @@ class Confirm extends Component
     public $postId;
     public $commentId;
     public $appId;
+    public $redirectionRoute;
     public $message;
     public $perPage = 8;
 
@@ -26,6 +27,7 @@ class Confirm extends Component
         $this->postId = $postId ?? NULL;
         $this->commentId = $id ?? NULL;
         $this->appId = $appId ?? NULL;
+        $this->redirectionRoute = $redirectionRoute ?? NULL;
 
         switch($handling){
             case 'deletePost':
@@ -63,7 +65,12 @@ class Confirm extends Component
             break;
             case('update'):
             case('create'):
-                $this->emit('save');
+                if (isset($this->redirectionRoute)) {
+                    $this->emit('save', $this->redirectionRoute);
+                }
+                else {
+                    $this->emit('save');
+                }
             break;
         }
     }

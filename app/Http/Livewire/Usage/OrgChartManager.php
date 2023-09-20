@@ -12,6 +12,7 @@ class OrgChartManager extends Component
     public $rubric;
 
     public function mount($viewBag) {
+        session(['appsBackRoute' => request()->getRequestUri()]);
         $this->rubric = $viewBag->rubric;
     }
 

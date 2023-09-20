@@ -4,16 +4,23 @@ namespace App\Http\Livewire\Usage;
 
 use App\Comment;
 use App\Http\Livewire\WithAlert;
+use App\Http\Livewire\WithFavoritesHandling;
 use App\Notification;
 use App\Post;
 use Livewire\Component;
 use App\Http\Livewire\WithModal;
-
+use App\Http\Livewire\WithNotifications;
+use App\Http\Livewire\WithUsageMode;
 
 class PostManager extends Component
 {
     use WithModal;
     use WithAlert;
+    use WithNotifications;
+    use WithUsageMode;
+    use WithFavoritesHandling;
+
+    public $rubric;
     public $post;
     public $newComment = '';
     public $firstLoad = TRUE;
@@ -21,38 +28,23 @@ class PostManager extends Component
     protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
 
     public function mount($viewBag) {
+        session(['backRoute' => request()->getRequestUri()]);
+        session(['appsBackRoute' => request()->getRequestUri()]);
+        $this->setMode();
         $this->post = Post::find($viewBag->post_id);
         $this->post->readers()->syncWithoutDetaching([
             auth()->user()->id => [
                 'is_read' => TRUE
             ]
         ]);
+        $this->rubric = $this->post->rubric;
+        $this->isFavoriteRubric = $this->rubric->isFavorite();
+        $this->isFavoritePost = $this->post->isFavorite();
+        $this->setNotifications();
     }
 
     public function hydrate() {
         if ($this->firstLoad) $this->firstLoad = FALSE;
-    }
-
-    public function switchFavorite() {
-        if ($this->post->isFavorite()) {
-            if ($this->post->isRead() || $this->post->tags()) {
-                $isFavorite = FALSE;
-            }
-        }
-        else {
-            $isFavorite = TRUE;
-        }
-        if (isset($isFavorite)) {
-            $this->post->readers()->syncWithoutDetaching([
-                auth()->user()->id => [
-                    'is_favorite' => $isFavorite
-                ]
-            ]);
-        }
-        else {
-            $this->post->readers()->detach(auth()->user()->id);
-        }
-        $this->emitSelf('render');
     }
 
     public function commentPost() {
@@ -88,9 +80,9 @@ class PostManager extends Component
     }
 
     public function deletePost() {
-        $redirection = $this->post->rubric->route();
         $this->post->delete();
-        redirect($redirection);
+
+        redirect($this->post->rubric->route());
     }
 
     public function render() {

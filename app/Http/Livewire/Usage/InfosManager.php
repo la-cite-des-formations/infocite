@@ -21,6 +21,7 @@ class InfosManager extends Component
 
     // public $truncateClassesList;
     public function mount($viewBag) {
+        session(['appsBackRoute' => request()->getRequestUri()]);
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         // $this->truncateClassesList = $this->userNbClasses > $this->classesMin;
     }

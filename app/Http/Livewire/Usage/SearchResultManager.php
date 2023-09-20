@@ -22,6 +22,7 @@ class SearchResultManager extends Component
 
 
     public function mount($viewBag) {
+        session(['appsBackRoute' => request()->getRequestUri()]);
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->searchedStr = request()->input('resultat');
     }
