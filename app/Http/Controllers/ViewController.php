@@ -47,7 +47,6 @@ class ViewController extends Controller
             'rubric' => $rubric,
             'rubricSegment' => is_object($rubric) ? $rubric->segment : '',
             'currentRoute' => $request->getRequestUri(),
-            'backRoute' => $request->server('HTTP_REFERER'),
             'template' => is_object($rubric) ? ($rubric->view ?: $template) : $template,
             'post_id' => $post_id,
             'app_id' => $app_id,

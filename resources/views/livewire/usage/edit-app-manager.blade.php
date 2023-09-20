@@ -69,7 +69,7 @@
                     </button>
                     @endif
                   @if ($mode === 'edition')
-                    <a href="{{ $rubricRoute.'/personal-apps/create' }}" title="Ajouter une nouvelle application personnelle"
+                    <a href="{{ route('personal-apps.create', ['backRoute' => $backRoute]) }}" title="Ajouter une nouvelle application personnelle"
                             type="button" class="d-flex btn btn-sm btn-success me-1">
                         <span class="material-icons">add</span>
                     </a>

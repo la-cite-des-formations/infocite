@@ -33,15 +33,20 @@ class EditPostManager extends Component
         'post.content' => 'required|string',
         'post.rubric_id' => 'required',
         'post.published' => '',
+        'post.auto_delete' => '',
         'post.published_at' => 'date|nullable',
         'post.expired_at' => 'date|nullable',
     ];
 
     public function mount($viewBag) {
-        $this->backRoute = $viewBag->backRoute;
+        session(['appsBackRoute' => request()->getRequestUri()]);
+        $this->backRoute = session('backRoute');
         $this->currentRubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->mode = $viewBag->mode;
         $this->post = Post::findOrNew($viewBag->post_id);
+        if ($this->currentRubric->name != 'Une' && !$this->post->rubric_id) {
+            $this->post->rubric_id = $this->currentRubric->id;
+        }
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
     }
 
@@ -59,7 +64,7 @@ class EditPostManager extends Component
         $this->post->expired_at = NULL;
     }
 
-    public function save() {
+    public function save($redirectionRoute = 'post.edit') {
         $this->post->published_at = $this->post->published_at ?: NULL;
         $this->post->expired_at = $this->post->expired_at ?: NULL;
 
@@ -145,7 +150,10 @@ class EditPostManager extends Component
         }
 
         // redirection
-        redirect(Rubric::find($this->post->rubric_id)->route()."/{$this->post->id}/edit");
+        redirect()->route($redirectionRoute, [
+            'rubric' => Rubric::find($this->post->rubric_id)->route(),
+            'post_id' => $this->post->id,
+        ]);
     }
 
     public function render() {

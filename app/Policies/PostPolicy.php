@@ -36,10 +36,39 @@ class PostPolicy
     }
 
     /**
+     * Determine whether the user can edit posts in a specific rubric.
+     *
+     * @param  \App\User  $user
+     * @param  int  $rubricId
+     * @return mixed
+     */
+    public function edit(User $user, int $rubricId)
+    {
+        // vérification de l'accès à la rubrique concernée
+        if ($user->myRubrics()->contains('id', $rubricId) || is_null($rubricId)) {
+            if ((Rubric::find($rubricId))->name == 'Une') {
+                $rightableType = NULL;
+                $rightableId = NULL;
+            }
+            else {
+                $rightableType = 'Rubric';
+                $rightableId = $rubricId;
+            }
+
+            return
+                $user->hasRole('posts', Roles::IS_EDITR, $rightableType, $rightableId) ||
+                $user->hasRole('posts', Roles::IS_MODER, $rightableType, $rightableId) ||
+                $user->hasRole('posts', Roles::IS_ADMIN, $rightableType, $rightableId);
+        }
+
+        return FALSE;
+    }
+
+    /**
      * Determine whether the user can create posts in a specific rubric.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $user
+     * @param  int  $rubricId
      * @return mixed
      */
     public function create(User $user, int $rubricId = NULL)
@@ -68,7 +97,7 @@ class PostPolicy
      * Determine whether the user can publish posts in a specific rubric.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  int  $rubricId
      * @return mixed
      */
     public function publish(User $user, int $rubricId = NULL)
@@ -108,7 +137,7 @@ class PostPolicy
             // vérification des droits de l'utilisateur en édition ('Editeur' / 'Modérateur')
             // sur l'article concerné
             if ($post->released()) {
-                $canUpdatePost = $user->hasRole('posts', Roles::IS_EDITR & Roles::IS_MODER, 'Post', $post->id, AP::STRICTLY);
+                $canUpdatePost = $user->hasRole('posts', Roles::IS_EDITR + Roles::IS_MODER, 'Post', $post->id, AP::STRICTLY);
 
                 return $canUpdatePost ??
                     $this->create($user, $post->rubric_id) &&
@@ -128,7 +157,7 @@ class PostPolicy
      * Determine whether the user can delete posts from a specific rubric.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  int  $rubricId
      * @return mixed
      */
     public function clear(User $user, int $rubricId) {

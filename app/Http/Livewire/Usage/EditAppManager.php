@@ -31,7 +31,7 @@ class EditAppManager extends Component
     ];
 
     public function mount($viewBag) {
-        $this->backRoute = $viewBag->backRoute;
+        $this->backRoute = session('appsBackRoute');
         $this->rubricRoute = '/'.$viewBag->rubricSegment;
         $this->mode = $viewBag->mode;
         $this->app = App::findOrNew($viewBag->app_id);
@@ -73,7 +73,14 @@ class EditAppManager extends Component
             ]);
         }
 
-        redirect($this->rubricRoute."/personal-apps/{$this->app->id}/edit");
+        session(['backRoute' => $this->backRoute]);
+
+        redirect()->route(
+            'personal-apps.edit',
+            [
+                'app_id' => $this->app->id,
+            ]
+        );
     }
 
     public function render() {
