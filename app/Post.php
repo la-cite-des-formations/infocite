@@ -14,7 +14,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at'];
-    protected $attributes = ['published' => FALSE];
+    protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
     protected $casts = [
         'published_at' => 'nullable|date:Y-m-d',
         'expired_at' => 'nullable|date:Y-m-d',
