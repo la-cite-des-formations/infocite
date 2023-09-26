@@ -54,14 +54,9 @@
                                 <!-- Icone -->
                                 <div class="d-flex flex-row justify-content-between">
                                     <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                                  @if(!$post->published)
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="non publié">unpublished</i>
-                                  @endif
-                                  @if($post->expired())
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="expiré">auto_delete</i>
-                                  @endif
-                                  @if($post->forthcoming())
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="à venir">schedule_send</i>
+                                  @if (is_object($post->status))
+                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                                   @endif
                                 </div>
                                 <div>{{ $post->title }}</div>

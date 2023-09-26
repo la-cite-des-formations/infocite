@@ -53,19 +53,30 @@ class PostsManager extends Component
         return view('livewire.usage.posts-manager', [
             'posts' => Post::query()
                 ->whereIn('id', Post::query()
-                    ->when($this->rubric->segment != 'une', function ($query) {
+                    ->when($this->rubric->name != 'Une' && $this->rubric->name != 'Archives', function ($query) {
                         $query
-                            ->where('rubric_id', $this->rubric->id)
-                            ->orderByRaw('published_at DESC, created_at DESC');
+                            ->where('rubric_id', $this->rubric->id);
                     })
-                    ->when($this->rubric->segment == 'une', function ($query) use ($user) {
+                    ->when($this->rubric->name == 'Une', function ($query) use ($user) {
+                        $query
+                            ->whereIn('rubric_id', $user->myRubrics()->pluck('id'));
+                    })
+                    ->when($this->rubric->name == 'Archives', function ($query) use ($user) {
                         $query
                             ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
-                            ->orderByRaw('published_at DESC, created_at DESC');
+                            ->where('published', TRUE)
+                            ->where('expired_at', '<=', today()->format('Y-m-d'))
+                            ->where('auto_delete', FALSE);
                     })
+                    ->orderByRaw('published_at DESC, created_at DESC')
                     ->get()
                     ->filter(function ($post) use ($user) {
-                        return $user->can('view', $post) && (($this->mode == 'edition') || $post->released()) ;
+                        return
+                            $user->can('view', $post) && (
+                                $this->mode == 'edition' ||
+                                $post->released && $this->rubric->name != 'Archives' ||
+                                $post->archived && $this->rubric->name == 'Archives'
+                            );
                     })
                     ->pluck('id')
                 )

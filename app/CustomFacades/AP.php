@@ -332,6 +332,13 @@ class AP // Application Parameters
         'UO' => 'Organigramme mis à jour : ',
     ];
 
+    const POST_STATUS_MI = [
+        'unpublished' => ['icon' => 'unpublished', 'title' => "non publié"],
+        'expired' => ['icon' => 'auto_delete', 'title' => "auto-supprimé"],
+        'archived' => ['icon' => 'inventory_2', 'title' => "archivé"],
+        'forthcoming' => ['icon' => 'schedule_send', 'title' => "à venir"],
+    ];
+
     /*public static function getFieldEnum($table, $field) {
         return explode(
             ',',
@@ -441,6 +448,10 @@ class AP // Application Parameters
 
     public static function getMaterialIconsCodes() {
         return new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
+    }
+
+    public static function getPostStatusMI($status) {
+        return (object) static::POST_STATUS_MI[$status];
     }
 
     public static function getBorderStyles() {

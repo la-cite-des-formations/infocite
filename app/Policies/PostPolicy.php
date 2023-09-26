@@ -28,7 +28,7 @@ class PostPolicy
             // vérification des droits de l'utilisateur en lecture ('Lecteur')
             // sur l'article concerné (si publié ou si éditable par l'utilisateur)
             return
-                ($post->released() || $this->update($user, $post)) &&
+                ($post->published || $this->update($user, $post)) &&
                 $user->hasRole('posts', Roles::IS_READR, 'Post', $post->id);
         }
 
@@ -136,7 +136,7 @@ class PostPolicy
 
             // vérification des droits de l'utilisateur en édition ('Editeur' / 'Modérateur')
             // sur l'article concerné
-            if ($post->released()) {
+            if ($post->released) {
                 $canUpdatePost = $user->hasRole('posts', Roles::IS_EDITR + Roles::IS_MODER, 'Post', $post->id, AP::STRICTLY);
 
                 return $canUpdatePost ??

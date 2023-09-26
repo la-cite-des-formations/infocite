@@ -156,14 +156,9 @@
                                 <!-- Icone -->
                                 <div class="d-flex flex-row justify-content-between">
                                     <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                                  @if(!$post->published)
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="non publié">unpublished</i>
-                                  @endif
-                                  @if($post->expired())
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="expiré">auto_delete</i>
-                                  @endif
-                                  @if($post->forthcoming())
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger" title="à venir">schedule_send</i>
+                                  @if (is_object($post->status))
+                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                                   @endif
                                 </div>
                                 <p class="m-1 fs-6"><i>Rubrique : {{ $post->rubric->name }}</i></p>
@@ -177,7 +172,7 @@
                         <!-- Boutons d'actions -->
                         <div class="align-self-end mt-auto">
                             <div class="input-group" role="group" aria-label="Actions">
-                              @can('update', $post)
+                               @can('update', $post)
                                 <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
                                    role="button" class="btn btn-sm btn-success" title="Modifier">
                                     <i class="bx bx-pencil"></i>
