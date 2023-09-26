@@ -91,16 +91,29 @@ class Post extends Model
         return $postUser ? $postUser->pivot->tags : NULL;
     }
 
-    public function forthcoming() {
+    public function getForthcomingAttribute() {
         return isset($this->published_at) && $this->published_at > today()->format('Y-m-d');
     }
 
-    public function expired() {
+    public function getExpiredAttribute() {
         return isset($this->expired_at) && $this->expired_at <= today()->format('Y-m-d');
     }
 
-    public function released() {
-        return $this->published && !$this->forthcoming() && !$this->expired();
+    public function getReleasedAttribute() {
+        return $this->published && !$this->forthcoming && !$this->expired;
+    }
+
+    public function getArchivedAttribute() {
+        return $this->published && $this->expired && !$this->auto_delete;
+    }
+
+    public function getStatusAttribute() {
+        switch (TRUE) {
+            case !$this->published : return AP::getPostStatusMI('unpublished');
+            case $this->archived : return AP::getPostStatusMI('archived');
+            case $this->expired : return AP::getPostStatusMI('expired');
+            case $this->forthcoming : return AP::getPostStatusMI('forthcoming');
+        }
     }
 
     public function preview() {
