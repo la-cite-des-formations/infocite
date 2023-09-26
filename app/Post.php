@@ -92,11 +92,11 @@ class Post extends Model
     }
 
     public function forthcoming() {
-        return isset($this->published_at) && (new DateTime($this->published_at) > today());
+        return isset($this->published_at) && $this->published_at > today()->format('Y-m-d');
     }
 
     public function expired() {
-        return isset($this->expired_at) && (new DateTime($this->expired_at) < today());
+        return isset($this->expired_at) && $this->expired_at <= today()->format('Y-m-d');
     }
 
     public function released() {

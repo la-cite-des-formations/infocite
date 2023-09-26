@@ -377,7 +377,7 @@ table {
 }
 
 @media (max-width: 1220px) {
-    .serach-infos {
+    .search-infos {
         position: relative !important;
     }
 }

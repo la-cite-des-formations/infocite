@@ -36,8 +36,10 @@
         <!-- A laisser en dur à la fin du menu -->
        @can('viewAny', 'App\\App')
         <li>
-            <a href="#apps" class="myapps nav-link scrollto ms-3" title="Mes applications">
-                <span class="bx bx-extension me-1"></span>Mes applis
+            <a href="#apps" class="nav-link scrollto" title="Mes applications">
+                <div class="myapps">
+                    <span class="bx bx-extension me-1"></span>Mes applis
+                </div>
             </a>
         </li>
        @endcan
