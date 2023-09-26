@@ -63,8 +63,12 @@ class ViewController extends Controller
      public function index(Request $request)
     {
         $rubric = $this->getRubric($request);
-        if (is_object($rubric) && $rubric->posts->count() == 1) {
-            return redirect()->route('post.index', ['rubric' => $rubric->route(), 'post_id' => $rubric->posts->first()->id]);
+        if (
+            is_object($rubric) && $rubric->posts->count() == 1 &&
+            $rubric->posts->first()->released &&
+            session('mode', 'view') == 'view'
+        ) {
+                return redirect()->route('post.index', ['rubric' => $rubric->route(), 'post_id' => $rubric->posts->first()->id]);
         }
         return view("usage.index", ['viewBag' => $this->getViewBag($request)]);
     }
