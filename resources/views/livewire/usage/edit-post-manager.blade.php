@@ -84,7 +84,7 @@
                     <div class="form-check">
                         <input id="post-published" wire:model="post.published"
                                type="checkbox" class="form-check-input">
-                        <label class="my-auto" for="post-published">Publier</label>
+                        <label class="my-auto" for="post-published">Publier - <span class="fst-italic bg-warning text-danger px-1">Important ! Pensez à mettre à jour la date de publication pour faire remonter votre article plus en avant</span></label>
                     </div>
                 </div>
             </div>

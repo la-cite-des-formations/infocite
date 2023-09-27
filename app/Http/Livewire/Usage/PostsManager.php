@@ -68,7 +68,6 @@ class PostsManager extends Component
                             ->where('expired_at', '<=', today()->format('Y-m-d'))
                             ->where('auto_delete', FALSE);
                     })
-                    ->orderByRaw('published_at DESC, created_at DESC')
                     ->get()
                     ->filter(function ($post) use ($user) {
                         return
@@ -80,7 +79,10 @@ class PostsManager extends Component
                     })
                     ->pluck('id')
                 )
-                ->orderByRaw('created_at DESC')
+                ->when($this->mode == 'edition', function ($query) {
+                    $query->orderBy('published');
+                })
+                ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
                 ->paginate($this->perPage),
         ]);
     }
