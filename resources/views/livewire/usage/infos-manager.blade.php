@@ -3,6 +3,16 @@
     </section>
 
     <section id="infos" class="services section-bg">
+      @can('edit', ['App\\Post', $rubric->id])
+        <div class="container d-flex flex-column">
+            <div class="align-self-end">
+                <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
+                        title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
+                    <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
+                </button>
+            </div>
+        </div>
+      @endcan
         <div class="section-title">
             <h2 class="title-icon"><i class="material-icons fs-1 me-2">{{ $rubric->icon }}</i>{{ $rubric->title }}</h2>
             <p>{{ $rubric->description }}</p>
@@ -147,37 +157,36 @@
               @endif
               @foreach ($favoritesPosts as $i => $post)
                @can('view', $post)
-                <div class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
+                <div wire:click='redirectToPost({{ $post->id }})' role="button"
+                     class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                      @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                     <div class="position-relative icon-box d-flex flex-column">
+                      @if (is_object($post->status))
+                        <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                           title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                      @endif
                         <!-- Titre de l'article -->
                         <h4>
-                            <a href="{{ $post->rubric->route().'/'.$post->id }}">
-                                <!-- Icone -->
-                                <div class="d-flex flex-row justify-content-between">
-                                    <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                                  @if (is_object($post->status))
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
-                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                  @endif
-                                </div>
-                                <p class="m-1 fs-6"><i>Rubrique : {{ $post->rubric->name }}</i></p>
-                                <div>{{ $post->title }}</div>
-                            </a>
+                            <!-- Icone -->
+                            <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
+                            <p class="m-1 fs-6"><i>Rubrique : {{ $post->rubric->name }}</i></p>
+                            <a>{{ $post->title }}</a>
                         </h4>
 
                         <!-- Sous Titre de l'article -->
                         <p>{!! $post->preview() !!}</p>
 
                         <!-- Boutons d'actions -->
-                        <div class="align-self-end mt-auto">
+                        <div wire:click.prefetch='blockRedirection' class="align-self-end mt-auto">
                             <div class="input-group" role="group" aria-label="Actions">
+                              @if ($mode == 'edition')
                                @can('update', $post)
                                 <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
                                    role="button" class="btn btn-sm btn-success" title="Modifier">
                                     <i class="bx bx-pencil"></i>
                                 </a>
-                              @endcan
+                               @endcan
+                              @endif
                               @if($post->isCommentable())
                                 <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
                                 <div class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
@@ -199,11 +208,13 @@
                                      type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
                                     <i class="bx bx-message-alt-check"></i>
                                 </div>
-                              @can('delete', $post)
+                              @if ($mode == 'edition')
+                               @can('delete', $post)
                                 <button wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                     <i class="bx bx-trash"></i>
                                 </button>
-                              @endcan
+                               @endcan
+                              @endif
                             </div>
                         </div>
                     </div>

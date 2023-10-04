@@ -12,7 +12,7 @@
             </div>
         </div>
       @endcan
-        <div class="container" data-aos="fade-up">
+        <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
                 <h2 class="title-icon"><i class="bx bx-extension me-1"></i>Mes applications</h2>
                 <p>Toutes les applications auxquelles vous pouvez vous connecter depuis l'intranet de la Cité des Formations</p>
@@ -20,9 +20,11 @@
             <div class="row">
               @foreach (auth()->user()->myApps() as $i => $app)
                @can('view', $app)
-                <div class="col-lg-3 mt-4" data-aos="fade-up" data-aos-delay="{{ ($i % 4 + 1) * 100 }}">
+                <div class="col-lg-3 mt-4"
+                     @if ($firstLoad) data-aos="fade-up" data-aos-delay="{{ ($i % 4 + 1) * 100 }}" @endif
+                     wire:click="redirectToApp('{{ $app->url }}')" role="button">
                     <div class="position-relative box featured">
-                        <a href='{{ $app->url }}' target='_blank'>
+                        <a>
                             <h3>
                               @if (empty($app->favicon))
                                 <span class="material-icons me-1">{{ $app->icon }}</span>
@@ -34,7 +36,7 @@
                         </a>
                         <h4><span>{{ $app->description }}</span></h4>
                       @can('handle', $app)
-                        <div class="position-absolute bottom-0 end-0 mb-3 me-3">
+                        <div wire:click.prefetch='blockRedirection' class="position-absolute bottom-0 end-0 mb-3 me-3">
                             <div class="input-group" role="group" aria-label="Actions">
                                 <a href="{{ route('personal-apps.edit', ['app_id' => $app->id]) }}"
                                    role="button" class="btn btn-sm btn-success" title="Modifier">

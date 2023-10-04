@@ -41,7 +41,9 @@
         </div>
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
-                <h2 class="title-icon"><i class="material-icons md-36 me-2">{{ $post->icon }}</i>{{ $post->title }}</h2>
+                <div class="row justify-content-center">
+                    <h2 class="col-9 title-icon"><i class="material-icons md-36 me-2">{{ $post->icon }}</i>{{ $post->title }}</h2>
+                </div>
                 <p>@if($post->published) Publié dans @else Non publié - @endif
                     <a href="{{ route('rubric.index', ['rubric' => $post->rubric->route()]) }}">{{ $post->rubric->identity() }}</a>
                 </p>

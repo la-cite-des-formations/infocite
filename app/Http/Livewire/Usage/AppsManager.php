@@ -14,6 +14,7 @@ class AppsManager extends Component
 
     public $rubricSegment;
     public $firstLoad = TRUE;
+    public $blockRedirection = FALSE;
 
     protected $listeners = ['deleteApp', 'render'];
 
@@ -23,6 +24,22 @@ class AppsManager extends Component
 
     public function deleteApp($appId) {
         App::find($appId)->delete();
+    }
+
+    public function redirectToApp($appUrl) {
+        $this->firstLoad = FALSE;
+
+        if (!$this->blockRedirection) {
+            $this->emit('newTabRedirection', $appUrl);
+        }
+        else {
+            $this->blockRedirection = FALSE;
+        }
+    }
+
+    public function blockRedirection() {
+        $this->firstLoad = FALSE;
+        $this->blockRedirection = TRUE;
     }
 
     public function render() {

@@ -21,20 +21,22 @@ const initEditor = function () {
             {title: 'Nouvelle fenêtre', value: '_blank'},
             {title: 'Même fenêtre', value: ''},
         ],
+        link_default_target: '_blank',
         style_formats: [
             {title: 'Titre', block: 'h3'},
             {title: 'Sous titre', block: 'h4'},
             {title: 'Paragraphe', block: 'p'},
         ],
-
         plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
             'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media', 'nonbreaking',
             'save', 'table', 'directionality', 'wordcount', /*'emoticons',*/ 'template',
         ],
+        image_advtab: true,
+        contextmenu: false,
         toolbar: [
-            "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media  | emoticons charmap | searchreplace preview code fullscreen"
+            "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media  | charmap | searchreplace preview code fullscreen"
         ],
         video_template_callback: function(data) {
             console.log(data);

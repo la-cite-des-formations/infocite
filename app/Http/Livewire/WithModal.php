@@ -16,12 +16,15 @@ trait WithModal
     }
 
     public function showModal($action, $data = NULL) {
+        if (isset($this->firstLoad)) {
+            $this->firstLoad = FALSE;
+        }
+
         switch ($action) {
             case 'confirm' :
                 $component = "usage.confirm";
             break;
             case 'notify' :
-                $this->firstLoad = FALSE;
                 $component = "usage.notifications-manager";
             break;
             default :

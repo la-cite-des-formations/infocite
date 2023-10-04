@@ -22,11 +22,12 @@ class PostsManager extends Component
     use WithFavoritesHandling;
 
     protected $paginationTheme = 'bootstrap';
-    public $perPageOptions = [8, 12, 16];
-    public $perPage = 8;
+    public $perPageOptions = [8, 12, 16, 24, 48, 60];
+    public $perPage = 16;
 
     public $rubric;
     public $firstLoad = TRUE;
+    public $blockRedirection = FALSE;
 
     protected $listeners = ['modalClosed', 'deletePost'];
 
@@ -45,6 +46,18 @@ class PostsManager extends Component
 
     public function deletePost($postId) {
         Post::find($postId)->delete();
+    }
+
+    public function redirectToPost($postId) {
+        if (!$this->blockRedirection) {
+            redirect()->route('post.index', ['rubric' => Post::find($postId)->rubric->route(), 'post_id' => $postId]);
+        }
+        $this->blockRedirection = FALSE;
+    }
+
+    public function blockRedirection() {
+        $this->firstLoad = FALSE;
+        $this->blockRedirection = TRUE;
     }
 
     public function render() {
@@ -68,7 +81,6 @@ class PostsManager extends Component
                             ->where('expired_at', '<=', today()->format('Y-m-d'))
                             ->where('auto_delete', FALSE);
                     })
-                    ->orderByRaw('published_at DESC, created_at DESC')
                     ->get()
                     ->filter(function ($post) use ($user) {
                         return
@@ -80,7 +92,10 @@ class PostsManager extends Component
                     })
                     ->pluck('id')
                 )
-                ->orderByRaw('created_at DESC')
+                ->when($this->mode == 'edition', function ($query) {
+                    $query->orderBy('published');
+                })
+                ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
                 ->paginate($this->perPage),
         ]);
     }

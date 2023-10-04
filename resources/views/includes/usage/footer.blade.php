@@ -49,10 +49,11 @@
 <script src="{{ asset('vendor/waypoints/noframework.waypoints.js') }}" defer></script>
 <script src="{{ asset('vendor/php-email-form/validate.js') }}" defer></script>
 
+<!-- New Tab Redirection JS File -->
+<script src="{{ asset('js/new-tab-redirection.js') }}" defer></script>
 <!-- Template Main JS File -->
 <script src="{{ asset('js/main.js') }}" defer></script>
 <!-- Modal JS File -->
 <script src="{{ asset('js/confirmManager.js') }}"></script>
-
 
 @livewireScripts

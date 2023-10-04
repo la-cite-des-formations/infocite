@@ -39,35 +39,34 @@
         </div>
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
-                <h2>{{ $rubric->title }}</h2>
+                <div class="row justify-content-center">
+                    <h2 clas="col-9">{{ $rubric->title }}</h2>
+                </div>
                 <p>{{ $rubric->description }}</p>
             </div>
             <div class="row">
               @foreach ($posts as $i => $post)
                @can('view', $post)
-                <div class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
+                <div wire:click='redirectToPost({{ $post->id }})' role="button"
+                     class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                      @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                     <div class="position-relative icon-box d-flex flex-column">
+                      @if (is_object($post->status))
+                        <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                           title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                      @endif
                         <!-- Titre de l'article -->
                         <h4>
-                            <a href="{{ route('post.index', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}">
-                                <!-- Icone -->
-                                <div class="d-flex flex-row justify-content-between">
-                                    <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                                  @if (is_object($post->status))
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
-                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                  @endif
-                                </div>
-                                <div>{{ $post->title }}</div>
-                            </a>
+                            <!-- Icone -->
+                            <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
+                            <a>{{ $post->title }}</a>
                         </h4>
 
                         <!-- Sous Titre de l'article -->
                         <p>{!! $post->preview() !!}</p>
 
                         <!-- Boutons d'actions -->
-                        <div class="align-self-end mt-auto">
+                        <div wire:click.prefetch='blockRedirection' class="align-self-end mt-auto">
                             <div class="input-group" role="group" aria-label="Actions">
                               @if ($mode == 'edition')
                                @can('update', $post)
