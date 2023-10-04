@@ -6,28 +6,29 @@ use Livewire\Component;
 use App\Post;
 use App\Rubric;
 use App\User;
+use App\Http\Livewire\WithUsageMode;
 use Livewire\WithPagination;
 
 class InfosManager extends Component
 {
+    use WithUsageMode;
     use WithPagination;
 
-    // public $elements;
+    protected $paginationTheme = 'bootstrap';
+
     public $rubric;
     public $firstLoad = TRUE;
-    protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [4, 8, 16];
     public $perPage = 8;
+    public $blockRedirection = FALSE;
 
-    // public $truncateClassesList;
     public function mount($viewBag) {
+        session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
+        $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
-        // $this->truncateClassesList = $this->userNbClasses > $this->classesMin;
     }
-    // public function countFavoritePosts(){
 
-    // }
     public function switchFavoritePost($post_id) {
         if ($this->firstLoad) {
             $this->firstLoad = FALSE;
@@ -78,6 +79,19 @@ class InfosManager extends Component
     public function updatedPerPage() {
         $this->resetPage();
     }
+
+    public function redirectToPost($postId) {
+        if (!$this->blockRedirection) {
+            redirect()->route('post.index', ['rubric' => Post::find($postId)->rubric->route(), 'post_id' => $postId]);
+        }
+        $this->blockRedirection = FALSE;
+    }
+
+    public function blockRedirection() {
+        $this->firstLoad = FALSE;
+        $this->blockRedirection = TRUE;
+    }
+
     public function render() {
         $user = User::find(auth()->user()->id);
         return view('livewire.usage.infos-manager', [
