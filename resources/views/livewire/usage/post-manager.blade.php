@@ -100,13 +100,13 @@
                                    @can('view', $comment)
                                     <div class="d-flex">
                                         <li class="mt-1 p-3 flex-fill">
-                                            <a data-bs-toggle="collapse" class="@if ($i) collapsed @else collapse @endif"
+                                            <a data-bs-toggle="collapse" class="collapse"
                                                data-bs-target="#accordion-list-{{ $i + 1 }}">
                                                 {{ $comment->author->identity() }} le {{ $comment->created_at->format('d/m/Y') }}
                                                 <i class="bx bx-chevron-down icon-show"></i>
                                                 <i class="bx bx-chevron-up icon-close"></i>
                                             </a>
-                                            <div id="accordion-list-{{ $i + 1 }}" class="collapse @if (!$i) show @endif">
+                                            <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
                                                 <p>{{ $comment->content }}</p>
                                             </div>
                                         </li>
