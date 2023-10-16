@@ -22,7 +22,8 @@ class AppsManager extends Component
 
     public $filter = [
         'authType' => '',
-        'search' => ''
+        'type' => 'I', // applications institutionnelles par défaut
+        'search' => '',
     ];
 
     public $perPageOptions = [10, 15, 25];

@@ -55,6 +55,11 @@ class AP // Application Parameters
         'S' => 'Authentification spécifique',
     ];
 
+    const APP_TYPES = [
+        'P' => 'Applications personnelles',
+        'I' => 'Applications institutionnelles',
+    ];
+
     const QUALITIES = [
         'E' => 'Externe',
         'I' => 'Interne',
@@ -414,6 +419,10 @@ class AP // Application Parameters
 
     public static function getAppAuthTypes() {
         return static::APP_AUTH_TYPES;
+    }
+
+    public static function getAppTypes() {
+        return static::APP_TYPES;
     }
 
     public static function getDashboardFunctions($dashboard = 'main') {
