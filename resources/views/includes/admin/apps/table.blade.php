@@ -2,7 +2,7 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col-4">
+        <th scope="col" class="@if ($filter['type'] != 'I') col-3 @else col-4 @endif">
             <div class="btn-group dropleft mr-1">
                 <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des applications">
@@ -23,14 +23,22 @@
                     </a>
                 </div>
             </div>
-            Application
+            {{ $filter['type'] == 'I' ? 'Application institutionnelle' : 'Application' }}
         </th>
-        <th scope="col" class="col-5 py-2">
+        <th scope="col" class="col-4 py-2">
             <div class="btn-group mr-1">
                 <span class="material-icons">link</span>
             </div>
             Url
         </th>
+      @if ($filter['type'] != 'I')
+        <th scope="col" class="col-2 py-2">
+            <div class="btn-group mr-1">
+                <span class="material-icons">co_present</span>
+            </div>
+            Propriétaire
+        </th>
+      @endif
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
                 <button wire:click="showModal('edit', {mode : 'creation'})"
@@ -50,13 +58,16 @@
  @section('table-body')
   @foreach ($apps as $app)
     <tr class="row">
-        <td scope="row" class="col-4">
+        <td scope="row" class="@if ($filter['type'] != 'I') col-3 @else col-4 @endif">
             <input type="checkbox" class="ml-0 form-check-input app-cbx" id="{{ $app->id }}">
             <label class="ml-4 text-primary d-flex" for="{{ $app->id }}">
                 {{ $app->name }}
             </label>
         </td>
-        <td class="col-5">{{ $app->url }}</td>
+        <td class="col-4">{{ $app->url }}</td>
+      @if ($filter['type'] != 'I')
+        <td class="col-2">{{ is_object($app->owner()) ? $app->owner()->identity : 'Appli institutionnelle' }}</td>
+      @endif
         <td class="col d-flex justify-content-end mb-auto">
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $app->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
