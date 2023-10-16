@@ -56,6 +56,12 @@ class App extends Model
             })
             ->when($authType, function ($query) use ($authType) {
                 $query->where('auth_type', $authType);
+            })
+            ->when($type == 'P', function ($query) use ($type) {
+                $query->whereNotNull('owner_id');
+            })
+            ->when($type == 'I', function ($query) use ($type) {
+                $query->whereNull('owner_id');
             });
     }
 }
