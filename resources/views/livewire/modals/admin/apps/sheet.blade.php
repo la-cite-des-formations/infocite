@@ -25,13 +25,34 @@
         <dl class="row mb-0 mx-0">
             <!-- Propriétaire ... -->
             <dt class="col-3 text-right pl-0">Propriétaire</dt>
-            <dd class="col-9 pl-0">{{ $app->owner() ? $app->owner()->identity() : 'Application institutionnelle' }}</dd>
+            <dd class="col-9 pl-0">{{ is_object($app->owner()) ? $app->owner()->identity : 'Application institutionnelle' }}</dd>
             <!-- Url https://... -->
             <dt class="col-3 text-right pl-0">Url</dt>
             <dd class="col-9 pl-0">{{ $app->url }}</dd>
             <!-- Description ... -->
             <dt class="col-3 text-right pl-0">Description</dt>
             <dd class="col-9 pl-0">{{ $app->description }}</dd>
+          @if ($app->groups()->get()->count())
+            {{-- liste des groupes associés --}}
+            <dt class="col-12 pl-0 mt-3">Groupes associés</dt>
+           @foreach ($app->groups()->get() as $group)
+            <li class="col-12 mb-0">{{ $group->name }}</li>
+           @endforeach
+          @endif
+          @if ($app->profiles->count())
+            {{-- liste des profils associés --}}
+            <dt class="col-12 pl-0 mt-3">Profils associés</dt>
+           @foreach ($app->profiles as $profile)
+            <li class="col-12 mb-0">{{ $profile->first_name }}</li>
+           @endforeach
+          @endif
+          @if ($app->realUsers->count())
+            {{-- liste des profils associés --}}
+            <dt class="col-12 pl-0 mt-3">Utilisateurs associés</dt>
+           @foreach ($app->realUsers as $user)
+            <li class="col-12 mb-0">{{ $user->identity }}</li>
+           @endforeach
+          @endif
         </dl>
     </div>
 @endsection
