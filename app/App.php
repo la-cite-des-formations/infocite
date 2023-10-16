@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Model;
 
 class App extends Model
@@ -25,6 +26,22 @@ class App extends Model
     public function users() {
         return $this
             ->belongsToMany('App\User')
+            ->orderByRaw('name ASC, first_name ASC')
+            ->withPivot(['login', 'password']);
+    }
+
+    public function realUsers() {
+        return $this
+            ->belongsToMany('App\User')
+            ->where('name', '<>', AP::PROFILE)
+            ->orderByRaw('name ASC, first_name ASC')
+            ->withPivot(['login', 'password']);
+    }
+
+    public function profiles() {
+        return $this
+            ->belongsToMany('App\User')
+            ->where('name', AP::PROFILE)
             ->orderByRaw('name ASC, first_name ASC')
             ->withPivot(['login', 'password']);
     }

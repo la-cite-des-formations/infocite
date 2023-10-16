@@ -38,8 +38,16 @@
         <div class="form-group col mt-3">
             <label title="Sélectionner les groupes à ajouter"
                    for="app-available-groups">Groupes disponibles</label>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text text-secondary" title="Rechercher un groupe">
+                        <span class="material-icons md-18">search</span>
+                    </div>
+                </div>
+                <input id="app-searched-group" wire:model="groupSearch" class="form-control">
+            </div>
             <select id="app-available-groups" multiple wire:model="selectedAvailableGroups"
-                    class="form-control" size="10">
+                class="form-control" size="8">
               @foreach($availableGroups as $group)
                 <option value="{{ $group->id }}">
                     {{ $group->name }}
