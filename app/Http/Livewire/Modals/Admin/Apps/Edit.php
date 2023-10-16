@@ -24,6 +24,7 @@ class Edit extends Component
     public $selectedLinkedGroups = [];
     public $selectedAvailableGroups = [];
     public $userSearch = '';
+    public $groupSearch = '';
     public $usersIDs;
     public $selectedLinkedUsers = [];
     public $selectedAvailableUsers = [];
@@ -241,8 +242,12 @@ class Edit extends Component
     }
 
     private function availableGroups() {
+        $search = $this->groupSearch;
         return Group::query()
             ->where('type', $this->groupType)
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
             ->whereNotIn('id', $this->app->groups->pluck('id'))
             ->orderByRaw('name ASC')
             ->get();
