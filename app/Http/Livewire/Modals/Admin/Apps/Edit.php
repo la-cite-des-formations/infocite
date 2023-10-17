@@ -23,11 +23,15 @@ class Edit extends Component
     public $groupsIDs;
     public $selectedLinkedGroups = [];
     public $selectedAvailableGroups = [];
-    public $userSearch = '';
     public $groupSearch = '';
     public $usersIDs;
     public $selectedLinkedUsers = [];
     public $selectedAvailableUsers = [];
+    public $userSearch = '';
+    public $profilesIDs;
+    public $selectedLinkedProfiles = [];
+    public $selectedAvailableProfiles = [];
+    public $profileSearch = '';
     public $formTabs;
 
     protected $listeners = ['render'];
@@ -41,7 +45,7 @@ class Edit extends Component
         'app.url' => 'required|url|max:255',
     ];
 
-    public function setApp($id = NULL) {
+    private function setApp($id = NULL) {
         $this->app = $this->app ?? App::findOrNew($id);
 
         $this->formTabs = [
@@ -57,16 +61,36 @@ class Edit extends Component
                 ],
                 'groups' => [
                     'icon' => 'groups',
-                    'title' => "Gérer les groupes utilisateurs",
+                    'title' => "Associer des groupes",
+                    'hidden' => !$this->app->id,
+                ],
+                'profiles' => [
+                    'icon' => 'portrait',
+                    'title' => "Associer des profils",
                     'hidden' => !$this->app->id,
                 ],
                 'users' => [
                     'icon' => 'person',
-                    'title' => "Gérer les utilisateurs spécifiques",
+                    'title' => "Associer des utilisateurs",
                     'hidden' => !$this->app->id,
                 ],
             ],
         ];
+    }
+
+    private function setIDs() {
+        $this->groupsIDs = $this->app->groups->pluck('id');
+        $this->profilesIDs = $this->app->profiles->pluck('id');
+        $this->usersIDs = $this->app->realUsers->pluck('id');
+    }
+
+    private function resetSelections() {
+        $this->selectedLinkedGroups = [];
+        $this->selectedAvailableGroups = [];
+        $this->selectedLinkedProfiles = [];
+        $this->selectedAvailableProfiles = [];
+        $this->selectedLinkedUsers = [];
+        $this->selectedAvailableUsers = [];
     }
 
     public function mount($data) {
@@ -75,19 +99,16 @@ class Edit extends Component
         $this->mode = $mode ?? 'view';
         $this->setApp($id ?? NULL);
         if (!empty($id)) {
-            $this->groupsIDs = $this->app->groups->pluck('id');
-            $this->usersIDs = $this->app->users->pluck('id');
+            $this->setIDs();
         }
     }
 
     public function refresh() {
         $this->app->groups()->sync($this->groupsIDs);
-        $this->app->users()->sync($this->usersIDs);
+        $this->app->profiles()->sync($this->profilesIDs);
+        $this->app->realUsers()->sync($this->usersIDs);
 
-        $this->selectedLinkedGroups = [];
-        $this->selectedAvailableGroups = [];
-        $this->selectedLinkedUsers = [];
-        $this->selectedAvailableUsers = [];
+        $this->resetSelections();
 
         $this
             ->emit('render', [
@@ -102,10 +123,7 @@ class Edit extends Component
 
         $this->$tabsSystem['currentTab'] = $tab;
 
-        $this->selectedLinkedGroups = [];
-        $this->selectedAvailableGroups = [];
-        $this->selectedLinkedUsers = [];
-        $this->selectedAvailableUsers = [];
+        $this->resetSelections();
     }
 
     public function switchMode($mode) {
@@ -114,15 +132,15 @@ class Edit extends Component
         if ($mode === 'creation') $this->app = NULL;
         if ($mode !== 'view') $this->setApp();
 
-        $this->selectedLinkedGroups = [];
-        $this->selectedAvailableGroups = [];
-        $this->selectedLinkedUsers = [];
-        $this->selectedAvailableUsers = [];
+        $this->resetSelections();
     }
 
     public function add() {
         switch($this->formTabs['currentTab']) {
             case  'groups' : $this->addGroups();
+            return;
+
+            case 'profiles' : $this->addUsers('profile');
             return;
 
             case 'users' : $this->addUsers();
@@ -147,14 +165,20 @@ class Edit extends Component
             ->self();
     }
 
-    private function addUsers() {
-        if ($this->isEmpty('selectedAvailableUsers', "Aucun utilisateur sélectionné")) return;
+    private function addUsers($usersType = 'real') {
+        if (
+            $usersType == 'real' && $this->isEmpty('selectedAvailableUsers', "Aucun utilisateur sélectionné") ||
+            $usersType == 'profile' && $this->isEmpty('selectedAvailableProfiles', "Aucun profil sélectionné")
+        ) return;
+
+            $selectedUsers = $usersType == 'real' ? $this->selectedAvailableUsers : $this->selectedAvailableProfiles;
 
         $this->app
             ->users()
-            ->syncWithoutDetaching($this->selectedAvailableUsers);
+            ->syncWithoutDetaching($selectedUsers);
 
-        $this->selectedAvailableUsers = [];
+            $this->selectedAvailableProfiles = [];
+            $this->selectedAvailableUsers = [];
 
         $this
             ->emit('render', [
@@ -167,6 +191,9 @@ class Edit extends Component
     public function remove() {
         switch($this->formTabs['currentTab']) {
             case  'groups' : $this->removeGroups();
+            return;
+
+            case 'profiles' : $this->removeUsers('profile');
             return;
 
             case 'users' : $this->removeUsers();
@@ -191,14 +218,20 @@ class Edit extends Component
             ->self();
     }
 
-    private function removeUsers() {
-        if ($this->isEmpty('selectedLinkedUsers', "Aucun utilisateur sélectionné")) return;
+    private function removeUsers($usersType = 'real') {
+        if (
+            $usersType == 'profile' && $this->isEmpty('selectedLinkedProfiles', "Aucun profil sélectionné") ||
+            $usersType == 'real' && $this->isEmpty('selectedLinkedUsers', "Aucun utilisateur sélectionné")
+        ) return;
+
+        $selectedUsers = $usersType == 'real' ? $this->selectedLinkedUsers : $this->selectedLinkedProfiles;
 
         $this->app
             ->users()
-            ->detach($this->selectedLinkedUsers);
+            ->detach($selectedUsers);
 
         $this->selectedLinkedUsers = [];
+        $this->selectedLinkedProfiles = [];
 
         $this
             ->emit('render', [
@@ -229,8 +262,7 @@ class Edit extends Component
                 ->self();
         }
         else {
-            $this->groupsIDs = $this->app->groups->pluck('id');
-            $this->usersIDs = $this->app->users->pluck('id');
+            $this->setIDs();
 
             $this
                 ->emit('render', [
@@ -253,6 +285,18 @@ class Edit extends Component
             ->get();
     }
 
+    private function availableProfiles() {
+        $search = $this->profileSearch;
+        return User::query()
+            ->where('name', AP::PROFILE)
+            ->when($search, function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%");
+            })
+            ->whereNotIn('id', $this->app->profiles->pluck('id'))
+                ->orderBy('first_name')
+                ->get();
+    }
+
     private function availableUsers() {
         $search = $this->userSearch;
         return User::query()
@@ -260,14 +304,13 @@ class Edit extends Component
             ->when($search, function ($query) use ($search) {
                 $query->whereRaw("CONCAT(first_name, ' ', name) LIKE ?", "%{$search}%");
             })
-            ->whereNotIn('id', $this->app->users->pluck('id'))
+            ->whereNotIn('id', $this->app->realUsers->pluck('id'))
                 ->orderByRaw('name ASC, first_name ASC')
                 ->get();
     }
 
     public function render($messageBag = NULL)
     {
-        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -279,17 +322,13 @@ class Edit extends Component
             view('livewire.modals.admin.models-form', [
                 'addButtonTitle' => 'Ajouter une application',
                 'availableGroups' => $this->availableGroups(),
+                'availableProfiles' => $this->availableProfiles(),
                 'availableUsers' => $this->availableUsers(),
                 'users' => User::query()
                     ->where('name', '<>', AP::PROFILE)
                     ->where('is_frozen', 0)
                     ->get(),
-                'icons' => AP::getMaterialIconsCodes()
-                    ->when($searchIcons, function ($icons) use ($searchIcons) {
-                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
-                        return str_contains($miName, $searchIcons);
-                    });
-                }),
+                'icons' => $this->getMiCodes(),
             ]);
     }
 }
