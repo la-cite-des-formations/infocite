@@ -74,11 +74,12 @@ class App extends Model
             ->when($authType, function ($query) use ($authType) {
                 $query->where('auth_type', $authType);
             })
-            ->when($type == 'P', function ($query) use ($type) {
+            ->when($type == 'P', function ($query) {
                 $query->whereNotNull('owner_id');
             })
-            ->when($type == 'I', function ($query) use ($type) {
+            ->when($type == 'I', function ($query) {
                 $query->whereNull('owner_id');
-            });
+            })
+            ->orderBy('name');
     }
 }
