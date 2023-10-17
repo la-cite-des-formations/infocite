@@ -13,6 +13,7 @@ class AppsManager extends Component
     use WithModal;
 
     public $rubricSegment;
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
 
@@ -22,13 +23,15 @@ class AppsManager extends Component
         $this->rubricSegment = $viewBag->rubricSegment;
     }
 
+    public function booted() {
+        $this->firstLoad = !$this->rendered;
+    }
+
     public function deleteApp($appId) {
         App::find($appId)->delete();
     }
 
     public function redirectToApp($appUrl) {
-        $this->firstLoad = FALSE;
-
         if (!$this->blockRedirection) {
             $this->emit('newTabRedirection', $appUrl);
         }
@@ -38,11 +41,12 @@ class AppsManager extends Component
     }
 
     public function blockRedirection() {
-        $this->firstLoad = FALSE;
         $this->blockRedirection = TRUE;
     }
 
     public function render() {
+        $this->rendered = TRUE;
+
         return view('livewire.usage.apps-manager');
     }
 }

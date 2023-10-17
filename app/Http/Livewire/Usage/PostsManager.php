@@ -26,21 +26,30 @@ class PostsManager extends Component
     public $perPage = 16;
 
     public $rubric;
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
 
     protected $listeners = ['modalClosed', 'deletePost'];
 
     public function mount($viewBag) {
-        session(['backRoute' => request()->getRequestUri()]);
-        session(['appsBackRoute' => request()->getRequestUri()]);
+        session([
+            'backRoute' => request()->getRequestUri(),
+            'appsBackRoute' => request()->getRequestUri(),
+        ]);
+        $this->perPage = session('postsPerPage', 16);
         $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->isFavoriteRubric = $this->rubric->isFavorite();
         $this->setNotifications();
     }
 
+    public function booted() {
+        $this->firstLoad = !$this->rendered;
+    }
+
     public function updatedPerPage() {
+        session(['postsPerPage' => $this->perPage]);
         $this->resetPage();
     }
 
@@ -56,11 +65,11 @@ class PostsManager extends Component
     }
 
     public function blockRedirection() {
-        $this->firstLoad = FALSE;
         $this->blockRedirection = TRUE;
     }
 
     public function render() {
+        $this->rendered = TRUE;
         $user = auth()->user();
 
         return view('livewire.usage.posts-manager', [
