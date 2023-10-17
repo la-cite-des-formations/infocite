@@ -26,6 +26,7 @@ class PostsManager extends Component
     public $perPage = 16;
 
     public $rubric;
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
 
@@ -41,6 +42,10 @@ class PostsManager extends Component
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->isFavoriteRubric = $this->rubric->isFavorite();
         $this->setNotifications();
+    }
+
+    public function booted() {
+        $this->firstLoad = !$this->rendered;
     }
 
     public function updatedPerPage() {
@@ -60,11 +65,11 @@ class PostsManager extends Component
     }
 
     public function blockRedirection() {
-        $this->firstLoad = FALSE;
         $this->blockRedirection = TRUE;
     }
 
     public function render() {
+        $this->rendered = TRUE;
         $user = auth()->user();
 
         return view('livewire.usage.posts-manager', [

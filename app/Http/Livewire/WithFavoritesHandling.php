@@ -10,10 +10,6 @@ trait WithFavoritesHandling
     public $isFavoritePost;
 
     public function switchFavoriteRubric() {
-        if ($this->firstLoad) {
-            $this->firstLoad = FALSE;
-        }
-
         if ($this->rubric->isFavorite()) {
             $this->rubric
                 ->users()
@@ -29,10 +25,6 @@ trait WithFavoritesHandling
     }
 
     public function switchFavoritePost($post_id = NULL) {
-        if ($this->firstLoad) {
-            $this->firstLoad = FALSE;
-        }
-
         $post = $this->post ?? Post::find($post_id);
 
         if ($post->isFavorite()) {

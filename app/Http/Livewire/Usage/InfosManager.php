@@ -17,6 +17,7 @@ class InfosManager extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $rubric;
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $perPageOptions = [4, 8, 16];
     public $perPage = 8;
@@ -29,11 +30,11 @@ class InfosManager extends Component
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
     }
 
-    public function switchFavoritePost($post_id) {
-        if ($this->firstLoad) {
-            $this->firstLoad = FALSE;
-        }
+    public function booted() {
+        $this->firstLoad = !$this->rendered;
+    }
 
+    public function switchFavoritePost($post_id) {
         $post = Post::find($post_id);
 
         if ($post->isFavorite()) {
@@ -58,8 +59,6 @@ class InfosManager extends Component
     }
 
     public function switchFavoriteRubric($rubric_id) {
-        if ($this->firstLoad) $this->firstLoad = FALSE;
-
         $this->rubric = Rubric::find($rubric_id);
 
         if ($this->rubric->isFavorite()) {
@@ -88,12 +87,14 @@ class InfosManager extends Component
     }
 
     public function blockRedirection() {
-        $this->firstLoad = FALSE;
         $this->blockRedirection = TRUE;
     }
 
     public function render() {
+        $this->rendered = TRUE;
+
         $user = User::find(auth()->user()->id);
+
         return view('livewire.usage.infos-manager', [
             'user' => $user,
             'favoritesPosts' => $user->myFavoritesPosts()
