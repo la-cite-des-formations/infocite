@@ -6,6 +6,7 @@ use Livewire\Component;
 
 class OrgChartManager extends Component
 {
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $canAdmin = TRUE;
     public $orgChartTitle;
@@ -16,8 +17,8 @@ class OrgChartManager extends Component
         $this->rubric = $viewBag->rubric;
     }
 
-    public function hydrate() {
-        if ($this->firstLoad) $this->firstLoad = FALSE;
+    public function booted() {
+        $this->firstLoad = !$this->rendered;
     }
 
     public function drawOrgChart($type = 'Process') {
@@ -29,6 +30,8 @@ class OrgChartManager extends Component
     }
 
     public function render() {
+        $this->rendered = TRUE;
+
         return view('livewire.usage.org-chart-manager');
     }
 }

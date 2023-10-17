@@ -12,10 +12,6 @@ trait WithUsageMode
     }
 
     public function switchMode() {
-        if ($this->firstLoad) {
-            $this->firstLoad = FALSE;
-        }
-
         $this->mode = $this->mode == 'view' ? 'edition' : 'view';
         session(['mode' => $this->mode]);
     }
