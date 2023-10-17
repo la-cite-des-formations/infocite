@@ -32,8 +32,11 @@ class PostsManager extends Component
     protected $listeners = ['modalClosed', 'deletePost'];
 
     public function mount($viewBag) {
-        session(['backRoute' => request()->getRequestUri()]);
-        session(['appsBackRoute' => request()->getRequestUri()]);
+        session([
+            'backRoute' => request()->getRequestUri(),
+            'appsBackRoute' => request()->getRequestUri(),
+        ]);
+        $this->perPage = session('postsPerPage', 16);
         $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->isFavoriteRubric = $this->rubric->isFavorite();
@@ -41,6 +44,7 @@ class PostsManager extends Component
     }
 
     public function updatedPerPage() {
+        session(['postsPerPage' => $this->perPage]);
         $this->resetPage();
     }
 
