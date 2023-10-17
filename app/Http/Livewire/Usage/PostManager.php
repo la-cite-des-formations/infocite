@@ -23,6 +23,7 @@ class PostManager extends Component
     public $rubric;
     public $post;
     public $newComment = '';
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
 
     protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
@@ -43,8 +44,8 @@ class PostManager extends Component
         $this->setNotifications();
     }
 
-    public function hydrate() {
-        if ($this->firstLoad) $this->firstLoad = FALSE;
+    public function booted() {
+        $this->firstLoad = !$this->rendered;
     }
 
     public function commentPost() {
@@ -86,6 +87,8 @@ class PostManager extends Component
     }
 
     public function render() {
+        $this->rendered = TRUE;
+
         return view('livewire.usage.post-manager');
     }
 }

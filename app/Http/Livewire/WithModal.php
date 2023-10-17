@@ -16,10 +16,6 @@ trait WithModal
     }
 
     public function showModal($action, $data = NULL) {
-        if (isset($this->firstLoad)) {
-            $this->firstLoad = FALSE;
-        }
-
         switch ($action) {
             case 'confirm' :
                 $component = "usage.confirm";

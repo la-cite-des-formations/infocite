@@ -18,15 +18,19 @@ class SearchResultManager extends Component
     public $searchedStr;
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 10, 25];
-    public $perPage = 8;
+    public $perPage;
 
 
     public function mount($viewBag) {
         session(['appsBackRoute' => request()->getRequestUri()]);
+        $this->perPage = session('searchResultPerPage', 8);
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
         $this->searchedStr = request()->input('resultat');
     }
+
     public function updatedPerPage() {
+        session(['searchResultPerPage' => $this->perPage]);
+
         $this->resetPage();
     }
 
