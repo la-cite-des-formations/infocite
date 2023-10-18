@@ -1,8 +1,8 @@
 <header id="header">
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand logo" href="{{ url('/dashboard') }}">
-                <img src="{{ asset('img/favicon.png') }}" title="Info-Cité - Tableau de bord" alt="Info-Cité">
+            <a class="navbar-brand logo" href="{{ url('/dashboard') }}" title="Info-Cité - Tableau de bord">
+                <img src="{{ asset('img/favicon.png') }}" alt="Info-Cité">
                 <span class="ml-0 align-middle">Tableau de bord</span>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -33,21 +33,21 @@
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
-                          @foreach (AP::getDashboardFunctions() as $function)
-                           @can(is_array($function->gate) ? $function->gate['name'] : $function->gate,
+                         @foreach (AP::getAllDashboardsFunctions() as $function)
+                          @can(is_array($function->gate) ? $function->gate['name'] : $function->gate,
                                 is_array($function->gate) ? $function->gate['dashboard'] : NULL)
-                              <a
+                            <a
                               @if(isset($function->route['parameters']))
-                                href="{{ route($function->route['name'] ?: 'dashboard', $function->route['parameters']) }}"
+                                 href="{{ route($function->route['name'] ?: 'dashboard', $function->route['parameters']) }}"
                               @else
-                                href="{{ route($function->route['name'] ?: 'dashboard') }}"
+                                 href="{{ route($function->route['name'] ?: 'dashboard') }}"
                               @endif
-                                class="dropdown-item card-dashboard-{{ $function->color }}">
-                                <span class="material-icons-outlined md-24 align-middle db-text-{{ $function->color }}">{{ $function->icon_name }}</span>
+                                 class="admin-menu-item dropdown-item card-dashboard-{{ $function->color }}">
+                                <span class="@if (empty($function->atRoot)) ml-3 @endif material-icons-outlined md-24 align-middle db-text-{{ $function->color }}">{{ $function->icon_name }}</span>
                                 <span class="ml-1 align-middle">{{ $function->title }}</span>
                             </a>
-                           @endcan
-                          @endforeach
+                          @endcan
+                         @endforeach
                         </div>
                     </li>
                 </ul>

@@ -429,6 +429,22 @@ class AP // Application Parameters
         return new Collection(array_map(function ($function) { return (object) $function; }, static::DASHBOARD_FUNCTIONS[$dashboard]));
     }
 
+    public static function getAllDashboardsFunctions() {
+        $allDashboardsfunctions = new Collection();
+
+        foreach (static::getDashboardFunctions() as $function) {
+
+            $function->atRoot = TRUE;
+            $allDashboardsfunctions->push($function);
+
+            if (is_array($function->gate)) {
+                $allDashboardsfunctions = $allDashboardsfunctions->concat(static::getDashboardFunctions($function->gate['dashboard']));
+            }
+        }
+
+        return $allDashboardsfunctions;
+    }
+
     public static function getDashboardFunction($function, $dashboard = 'main') {
         return static::getDashboardFunctions($dashboard)
             ->get($function);

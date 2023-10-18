@@ -4,7 +4,7 @@
         @include('includes.admin.head')
         @livewireStyles
     </head>
-    <body class="h-100">
+    <body class="h-100 bg-dark">
         <div id="app" class="h-100">
           @auth
             @include('includes.admin.nav')
