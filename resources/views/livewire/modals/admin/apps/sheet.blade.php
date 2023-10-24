@@ -28,7 +28,7 @@
             <dd class="col-9 pl-0">{{ is_object($app->owner()) ? $app->owner()->identity : 'Application institutionnelle' }}</dd>
             <!-- Url https://... -->
             <dt class="col-3 text-right pl-0">Url</dt>
-            <dd class="col-9 pl-0">{{ $app->url }}</dd>
+            <dd class="col-9 pl-0 text-truncate">{{ $app->url }}</dd>
             <!-- Description ... -->
             <dt class="col-3 text-right pl-0">Description</dt>
             <dd class="col-9 pl-0">{{ $app->description }}</dd>

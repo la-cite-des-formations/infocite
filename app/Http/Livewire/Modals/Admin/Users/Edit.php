@@ -17,6 +17,7 @@ class Edit extends Component
     public $mode;
     public $canAdd = TRUE;
     public $groupType = 'C';
+    public $groupSearch = '';
     public $groupsIDs;
     public $selectedUserGroups = [];
     public $selectedAvailableGroups = [];
@@ -24,6 +25,7 @@ class Edit extends Component
     public $appsIDs;
     public $selectedLinkedApps = [];
     public $selectedAvailableApps = [];
+    public $profileSearch = '';
     public $profilesIDs;
     public $selectedProfiles = [];
     public $selectedLinkedProfiles = [];
@@ -69,7 +71,7 @@ class Edit extends Component
                     'hidden' => !$this->user->id,
                 ],
                 'profiles' => [
-                    'icon' => 'assignment_ind',
+                    'icon' => 'portrait',
                     'title' => "Associer et appliquer les profils",
                     'hidden' => !$this->user->id,
                 ],
@@ -421,7 +423,11 @@ class Edit extends Component
     }
 
     private function availableGroups() {
+        $search = $this->groupSearch;
         return Group::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
             ->where('type', $this->groupType)
             ->whereNotIn('id', $this->user->groups->pluck('id'))
             ->orderByRaw('name ASC')
@@ -440,7 +446,11 @@ class Edit extends Component
     }
 
     private function availableProfiles() {
+        $search = $this->profileSearch;
         return User::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('first_name', 'LIKE', "%{$search}%");
+            })
             ->where('name', AP::PROFILE)
             ->whereNotIn('id', $this->user->profiles->pluck('id'))
                 ->orderByRaw('first_name ASC')
