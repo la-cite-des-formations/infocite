@@ -1,9 +1,10 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les applications à retirer"
-                   for="user-linked-apps">Applications spécifiques</label>
-            <select id="user-linked-apps" multiple wire:model="selectedLinkedApps" class="form-control" size="10">
+                   for="user-linked-apps" class="m-auto py-2">Applications spécifiques</label>
+            <select id="user-linked-apps" multiple wire:model="selectedLinkedApps"
+                    class="form-control flex-fill" size="10">
               @foreach($user->apps as $app)
                 <option value="{{ $app->id }}">
                     {{ $app->name }}
@@ -23,9 +24,9 @@
                 </button>
             </div>
         </div>
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les applications à ajouter"
-                   for="user-available-apps">Applications disponibles</label>
+                   for="user-available-apps" class="m-auto py-2">Applications disponibles</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Rechercher une application">
@@ -35,7 +36,7 @@
                 <input wire:model="appSearch" class="form-control" id="user-searched-app">
             </div>
             <select id="user-available-apps" multiple wire:model="selectedAvailableApps"
-                    class="form-control" size="8">
+                    class="form-control flex-fill" size="8">
               @foreach($availableApps as $app)
                 <option value="{{ $app->id }}">
                     {{ $app->name }}

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Model;
 
 class Right extends Model
@@ -32,6 +33,26 @@ class Right extends Model
             ->morphedByMany('App\User', 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
+    }
+
+    public function getRightableRoles() {
+        if (isset($this->pivot)) {
+            $roles = NULL;
+            foreach(Roles::all()->collection as $role) {
+                if ($this->pivot->roles & $role->flag) $roles[] = $role->name;
+            }
+            return implode(', ', $roles ?? ['aucun']);
+        }
+        return;
+    }
+
+    public function rightsResourceableString() {
+        if (!empty($this->pivot->resource_type)) {
+            $class = "\\App\\{$this->pivot->resource_type}";
+            $entity = AP::getResourceable($this->pivot->resource_type);
+            return " - {$entity} : {$class::find($this->pivot->resource_id)->identity()}";
+        }
+        return "";
     }
 
     public function rolesFromDashboard() {

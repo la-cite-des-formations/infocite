@@ -28,9 +28,12 @@
 @endif
 
 @section('modal-body')
-    <div class="row bg-info p-3 mb-3">
-        @include('includes.tabs', ['tabsSystem' => $formTabs])
-    </div>
+    <form class="row bg-info pt-2 pb-1">
+        @csrf
+        <div class="col py-2">
+            @include('includes.tabs', ['tabsSystem' => $formTabs])
+        </div>
+    </form>
     @includeWhen(session()->has('message'), 'includes.alert-message')
 @endsection
 
