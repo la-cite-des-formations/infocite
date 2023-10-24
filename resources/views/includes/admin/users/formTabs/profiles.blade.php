@@ -1,9 +1,9 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col col mt-1 pt-1">
             <label title="Sélectionner les profils à dissocier"
-                   for="user-linked-profiles">Profils associés</label>
-            <select id="user-linked-profiles" multiple wire:model="selectedLinkedProfiles" class="form-control" size="10">
+                   for="user-linked-profiles" class="m-auto py-2">Profils associés</label>
+            <select id="user-linked-profiles" multiple wire:model="selectedLinkedProfiles" class="form-control flex-fill" size="10">
               @foreach($user->profiles as $profile)
                 <option value="{{ $profile->id }}">
                     {{ $profile->first_name }}
@@ -27,11 +27,19 @@
                 <span class="material-icons md-18">layers</span>
             </button>
         </div>
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les profils à ajouter"
-                   for="user-available-profiles">Profils disponibles</label>
+                   for="user-available-profiles" class="m-auto py-2">Profils disponibles</label>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text text-secondary" title="Rechercher un profil">
+                        <span class="material-icons md-18">search</span>
+                    </div>
+                </div>
+                <input wire:model="profileSearch" class="form-control" id="user-searched-profile">
+            </div>
             <select id="user-available-profiles" multiple wire:model="selectedAvailableProfiles"
-                    class="form-control" size="10">
+                    class="form-control flex-fill" size="8">
               @foreach($availableProfiles as $profile)
                 <option value="{{ $profile->id }}">
                     {{ $profile->first_name }}

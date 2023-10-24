@@ -96,6 +96,58 @@
             <dd class="col-9 pl-0"><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></dd>
            @endif
           @endif
+          @if ($user->groups(['S'])->get()->count())
+            <dt class="col-12 pl-0 mt-2">Groupes Système</dt>
+            <ul>
+                @foreach ($user->groups(['S'])->get() as $group)
+                  <li>{{ $group->name }}</li>
+                @endforeach
+            </ul>
+          @endif
+          @if ($user->groups(['A'])->get()->count())
+            <dt class="col-12 pl-0 mt-2">Autres groupes</dt>
+            <ul>
+                @foreach ($user->groups(['A'])->get() as $group)
+                  <li>{{ $group->name }}</li>
+                @endforeach
+            </ul>
+          @endif
+          @if ($user->personalRights->count())
+            <dt class="col-12 pl-0 mt-2">Droits personnels</dt>
+            <ul>
+              @foreach ($user->personalRights as $right)
+                <li>{{ $right->description.$right->rightsResourceableString() }}</li>
+                <dd class="col-12 px-0 mb-0">{{ $right->getRightableRoles() }}</dd>
+                <dd class="col-12 px-0 font-italic">Ordre de priorité : {{ $right->pivot->priority }}</dd>
+              @endforeach
+            </ul>
+          @endif
+          @if ($user->profilesRights()->count())
+            <dt class="col-12 pl-0 mt-2">Droits par profil</dt>
+            <ul>
+              @foreach ($user->profilesRights()->sortBy('name')->sortByDesc('pivot.priority')->groupBy('name') as $right)
+                <li>{{
+                    $user->profiles->firstWhere('id', $right->first()->pivot->rightable_id)->first_name.' - '.
+                    $right->first()->description.$right->first()->rightsResourceableString()
+                }}</li>
+                <dd class="col-12 px-0 mb-0">{{ $right->first()->getRightableRoles() }}</dd>
+                <dd class="col-12 px-0 font-italic">Ordre de priorité : {{ $right->first()->pivot->priority }}</dd>
+              @endforeach
+            </ul>
+          @endif
+          @if ($user->groupsRights()->count())
+            <dt class="col-12 pl-0 mt-2">Droits par groupe</dt>
+            <ul>
+              @foreach ($user->groupsRights()->sortBy('name')->sortByDesc('pivot.priority')->groupBy('name') as $right)
+                <li>{{
+                    $user->groups->firstWhere('id', $right->first()->pivot->rightable_id)->identity().' - '.
+                    $right->first()->description.$right->first()->rightsResourceableString()
+                }}</li>
+                <dd class="col-12 px-0 mb-0">{{ $right->first()->getRightableRoles() }}</dd>
+                <dd class="col-12 px-0 font-italic">Ordre de priorité : {{ $right->first()->pivot->priority }}</dd>
+              @endforeach
+            </ul>
+          @endif
         </dl>
     </div>
 @endsection
