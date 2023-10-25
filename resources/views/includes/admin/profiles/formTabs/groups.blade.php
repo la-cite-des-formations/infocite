@@ -1,9 +1,9 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="@if($groupsTabs['currentTab'] === 'groups') Sélectionner les groupes à dissocier @endif
                           @if($groupsTabs['currentTab'] === 'function') Sélectionner les groupes dont la fonction associée doit être attribuée ou retirée @endif"
-                   for="profile-groups">Groupes associés au profil</label>
+                   for="profile-groups" class="m-auto py-2">Groupes associés au profil</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Type de groupe">
@@ -17,9 +17,12 @@
                 </select>
             </div>
             <select id="profile-groups" multiple wire:model="selectedLinkedGroups"
-                    class="form-control" size="8">
+                    class="form-control flex-fill" size="8">
               @foreach($profile->groups([$groupType])->get() as $group)
                 <option value="{{ $group->id }}">{{ $group->name }}</option>
+               @if ($groupsTabs['currentTab'] == 'function' && isset($group->pivot->function))
+                <option disabled class="ml-2">{{ "({$group->pivot->function})" }}</option>
+               @endif
               @endforeach
             </select>
         </div>
@@ -37,6 +40,8 @@
                 </button>
             </div>
         </div>
-        @include('includes.tabs', ['tabsSystem' => $groupsTabs])
+        <div class="form-group col mt-1 pt-1">
+            @include('includes.tabs', ['tabsSystem' => $groupsTabs])
+        </div>
     </div>
 </div>

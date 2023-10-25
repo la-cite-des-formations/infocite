@@ -1,4 +1,4 @@
-<div class="col">
+<div class="col pt-2">
   @error('profile.first_name')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])
   @enderror

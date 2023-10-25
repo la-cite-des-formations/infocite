@@ -17,6 +17,7 @@ class Edit extends Component
     public $mode;
     public $canAdd = TRUE;
     public $groupType = 'C';
+    public $groupSearch = '';
     public $groupsIDs;
     public $selectedLinkedGroups = [];
     public $selectedAvailableGroups = [];
@@ -66,8 +67,8 @@ class Edit extends Component
                     'title' => "Gérer les applications associées au profil",
                     'hidden' => !$this->profile->id,
                 ],
-                'profile' => [
-                    'icon' => 'assignment_ind',
+                'users' => [
+                    'icon' => 'person',
                     'title' => "Associer et appliquer le profil",
                     'hidden' => !$this->profile->id,
                 ],
@@ -395,7 +396,11 @@ class Edit extends Component
     }
 
     private function availableGroups() {
+        $search = $this->groupSearch;
         return Group::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
             ->where('type', $this->groupType)
             ->whereNotIn('id', $this->profile->groups->pluck('id'))
             ->orderByRaw('name ASC')
