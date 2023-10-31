@@ -62,14 +62,14 @@ class Edit extends Component
                     'title' => "Gérer les groupes associés au profil",
                     'hidden' => !$this->profile->id,
                 ],
+                'users' => [
+                    'icon' => 'person',
+                    'title' => "Gérer les utilisateurs associés au profil",
+                    'hidden' => !$this->profile->id,
+                ],
                 'apps' => [
                     'icon' => 'view_module',
                     'title' => "Gérer les applications associées au profil",
-                    'hidden' => !$this->profile->id,
-                ],
-                'users' => [
-                    'icon' => 'person',
-                    'title' => "Associer et appliquer le profil",
                     'hidden' => !$this->profile->id,
                 ],
             ],
@@ -175,19 +175,18 @@ class Edit extends Component
         $users = User::whereIn('id', $this->selectedLinkedUsers)->get();
 
         foreach ($users as $user) {
-            $profileGroups = $this->profile
-                ->groups()
-                ->pluck('function', 'id')
+            $profileGroups = $this->profile->groups->pluck('function', 'id')
                 ->map(function ($function) {
                     return ['function' => $function];
                 });
-            $user
-                ->groups()
-                ->syncWithoutDetaching($profileGroups);
 
             $user
                 ->apps()
                 ->syncWithoutDetaching($profileApps);
+
+            $user
+                ->groups()
+                ->syncWithoutDetaching($profileGroups);
         }
 
         $this->selectedLinkedUsers = [];

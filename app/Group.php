@@ -29,6 +29,15 @@ class Group extends Model
             ->withPivot('function');
     }
 
+    public function profiles()
+    {
+        return $this
+            ->belongsToMany('App\User')
+            ->where('name', AP::PROFILE)
+            ->orderBy('first_name')
+            ->withPivot('function');
+    }
+
     public function actors() {
         return $this
             ->belongsToMany('App\Actor', 'group_user', 'group_id', 'user_id');
