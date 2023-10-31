@@ -124,7 +124,7 @@ class AP // Application Parameters
         'S' => [
             'withoutGroupId' => [
                 'icon' => 'groups',
-                'header' => 'Groupe'
+                'header' => 'Groupes'
             ],
             'withGroupId' => [
                 'icon' => 'build',
@@ -150,23 +150,28 @@ class AP // Application Parameters
         ],
         'C' => [
             'icon' => 'school',
-            'choiceLabel' => 'Choisir une classe...'
+            'choiceLabel' => 'Choisir une classe...',
+            'dtLabel' => 'Classes'
         ],
         'E' => [
             'icon' => 'school',
-            'choiceLabel' => 'Choisir une classe...'
+            'choiceLabel' => 'Choisir une classe...',
+            'dtLabel' => 'Classes'
         ],
         'P' => [
             'icon' => 'corporate_fare',
-            'choiceLabel' => 'Choisir un service...'
+            'choiceLabel' => 'Choisir un service...',
+            'dtLabel' => 'Processus'
         ],
         'S' => [
             'icon' => 'groups',
-            'choiceLabel' => 'Choisir un groupe...'
+            'choiceLabel' => 'Choisir un groupe...',
+            'dtLabel' => 'Groupes Système'
         ],
         'A' => [
             'icon' => 'groups',
-            'choiceLabel' => 'Choisir un groupe...'
+            'choiceLabel' => 'Choisir un groupe...',
+            'dtLabel' => 'Autres groupes'
         ],
         'P+' => [
             'icon' => 'developer_board',

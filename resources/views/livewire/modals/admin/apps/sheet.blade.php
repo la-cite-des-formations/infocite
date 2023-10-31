@@ -32,26 +32,32 @@
             <!-- Description ... -->
             <dt class="col-3 text-right pl-0">Description</dt>
             <dd class="col-9 pl-0">{{ $app->description }}</dd>
-          @if ($app->groups()->get()->count())
+          @if ($app->groups()->get()->isNotEmpty())
             {{-- liste des groupes associés --}}
             <dt class="col-12 pl-0 mt-3">Groupes associés</dt>
-           @foreach ($app->groups()->get() as $group)
-            <li class="col-12 mb-0">{{ $group->name }}</li>
-           @endforeach
+            <ul>
+              @foreach ($app->groups()->get() as $group)
+                <li>{{ $group->name }}</li>
+              @endforeach
+            </ul>
           @endif
-          @if ($app->profiles->count())
+          @if ($app->profiles->isNotEmpty())
             {{-- liste des profils associés --}}
-            <dt class="col-12 pl-0 mt-3">Profils associés</dt>
-           @foreach ($app->profiles as $profile)
-            <li class="col-12 mb-0">{{ $profile->first_name }}</li>
-           @endforeach
+            <dt class="col-12 pl-0 mt-2">Profils associés</dt>
+            <ul>
+              @foreach ($app->profiles as $profile)
+                <li>{{ $profile->first_name }}</li>
+              @endforeach
+            </ul>
           @endif
-          @if ($app->realUsers->count())
+          @if ($app->realUsers->isNotEmpty())
             {{-- liste des profils associés --}}
-            <dt class="col-12 pl-0 mt-3">Utilisateurs associés</dt>
-           @foreach ($app->realUsers as $user)
-            <li class="col-12 mb-0">{{ $user->identity }}</li>
-           @endforeach
+            <dt class="col-12 pl-0 mt-2">Utilisateurs associés</dt>
+            <ul>
+              @foreach ($app->realUsers as $user)
+                <li>{{ $user->identity }}</li>
+              @endforeach
+            </ul>
           @endif
         </dl>
     </div>

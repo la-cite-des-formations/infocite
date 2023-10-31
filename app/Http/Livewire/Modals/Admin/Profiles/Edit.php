@@ -17,6 +17,7 @@ class Edit extends Component
     public $mode;
     public $canAdd = TRUE;
     public $groupType = 'C';
+    public $groupSearch = '';
     public $groupsIDs;
     public $selectedLinkedGroups = [];
     public $selectedAvailableGroups = [];
@@ -61,14 +62,14 @@ class Edit extends Component
                     'title' => "Gérer les groupes associés au profil",
                     'hidden' => !$this->profile->id,
                 ],
+                'users' => [
+                    'icon' => 'person',
+                    'title' => "Gérer les utilisateurs associés au profil",
+                    'hidden' => !$this->profile->id,
+                ],
                 'apps' => [
                     'icon' => 'view_module',
                     'title' => "Gérer les applications associées au profil",
-                    'hidden' => !$this->profile->id,
-                ],
-                'profile' => [
-                    'icon' => 'assignment_ind',
-                    'title' => "Associer et appliquer le profil",
                     'hidden' => !$this->profile->id,
                 ],
             ],
@@ -174,19 +175,18 @@ class Edit extends Component
         $users = User::whereIn('id', $this->selectedLinkedUsers)->get();
 
         foreach ($users as $user) {
-            $profileGroups = $this->profile
-                ->groups()
-                ->pluck('function', 'id')
+            $profileGroups = $this->profile->groups->pluck('function', 'id')
                 ->map(function ($function) {
                     return ['function' => $function];
                 });
-            $user
-                ->groups()
-                ->syncWithoutDetaching($profileGroups);
 
             $user
                 ->apps()
                 ->syncWithoutDetaching($profileApps);
+
+            $user
+                ->groups()
+                ->syncWithoutDetaching($profileGroups);
         }
 
         $this->selectedLinkedUsers = [];
@@ -395,7 +395,11 @@ class Edit extends Component
     }
 
     private function availableGroups() {
+        $search = $this->groupSearch;
         return Group::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
             ->where('type', $this->groupType)
             ->whereNotIn('id', $this->profile->groups->pluck('id'))
             ->orderByRaw('name ASC')

@@ -65,14 +65,14 @@ class Edit extends Component
                     'title' => "Gérer les groupes de l'utilisateur",
                     'hidden' => !$this->user->id,
                 ],
+                'profiles' => [
+                    'icon' => 'portrait',
+                    'title' => "Associer et appliquer les profils à l'utilisateur",
+                    'hidden' => !$this->user->id,
+                ],
                 'apps' => [
                     'icon' => 'view_module',
                     'title' => "Gérer les applications de l'utilisateur",
-                    'hidden' => !$this->user->id,
-                ],
-                'profiles' => [
-                    'icon' => 'portrait',
-                    'title' => "Associer et appliquer les profils",
                     'hidden' => !$this->user->id,
                 ],
             ],
@@ -186,23 +186,13 @@ class Edit extends Component
         $profiles = User::whereIn('id', $this->selectedProfiles)->get();
 
         foreach ($profiles as $profile) {
-            $profileApps = $profile->apps->pluck('id');
-
-            $profileGroups = $profile
-                ->groups()
-                ->pluck('function', 'id')
-                ->map(function ($function, $id) use ($user) {
-                    $existingSystemGroup = $user
-                        ->groups(['S'])
-                        ->find($id);
-                    if ($existingSystemGroup) {
-                        $function = sprintf(
-                            '%04b',
-                            bindec($function) | bindec($existingSystemGroup->pivot->function)
-                        );
-                    }
+            $profileGroups = $profile->groups->pluck('function', 'id')
+                ->map(function ($function) {
                     return ['function' => $function];
                 });
+
+            $profileApps = $profile->apps->pluck('id');
+
             $user
                 ->groups()
                 ->syncWithoutDetaching($profileGroups);
@@ -313,9 +303,6 @@ class Edit extends Component
             return;
 
             case 'function' : $this->removeFunction();
-            return;
-
-            case 'roles' : $this->removeRoles();
             return;
         }
     }

@@ -4,6 +4,7 @@ namespace App;
 
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -234,11 +235,10 @@ class User extends Authenticatable
     public function profilesRights() {
         $profilesRights = new Collection();
 
-        $this->profiles->each(function ($profile) use (&$profilesRights) {
-            $profilesRights = $profilesRights
-                ->concat($profile->personalRights)
-                ->concat($profile->profilesRights())
-                ->concat($profile->groupsRights());
+        $this->profiles->each(function ($profile) use ($profilesRights) {
+            if ($profile->allRights()->isNotEmpty()) {
+                $profilesRights->push((object) ['profile' => $profile->first_name, 'rights' => $profile->allRights()]);
+            }
         });
 
         return $profilesRights;
@@ -254,10 +254,14 @@ class User extends Authenticatable
         return $groupsRights;
     }
 
-    public function allRights () {
-        return $this->personalRights
-            ->concat($this->profilesRights())
-            ->concat($this->groupsRights());
+    public function allRights() {
+        $allRights = $this->personalRights->concat($this->groupsRights());
+
+        $this->profiles->each(function ($profile) use (&$allRights) {
+            $allRights = $allRights->concat($profile->allRights());
+        });
+
+        return $allRights;
     }
 
     public function getRightableRoles() {
@@ -291,11 +295,11 @@ class User extends Authenticatable
 
     public function function(int $groupId, string $format = "%%", string $noResult = '') {
         $result = $this
-            ->myGroups()
+            ->groups
             ->find($groupId)
             ->pivot->function;
 
-        return $result ? str_replace("%%", $result, $format) : $noResult;
+        return isset($result) ? str_replace("%%", $result, $format) : $noResult;
     }
 
     public function functionsList(array $types, string $format = "%%", string $noResult = '') {
@@ -369,7 +373,7 @@ class User extends Authenticatable
 
             case $header === 'Classe' :
             case $header === 'Service' :
-            case $header === 'Groupe' :
+            case $header === 'Groupes' :
                 return $this->groupsList([$groupType], '%%', '-');
 
             case $header === 'Processus' :

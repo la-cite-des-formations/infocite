@@ -1,8 +1,8 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les groupes associés à retirer"
-                   for="app-linked-groups">Groupes associés</label>
+                   for="app-linked-groups" class="m-auto py-2">Groupes associés</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Type de groupe">
@@ -15,7 +15,8 @@
                   @endforeach
                 </select>
             </div>
-            <select id="app-linked-groups" multiple wire:model="selectedLinkedGroups" class="form-control" size="8">
+            <select id="app-linked-groups" multiple wire:model="selectedLinkedGroups"
+                    class="form-control flex-fill" size="8">
               @foreach($app->groups([$groupType])->get() as $group)
                 <option value="{{ $group->id }}">
                     {{ $group->name }}
@@ -35,9 +36,9 @@
                 </button>
             </div>
         </div>
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les groupes disponibles à associer"
-                   for="app-available-groups">Groupes disponibles</label>
+                   for="app-available-groups" class="m-auto py-2">Groupes disponibles</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Rechercher un groupe disponible">
@@ -47,7 +48,7 @@
                 <input id="app-searched-group" wire:model="groupSearch" class="form-control">
             </div>
             <select id="app-available-groups" multiple wire:model="selectedAvailableGroups"
-                class="form-control" size="8">
+                class="form-control flex-fill" size="8">
               @foreach($availableGroups as $group)
                 <option value="{{ $group->id }}">
                     {{ $group->name }}

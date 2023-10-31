@@ -22,22 +22,49 @@
         </div>
     </div>
     <div class="alert alert-info mb-0">
-        <div class="font-weight-bold">Membres du groupe</div>
-        <ul>
-          @foreach($group->users as $user)
-            <li @if($user->is_frozen) class="alert-warning" @endif>
-                {{ "$user->first_name $user->name" }}
-              @if($group->type === 'S')
-                {{ $user->rolesList($group->id, " - %%") }}
-              @else
-                {{ $user->function($group->id, " - %%") }}
-              @endif
-            </li>
-          @endforeach
-        </ul>
         <dl class="row mb-0 mx-0">
+          @if (isset($group->code_ypareo))
             <dt class="col-3 text-right pl-0">Code YParéo</dt>
             <dd class="col-9 pl-0">{{ $group->code_ypareo }}</dd>
+          @endif
+            <dt class="col-12 pl-0 mt-3">Membres du groupe</dt>
+            <ul>
+              @if ($group->users->isNotEmpty())
+               @foreach($group->users as $user)
+                <li @if($user->is_frozen) class="alert-warning" @endif>
+                    {{ $user->identity.$user->function($group->id, " - %%") }}
+                </li>
+               @endforeach
+              @else
+                <dl class="col-12 pl-0 font-italic">Groupe vide</dl>
+              @endif
+            </ul>
+          @if ($group->profiles->isNotEmpty())
+            <dt class="col-12 pl-0 mt-2">Profils associés</dt>
+            <ul>
+              @foreach ($group->profiles as $profile)
+                <li>{{ $profile->first_name }}</li>
+              @endforeach
+            </ul>
+          @endif
+          @if ($group->apps->isNotEmpty())
+            <dt class="col-12 pl-0 mt-2">Applications associées</dt>
+            <ul>
+              @foreach ($group->apps as $app)
+                <li>{{ $app->identity() }}</li>
+              @endforeach
+            </ul>
+          @endif
+          @if ($group->rights->isNotEmpty())
+            <dt class="col-12 pl-0 mt-2">Droits</dt>
+            <ul>
+              @foreach ($group->rights->sortByDesc('pivot.priority')->sortBy('name') as $right)
+                <li>{{ $right->description.$right->rightsResourceableString() }}</li>
+                <dd class="col-12 px-0 mb-0">{{ $right->getRightableRoles() }}</dd>
+                <dd class="col-12 px-0 font-italic">Ordre de priorité : {{ $right->pivot->priority }}</dd>
+              @endforeach
+            </ul>
+          @endif
         </dl>
     </div>
 @endsection

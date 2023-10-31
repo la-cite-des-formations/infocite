@@ -1,9 +1,10 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les utilisateurs associés à retirer"
-                   for="app-linked-users">Utilisateurs associés</label>
-            <select id="app-linked-users" multiple wire:model="selectedLinkedUsers" class="form-control" size="10">
+                   for="app-linked-users" class="m-auto py-2">Utilisateurs associés</label>
+            <select id="app-linked-users" multiple wire:model="selectedLinkedUsers"
+                    class="form-control flex-fill" size="10">
               @foreach($app->realUsers as $user)
                 <option value="{{ $user->id }}">
                     {{ "$user->first_name $user->name" }}
@@ -23,9 +24,9 @@
                 </button>
             </div>
         </div>
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les utilisateurs disponibles à associer"
-                   for="app-available-users">Utilisateurs disponibles</label>
+                   for="app-available-users" class="m-auto py-2">Utilisateurs disponibles</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Rechercher un utilisateur disponible">
@@ -35,7 +36,7 @@
                 <input id="app-searched-user" wire:model="userSearch" class="form-control">
             </div>
             <select id="app-available-users" multiple wire:model="selectedAvailableUsers"
-                    class="form-control" size="8">
+                    class="form-control flex-fill" size="8">
               @foreach($availableUsers as $user)
                 <option value="{{ $user->id }}">
                     {{ "{$user->first_name} {$user->name}" }}
