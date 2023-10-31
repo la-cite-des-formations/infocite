@@ -1,9 +1,10 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les profils associés à retirer"
-                   for="app-linked-profiles">Profils associés</label>
-            <select id="app-linked-profiles" multiple wire:model="selectedLinkedProfiles" class="form-control" size="10">
+                   for="app-linked-profiles" class="m-auto py-2">Profils associés</label>
+            <select id="app-linked-profiles" multiple wire:model="selectedLinkedProfiles"
+                    class="form-control flex-fill" size="10">
               @foreach($app->profiles as $profile)
                 <option value="{{ $profile->id }}">
                     {{ $profile->first_name }}
@@ -23,9 +24,9 @@
                 </button>
             </div>
         </div>
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les profils disponibles à associer"
-                   for="app-available-profiles">Profils disponibles</label>
+                   for="app-available-profiles" class="m-auto py-2">Profils disponibles</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Rechercher un profil disponible">
@@ -35,7 +36,7 @@
                 <input id="app-searched-profile" wire:model="profileSearch" class="form-control">
             </div>
             <select id="app-available-profiles" multiple wire:model="selectedAvailableProfiles"
-                    class="form-control" size="8">
+                    class="form-control flex-fill" size="8">
               @foreach($availableProfiles as $profile)
                 <option value="{{ $profile->id }}">
                     {{ $profile->first_name }}

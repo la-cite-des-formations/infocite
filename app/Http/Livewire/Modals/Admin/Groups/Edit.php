@@ -6,7 +6,6 @@ use App\App;
 use App\CustomFacades\AP;
 use App\Group;
 use App\Http\Livewire\WithAlert;
-use App\Roles;
 use App\User;
 use Livewire\Component;
 
@@ -19,6 +18,7 @@ class Edit extends Component
     public $canAdd = TRUE;
     public $function = '';
     public $rolesCheckboxes;
+    public $userSearch = '';
     public $membersIDs;
     public $selectedMembers = [];
     public $selectedAvailableUsers = [];
@@ -26,6 +26,10 @@ class Edit extends Component
     public $appsIDs;
     public $selectedLinkedApps = [];
     public $selectedAvailableApps = [];
+    public $profileSearch = '';
+    public $profilesIDs;
+    public $selectedLinkedProfiles = [];
+    public $selectedAvailableProfiles = [];
     public $formTabs;
     public $membersTabs;
 
@@ -56,6 +60,11 @@ class Edit extends Component
                     'title' => "Gérer les membres du groupe",
                     'hidden' => !$this->group->id,
                 ],
+                'profiles' => [
+                    'icon' => 'portrait',
+                    'title' => "Gérer les profils associés au groupe",
+                    'hidden' => !$this->group->id,
+                ],
                 'apps' => [
                     'icon' => 'view_module',
                     'title' => "Gérer les applications du groupe",
@@ -78,12 +87,7 @@ class Edit extends Component
                 'function' => [
                     'icon' => 'build',
                     'title' => "Définir une fonction à attribuer",
-                    'hidden' => $this->group->type === 'S',
-                ],
-                'roles' => [
-                    'icon' => 'theater_comedy',
-                    'title' => "Choisir des rôles à attribuer",
-                    'hidden' => $this->group->type !== 'S',
+                    'hidden' => FALSE,
                 ],
             ],
         ];
@@ -115,7 +119,6 @@ class Edit extends Component
         $this->group->users()->sync($this->membersIDs);
         $this->selectedMembers = [];
         $this->selectedAvailableUsers = [];
-        $this->updatedSelectedMembers();
 
         $this->group->apps()->sync($this->appsIDs);
         $this->selectedLinkedApps = [];
@@ -136,8 +139,6 @@ class Edit extends Component
 
         $this->selectedAvailableUsers = [];
         $this->selectedMembers = [];
-
-        $this->updatedSelectedMembers();
     }
 
     public function switchMode($mode) {
@@ -148,12 +149,13 @@ class Edit extends Component
 
         $this->selectedMembers = [];
         $this->selectedAvailableUsers = [];
-
-        $this->updatedSelectedMembers();
     }
 
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
+            case 'profiles' : $this->addSelectedAvailableProfiles();
+            return;
+
             case 'apps' : $this->addSelectedAvailableApps();
             return;
 
@@ -162,10 +164,25 @@ class Edit extends Component
 
             case 'function' : $this->addFunction();
             return;
-
-            case 'roles' : $this->addRoles();
-            return;
         }
+    }
+
+    private function addSelectedAvailableProfiles() {
+        if ($this->isEmpty('selectedAvailableProfiles', "Aucun profil sélectionné")) return;
+
+        $this->group
+            ->profiles()
+            ->syncWithoutDetaching($this->selectedAvailableProfiles);
+
+        $this->selectedLinkedProfiles = $this->selectedAvailableProfiles;
+        $this->selectedAvailableProfiles = [];
+
+        $this
+            ->emit('render', [
+                'alertClass' => 'success',
+                'message' => "Association des profils effectuée avec succès."
+            ])
+            ->self();
     }
 
     private function addSelectedAvailableApps() {
@@ -228,39 +245,11 @@ class Edit extends Component
             ->self();
     }
 
-    private function addRoles() {
-        if ($this->isEmpty('selectedMembers', "Aucun membre sélectionné")) return;
-
-        $unassignedRolesFlag = Roles::ALL;
-        $assignedRolesFlag = Roles::NONE;
-
-        foreach (Roles::all()->collection as $role) {
-            if ($this->rolesCheckboxes[$role->id] === FALSE) $unassignedRolesFlag ^= $role->flag;
-            if ($this->rolesCheckboxes[$role->id] === TRUE) $assignedRolesFlag |= $role->flag;
-        }
-
-        foreach($this->group->users()->whereIn('id', $this->selectedMembers)->get() as $user) {
-            $this->group
-                ->users()
-                ->updateExistingPivot(
-                    $user->id,
-                    ['function' => sprintf(
-                        '%04b',
-                        bindec($user->pivot->function) & $unassignedRolesFlag | $assignedRolesFlag
-                    )]
-                );
-        }
-
-        $this
-            ->emit('render', [
-                'alertClass' => 'success',
-                'message' => "Rôles attribués avec succès."
-            ])
-            ->self();
-    }
-
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
+            case 'profiles' : $this->removeSelectedLinkedProfiles();
+            return;
+
             case 'apps' : $this->removeSelectedLinkedApps();
             return;
 
@@ -269,10 +258,24 @@ class Edit extends Component
 
             case 'function' : $this->removeFunction();
             return;
-
-            case 'roles' : $this->removeRoles();
-            return;
         }
+    }
+
+    private function removeSelectedLinkedProfiles() {
+        if ($this->isEmpty('selectedLinkedProfiles', "Aucun profil sélectionné")) return;
+
+        $this->group
+            ->profiles()
+            ->detach($this->selectedLinkedProfiles);
+
+        $this->selectedLinkedProfiles = [];
+
+        $this
+            ->emit('render', [
+                'alertClass' => 'success',
+                'message' => "Retrait effectué avec succès."
+            ])
+            ->self();
     }
 
     private function removeSelectedLinkedApps() {
@@ -326,25 +329,6 @@ class Edit extends Component
             ->self();
     }
 
-    private function removeRoles() {
-        if ($this->isEmpty('selectedMembers', "Aucun membre sélectionné")) return;
-
-        $this->group
-            ->users()
-            ->syncWithoutDetaching(array_fill_keys($this->selectedMembers, ['function' => '0000']));
-
-        $this->selectedMembers = [];
-
-        $this->updatedSelectedMembers();
-
-        $this
-            ->emit('render', [
-                'alertClass' => 'success',
-                'message' => "Rôles retirés avec succès."
-            ])
-            ->self();
-    }
-
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -376,35 +360,6 @@ class Edit extends Component
         }
     }
 
-    public function updatedSelectedMembers() {
-        if ($this->membersTabs['currentTab'] !== 'roles') return;
-
-        if (!empty($this->selectedMembers)) {
-            $rolesFlags = array_map(
-                function ($rolesFlag) { return bindec($rolesFlag); },
-                $this->group
-                    ->users()
-                    ->whereIn('id', $this->selectedMembers)
-                    ->pluck('function')->toArray()
-            );
-
-            foreach (Roles::all()->collection as $role) {
-                // strictement coché  => TRUE ; strictement décoché => FALSE
-                $this->rolesCheckboxes[$role->id] = $rolesFlags[0] & $role->flag ? TRUE : FALSE;
-
-                for ($i = 1;
-                    $i < count($rolesFlags) && !(($rolesFlags[$i] ^ $rolesFlags[$i-1]) & $role->flag);
-                    $i++
-                );
-                // indéterminé => NULL
-                if ($i < count($rolesFlags)) $this->rolesCheckboxes[$role->id] = NULL;
-            }
-        }
-        else $this->rolesCheckboxes = array_fill_keys(Roles::all()->collection->pluck('id')->toArray(), FALSE);
-
-        $this->emit('setIndeterminateCbx', 'member', $this->rolesCheckboxes);
-    }
-
     private function availableApps() {
         $search = $this->appSearch;
         return App::query()
@@ -417,7 +372,11 @@ class Edit extends Component
     }
 
     private function availableUsers() {
+        $search = $this->userSearch;
         return User::query()
+            ->when($search, function ($query) use ($search) {
+                $query->whereRaw("CONCAT(first_name, ' ', name) LIKE ?", "%{$search}%");
+            })
             ->where('name', '<>', AP::PROFILE)
             ->when($this->group->type !== 'S', function ($users) {
                 $users->where('is_frozen', FALSE);
@@ -454,6 +413,18 @@ class Edit extends Component
             ->get();
     }
 
+    private function availableProfiles() {
+        $search = $this->profileSearch;
+        return User::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('first_name', 'LIKE', "%{$search}%");
+            })
+            ->where('name', AP::PROFILE)
+            ->whereNotIn('id', $this->group->profiles->pluck('id'))
+                ->orderByRaw('first_name ASC')
+                ->get();
+    }
+
     public function render($messageBag = NULL)
     {
         if ($messageBag) {
@@ -468,7 +439,7 @@ class Edit extends Component
                 'addButtonTitle' => 'Ajouter un groupe',
                 'availableUsers' => $this->availableUsers(),
                 'availableApps' => $this->availableApps(),
-                'roles' => Roles::all(),
+                'availableProfiles' => $this->availableProfiles(),
             ]);
     }
 }

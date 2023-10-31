@@ -55,7 +55,7 @@ class App extends Model
     }
 
     public function identity() {
-        return $this->name;
+        return $this->isMine() ? "{$this->name} (personnelle)" : $this->name;
     }
 
     public static function sort() {
