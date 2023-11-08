@@ -28,11 +28,34 @@ class Right extends Model
             ->orderByRaw('name ASC, resource_type ASC, resource_id ASC');
     }
 
+    public function groupsByType($type) {
+        return $this
+            ->groups()
+            ->where('type', $type)
+            ->get();
+    }
+
     public function users() {
         return $this
             ->morphedByMany('App\User', 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
+    }
+
+    public function realUsers() {
+        return $this
+            ->morphedByMany('App\User', 'rightable')
+            ->where('name', '<>', AP::PROFILE)
+            ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
+            ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
+    }
+
+    public function profiles() {
+        return $this
+            ->morphedByMany('App\User', 'rightable')
+            ->where('name', AP::PROFILE)
+            ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
+            ->orderByRaw('first_name ASC, resource_type ASC, resource_id ASC');
     }
 
     public function getRightableRoles() {
@@ -41,7 +64,7 @@ class Right extends Model
             foreach(Roles::all()->collection as $role) {
                 if ($this->pivot->roles & $role->flag) $roles[] = $role->name;
             }
-            return implode(', ', $roles ?? ['aucun']);
+            return implode(', ', $roles ?? [Roles::NONE_STRING]);
         }
         return;
     }
@@ -60,7 +83,7 @@ class Right extends Model
         foreach(Roles::all()->collection as $role) {
             if ($this->dashboard_roles & $role->flag) $dashboardRoles[] = $role->name;
         }
-        return implode(', ', $dashboardRoles ?? ['aucun']);
+        return implode(', ', $dashboardRoles ?? [Roles::NONE_STRING]);
     }
 
     public function defaultRoles() {
@@ -68,7 +91,7 @@ class Right extends Model
         foreach(Roles::all()->collection as $role) {
             if ($this->default_roles & $role->flag) $defaultRoles[] = $role->name;
         }
-        return implode(', ', $defaultRoles ?? ['aucun']);
+        return implode(', ', $defaultRoles ?? [Roles::NONE_STRING]);
     }
 
     public function exercisedFromDashboard($roleFlag) {

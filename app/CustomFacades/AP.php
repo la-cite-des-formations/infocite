@@ -343,10 +343,11 @@ class AP // Application Parameters
     ];
 
     const POST_STATUS_MI = [
-        'unpublished' => ['icon' => 'unpublished', 'title' => "non publié"],
-        'expired' => ['icon' => 'auto_delete', 'title' => "auto-supprimé"],
-        'archived' => ['icon' => 'inventory_2', 'title' => "archivé"],
-        'forthcoming' => ['icon' => 'schedule_send', 'title' => "à venir"],
+        'released' => ['icon' => 'check_circle', 'title' => "Actuel"],
+        'unpublished' => ['icon' => 'unpublished', 'title' => "Non publié"],
+        'expired' => ['icon' => 'auto_delete', 'title' => "Auto-supprimé"],
+        'archived' => ['icon' => 'inventory_2', 'title' => "Archivé"],
+        'forthcoming' => ['icon' => 'schedule_send', 'title' => "À venir"],
     ];
 
     /*public static function getFieldEnum($table, $field) {

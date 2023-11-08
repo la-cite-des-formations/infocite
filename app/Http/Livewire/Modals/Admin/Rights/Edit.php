@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Rights;
 
+use App\CustomFacades\AP;
 use App\Right;
 use App\Roles;
 use App\Http\Livewire\WithAlert;
@@ -21,10 +22,18 @@ class Edit extends Component
 
     public $rightables;
 
+    public $groupType = 'C';
+    public $groupSearch = '';
     public $selectedAttachedGroups = [];
     public $selectedToAttachGroups = [];
     public $groupsRolesCbx;
 
+    public $profileSearch = '';
+    public $selectedAttachedProfiles = [];
+    public $selectedToAttachProfiles = [];
+    public $profilesRolesCbx;
+
+    public $userSearch = '';
     public $selectedAttachedUsers = [];
     public $selectedToAttachUsers = [];
     public $usersRolesCbx;
@@ -37,6 +46,7 @@ class Edit extends Component
 
     public $formTabs;
     public $groupsTabs;
+    public $profilesTabs;
     public $usersTabs;
 
     protected $listeners = ['render'];
@@ -78,6 +88,11 @@ class Edit extends Component
                     'title' => "Gérer les groupes associés",
                     'hidden' => empty($this->right->id),
                 ],
+                'profiles' => [
+                    'icon' => 'portrait',
+                    'title' => "Gérer les profils associés",
+                    'hidden' => empty($this->right->id),
+                ],
                 'users' => [
                     'icon' => 'person',
                     'title' => "Gérer les utilisateurs associés",
@@ -95,6 +110,25 @@ class Edit extends Component
                 'groups' => [
                     'icon' => 'group_add',
                     'title' => "Sélectionner des groupes à associer",
+                    'hidden' => FALSE,
+                ],
+                'roles' => [
+                    'icon' => 'theater_comedy',
+                    'title' => "Choisir des rôles à attribuer",
+                    'hidden' => FALSE,
+                ],
+            ],
+        ];
+
+        $this->profilesTabs = [
+            'name' => 'profilesTabs',
+            'currentTab' => 'profiles',
+            'panesPath' => 'includes.admin.rights',
+            'withMarge' => FALSE,
+            'tabs' => [
+                'profiles' => [
+                    'icon' => 'group_add',
+                    'title' => "Sélectionner des profils à associer",
                     'hidden' => FALSE,
                 ],
                 'roles' => [
@@ -138,6 +172,9 @@ class Edit extends Component
         $this->selectedAttachedGroups = [];
         $this->selectedToAttachGroups = [];
 
+        $this->selectedAttachedProfiles = [];
+        $this->selectedToAttachProfiles = [];
+
         $this->selectedAttachedUsers = [];
         $this->selectedToAttachUsers = [];
 
@@ -163,6 +200,8 @@ class Edit extends Component
             switch ($tab) {
                 case 'groups' :
                     $this->rightables = [
+                        'name' => 'groups',
+                        'search' => 'groupSearch',
                         'models' => 'groups',
                         'class' => '\\App\\Group',
                         'orderByClause' => 'type ASC, name ASC',
@@ -175,16 +214,34 @@ class Edit extends Component
                     $this->selectedToAttachGroups = [];
                 break;
 
+                case 'profiles' :
+                    $this->rightables = [
+                        'name' => 'profiles',
+                        'search' => 'profileSearch',
+                        'models' => 'users',
+                        'class' => '\\App\\User',
+                        'orderByClause' => 'first_name ASC',
+                        'rolesCheckboxes' => 'profilesRolesCbx',
+                        'attachedSelection' => 'selectedAttachedProfiles',
+                        'toAttachSelection' => 'selectedToAttachProfiles',
+                        'emptyToAttachSelectionMessage' => "Aucun profil à attacher...",
+                        'emptyAttachedSelectionMessage' => "Aucun profil attaché sélectionné...",
+                    ];
+                    $this->selectedToAttachProfiles = [];
+                break;
+
                 case 'users' :
                     $this->rightables = [
+                        'name' => 'users',
+                        'search' => 'userSearch',
                         'models' => 'users',
                         'class' => '\\App\\User',
                         'orderByClause' => 'name ASC, first_name ASC',
                         'rolesCheckboxes' => 'usersRolesCbx',
                         'attachedSelection' => 'selectedAttachedUsers',
                         'toAttachSelection' => 'selectedToAttachUsers',
-                        'emptyToAttachSelectionMessage' => "Aucun utilisateurs à attacher...",
-                        'emptyAttachedSelectionMessage' => "Aucun utilisateurs attachés sélectionnés...",
+                        'emptyToAttachSelectionMessage' => "Aucun utilisateur à attacher...",
+                        'emptyAttachedSelectionMessage' => "Aucun utilisateur attaché sélectionné...",
                     ];
                     $this->selectedToAttachUsers = [];
                 break;
@@ -202,6 +259,9 @@ class Edit extends Component
         $this->selectedAttachedGroups = [];
         $this->selectedToAttachGroups = [];
 
+        $this->selectedAttachedProfiles = [];
+        $this->selectedToAttachProfiles = [];
+
         $this->selectedAttachedUsers = [];
         $this->selectedToAttachUsers = [];
     }
@@ -209,6 +269,7 @@ class Edit extends Component
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case  'groups' :
+            case  'profiles' :
             case  'users' :
                 $this->addRightables();
             return;
@@ -431,6 +492,7 @@ class Edit extends Component
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'groups' :
+            case 'profiles' :
             case 'users' :
                 $this->removeRightables();
             return;
@@ -520,9 +582,9 @@ class Edit extends Component
         }
         else {
             if ($this->formTabs['currentTab'] != 'general') {
-                $rightablesTabs = $this->{$this->rightables['models'].'Tabs'};
+                $rightablesTabs = $this->{$this->rightables['name'].'Tabs'};
 
-                if ($rightablesTabs['currentTab'] == $this->rightables['models']) {
+                if ($rightablesTabs['currentTab'] == $this->rightables['name']) {
                     $this->updateRightables();
                 }
             }
@@ -541,7 +603,7 @@ class Edit extends Component
 
         $rightables = (object) $this->rightables;
 
-        if ($this->{"{$rightables->models}Tabs"}['currentTab'] === $rightables->models) {
+        if ($this->{"{$rightables->name}Tabs"}['currentTab'] === $rightables->name) {
             if (!empty($this->{$rightables->attachedSelection})) {
 
                 $selectedAttachedRightables = $this->getSelectedAttachedRightables();
@@ -579,7 +641,7 @@ class Edit extends Component
             $this->emit('setIndeterminateCbx', $rightables->models, ['resource' => $this->hasResource]);
         }
 
-        if ($this->{"{$rightables->models}Tabs"}['currentTab'] === 'roles') {
+        if ($this->{"{$rightables->name}Tabs"}['currentTab'] === 'roles') {
             if (!empty($this->{$rightables->attachedSelection})) {
 
                 $rolesFlags = $this->getSelectedAttachedRightables()->pluck('pivot')->pluck('roles');
@@ -605,6 +667,11 @@ class Edit extends Component
         $this->updatedSelectedAttachedRightables();
     }
 
+    public function updatedSelectedAttachedProfiles() {
+        $this->selectedToAttachProfiles = [];
+        $this->updatedSelectedAttachedRightables();
+    }
+
     public function updatedSelectedAttachedUsers() {
         $this->selectedToAttachUsers = [];
         $this->updatedSelectedAttachedRightables();
@@ -616,6 +683,10 @@ class Edit extends Component
     }
 
     public function updatedSelectedToAttachGroups() {
+        $this->updatedSelectedToAttachRightables();
+    }
+
+    public function updatedSelectedToAttachProfiles() {
         $this->updatedSelectedToAttachRightables();
     }
 
@@ -631,10 +702,37 @@ class Edit extends Component
         if (empty($this->rightables)) return [];
 
         $rightables = (object)$this->rightables;
+        $groupType = $this->groupType;
+        $search = $this->{$rightables->search};
+        $rightablesName = $rightables->name;
 
         return $rightables->class::query()
-                ->orderByRaw($rightables->orderByClause)
-                ->get();
+            ->when($rightablesName == 'groups', function ($query) use ($groupType) {
+                $query->where('type', $groupType);
+            })
+            ->when($rightablesName == 'profiles', function ($query) {
+                $query->where('name', AP::PROFILE);
+            })
+            ->when($rightablesName == 'users', function ($query) {
+                $query->where('name', '<>', AP::PROFILE);
+            })
+            ->when($search, function ($query) use ($search, $rightablesName) {
+                switch ($rightablesName) {
+                    case 'groups':
+                        $query->where('name', 'like', "%{$search}%");
+                    break;
+
+                    case 'profiles':
+                        $query->where('first_name', 'like', "%{$search}%");
+                    break;
+
+                    case 'users':
+                        $query->whereRaw("CONCAT(first_name, ' ', name) LIKE ?", "%{$search}%");
+                    break;
+                }
+            })
+            ->orderByRaw($rightables->orderByClause)
+            ->get();
     }
 
     private function getResourceables() {

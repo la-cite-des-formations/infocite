@@ -1,19 +1,19 @@
 <div class="input-group mb-1">
     <div class="input-group-prepend">
-        <div class="input-group-text text-secondary rounded-top-0" title="Rechercher un utilisateur">
+        <div class="input-group-text text-secondary rounded-top-0" title="Rechercher un profil">
             <span class="material-icons md-18">search</span>
         </div>
     </div>
-    <input wire:model="userSearch" class="form-control rounded-top-0" id="right-searched-user">
+    <input wire:model="profileSearch" class="form-control rounded-top-0" id="right-searched-profile">
 </div>
 <select
-    id="right-to-attach-users"
-    multiple wire:model="selectedToAttachUsers"
+    id="right-to-attach-profiles"
+    multiple wire:model="selectedToAttachProfiles"
     class="form-control flex-fill"
     size="4">
-  @foreach($attachableRightables as $user)
-    <option value="{{ $user->id }}">
-        {{ $user->identity() }}
+  @foreach($attachableRightables as $profile)
+    <option value="{{ $profile->id }}">
+        {{ $profile->first_name }}
     </option>
   @endforeach
 </select>
@@ -22,8 +22,8 @@
     <input id="priority" wire:model="priority" type="input" class="col-8 form-control" placeholder="Ordre de priorité">
 </div>
 <div class="form-check my-2">
-    <input wire:model="hasResource" class="form-check-input" type="checkbox" id="users-cbx-resource">
-    <label for="users-cbx-resource">Associer une ressource</label>
+    <input wire:model="hasResource" class="form-check-input" type="checkbox" id="profiles-cbx-resource">
+    <label for="profiles-cbx-resource">Associer une ressource</label>
 </div>
 @if ($hasResource)
 <div class="form-group row mr-auto my-2">

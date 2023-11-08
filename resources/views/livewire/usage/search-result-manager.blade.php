@@ -24,7 +24,7 @@
                             <!-- Icone -->
                             <div class="flex-row justify-content-between">
                                 <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                              @if (is_object($post->status))
+                              @if (!$post->released && is_object($post->status))
                                 <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
                                    title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                               @endif
