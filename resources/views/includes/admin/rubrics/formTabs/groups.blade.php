@@ -1,7 +1,8 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
-            <label title="Sélectionner les groupes à dissocier" for="rubric-groups">Groupes associés</label>
+        <div class="form-group col mt-1 pt-1">
+            <label title="Sélectionner les groupes à dissocier"
+                   for="rubric-groups" class="m-auto py-2">Groupes associés</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Type de groupe">
@@ -15,7 +16,7 @@
                 </select>
             </div>
             <select id="rubric-groups" multiple wire:model="selectedLinkedGroups"
-                    class="form-control" size="8">
+                    class="form-control flex-fill" size="8">
               @foreach($rubric->groups([$groupType])->get() as $group)
                 <option value="{{ $group->id }}">{{ $group->name }}</option>
               @endforeach
@@ -33,9 +34,9 @@
                 </button>
             </div>
         </div>
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les groupes à associer"
-                   for="rubric-available-groups">Groupes disponibles</label>
+                   for="rubric-available-groups" class="m-auto py-2">Groupes disponibles</label>
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text text-secondary" title="Rechercher un groupe">
@@ -45,7 +46,7 @@
                 <input wire:model="groupSearch" class="form-control" id="rubric-searched-group">
             </div>
             <select id="rubric-available-groups" multiple wire:model="selectedAvailableGroups"
-                    class="form-control" size="8">
+                    class="form-control flex-fill" size="8">
               @foreach($availableGroups as $group)
                 <option value="{{ $group->id }}">
                     {{ $group->name }}

@@ -7,6 +7,7 @@ use App\Rubric;
 use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
+use App\Post;
 use Livewire\Component;
 
 class Edit extends Component
@@ -22,6 +23,10 @@ class Edit extends Component
     public $groupSearch;
     public $selectedLinkedGroups = [];
     public $selectedAvailableGroups = [];
+    public $targetRubricId;
+    public $postsIDs;
+    public $selectedLinkedPosts = [];
+    public $selectedAvailablePosts = [];
 
     protected $listeners = ['render'];
 
@@ -67,6 +72,11 @@ class Edit extends Component
                     'title' => "Associer des groupes",
                     'hidden' => !$this->rubric->id,
                 ],
+                'posts' => [
+                    'icon' => 'article',
+                    'title' => "Gérer les articles",
+                    'hidden' => !$this->rubric->id || !$this->rubric->contains_posts,
+                ],
             ],
         ];
     }
@@ -97,12 +107,20 @@ class Edit extends Component
         $this->mode = $mode;
 
         if ($mode === 'creation') $this->rubric = NULL;
-        if ($mode !== 'view') $this->setRubric();
+        if ($mode !== 'view') {
+            $this->setRubric();
+        }
+        else {
+            $this->rubric = Rubric::find($this->rubric->id);
+        };
     }
 
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'groups' : $this->addSelectedAvailableGroups();
+            return;
+
+            case 'posts' : $this->transferSelectedAvailablePosts();
             return;
         }
     }
@@ -124,9 +142,29 @@ class Edit extends Component
             ->self();
     }
 
+    public function transferSelectedAvailablePosts() {
+        if ($this->isEmpty('selectedAvailablePosts', "Aucun article à transférer sélectionné")) return;
+
+        Post::query()
+            ->whereIn('id', $this->selectedAvailablePosts)
+            ->update(['rubric_id' => $this->rubric->id]);
+
+        $this->selectedAvailablePosts = [];
+
+        $this
+            ->emit('render', [
+                'alertClass' => 'success',
+                'message' => "Transfert effectué avec succès."
+            ])
+            ->self();
+    }
+
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'groups' : $this->removeSelectedLinkedGroups();
+            return;
+
+            case 'posts' : $this->transferSelectedLinkedPosts();
             return;
         }
     }
@@ -144,6 +182,23 @@ class Edit extends Component
             ->emit('render', [
                 'alertClass' => 'success',
                 'message' => "Retrait effectué avec succès."
+            ])
+            ->self();
+    }
+
+    public function transferSelectedLinkedPosts() {
+        if ($this->isEmpty('selectedLinkedPosts', "Aucun article à transférer sélectionné")) return;
+
+        Post::query()
+            ->whereIn('id', $this->selectedLinkedPosts)
+            ->update(['rubric_id' => $this->targetRubricId]);
+
+        $this->selectedLinkedPosts = [];
+
+        $this
+            ->emit('render', [
+                'alertClass' => 'success',
+                'message' => "Transfert effectué avec succès."
             ])
             ->self();
     }
@@ -195,11 +250,34 @@ class Edit extends Component
     }
 
     private function availableGroups() {
+        $search = $this->groupSearch;
         return Group::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
             ->where('type', $this->groupType)
             ->whereNotIn('id', $this->rubric->groups->pluck('id'))
             ->orderByRaw('name ASC')
             ->get();
+    }
+
+    private function availablePosts() {
+        return Post::query()
+            ->where('rubric_id', $this->targetRubricId)
+            ->orderByRaw('title ASC')
+            ->get();
+    }
+
+    private function availableTargetRubrics() {
+        return Rubric::query()
+            ->where('id', '<>', $this->rubric->id)
+            ->where('is_parent', FALSE)
+            ->where('contains_posts', TRUE)
+            ->orderByRaw('position ASC, rank ASC, title ASC')
+            ->get()
+            ->filter(function ($rubric) {
+                return auth()->user()->can('edit', ['App\\Post', $rubric->id]);
+            });
     }
 
     public function render($messageBag = NULL)
@@ -220,6 +298,8 @@ class Edit extends Component
                     'is_parent' => TRUE
                 ])->get(),
                 'availableGroups' => $this->availableGroups(),
+                'availablePosts' => $this->availablePosts(),
+                'availableTargetRubrics' => $this->availableTargetRubrics(),
                 'icons' => AP::getMaterialIconsCodes()
                     ->when($searchIcons, function ($icons) use ($searchIcons) {
                     return $icons->filter(function ($miCode, $miName) use ($searchIcons) {

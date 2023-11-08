@@ -1,11 +1,19 @@
+<div class="input-group mb-1">
+    <div class="input-group-prepend">
+        <div class="input-group-text text-secondary rounded-top-0" title="Rechercher un groupe">
+            <span class="material-icons md-18">search</span>
+        </div>
+    </div>
+    <input wire:model="groupSearch" class="form-control rounded-top-0" id="right-searched-group">
+</div>
 <select
     id="right-to-attach-groups"
     multiple wire:model="selectedToAttachGroups"
-    class="form-control rounded-top-0"
-    size="6">
+    class="form-control flex-fill"
+    size="4">
   @foreach($attachableRightables as $group)
     <option value="{{ $group->id }}">
-        {{ $group->identity() }}
+        {{ $groupType != 'all' ? $group->name : $group->identity() }}
     </option>
   @endforeach
 </select>
@@ -17,7 +25,7 @@
     <input wire:model="hasResource" class="form-check-input" type="checkbox" id="groups-cbx-resource">
     <label for="groups-cbx-resource">Associer une ressource</label>
 </div>
-@if ($hasResource !== FALSE)
+@if ($hasResource)
 <div class="form-group row mr-auto my-2">
     <label class="col-4 text-right my-auto" for="resource-type">Type</label>
     <select id="resource-type" wire:model="resourceType" type="input" class="col-8 form-control">
@@ -28,7 +36,7 @@
     </select>
 </div>
 @endif
-@if (!empty($resourceType) && $hasResource !== FALSE)
+@if (!empty($resourceType) && $hasResource)
 <div class="form-group row mr-auto my-2">
     <label class="col-4 text-right my-auto" for="resource-id">Ressource</label>
     <select id="resource-id" wire:model="resourceId" type="input" class="col-8 form-control">

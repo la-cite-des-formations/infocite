@@ -6,7 +6,7 @@
         <div class="col-3"></div>
         <div class="form-check col-7">
             <input id="rubric-is-parent" wire:model="rubric.is_parent"
-                   type="checkbox" class="form-check-input" @if ($rubric->contains_posts) disabled @endif>
+                   type="checkbox" class="form-check-input" @if ($rubric->contains_posts || $rubric->parent_id) disabled @endif>
             <label class="my-auto" for="rubric-is-parent">Rubrique parent</label>
         </div>
     </div>
@@ -106,7 +106,7 @@
         <div class="col-3"></div>
         <div class="form-check col-7">
             <input id="rubric-contains-posts" wire:model="rubric.contains_posts"
-                   type="checkbox" class="form-check-input" @if ($rubric->posts->count()) disabled @endif>
+                   type="checkbox" class="form-check-input" @if ($rubric->posts->isNotEmpty()) disabled @endif>
             <label class="my-auto" for="rubric-contains-posts">Avec articles</label>
         </div>
     </div>

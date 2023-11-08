@@ -1,11 +1,24 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="@if($groupsTabs['currentTab'] === 'groups') Sélectionner les groupes à retirer @endif
                           @if($groupsTabs['currentTab'] === 'roles') Sélectionner les groupes dont les rôles sont à attribuer ou à désattribuer @endif"
-                   for="right-groups">Groupes associés</label>
-            <select id="right-groups" multiple wire:model="selectedAttachedGroups" class="form-control" size="15">
-              @foreach($right->groups as $group)
+                   for="right-groups" class="m-auto py-2">Groupes associés</label>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text text-secondary" title="Type de groupe">
+                        <span class="material-icons md-18">category</span>
+                    </div>
+                </div>
+                <select wire:model="groupType" class="form-control" id="profile-group-type">
+                  @foreach(AP::getGroupTypes() as $typeKey => $typeName)
+                    <option value="{{ $typeKey }}">{{ $typeName }}</option>
+                  @endforeach
+                </select>
+            </div>
+            <select id="right-groups" multiple wire:model="selectedAttachedGroups"
+                    class="form-control flex-fill" size="13">
+              @foreach($right->groupsByType($groupType) as $group)
                 <option value="{{ $group->id.$group->rightsResourceable() }}">
                     {{ $group->name.$group->rightsResourceableString() }}
                 </option>
@@ -26,6 +39,8 @@
                 </button>
             </div>
         </div>
-        @include('includes.tabs', ['tabsSystem' => $groupsTabs])
+        <div class="form-group col mt-1 pt-1">
+            @include('includes.tabs', ['tabsSystem' => $groupsTabs])
+        </div>
     </div>
 </div>

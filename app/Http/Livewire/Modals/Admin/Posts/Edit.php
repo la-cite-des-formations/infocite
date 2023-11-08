@@ -32,6 +32,7 @@ class Edit extends Component
     public function contentChange($content) {
         $this->post->content = $content;
     }
+
     public function setPost($id = NULL) {
         if (is_null($id)) {
             $this->emit('deleteContent');
@@ -40,6 +41,8 @@ class Edit extends Component
         $this->post = $this->post ?? Post::findOrNew($id);
 
         if ($this->mode === 'creation') $this->post->published = FALSE;
+
+        $this->initTinymce();
 
         $this->formTabs = [
             'name' => 'formTabs',
@@ -61,9 +64,8 @@ class Edit extends Component
 
         $this->mode = $mode ?? 'view';
         $this->setPost($id ?? NULL);
-        $this->dispatchBrowserEvent('initTinymce');
-
     }
+
     public function initTinymce(){
         $this->dispatchBrowserEvent('initTinymce');
     }
@@ -87,23 +89,14 @@ class Edit extends Component
         $this->mode = $mode;
 
         if ($mode === 'creation') $this->post = NULL;
-        if ($mode !== 'view') $this->setPost();
-    }
-/*
-    public function add($tabsSystem) {
-        switch($this->$tabsSystem['currentTab']) {
-            case '' : ;
-            return;
+        if ($mode !== 'view') {
+            $this->setPost();
+        }
+        else {
+            $this->post = Post::find($this->post->id);
         }
     }
 
-    public function remove($tabsSystem) {
-        switch($this->$tabsSystem['currentTab']) {
-            case '' : ;
-            return;
-        }
-    }
-*/
     public function save() {
         if ($this->mode === 'view') return;
 

@@ -64,6 +64,33 @@ class Post extends Model
             ->orderByRaw('release_at DESC, created_at DESC');
     }
 
+    public function groupsWithPostRight() {
+        return Right::query()
+            ->where('name', 'posts')
+            ->first()
+            ->groups()
+            ->where('resource_type', 'Post')
+            ->where('resource_id', $this->id);
+    }
+
+    public function usersWithPostRight() {
+        return Right::query()
+            ->where('name', 'posts')
+            ->first()
+            ->realUsers()
+            ->where('resource_type', 'Post')
+            ->where('resource_id', $this->id);
+    }
+
+    public function profilesWithPostRight() {
+        return Right::query()
+            ->where('name', 'posts')
+            ->first()
+            ->profiles()
+            ->where('resource_type', 'Post')
+            ->where('resource_id', $this->id);
+    }
+
     public function getRouteAttribute() {
         return $this->rubric->route()."/{$this->id}";
     }
@@ -113,6 +140,7 @@ class Post extends Model
             case $this->archived : return AP::getPostStatusMI('archived');
             case $this->expired : return AP::getPostStatusMI('expired');
             case $this->forthcoming : return AP::getPostStatusMI('forthcoming');
+            case $this->released : return AP::getPostStatusMI('released');
         }
     }
 

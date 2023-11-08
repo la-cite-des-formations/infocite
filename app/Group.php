@@ -67,7 +67,7 @@ class Group extends Model
             foreach(Roles::all()->collection as $role) {
                 if ($this->pivot->roles & $role->flag) $roles[] = $role->name;
             }
-            return implode(', ', $roles ?? ['aucun']);
+            return implode(', ', $roles ?? [Roles::NONE_STRING]);
         }
         return;
     }
@@ -78,7 +78,7 @@ class Group extends Model
             $entity = AP::getResourceable($this->pivot->resource_type);
             return " - {$entity} : {$class::find($this->pivot->resource_id)->identity()}";
         }
-        return;
+        return NULL;
     }
 
     public function rightsResourceable() {

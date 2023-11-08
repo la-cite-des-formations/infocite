@@ -3,7 +3,8 @@
         <div class="form-group col mt-1 pt-1">
             <label title="Sélectionner les utilisateurs à dissocier"
                    for="profile-linked-users" class="m-auto py-2">Utilisateurs associés</label>
-            <select id="profile-linked-users" multiple wire:model="selectedLinkedUsers" class="form-control flex-fill" size="10">
+            <select id="profile-linked-users" multiple wire:model="selectedLinkedUsers"
+                    class="form-control flex-fill" size="10">
               @foreach($profile->users as $user)
                 <option value="{{ $user->id }}">
                     {{ $user->identity }}
