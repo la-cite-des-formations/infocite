@@ -4,7 +4,6 @@ namespace App;
 
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -270,7 +269,7 @@ class User extends Authenticatable
             foreach(Roles::all()->collection as $role) {
                 if ($this->pivot->roles & $role->flag) $roles[] = $role->name;
             }
-            return implode(', ', $roles ?? ['aucun']);
+            return implode(', ', $roles ?? [Roles::NONE_STRING]);
         }
         return;
     }

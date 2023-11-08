@@ -118,7 +118,7 @@
             <dt class="col-12 pl-0 mt-2">Applications</dt>
             <ul>
               @foreach ($user->myApps() as $app)
-                <li>{{ $app->identity() }}</li>
+                <li>{{ $app->identity($user->id) }}</li>
               @endforeach
             </ul>
           @endif

@@ -16,6 +16,8 @@ class Roles
     const ATLEAST_FILTER = 'atleast';
     const EXACTLY_FILTER = 'exactly';
 
+    const NONE_STRING = 'Aucun droit';
+
     private static $roles = [
         [
             'id' => 'reader',
@@ -50,25 +52,6 @@ class Roles
             'flag' => self::IS_ADMIN,
         ],
     ];
-
-    public static function users(int $rolesFlag, string $rolesOption, int $systemGroupID)
-    {
-        $users = Group::find($systemGroupID)->users();
-
-        switch ($rolesOption) {
-            case static::ATLEAST_FILTER :
-                $atleastRolesFlag = [];
-                for ($rf = static::NONE; $rf <= static::ALL; $rf++) {
-                    if (($rf & $rolesFlag) === $rolesFlag) {
-                        $atleastRolesFlag[] = sprintf('%04b', $rf);
-                    }
-                }
-            return $users->wherePivotIn('function', $atleastRolesFlag);
-
-            case static::EXACTLY_FILTER :
-            return $users->wherePivot('function', sprintf('%04b', $rolesFlag));
-        }
-    }
 
     public static function all()
     {

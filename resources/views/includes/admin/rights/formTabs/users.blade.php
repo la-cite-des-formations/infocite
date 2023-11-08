@@ -1,11 +1,12 @@
 <div class="col">
     <div class="form-row">
-        <div class="form-group col mt-3">
+        <div class="form-group col mt-1 pt-1">
             <label title="@if($usersTabs['currentTab'] === 'users') Sélectionner les utilisateurs à retirer @endif
                           @if($usersTabs['currentTab'] === 'roles') Sélectionner les utilisateurs dont les rôles sont à attribuer ou à désattribuer @endif"
-                   for="right-users">Utilisateurs associés</label>
-            <select id="right-users" multiple wire:model="selectedAttachedUsers" class="form-control" size="15">
-              @foreach($right->users as $user)
+                   for="right-users" class="m-auto py-2">Utilisateurs associés</label>
+            <select id="right-users" multiple wire:model="selectedAttachedUsers"
+                    class="form-control flex-fill" size="15">
+              @foreach($right->realUsers as $user)
                 <option value="{{ $user->id.$user->rightsResourceable() }}">
                     {{ $user->identity().$user->rightsResourceableString() }}
                 </option>
@@ -26,6 +27,8 @@
                 </button>
             </div>
         </div>
-        @include('includes.tabs', ['tabsSystem' => $usersTabs])
+        <div class="form-group col mt-1 pt-1">
+            @include('includes.tabs', ['tabsSystem' => $usersTabs])
+        </div>
     </div>
 </div>

@@ -54,6 +54,50 @@ class Rubric extends Model
             ->belongsToMany('App\User')
             ->orderByRaw('name ASC, first_name ASC');
     }
+
+    public function realUsers()
+    {
+        return $this
+            ->belongsToMany('App\User')
+            ->where('name', '<>', AP::PROFILE)
+            ->orderByRaw('name ASC, first_name ASC');
+    }
+
+    public function profiles()
+    {
+        return $this
+            ->belongsToMany('App\User')
+            ->where('name', AP::PROFILE)
+            ->orderByRaw('first_name ASC');
+    }
+
+    public function groupsWithRubricPostsRight() {
+        return Right::query()
+            ->where('name', 'posts')
+            ->first()
+            ->groups()
+            ->where('resource_type', 'Rubric')
+            ->where('resource_id', $this->id);
+    }
+
+    public function usersWithRubricPostsRight() {
+        return Right::query()
+            ->where('name', 'posts')
+            ->first()
+            ->realUsers()
+            ->where('resource_type', 'Rubric')
+            ->where('resource_id', $this->id);
+    }
+
+    public function profilesWithRubricPostsRight() {
+        return Right::query()
+            ->where('name', 'posts')
+            ->first()
+            ->profiles()
+            ->where('resource_type', 'Rubric')
+            ->where('resource_id', $this->id);
+    }
+
     public function notifications()
     {
         return $this

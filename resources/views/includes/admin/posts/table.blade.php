@@ -63,10 +63,10 @@
             </label>
         </td>
         <td class="col-3">
-            {{ $post->author->identity() }}
+            {{ $post->author->identity }}
         </td>
         <td class="col-2">
-            {{ $post->published ? 'Publié' : 'Non publié' }}
+            {{ is_object($post->status) ? $post->status->title : '-' }}
         </td>
         <td class="col-3 d-flex justify-content-end mb-auto">
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $post->id }}})"
