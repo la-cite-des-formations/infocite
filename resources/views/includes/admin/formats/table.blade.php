@@ -52,7 +52,7 @@
     <tr class="row">
         <td scope="row" class="col-4">
             <input type="checkbox" class="ml-0 form-check-input format-cbx" id="{{ $format->id }}">
-            <label class="ml-4 text-primary d-flex" for="{{ $format->id }}">{{ $format->name }}</label>
+            <label class="ml-4 text-primary" for="{{ $format->id }}">{{ $format->name }}</label>
         </td>
         <td class="col-5">
             <div class="google-visualization-orgchart-node text-center p-1" style="{{ $format->style }}">

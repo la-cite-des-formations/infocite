@@ -447,9 +447,7 @@ class Edit extends Component
     public function render($messageBag = NULL)
     {
         if ($messageBag) {
-            extract($messageBag);
-            session()->flash('alertClass', $alertClass);
-            session()->flash('message', $message);
+            $this->sendAlert($messageBag);
         }
 
         return $this->mode === 'view' ?

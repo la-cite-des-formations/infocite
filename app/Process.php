@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Casts\NullableField;
-use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -37,7 +36,7 @@ class Process extends Model
             "<p class='{$this->format->subtitle_font_style} {$this->format->subtitle_color}'>".
                 ($this->manager ?
                     $this->manager->identity :
-                    $this->actorsList
+                    $this->actors_list
                 ).
             "</p>";
     }

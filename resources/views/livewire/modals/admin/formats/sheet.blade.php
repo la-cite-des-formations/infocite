@@ -15,12 +15,23 @@
             <div class="my-auto mr-3">
                 <span class="material-icons-outlined md-36">format_shapes</span>
             </div>
-            <div class="my-auto">
-                <h5 class="mb-0">{{ $format->name }}</h5>
+            <div class="google-visualization-orgchart-node text-center p-1 my-auto flex-fill" style="{{ $format->style }}">
+                <div class='font-weight-bold {{ $format->title_color }}'>{{ $format->name }}</div>
+                <div class='{{ "{$format->subtitle_font_style} {$format->subtitle_color}" }}'>contenu</div>
             </div>
         </div>
     </div>
     <div class="alert alert-info mb-0">
+        <dl class="row mb-0 mx-0">
+          @if ($format->processes->IsNotEmpty())
+            <dt class="col-12 pl-0 mt-2">Processus correspondant</dt>
+            <ul>
+              @foreach ($format->processes as $process)
+                <li>{{ $process->name }}</li>
+              @endforeach
+            </ul>
+          @endif
+        </dl>
     </div>
 @endsection
 
