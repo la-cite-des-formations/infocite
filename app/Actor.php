@@ -68,7 +68,7 @@ class Actor extends Model
         })->each(function ($subordinate) use ($formatedFullSubordinates) {
             $formatedFullSubordinates->add(
                 '<p>'.
-                    '<div class="text-danger">'.$subordinate->identity().'</div>'.
+                    '<div class="text-danger">'.$subordinate->identity.'</div>'.
                     $subordinate->functionsList(['P']).
                 '</p>'
             );

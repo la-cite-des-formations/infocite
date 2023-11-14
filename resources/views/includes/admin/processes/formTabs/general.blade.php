@@ -62,7 +62,7 @@
         <select id="process-manager" wire:model="process.manager_id" type="input" class="col form-control">
             <option label="Choisir le responsable..."></option>
           @foreach($managers as $manager)
-            <option value='{{ $manager->id }}'>{{ $manager->identity() }}</option>
+            <option value='{{ $manager->id }}'>{{ $manager->identity }}</option>
           @endforeach
         </select>
     </div>

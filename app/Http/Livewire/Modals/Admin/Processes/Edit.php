@@ -147,7 +147,7 @@ class Edit extends Component
         $this->managers = [];
 
         if ($this->process->group_id) {
-            $this->managers = Group::find($this->process->group_id)->users;
+            $this->managers = Group::find($this->process->group_id)->actors;
         }
 
         if ($this->process->parent_id) {

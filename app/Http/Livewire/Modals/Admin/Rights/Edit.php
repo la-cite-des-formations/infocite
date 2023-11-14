@@ -460,6 +460,7 @@ class Edit extends Component
 
     private function addRoles() {
         $rightables = (object) $this->rightables;
+
         if ($this->isEmpty($rightables->attachedSelection, $rightables->emptyAttachedSelectionMessage)) return;
 
         $unassignedRolesFlag = Roles::ALL;
@@ -505,6 +506,7 @@ class Edit extends Component
 
     private function removeRightables() {
         $rightables = (object) $this->rightables;
+
         if ($this->isEmpty($rightables->attachedSelection, $rightables->emptyAttachedSelectionMessage)) return;
 
         foreach($this->getSelectedAttachedRightables() as $rightable) {
@@ -531,6 +533,7 @@ class Edit extends Component
 
     private function removeRoles() {
         $rightables = (object) $this->rightables;
+
         if ($this->isEmpty($rightables->attachedSelection, $rightables->emptyAttachedSelectionMessage)) return;
 
         foreach($this->getSelectedAttachedRightables() as $rightable) {
@@ -638,7 +641,7 @@ class Edit extends Component
                 $this->resourceType = NULL;
                 $this->resourceId = NULL;
             }
-            $this->emit('setIndeterminateCbx', $rightables->models, ['resource' => $this->hasResource]);
+            $this->emit('setIndeterminateCbx', $rightables->name, ['resource' => $this->hasResource]);
         }
 
         if ($this->{"{$rightables->name}Tabs"}['currentTab'] === 'roles') {
@@ -658,7 +661,7 @@ class Edit extends Component
             }
             else $this->{$rightables->rolesCheckboxes} = array_fill_keys(Roles::all()->collection->pluck('id')->toArray(), FALSE);
 
-            $this->emit('setIndeterminateCbx', $rightables->models, $this->{$rightables->rolesCheckboxes});
+            $this->emit('setIndeterminateCbx', $rightables->name, $this->{$rightables->rolesCheckboxes});
         }
     }
 
@@ -701,10 +704,10 @@ class Edit extends Component
     private function getAttachableRightables() {
         if (empty($this->rightables)) return [];
 
-        $rightables = (object)$this->rightables;
         $groupType = $this->groupType;
-        $search = $this->{$rightables->search};
+        $rightables = (object) $this->rightables;
         $rightablesName = $rightables->name;
+        $search = $this->{$rightables->search};
 
         return $rightables->class::query()
             ->when($rightablesName == 'groups', function ($query) use ($groupType) {
@@ -756,6 +759,7 @@ class Edit extends Component
             'addButtonTitle' => 'Ajouter des droits utilisateurs',
             'roles' => Roles::all()->collection,
         ];
+
         if ($this->mode === 'view') {
             $view = 'livewire.modals.admin.rights.sheet';
         }
