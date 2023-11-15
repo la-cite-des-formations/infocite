@@ -115,7 +115,6 @@ class Edit extends Component
         $this->user->groups()->sync($this->groupsIDs);
         $this->selectedUserGroups = [];
         $this->selectedAvailableGroups = [];
-        $this->updatedSelectedUserGroups();
 
         $this->user->apps()->sync($this->appsIDs);
         $this->selectedLinkedApps = [];
@@ -140,8 +139,6 @@ class Edit extends Component
 
         $this->selectedAvailableGroups = [];
         $this->selectedUserGroups = [];
-
-        $this->updatedSelectedUserGroups();
     }
 
     public function switchMode($mode) {
@@ -152,8 +149,6 @@ class Edit extends Component
 
         $this->selectedAvailableGroups = [];
         $this->selectedUserGroups = [];
-
-        $this->updatedSelectedUserGroups();
     }
 
     public function switchClasses() {

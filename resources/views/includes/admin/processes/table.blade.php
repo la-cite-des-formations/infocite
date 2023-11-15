@@ -33,10 +33,6 @@
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
-                <button wire:click="showModal('build')"
-                        class="d-flex btn btn-sm btn-primary mr-1" title="Générer les processus fonctionnels">
-                    <span class="material-icons-outlined">build_circle</span>
-                </button>
                 <button wire:click="showModal('edit', {mode : 'creation'})"
                         class="d-flex btn btn-sm btn-success mr-1" title="Ajouter un processus fonctionnel">
                     <span class="material-icons">add</span>

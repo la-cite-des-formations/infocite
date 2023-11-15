@@ -40,7 +40,9 @@ class Group extends Model
 
     public function actors() {
         return $this
-            ->belongsToMany('App\Actor', 'group_user', 'group_id', 'user_id');
+            ->belongsToMany('App\Actor', 'group_user', 'group_id', 'user_id')
+            ->join('users', 'users.id', 'actors.id')
+            ->orderByRaw('name ASC, first_name ASC');
     }
 
     public function rubrics() {

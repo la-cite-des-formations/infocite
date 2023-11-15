@@ -157,6 +157,7 @@ class Edit extends Component
 
     private function availableProcesses() {
         $search = $this->processSearch;
+
         return Process::query()
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'LIKE', "%{$search}%");

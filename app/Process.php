@@ -31,9 +31,16 @@ class Process extends Model
     }
 
     public function getBoxFormatAttribute() {
-        return
+        return is_object($this->format) ?
             "<p class='fw-bold {$this->format->title_color}'>{$this->name}</p>".
             "<p class='{$this->format->subtitle_font_style} {$this->format->subtitle_color}'>".
+                ($this->manager ?
+                    $this->manager->identity :
+                    $this->actors_list
+                ).
+            "</p>" :
+            "<p class='fw-bold'>{$this->name}</p>".
+            "<p>".
                 ($this->manager ?
                     $this->manager->identity :
                     $this->actors_list
@@ -86,7 +93,7 @@ class Process extends Model
                         (string) $process->parent_id,
                         '',
                     ],
-                    'style' => $process->format->style,
+                    'style' => is_object($process->format) ? $process->format->style : '',
                 ]);
             });
 

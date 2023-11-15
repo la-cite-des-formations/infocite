@@ -35,7 +35,7 @@ class Edit extends Component
     public function setProcess($id = NULL) {
         $this->process = $this->process ?? Process::findOrNew($id);
 
-        if (is_null($id)) {
+        if ($this->process->id) {
             $this->process->rank = '-';
             $this->createProcessGroup = FALSE;
         }
@@ -57,7 +57,6 @@ class Edit extends Component
 
     public function mount($data) {
         extract($data);
-        $id = $id ?? ($this->process ? $this->process->id : NULL);
 
         $this->mode = $mode ?? 'view';
         $this->setProcess($id ?? NULL);
@@ -82,6 +81,11 @@ class Edit extends Component
 
         if ($mode === 'creation') $this->process = NULL;
         if ($mode !== 'view') $this->setProcess();
+        if ($mode === 'edition') $this->setManagers();
+    }
+
+    public function booted() {
+        if ($this->mode === 'view') dd($this->process);
     }
 
     public function save() {
