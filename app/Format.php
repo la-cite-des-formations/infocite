@@ -27,6 +27,11 @@ class Format extends Model
         'subtitle_color' => NullableField::class,
     ];
 
+    public function processes() {
+        return $this
+            ->hasMany('App\Process');
+    }
+
     public function getStyleAttribute() {
         return
             'border-radius : 0.375rem; '.
@@ -40,9 +45,6 @@ class Format extends Model
         return self::query()
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%$search%");
-            })
-            /*->when($process, function ($query) {
-                $query->where('is_parent', TRUE);
-            })*/;
+            });
     }
 }
