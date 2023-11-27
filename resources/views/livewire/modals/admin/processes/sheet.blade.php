@@ -32,7 +32,7 @@
             <dt class="col-12 pl-0 mt-3">Acteurs du processus</dt>
             <ul>
               @foreach ($process->actors as $actor)
-                <li>{{ $actor->identity.AP::betweenBrackets($actor->functionsList) }}</li>
+                <li>{{ $actor->identity.AP::betweenBrackets($actor->pivot->function) }}</li>
               @endforeach
             </ul>
           @endif

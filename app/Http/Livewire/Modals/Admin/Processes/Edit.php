@@ -149,20 +149,14 @@ class Edit extends Component
         $managers = [];
 
         if ($this->process->group_id) {
-            $managers = Group::find($this->process->group_id)->actors;
+            $managers = $this->process->actors;
         }
 
         if ($this->process->parent_id) {
-            $parentProcess = Process::find($this->process->parent_id);
+            $managers = $managers->merge($this->process->parent->actors);
 
-            $managers = $parentProcess
-                ->actors
-                ->merge($managers);
-
-            if ($parentProcess->parent_id) {
-                $managers = Process::find($parentProcess->parent_id)
-                    ->actors
-                    ->merge($managers);
+            if ($this->process->parent->parent_id) {
+                $managers = $managers->merge($this->process->parent->parent->actors);
             }
         }
 
