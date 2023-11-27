@@ -38,13 +38,6 @@ class Group extends Model
             ->withPivot('function');
     }
 
-    public function actors() {
-        return $this
-            ->belongsToMany('App\Actor', 'group_user', 'group_id', 'user_id')
-            ->join('users', 'users.id', 'actors.id')
-            ->orderByRaw('name ASC, first_name ASC');
-    }
-
     public function rubrics() {
         return $this
             ->belongsToMany('App\Rubric')

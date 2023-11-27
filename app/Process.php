@@ -65,9 +65,10 @@ class Process extends Model
 
     public function actors() {
         if (is_null($this->group)) {
-            return (new Group)->actors();
+            return (new Group)->users();
         }
-        return $this->group->actors();
+
+        return $this->group->users();
     }
 
     public function parent() {
