@@ -535,5 +535,9 @@ class AP // Application Parameters
         return static::NOTIFICATIONS[$contentType];
     }
 
+    public static function betweenBrackets($str, $withSpace = TRUE) {
+        return !empty($str) ? ($withSpace ? ' ' : '')."({$str})" : '';
+    }
+
 }
 

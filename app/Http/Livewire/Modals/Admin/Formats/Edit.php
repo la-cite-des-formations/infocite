@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Modals\Admin\Formats;
 use App\CustomFacades\AP;
 use App\Format;
 use App\Http\Livewire\WithAlert;
+use App\Process;
 use Livewire\Component;
 
 class Edit extends Component
@@ -14,7 +15,12 @@ class Edit extends Component
     public $format;
     public $mode;
     public $canAdd = TRUE;
+    public $processSearch = '';
+    public $selectedRelatedProcesses = [];
+    public $selectedAvailableProcesses = [];
     public $formTabs;
+
+    protected $listeners = ['render'];
 
     protected $rules = [
         'format.name' => 'required|string|max:255',
@@ -37,6 +43,11 @@ class Edit extends Component
                     'icon' => 'list_alt',
                     'title' => "Définir la mise en forme",
                     'hidden' => FALSE,
+                ],
+                'processes' => [
+                    'icon' => 'developer_board',
+                    'title' => "Gérer les processus correspondant",
+                    'hidden' => !$this->format->id,
                 ],
             ],
         ];
@@ -70,6 +81,54 @@ class Edit extends Component
         if ($mode !== 'view') $this->setFormat();
     }
 
+    public function add($tabsSystem) {
+        switch($this->$tabsSystem['currentTab']) {
+            case 'processes' : $this->addSelectedAvailableProcesses();
+            return;
+        }
+    }
+
+    public function addSelectedAvailableProcesses() {
+        if ($this->isEmpty('selectedAvailableProcesses', "Aucun processus sélectionné")) return;
+
+        Process::query()
+            ->whereIn('id', $this->selectedAvailableProcesses)
+            ->update(['format_id' => $this->format->id]);
+
+        $this->selectedAvailableProcesses = [];
+
+        $this
+            ->emit('render', [
+                'alertClass' => 'success',
+                'message' => "Association effectuée avec succès."
+            ])
+            ->self();
+    }
+
+    public function remove($tabsSystem) {
+        switch($this->$tabsSystem['currentTab']) {
+            case 'processes' : $this->removeSelectedRelatedProcesses();
+            return;
+        }
+    }
+
+    private function removeSelectedRelatedProcesses() {
+        if ($this->isEmpty('selectedRelatedProcesses', "Aucun processus sélectionné")) return;
+
+        Process::query()
+            ->whereIn('id', $this->selectedRelatedProcesses)
+            ->update(['format_id' => NULL]);
+
+        $this->selectedRelatedProcesses = [];
+
+        $this
+            ->emit('render', [
+                'alertClass' => 'success',
+                'message' => "Dissociation effectuée avec succès."
+            ])
+            ->self();
+    }
+
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -96,12 +155,29 @@ class Edit extends Component
         }
     }
 
-    public function render()
+    private function availableProcesses() {
+        $search = $this->processSearch;
+
+        return Process::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->whereNull('format_id')
+            ->orderByRaw('name ASC')
+            ->get();
+    }
+
+    public function render($messageBag = NULL)
     {
+        if ($messageBag) {
+            $this->sendAlert($messageBag);
+        }
+
         return $this->mode === 'view' ?
             view('livewire.modals.admin.formats.sheet') :
             view('livewire.modals.admin.models-form', [
                 'addButtonTitle' => 'Ajouter une mise en forme',
+                'availableProcesses' => $this->availableProcesses(),
                 'colors' => array_keys(AP::getFormatBgColors()),
                 'borders' => AP::getBorderStyles(),
             ]);

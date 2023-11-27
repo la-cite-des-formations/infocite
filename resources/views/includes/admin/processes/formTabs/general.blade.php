@@ -34,9 +34,9 @@
         <label class="col-3 text-right my-auto pr-2" for="process-group">Service</label>
         <select id="process-group" wire:model="process.group_id" type="input" class="col form-control">
             <option label="Choisir le service de rattachement..."></option>
-            @foreach($groups as $group)
+          @foreach($groups as $group)
             <option value='{{ $group->id }}'>{{ $group->name }}</option>
-            @endforeach
+          @endforeach
         </select>
     </div>
    @error('process.group_id')
@@ -62,7 +62,7 @@
         <select id="process-manager" wire:model="process.manager_id" type="input" class="col form-control">
             <option label="Choisir le responsable..."></option>
           @foreach($managers as $manager)
-            <option value='{{ $manager->id }}'>{{ $manager->identity() }}</option>
+            <option value='{{ $manager->id }}'>{{ $manager->identity }}</option>
           @endforeach
         </select>
     </div>
