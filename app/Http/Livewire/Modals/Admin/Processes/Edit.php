@@ -16,7 +16,6 @@ class Edit extends Component
     public $process;
     public $createProcessGroup;
     public $newProcessGroup = NULL;
-    public $managers;
     public $mode;
     public $canAdd = TRUE;
     public $formTabs;
@@ -35,7 +34,7 @@ class Edit extends Component
     public function setProcess($id = NULL) {
         $this->process = $this->process ?? Process::findOrNew($id);
 
-        if ($this->process->id) {
+        if (!$this->process->id) {
             $this->process->rank = '-';
             $this->createProcessGroup = FALSE;
         }
@@ -60,7 +59,6 @@ class Edit extends Component
 
         $this->mode = $mode ?? 'view';
         $this->setProcess($id ?? NULL);
-        $this->setManagers();
     }
 
     public function refresh() {
@@ -79,13 +77,13 @@ class Edit extends Component
     public function switchMode($mode) {
         $this->mode = $mode;
 
-        if ($mode === 'creation') $this->process = NULL;
-        if ($mode !== 'view') $this->setProcess();
-        if ($mode === 'edition') $this->setManagers();
-    }
-
-    public function booted() {
-        if ($this->mode === 'view') dd($this->process);
+        if ($mode == 'creation') $this->process = NULL;
+        if ($mode != 'view') {
+            $this->setProcess();
+        }
+        else {
+            $this->process = Process::find($this->process->id);
+        };
     }
 
     public function save() {
@@ -137,36 +135,38 @@ class Edit extends Component
     }
 
     public function updatedProcessGroupId() {
-        $this->setManagers();
+        $this->render();
     }
 
     public function updatedProcessParentId() {
-        $this->setManagers();
         $this->process->rank = $this->process->parent_id ?
             Process::find($this->process->parent_id)->rank.'-' :
             '-';
+        $this->render();
     }
 
-    private function setManagers() {
-        $this->managers = [];
+    private function getManagers() {
+        $managers = [];
 
         if ($this->process->group_id) {
-            $this->managers = Group::find($this->process->group_id)->actors;
+            $managers = Group::find($this->process->group_id)->actors;
         }
 
         if ($this->process->parent_id) {
             $parentProcess = Process::find($this->process->parent_id);
 
-            $this->managers = $parentProcess
+            $managers = $parentProcess
                 ->actors
-                ->merge($this->managers);
+                ->merge($managers);
 
             if ($parentProcess->parent_id) {
-                $this->managers = Process::find($parentProcess->parent_id)
+                $managers = Process::find($parentProcess->parent_id)
                     ->actors
-                    ->merge($this->managers);
+                    ->merge($managers);
             }
         }
+
+        return $managers;
     }
 
     public function render()
@@ -176,6 +176,7 @@ class Edit extends Component
             view('livewire.modals.admin.models-form', [
                 'addButtonTitle' => 'Ajouter un processus fonctionnel',
                 'groups' => Group::where('type', 'P')->orderBy('name')->get(),
+                'managers' => $this->getManagers(),
                 'parents' => Process::where('id', '!=', $this->process->id)->orderBy('name')->get(),
                 'formats' => Format::all(),
             ]);

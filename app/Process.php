@@ -64,6 +64,9 @@ class Process extends Model
     }
 
     public function actors() {
+        if (is_null($this->group)) {
+            return (new Group)->actors();
+        }
         return $this->group->actors();
     }
 
@@ -80,9 +83,8 @@ class Process extends Model
     public static function getOrgChart() {
         $orgChartBoxes = new Collection();
 
-        self::query()
-            ->orderBy('rank')
-            ->get()
+        self::all()
+            ->sortBy('rank')
             ->each(function ($process) use ($orgChartBoxes) {
                 $orgChartBoxes->add([
                     'data' => [
