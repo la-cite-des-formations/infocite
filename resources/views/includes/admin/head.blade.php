@@ -8,6 +8,7 @@
 <title>{{ config('app.name', 'Intra-Cité') }}@yield('tabSubtitle')</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
+<meta name="robots" content="none">
 
 <!-- Favicons -->
 <link href="{{ asset('img/favicon.png') }}" rel="icon">
