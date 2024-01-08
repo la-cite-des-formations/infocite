@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="height: 100%">
     <head>
         @include('includes.admin.head')
-        @livewireStyles
+        @livewireStyles(['nonce' => csp_nonce()])
     </head>
     <body class="h-100 bg-dark">
         <div id="app" class="h-100">
