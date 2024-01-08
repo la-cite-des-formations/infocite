@@ -38,4 +38,4 @@
 * License: https://bootstrapmade.com/license/
 ======================================================== -->
 
-@livewireStyles
+@livewireStyles(['nonce' => csp_nonce()])
