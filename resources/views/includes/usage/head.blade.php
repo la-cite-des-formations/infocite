@@ -7,7 +7,7 @@
 
 <title>{{ config('app.name', 'Info-Cité') }}@yield('tabSubtitle')</title>
 <meta name="author" content="La Cité des Formations - Tours">
-<meta name="robots" content="none">
+<meta name="robots" content="noindex, follow">
 <!-- Favicons -->
 <link href="{{ asset('favicon.ico') }}" rel="icon" type="image/x-icon">
 <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon" type="image/png" sizes="180x180">
@@ -38,4 +38,4 @@
 * License: https://bootstrapmade.com/license/
 ======================================================== -->
 
-@livewireStyles
+@livewireStyles(['nonce' => csp_nonce()])
