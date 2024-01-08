@@ -56,4 +56,4 @@
 <!-- Modal JS File -->
 <script src="{{ asset('js/confirmManager.js') }}"></script>
 
-@livewireScripts
+@livewireScripts(['nonce' => 'unsafe-inline'])

@@ -16,6 +16,6 @@
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
         @yield('addJs')
-        @livewireScripts
+        @livewireScripts(['nonce' => 'unsafe-inline'])
     </body>
 </html>
