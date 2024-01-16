@@ -50,6 +50,14 @@ class App extends Model
         return $this->owner_id === auth()->user()->id;
     }
 
+    public function isInstitutional() {
+        return !$this->owner_id;
+    }
+
+    public function isPersonal() {
+        return (boolean) $this->owner_id;
+    }
+
     public function owner() {
         return User::find($this->owner_id);
     }

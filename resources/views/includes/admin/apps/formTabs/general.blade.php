@@ -1,4 +1,5 @@
 <div class="col">
+ @can('createFor', $app)
   @error('app.id_owner')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-4'])
   @enderror
@@ -11,6 +12,7 @@
           @endforeach
         </select>
     </div>
+ @endcan
   @error('app.auth_type')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-4'])
   @enderror
