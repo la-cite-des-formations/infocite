@@ -46,14 +46,15 @@ class Edit extends Component
 
         $this->formTabs = [
             'name' => 'formTabs',
-            'currentTab' => 'general',
+            'currentTab' => auth()->user()->can(['create', 'update'], $this->group) ? 'general' : 'members',
             'panesPath' => 'includes.admin.groups',
             'withMarge' => TRUE,
             'tabs' => [
                 'general' => [
                     'icon' => 'list_alt',
                     'title' => "Définir le groupe",
-                    'hidden' => FALSE,
+                    'hidden' => auth()->user()->cant(['create', 'update'], $this->group),
+
                 ],
                 'members' => [
                     'icon' => 'groups',

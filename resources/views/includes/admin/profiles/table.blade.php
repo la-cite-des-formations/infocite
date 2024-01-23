@@ -2,7 +2,7 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col @cannot('deleteAny', ['App\\User', TRUE]) py-2 @endcannot">
+        <th scope="col" class="col @cannot('deleteAny', ['App\\User', TRUE]) p-2 @endcannot">
           @can('deleteAny', ['App\\User', TRUE])
             <div class="btn-group dropleft mr-1">
                 <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"

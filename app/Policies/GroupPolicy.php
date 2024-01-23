@@ -2,12 +2,10 @@
 
 namespace App\Policies;
 
-use App\CustomFacades\AP;
 use App\Roles;
 use App\Group;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Gate;
 
 class GroupPolicy
 {
@@ -21,7 +19,7 @@ class GroupPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->hasRole('groups', Roles::IS_READR);
     }
 
     /**
@@ -33,7 +31,7 @@ class GroupPolicy
      */
     public function view(User $user, Group $group)
     {
-        //
+        return $user->hasRole('groups', Roles::IS_READR, 'Group', $group->id);
     }
 
     /**
@@ -44,7 +42,7 @@ class GroupPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasRole('groups', Roles::IS_EDITR);
     }
 
     /**
@@ -67,7 +65,30 @@ class GroupPolicy
      */
     public function update(User $user, Group $group)
     {
-        //
+        return $user->hasRole('groups', Roles::IS_EDITR, 'Group', $group->id);
+    }
+
+    /**
+     * Determine whether the user can handle the group.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Group  $group
+     * @return mixed
+     */
+    public function handle(User $user, Group $group)
+    {
+        return $user->hasRole('groups', Roles::IS_MODER, 'Group', $group->id);
+    }
+
+    /**
+     * Determine whether the current user can delete any groups.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function deleteAny(User $user)
+    {
+        return $user->hasRole('groups', Roles::IS_ADMIN);
     }
 
     /**
@@ -79,18 +100,6 @@ class GroupPolicy
      */
     public function delete(User $user, Group $group)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the group.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Group  $group
-     * @return mixed
-     */
-    public function forceDelete(User $user, Group $group)
-    {
-        //
+        return $user->hasRole('groups', Roles::IS_ADMIN, 'Group', $group->id);
     }
 }
