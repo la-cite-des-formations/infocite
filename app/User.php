@@ -311,8 +311,8 @@ class User extends Authenticatable
         return $result ? str_replace("%%", $result, $format) : $noResult;
     }
 
-    public function hasRole(string $right, int $role, string $resource_type = NULL, int $resource_id = NULL, bool $extended = TRUE) {
-        $rightable = $this
+    public function getRightable(string $right, string $resource_type = NULL, int $resource_id = NULL) {
+        return $this
             ->allRights()
             ->where('name', $right)
             ->pluck('pivot')
@@ -320,6 +320,24 @@ class User extends Authenticatable
             ->where('resource_id', $resource_id)
             ->sortByDesc('priority')
             ->first();
+    }
+
+    public function hasStrictRole(string $right, int $role, string $resource_type = NULL, int $resource_id = NULL, bool $extended = TRUE) {
+        $rightable = $this->getRightable($right, $resource_type, $resource_id);
+
+        if (is_null($rightable)) {
+            if (isset($resource_type) && isset($resource_id) && $extended) {
+                return $this->hasStrictRole($right, $role);
+            }
+            return NULL;
+        }
+        else {
+            return $rightable->roles & $role == $role;
+        }
+    }
+
+    public function hasRole(string $right, int $role, string $resource_type = NULL, int $resource_id = NULL, bool $extended = TRUE) {
+        $rightable = $this->getRightable($right, $resource_type, $resource_id);
 
         if (is_null($rightable)) {
             if (isset($resource_type) && isset($resource_id) && $extended) {
