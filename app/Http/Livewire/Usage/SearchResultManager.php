@@ -38,7 +38,7 @@ class SearchResultManager extends Component
                     ->orWhere('content', 'like', "%$this->searchedStr%")
                     ->get()
                     ->filter(function ($post) {
-                        return User::find(auth()->user()->id)->can('view', $post);
+                        return User::find(auth()->user()->id)->can('read', $post);
                     })
                     ->pluck('id')
                 )

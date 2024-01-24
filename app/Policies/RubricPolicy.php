@@ -14,24 +14,13 @@ class RubricPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the rubric.
+     * Determine whether the user can access the rubric (ui).
      *
      * @param  \App\User  $user
      * @param  \App\Rubric  $rubric
      * @return mixed
      */
-    public function view(User $user, Rubric $rubric)
+    public function access(User $user, Rubric $rubric)
     {
         // vérification de l'accès à la rubrique concernée
         if ($user->myRubrics()->contains('id', $rubric->id)) {
@@ -52,18 +41,41 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can view any rubrics.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function viewAny(User $user)
+    {
+        return $user->hasRole('rubrics', Roles::IS_EDITR);
+    }
+
+    /**
+     * Determine whether the user can view the rubric.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Rubric  $rubric
+     * @return mixed
+     */
+    public function view(User $user, Rubric $rubric)
+    {
+        return $user->hasRole('rubrics', Roles::IS_EDITR, 'Rubric', $rubric->id);
+    }
+
+    /**
+     * Determine whether the user can create rubrics.
      *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        //
+        return $user->hasRole('rubrics', Roles::IS_EDITR);
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the rubric.
      *
      * @param  \App\User  $user
      * @param  \App\Rubric  $rubric
@@ -71,11 +83,46 @@ class RubricPolicy
      */
     public function update(User $user, Rubric $rubric)
     {
-        //
+        return $user->hasRole('rubrics', Roles::IS_EDITR, 'Rubric', $rubric->id);
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can change the rubric segment.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Rubric  $rubric
+     * @return mixed
+     */
+    public function adminSegment(User $user, Rubric $rubric)
+    {
+        return $user->hasRole('rubrics', Roles::IS_ADMIN, 'Rubric', $rubric->id);
+    }
+
+    /**
+     * Determine whether the user can handle the rubric.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Rubric  $rubric
+     * @return mixed
+     */
+    public function handle(User $user, Rubric $rubric)
+    {
+        return $user->hasRole('rubrics', Roles::IS_MODER, 'Rubric', $rubric->id);
+    }
+
+    /**
+     * Determine whether the user can delete any rubrics.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function deleteAny(User $user)
+    {
+        return $user->hasRole('rubrics', Roles::IS_ADMIN);
+    }
+
+    /**
+     * Determine whether the user can delete the rubric.
      *
      * @param  \App\User  $user
      * @param  \App\Rubric  $rubric
@@ -83,30 +130,6 @@ class RubricPolicy
      */
     public function delete(User $user, Rubric $rubric)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
-     * @return mixed
-     */
-    public function restore(User $user, Rubric $rubric)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
-     * @return mixed
-     */
-    public function forceDelete(User $user, Rubric $rubric)
-    {
-        //
+        return $user->hasRole('rubrics', Roles::IS_ADMIN, 'Rubric', $rubric->id);
     }
 }

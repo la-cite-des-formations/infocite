@@ -15,7 +15,7 @@ class Edit extends Component
     const IS_PROFILE = TRUE;
 
     public $mode;
-    public $canAdd = TRUE;
+    public $canAdd;
 
     public $right;
     public $defaultRolesCbx;
@@ -169,6 +169,7 @@ class Edit extends Component
     public function mount($data) {
         extract($data);
 
+        $this->canAdd = auth()->user()->can('create', Right::class);
         $this->mode = $mode ?? 'view';
         $this->setRight($id ?? NULL);
     }
