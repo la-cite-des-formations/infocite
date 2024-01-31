@@ -111,6 +111,7 @@
         </div>
     </div>
  @endif
+ @can('adminSegment', $rubric)
   @error('rubric.segment')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])
   @enderror
@@ -119,6 +120,7 @@
         <input id="rubric-segment" wire:model="rubric.segment" type="input"
                class="col-7 form-control" placeholder="Segment d'accès à la rubrique">
     </div>
+ @endcan
  @if (!$rubric->is_parent)
   @error('rubric.view')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])

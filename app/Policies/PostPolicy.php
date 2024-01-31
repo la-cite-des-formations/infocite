@@ -14,13 +14,13 @@ class PostPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the post.
+     * Determine whether the user can read the post (ui).
      *
      * @param  \App\User  $user
      * @param  \App\Post  $post
      * @return mixed
      */
-    public function view(User $user, Post $post)
+    public function read(User $user, Post $post)
     {
         // vérification de l'accès à la rubrique de l'arcticle concerné
         if ($user->myRubrics()->contains('id', $post->rubric_id)) {
@@ -30,35 +30,6 @@ class PostPolicy
             return
                 ($post->published || $this->update($user, $post)) &&
                 $user->hasRole('posts', Roles::IS_READR, 'Post', $post->id);
-        }
-
-        return FALSE;
-    }
-
-    /**
-     * Determine whether the user can edit posts in a specific rubric.
-     *
-     * @param  \App\User  $user
-     * @param  int  $rubricId
-     * @return mixed
-     */
-    public function edit(User $user, int $rubricId)
-    {
-        // vérification de l'accès à la rubrique concernée
-        if ($user->myRubrics()->contains('id', $rubricId) || is_null($rubricId)) {
-            if ((Rubric::find($rubricId))->name == 'Une') {
-                $rightableType = NULL;
-                $rightableId = NULL;
-            }
-            else {
-                $rightableType = 'Rubric';
-                $rightableId = $rubricId;
-            }
-
-            return
-                $user->hasRole('posts', Roles::IS_EDITR, $rightableType, $rightableId) ||
-                $user->hasRole('posts', Roles::IS_MODER, $rightableType, $rightableId) ||
-                $user->hasRole('posts', Roles::IS_ADMIN, $rightableType, $rightableId);
         }
 
         return FALSE;
@@ -94,7 +65,36 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can publish posts in a specific rubric.
+     * Determine whether the user can edit any posts in a specific rubric.
+     *
+     * @param  \App\User  $user
+     * @param  int  $rubricId
+     * @return mixed
+     */
+    public function edit(User $user, int $rubricId)
+    {
+        // vérification de l'accès à la rubrique concernée
+        if ($user->myRubrics()->contains('id', $rubricId) || is_null($rubricId)) {
+            if ((Rubric::find($rubricId))->name == 'Une') {
+                $rightableType = NULL;
+                $rightableId = NULL;
+            }
+            else {
+                $rightableType = 'Rubric';
+                $rightableId = $rubricId;
+            }
+
+            return
+                $user->hasRole('posts', Roles::IS_EDITR, $rightableType, $rightableId) ||
+                $user->hasRole('posts', Roles::IS_MODER, $rightableType, $rightableId) ||
+                $user->hasRole('posts', Roles::IS_ADMIN, $rightableType, $rightableId);
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * Determine whether the user can publish any posts in a specific rubric.
      *
      * @param  \App\User  $user
      * @param  int  $rubricId
@@ -154,7 +154,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can delete posts from a specific rubric.
+     * Determine whether the user can delete any posts from a specific rubric.
      *
      * @param  \App\User  $user
      * @param  int  $rubricId

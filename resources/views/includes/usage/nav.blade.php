@@ -1,7 +1,7 @@
 <nav id="navbar" class="navbar">
     <ul>
       @foreach ($rubrics as $rubric)
-       @can('view', $rubric)
+       @can('access', $rubric)
         <li @if ($rubric->hasChilds()) class="dropdown" role="button" @endif>
           @if ($rubric->hasChilds())
             <a href="javascript:void(0)">
@@ -18,7 +18,7 @@
           @if ($rubric->hasChilds())
             <ul>
               @foreach ($rubric->childs as $childRubric)
-               @can('view', $childRubric)
+               @can('access', $childRubric)
                 <li>
                     <a  @if ($currentRoute == $childRubric->route())
                             href="#{{ $viewBag->template }}" class="nav-link scrollto"

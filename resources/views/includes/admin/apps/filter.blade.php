@@ -1,5 +1,6 @@
 <!-- filtre ... -->
 <div>
+  @can('filterByType', 'App\\App')
     <div class="input-group">
         <div class="input-group-prepend">
             <div class="input-group-text text-secondary" title="Type d'applications">
@@ -13,6 +14,7 @@
           @endforeach
         </select>
     </div>
+  @endcan
     <div class="input-group mt-1">
         <div class="input-group-prepend">
             <div class="input-group-text text-secondary" title="Authentification">
