@@ -41,7 +41,7 @@ class CommentsManager extends Component
                 ->paginate($this->perPage),
             'authors' => User::allWhoCan('comment'),
             'rubrics' => Rubric::allWithPosts(),
-            'posts' => Post::query()
+            'posts' => Post::allCommentable()
                 ->when($this->filter['rubricId'], function ($query) {
                     $query->where('rubric_id', $this->filter['rubricId']);
                 })
