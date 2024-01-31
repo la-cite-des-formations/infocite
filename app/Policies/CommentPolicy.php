@@ -53,9 +53,11 @@ class CommentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function block(User $user, int $postId)
+    public function block(User $user, int $postId = NULL)
     {
-        return $user->hasRole('comments', Roles::IS_MODER, 'Post', $postId);
+        return $postId ?
+            $user->hasRole('comments', Roles::IS_MODER, 'Post', $postId) :
+            $user->hasRole('comments', Roles::IS_MODER);
     }
 
     /**
