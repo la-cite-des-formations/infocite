@@ -166,4 +166,18 @@ class Post extends Model
                 $query->where('title', 'like', "%$search%");
             });
     }
+
+    public static function allCommentable() {
+        return self::query()
+            ->whereNotIn('id', function ($query) {
+                $query->select('resource_id')
+                    ->from('rightables')
+                    ->join('rights', 'rights.id', '=', 'rightables.right_id')
+                    ->where('rights.name', 'comments')
+                    ->where('rightables.rightable_type', 'Group')
+                    ->where('rightables.rightable_id', Group::where('name', 'GLOBAL')->first()->id)
+                    ->where('resource_type', 'Post')
+                    ->whereRaw('!(rightables.roles & '.Roles::IS_EDITR.')');
+            });
+    }
 }
