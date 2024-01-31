@@ -31,6 +31,7 @@ class AP // Application Parameters
             'data' => ['name' => 'data'],
             'groups' => ['name' => 'groups'],
             'posts' => ['name' => 'posts'],
+            'comments' => ['name' => 'comments'],
             'profiles' => ['name' => 'profiles'],
             'rights' => [
                 'name' => 'rights',
@@ -252,6 +253,15 @@ class AP // Application Parameters
                 'color' => 'success',
                 'gate' => 'manage-posts',
                 'route' => ['name' => 'admin.posts.index', 'parameters' => NULL]
+            ],
+            'comments' => [
+                'title' => 'Commentaires',
+                'table_title' => 'Gestion des commentaires',
+                'description' => "Voir ou supprimer des commentaires",
+                'icon_name' => 'comment',
+                'color' => 'success',
+                'gate' => 'manage-comments',
+                'route' => ['name' => 'admin.comments.index', 'parameters' => NULL]
             ],
             'rights' => [
                 'title' => 'Droits',

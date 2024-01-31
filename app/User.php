@@ -4,6 +4,7 @@ namespace App;
 
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -468,5 +469,56 @@ class User extends Authenticatable
                     return $actors->toQuery();
                 }
             });
+    }
+
+    public static function allWhoCan(string $action) {
+        switch ($action) {
+            case 'comment' :
+                return self::query()
+                    ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
+                    ->join('rights', 'rightables.right_id', '=', 'rights.id')
+                    ->where('rightables.rightable_type', 'User')
+                    ->where('rights.name', 'comments')
+                    ->where('users.name', '<>', AP::PROFILE)
+                    ->whereRaw('rightables.roles & '.Roles::IS_EDITR)
+                    ->select('users.*')
+                    ->union(
+                        self::query()
+                            ->join('profile_user', 'profile_user.user_id', '=', 'users.id')
+                            ->whereIn('profile_user.profile_id', function ($query) {
+                                $query->select('users.id')
+                                    ->from('users')
+                                    ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
+                                    ->join('rights', 'rightables.right_id', '=', 'rights.id')
+                                    ->where('users.name', AP::PROFILE)
+                                    ->where('rightables.rightable_type', 'User')
+                                    ->where('rights.name', 'comments')
+                                    ->whereRaw('rightables.roles & '.Roles::IS_EDITR);
+                            })
+                            ->where('users.name', '<>', AP::PROFILE)
+                            ->select('users.*')
+                    )
+                    ->union(
+                        self::query()
+                            ->join('group_user', 'group_user.user_id', '=', 'users.id')
+                            ->whereIn('group_user.group_id', function ($query) {
+                                $query->select('groups.id')
+                                    ->from('groups')
+                                    ->join('rightables', 'rightables.rightable_id', '=', 'groups.id')
+                                    ->join('rights', 'rightables.right_id', '=', 'rights.id')
+                                    ->where('rightables.rightable_type', 'Group')
+                                    ->where('rights.name', 'comments')
+                                    ->whereRaw('rightables.roles & '.Roles::IS_EDITR);
+                            })
+                            ->where('users.name', '<>', AP::PROFILE)
+                            ->select('users.*')
+                    )
+                    ->orderByRaw('name, first_name')
+                    ->distinct()
+                    ->get();
+
+            default :
+                return NULL;
+        }
     }
 }
