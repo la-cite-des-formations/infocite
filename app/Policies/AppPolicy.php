@@ -35,7 +35,18 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can create apps for everybody.
+     * Determine whether the user can filter apps by type.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function filterByType(User $user)
+    {
+        return $user->hasRole('apps', Roles::IS_ADMIN);
+    }
+
+    /**
+     * Determine whether the user can create institutional apps.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -46,14 +57,14 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can add his own apps.
+     * Determine whether the user can create personal apps for someone.
      *
      * @param  \App\User  $user
      * @return mixed
      */
-    public function add(User $user)
+    public function createFor(User $user)
     {
-        return $user->hasRole('apps', Roles::IS_EDITR);
+        return $user->hasRole('apps', Roles::IS_ADMIN);
     }
 
     /**
@@ -65,7 +76,30 @@ class AppPolicy
      */
     public function update(User $user, App $app)
     {
-        return $user->hasRole('apps', Roles::IS_MODER, 'App', $app->id);
+        return $app->isInstitutional() && $user->hasRole('apps', Roles::IS_MODER, 'App', $app->id);
+    }
+
+    /**
+     * Determine whether the user can update the personal app for someone.
+     *
+     * @param  \App\User  $user
+     * @param  \App\App  $app
+     * @return mixed
+     */
+    public function updateFor(User $user, App $app)
+    {
+        return $app->isPersonal() && $user->hasRole('apps', Roles::IS_ADMIN, 'App', $app->id);
+    }
+
+    /**
+     * Determine whether the user can delete any apps.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function deleteAny(User $user)
+    {
+        return $user->hasRole('apps', Roles::IS_ADMIN);
     }
 
     /**
@@ -77,11 +111,22 @@ class AppPolicy
      */
     public function delete(User $user, App $app)
     {
-        return $user->hasRole('apps', Roles::IS_MODER, 'App', $app->id);
+        return $user->hasRole('apps', Roles::IS_ADMIN, 'App', $app->id);
     }
 
     /**
-     * Determine whether the user can modify or remove his app.
+     * Determine whether the user can add his own apps (usage front).
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function add(User $user)
+    {
+        return $user->hasRole('apps', Roles::IS_EDITR);
+    }
+
+    /**
+     * Determine whether the user can update or delete his app (usage front).
      *
      * @param  \App\User  $user
      * @param  \App\App  $app

@@ -18,7 +18,7 @@ class Edit extends Component
 
     public $app;
     public $mode;
-    public $canAdd = TRUE;
+    public $canAdd;
     public $groupType = 'C';
     public $groupsIDs;
     public $selectedLinkedGroups = [];
@@ -95,6 +95,14 @@ class Edit extends Component
 
     public function mount($data) {
         extract($data);
+
+        $currentUser = auth()->user();
+
+        $this->canAdd = $currentUser->can('create', App::class) || $currentUser->can('createFor', App::class);
+
+        if ($currentUser->can('createFor', App::class) && $currentUser->cant('create', App::class)) {
+            $this->rules['app.owner_id'] = 'required|integer';
+        }
 
         $this->mode = $mode ?? 'view';
         $this->setApp($id ?? NULL);
@@ -242,12 +250,11 @@ class Edit extends Component
     }
 
     public function save() {
-        $this->app->favicon = Http::get("https://www.google.com/s2/favicons?domain=" . $this->app->url)->header("Content-Location");
         if ($this->mode === 'view') return;
 
-        $this->validate();
+        $this->app->favicon = Http::get("https://www.google.com/s2/favicons?domain=" . $this->app->url)->header("Content-Location");
 
-        $this->app->owner_id = $this->app->owner_id ?: NULL;
+        $this->validate();
 
         $this->app->save();
 

@@ -15,7 +15,7 @@ class Edit extends Component
 
     public $group;
     public $mode;
-    public $canAdd = TRUE;
+    public $canAdd;
     public $function = '';
     public $rolesCheckboxes;
     public $userSearch = '';
@@ -44,16 +44,19 @@ class Edit extends Component
     public function setGroup($id = NULL) {
         $this->group = $this->group ?? Group::findOrNew($id);
 
+        $loggedInUser = auth()->user();
+
         $this->formTabs = [
             'name' => 'formTabs',
-            'currentTab' => 'general',
+            'currentTab' => $loggedInUser->can(['create', 'update'], $this->group) ? 'general' : 'members',
             'panesPath' => 'includes.admin.groups',
             'withMarge' => TRUE,
             'tabs' => [
                 'general' => [
                     'icon' => 'list_alt',
                     'title' => "Définir le groupe",
-                    'hidden' => FALSE,
+                    'hidden' => $loggedInUser->cant(['create', 'update'], $this->group),
+
                 ],
                 'members' => [
                     'icon' => 'groups',
@@ -107,8 +110,10 @@ class Edit extends Component
     public function mount($data) {
         extract($data);
 
+        $this->canAdd = auth()->user()->can('create', Group::class);
         $this->mode = $mode ?? 'view';
         $this->setGroup($id ?? NULL);
+
         if (!empty($id)) {
             $this->membersIDs = $this->group->users->pluck('id');
             $this->appsIDs = $this->group->apps->pluck('id');

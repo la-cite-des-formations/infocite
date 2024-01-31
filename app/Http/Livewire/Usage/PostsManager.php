@@ -93,7 +93,7 @@ class PostsManager extends Component
                     ->get()
                     ->filter(function ($post) use ($user) {
                         return
-                            $user->can('view', $post) && (
+                            $user->can('read', $post) && (
                                 $this->mode == 'edition' ||
                                 $post->released && $this->rubric->name != 'Archives' ||
                                 $post->archived && $this->rubric->name == 'Archives'

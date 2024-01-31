@@ -3,10 +3,12 @@
 @section('modal-title', "Visualisation")
 
 @section('modal-header-options')
+  @can('update', $right)
     <a wire:click="switchMode('edition')" role="button"
        title="Modifier" class="text-secondary mr-1" id="switchModeEditionButton">
         <span class="material-icons">mode</span>
     </a>
+  @endcan
 @endsection
 
 @section('modal-body')
