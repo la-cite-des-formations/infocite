@@ -47,9 +47,7 @@
           @enderror
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto">Icône</label>
-                <div class="col-8">
-                    @include('includes.icon-picker', ['model' => 'post'])
-                </div>
+                @include('includes.icon-picker', ['model' => 'post'])
             </div>
           @error('post.content')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
