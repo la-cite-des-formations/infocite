@@ -2,8 +2,6 @@
 
 namespace App\Http\Livewire\Modals\Admin\Rubrics;
 
-use App\CustomFacades\AP;
-use Illuminate\Support\Str;
 use App\Rubric;
 use App\Group;
 use App\Http\Livewire\WithAlert;
@@ -296,7 +294,6 @@ class Edit extends Component
 
     public function render($messageBag = NULL)
     {
-        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -314,12 +311,7 @@ class Edit extends Component
                 'availableGroups' => $this->availableGroups(),
                 'availablePosts' => $this->availablePosts(),
                 'availableTargetRubrics' => $this->availableTargetRubrics(),
-                'icons' => AP::getMaterialIconsCodes()
-                    ->when($searchIcons, function ($icons) use ($searchIcons) {
-                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
-                        return str_contains($miName, $searchIcons);
-                    });
-                })
+                'icons' => $this->getMiCodes(),
             ]);
     }
 }
