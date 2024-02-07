@@ -41,14 +41,18 @@
       @endif
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
+              @canany(['create', 'createFor'], 'App\\App')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
                         class="d-flex btn btn-sm btn-success mr-1" title="Ajouter une application">
                     <span class="material-icons">add</span>
                 </button>
+              @endcan
+              @can('deleteAny', 'App\\App')
                 <button wire:click="showModal('delete', getSelectionIDs('app-cbx'))"
                         class="d-flex btn btn-sm btn-danger" title="Supprimer les applications selectionnées">
                     <span class="material-icons">delete</span>
                 </button>
+              @endcan
             </div>
         </th>
     </tr>
@@ -73,14 +77,18 @@
                 class="spot spot-info text-info" role="button" title="Visualiser">
                 <span class="material-icons">preview</span>
             </a>
+          @canany(['update', 'updateFor'], $app)
             <a wire:click="showModal('edit', {mode : 'edition', id : {{ $app->id }}})"
                 class="spot spot-success text-success" role="button" title="Modifier">
                 <span class="material-icons">mode</span>
             </a>
+          @endcan
+          @can('delete', $app)
             <a wire:click="showModal('delete', [{{ $app->id }}])"
                 class="spot spot-danger text-danger" role="button" title="Supprimer">
                 <span class="material-icons">delete</span>
             </a>
+          @endcan
         </td>
     </tr>
   @endforeach

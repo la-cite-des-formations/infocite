@@ -2,6 +2,8 @@
 
 namespace App\CustomFacades;
 
+use App\Right;
+use App\Roles;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
 
@@ -26,19 +28,27 @@ class AP // Application Parameters
 
     const DASHBOARD_MODELS_RIGHTS = [
         'main' => [
-            'apps' => 'apps',
-            'data' => 'data',
-            'groups' => 'groups',
-            'posts' => 'posts',
-            'profiles' => 'profiles',
-            'rights' => 'rights',
-            'rubrics' => 'rubrics',
-            'users' => 'users',
+            'apps' => ['name' => 'apps'],
+            'data' => ['name' => 'data'],
+            'groups' => ['name' => 'groups'],
+            'posts' => ['name' => 'posts'],
+            'comments' => ['name' => 'comments'],
+            'profiles' => ['name' => 'profiles'],
+            'rights' => [
+                'name' => 'rights',
+                'others' => [
+                    ['name' => 'users', 'roles' => Roles::IS_ADMIN],
+                    ['name' => 'profiles', 'roles' => Roles::IS_ADMIN],
+                    ['name' => 'groups', 'roles' => Roles::IS_ADMIN],
+                ]
+            ],
+            'rubrics' => ['name' => 'rubrics'],
+            'users' => ['name' => 'users'],
         ],
         'org-chart' => [
-            'formats' => 'org-chart',
-            'actors' => 'org-chart',
-            'processes' => 'org-chart',
+            'formats' => ['name' => 'org-chart'],
+            'actors' => ['name' => 'org-chart'],
+            'processes' => ['name' => 'org-chart'],
         ],
     ];
 
@@ -245,6 +255,15 @@ class AP // Application Parameters
                 'gate' => 'manage-posts',
                 'route' => ['name' => 'admin.posts.index', 'parameters' => NULL]
             ],
+            'comments' => [
+                'title' => 'Commentaires',
+                'table_title' => 'Gestion des commentaires',
+                'description' => "Voir ou supprimer des commentaires",
+                'icon_name' => 'comment',
+                'color' => 'success',
+                'gate' => 'manage-comments',
+                'route' => ['name' => 'admin.comments.index', 'parameters' => NULL]
+            ],
             'rights' => [
                 'title' => 'Droits',
                 'table_title' => 'Gestion des droits utilisateur',
@@ -395,7 +414,11 @@ class AP // Application Parameters
     }
 
     public static function getModelRight($model) {
-        return static::getModelsRights()[$model];
+        $modelRight = (object) static::getModelsRights()[$model];
+        $right = Right::where('name', $modelRight->name)->first();
+        $modelRight->roles = $right ? $right->dashboard_roles : Roles::NONE;
+
+        return $modelRight;
     }
 
     public static function getQuality($qualityCode) {

@@ -12,9 +12,10 @@ use Livewire\Component;
 class Edit extends Component
 {
     use WithAlert;
+    const IS_PROFILE = TRUE;
 
     public $mode;
-    public $canAdd = TRUE;
+    public $canAdd;
 
     public $right;
     public $defaultRolesCbx;
@@ -86,17 +87,23 @@ class Edit extends Component
                 'groups' => [
                     'icon' => 'groups',
                     'title' => "Gérer les groupes associés",
-                    'hidden' => empty($this->right->id),
+                    'hidden' =>
+                        auth()->user()->cant('adminRights', 'App\\User') ||
+                        empty($this->right->id),
                 ],
                 'profiles' => [
                     'icon' => 'portrait',
                     'title' => "Gérer les profils associés",
-                    'hidden' => empty($this->right->id),
+                    'hidden' =>
+                        auth()->user()->cant('adminRights', ['App\\User', self::IS_PROFILE]) ||
+                        empty($this->right->id),
                 ],
                 'users' => [
                     'icon' => 'person',
                     'title' => "Gérer les utilisateurs associés",
-                    'hidden' => empty($this->right->id),
+                    'hidden' =>
+                        auth()->user()->cant('adminRights', 'App\\User') ||
+                        empty($this->right->id),
                 ],
             ],
         ];
@@ -162,6 +169,7 @@ class Edit extends Component
     public function mount($data) {
         extract($data);
 
+        $this->canAdd = auth()->user()->can('create', Right::class);
         $this->mode = $mode ?? 'view';
         $this->setRight($id ?? NULL);
     }

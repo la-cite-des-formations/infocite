@@ -148,4 +148,11 @@ class Rubric extends Model
                 $query->where('is_parent', TRUE);
             })*/;
     }
+
+    public static function allWithPosts() {
+        return self::query()
+            ->whereRaw('contains_posts')
+            ->orderByRaw('position, rank')
+            ->get();
+    }
 }

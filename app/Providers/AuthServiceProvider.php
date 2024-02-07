@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\CustomFacades\AP;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Right;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -39,10 +38,21 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         foreach(AP::getModels() as $model) {
-            $right = Right::where('name', AP::getModelRight($model))->first();
+            $right = AP::getModelRight($model);
 
             Gate::define("manage-{$model}", function ($user) use ($right) {
-                return is_object($right) ? $user->hasRole($right->name, $right->dashboard_roles) : FALSE;
+                if (isset($right->others)) {
+                    foreach ($right->others as $otherRight) {
+                        if ($user->hasStrictRole($otherRight['name'], $otherRight['roles'])) {
+                            return TRUE;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                }
+
+                return $user->hasRole($right->name, $right->roles);
             });
         }
     }

@@ -31,7 +31,7 @@ class CommentPolicy
      */
     public function view(User $user, Comment $comment)
     {
-        return $user->hasRole('comments', Roles::IS_READR, 'Comment', $comment->id);
+        return $user->hasRole('comments', Roles::IS_READR, 'Post', $comment->post->id);
     }
 
     /**
@@ -40,9 +40,11 @@ class CommentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user, int $postId)
+    public function create(User $user, int $postId = NULL)
     {
-        return $user->hasRole('comments', Roles::IS_EDITR, 'Post', $postId);
+        return $postId ?
+            $user->hasRole('comments', Roles::IS_EDITR, 'Post', $postId) :
+            $user->hasRole('comments', Roles::IS_EDITR);
     }
 
     /**
@@ -51,7 +53,20 @@ class CommentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function block(User $user)
+    public function block(User $user, int $postId = NULL)
+    {
+        return $postId ?
+            $user->hasRole('comments', Roles::IS_MODER, 'Post', $postId) :
+            $user->hasRole('comments', Roles::IS_MODER);
+    }
+
+    /**
+     * Determine whether the user can delete any comments.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function deleteAny(User $user)
     {
         return $user->hasRole('comments', Roles::IS_MODER);
     }
@@ -66,7 +81,7 @@ class CommentPolicy
     public function delete(User $user, Comment $comment)
     {
         return
-            $user->hasRole('comments', Roles::IS_EDITR) && $comment->isMine() ||
-            $user->hasRole('comments', Roles::IS_MODER);
+            $user->hasRole('comments', Roles::IS_EDITR, 'Post', $comment->post->id) && $comment->isMine() ||
+            $user->hasRole('comments', Roles::IS_MODER, 'Post', $comment->post->id);
     }
 }

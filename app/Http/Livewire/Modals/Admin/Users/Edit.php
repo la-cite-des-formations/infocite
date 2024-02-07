@@ -15,7 +15,7 @@ class Edit extends Component
 
     public $user;
     public $mode;
-    public $canAdd = TRUE;
+    public $canAdd;
     public $groupType = 'C';
     public $groupSearch = '';
     public $groupsIDs;
@@ -100,13 +100,17 @@ class Edit extends Component
 
     public function mount($data) {
         extract($data);
+
+        $this->canAdd = auth()->user()->can('create', User::class);
         $this->mode = $mode ?? 'view';
         $this->setUser($id ?? NULL);
+
         if (!empty($id)) {
             $this->groupsIDs = $this->user->groups->pluck('id');
             $this->appsIDs = $this->user->apps->pluck('id');
             $this->profilesIDs = $this->user->profiles->pluck('id');
         }
+
         $this->userNbClasses = $this->user->groups(['C', 'E'])->count();
         $this->truncateClassesList = $this->userNbClasses > $this->classesMin;
     }

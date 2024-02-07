@@ -16,7 +16,7 @@ class Edit extends Component
 
     public $rubric;
     public $mode;
-    public $canAdd = TRUE;
+    public $canAdd;
     public $formTabs;
     public $groupType = 'C';
     public $groupSearch;
@@ -55,6 +55,8 @@ class Edit extends Component
             $this->rubric->rank = explode('-', $this->rubric->rank)[1];
         }
 
+        $currentUser = auth()->user();
+
         $this->formTabs = [
             'name' => 'formTabs',
             'currentTab' => 'general',
@@ -69,12 +71,17 @@ class Edit extends Component
                 'groups' => [
                     'icon' => 'groups',
                     'title' => "Associer des groupes",
-                    'hidden' => !$this->rubric->id,
+                    'hidden' =>
+                        !$this->rubric->id ||
+                        $currentUser->cant('handle', $this->rubric),
                 ],
                 'posts' => [
                     'icon' => 'article',
                     'title' => "Gérer les articles",
-                    'hidden' => !$this->rubric->id || !$this->rubric->contains_posts,
+                    'hidden' =>
+                        !$this->rubric->id ||
+                        !$this->rubric->contains_posts ||
+                        $currentUser->cant('handle', $this->rubric),
                 ],
             ],
         ];
@@ -83,6 +90,7 @@ class Edit extends Component
     public function mount($data) {
         extract($data);
 
+        $this->canAdd = auth()->user()->can('create', Rubric::class);
         $this->mode = $mode ?? 'view';
         $this->setRubric($id ?? NULL);
     }
@@ -206,6 +214,11 @@ class Edit extends Component
         if ($this->mode === 'view') return;
 
         $this->rubric->parent_id = $this->rubric->parent_id ?: NULL;
+
+        if (auth()->user()->cant('adminSegment', $this->rubric) && empty($this->rubric->segment)) {
+            $this->rubric->segment = Str::slug($this->rubric->name);
+        }
+
         $this->validate();
 
         if ($this->rubric->is_parent) {
