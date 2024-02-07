@@ -46,7 +46,7 @@
             </div>
             <div class="row">
               @foreach ($posts as $i => $post)
-               @can('view', $post)
+               @can('read', $post)
                 <div wire:click='redirectToPost({{ $post->id }})' role="button"
                      class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                      @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>

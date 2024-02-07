@@ -2,18 +2,21 @@
 
 namespace App\CustomFacades;
 
+use App\Right;
+use App\Roles;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cookie;
 
 //use Illuminate\Support\Facades\DB;
 
 class AP // Application Parameters
 {
+    static private $miCodes = NULL;
+
+    const COOKIE_LIFETIME = 60 * 24 * 60; // 60 jours * 24 heures * 60 minutes
     const STRICTLY = FALSE;
-
     const PROFILE = '@PROFILE';
-
     const ID_REGEX = '[0-9]+';
-
     const RUBRIC_SEPARATOR = '.';
     const RUBRIC_REGEX = '[-\w'.self::RUBRIC_SEPARATOR.']+';
     const SUBDASHBOARD_REGEX = '[-\w]+';
@@ -25,19 +28,27 @@ class AP // Application Parameters
 
     const DASHBOARD_MODELS_RIGHTS = [
         'main' => [
-            'apps' => 'apps',
-            'data' => 'data',
-            'groups' => 'groups',
-            'posts' => 'posts',
-            'profiles' => 'profiles',
-            'rights' => 'rights',
-            'rubrics' => 'rubrics',
-            'users' => 'users',
+            'apps' => ['name' => 'apps'],
+            'data' => ['name' => 'data'],
+            'groups' => ['name' => 'groups'],
+            'posts' => ['name' => 'posts'],
+            'comments' => ['name' => 'comments'],
+            'profiles' => ['name' => 'profiles'],
+            'rights' => [
+                'name' => 'rights',
+                'others' => [
+                    ['name' => 'users', 'roles' => Roles::IS_ADMIN],
+                    ['name' => 'profiles', 'roles' => Roles::IS_ADMIN],
+                    ['name' => 'groups', 'roles' => Roles::IS_ADMIN],
+                ]
+            ],
+            'rubrics' => ['name' => 'rubrics'],
+            'users' => ['name' => 'users'],
         ],
         'org-chart' => [
-            'formats' => 'org-chart',
-            'actors' => 'org-chart',
-            'processes' => 'org-chart',
+            'formats' => ['name' => 'org-chart'],
+            'actors' => ['name' => 'org-chart'],
+            'processes' => ['name' => 'org-chart'],
         ],
     ];
 
@@ -244,6 +255,15 @@ class AP // Application Parameters
                 'gate' => 'manage-posts',
                 'route' => ['name' => 'admin.posts.index', 'parameters' => NULL]
             ],
+            'comments' => [
+                'title' => 'Commentaires',
+                'table_title' => 'Gestion des commentaires',
+                'description' => "Voir ou supprimer des commentaires",
+                'icon_name' => 'comment',
+                'color' => 'success',
+                'gate' => 'manage-comments',
+                'route' => ['name' => 'admin.comments.index', 'parameters' => NULL]
+            ],
             'rights' => [
                 'title' => 'Droits',
                 'table_title' => 'Gestion des droits utilisateur',
@@ -394,7 +414,11 @@ class AP // Application Parameters
     }
 
     public static function getModelRight($model) {
-        return static::getModelsRights()[$model];
+        $modelRight = (object) static::getModelsRights()[$model];
+        $right = Right::where('name', $modelRight->name)->first();
+        $modelRight->roles = $right ? $right->dashboard_roles : Roles::NONE;
+
+        return $modelRight;
     }
 
     public static function getQuality($qualityCode) {
@@ -477,8 +501,16 @@ class AP // Application Parameters
         return $str;
     }
 
-    public static function getMaterialIconsCodes() {
-        return new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
+    public static function getMiCodes() {
+        return static::$miCodes ?? static::$miCodes = new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
+    }
+
+    public static function getMiCode($miName) {
+        return isset(static::$miCodes) ? static::$miCodes[$miName] : static::getMiCodes()[$miName];
+    }
+
+    public static function getRecentMiCodes() {
+        return new Collection(json_decode(Cookie::get('recentMiCodes'), TRUE));
     }
 
     public static function getPostStatusMI($status) {
@@ -531,6 +563,7 @@ class AP // Application Parameters
                 'color: '.static::gradeColor($color, 0.4);
         }, static::BS_COLORS);
     }
+
     public static function getNotifications($contentType) {
         return static::NOTIFICATIONS[$contentType];
     }
@@ -538,6 +571,4 @@ class AP // Application Parameters
     public static function betweenBrackets($str, $withSpace = TRUE) {
         return !empty($str) ? ($withSpace ? ' ' : '')."({$str})" : '';
     }
-
 }
-

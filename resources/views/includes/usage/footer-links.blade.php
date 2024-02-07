@@ -1,6 +1,6 @@
 <div class="col-6 footer-links d-flex flex-wrap justify-content-around mt-4">
  @foreach ($rubrics as $rubric)
-  @can('view', $rubric)
+  @can('access', $rubric)
    @if($rubric->hasChilds())
     <div class="d-flex flex-column">
         <h4>{{ $rubric->name }}</h4>

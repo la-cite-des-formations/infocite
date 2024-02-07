@@ -40,9 +40,7 @@
           @enderror
             <div class="row mb-3">
                 <label class="col-2 fw-bold text-end my-auto" for="app-icon">Icône</label>
-                <div class="col-8">
-                    @include('includes.icon-picker', ['model' => 'app'])
-                </div>
+                @include('includes.icon-picker', ['model' => 'app'])
             </div>
           @error('app.url')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
