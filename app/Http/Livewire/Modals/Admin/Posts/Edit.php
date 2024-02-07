@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Modals\Admin\Posts;
 
-use App\CustomFacades\AP;
 use App\Post;
 use App\Rubric;
 use App\Http\Livewire\WithAlert;
@@ -128,7 +127,6 @@ class Edit extends Component
     }
 
     public function render($messageBag = NULL){
-        $searchIcons = $this->searchIcons;
         if ($messageBag) {
             extract($messageBag);
             session()->flash('alertClass', $alertClass);
@@ -146,12 +144,7 @@ class Edit extends Component
                     ->get(),
                 'modalSize' => 'modal-xl',
                 'haveTiny' => TRUE,
-                'icons' => AP::getMaterialIconsCodes()
-                    ->when($searchIcons, function ($icons) use ($searchIcons) {
-                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
-                        return str_contains($miName, $searchIcons);
-                    });
-                }),
+                'icons' => $this->getMiCodes(),
             ]);
     }
 }

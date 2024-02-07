@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\Usage;
 
 use App\App;
-use App\CustomFacades\AP;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
@@ -84,14 +83,8 @@ class EditAppManager extends Component
     }
 
     public function render() {
-        $searchIcons = $this->searchIcons;
         return view('livewire.usage.edit-app-manager', [
-            'icons' => AP::getMaterialIconsCodes()
-                ->when($searchIcons, function ($icons) use ($searchIcons) {
-                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
-                        return str_contains($miName, $searchIcons);
-                    });
-                }),
+            'icons' => $this->getMiCodes(),
         ]);
     }
 }
