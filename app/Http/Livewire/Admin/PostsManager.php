@@ -8,6 +8,7 @@ use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
 use App\Post;
 use App\Rubric;
+use App\User;
 
 class PostsManager extends Component
 {
@@ -17,12 +18,15 @@ class PostsManager extends Component
 
     public $models = 'posts';
     public $elements = 'posts';
-    
+
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['modalClosed', 'render'];
 
     public $filter = [
         'search' => '',
+        'authorId' => '',
+        'rubricId' => '',
+        'phase' => '',
     ];
 
     public $perPageOptions = [10, 15, 25];
@@ -34,7 +38,8 @@ class PostsManager extends Component
             'posts' => Post::filter($this->filter)
                 ->orderByRaw('title ASC')
                 ->paginate($this->perPage),
-            'rubrics' => Rubric::all(),
+            'authors' => User::allWho('have-edited-posts'),
+            'rubrics' => Rubric::allWithPosts(),
         ]);
     }
 }

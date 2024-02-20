@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\CustomFacades\AP;
 use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
@@ -157,19 +156,13 @@ class EditPostManager extends Component
     }
 
     public function render() {
-        $searchIcons = $this->searchIcons;
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()
                 ->where('contains_posts', TRUE)
                 ->where('rank', '!=', '0')
                 ->orderByRaw('position ASC, rank ASC')
                 ->get(),
-            'icons' => AP::getMaterialIconsCodes()
-                ->when($searchIcons, function ($icons) use ($searchIcons) {
-                    return $icons->filter(function ($miCode, $miName) use ($searchIcons) {
-                        return str_contains($miName, $searchIcons);
-                    });
-                }),
+            'icons' => $this->getMiCodes(),
         ]);
     }
 }

@@ -5,17 +5,18 @@ namespace App\CustomFacades;
 use App\Right;
 use App\Roles;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cookie;
 
 //use Illuminate\Support\Facades\DB;
 
 class AP // Application Parameters
 {
+    static private $miCodes = NULL;
+
+    const COOKIE_LIFETIME = 60 * 24 * 60; // 60 jours * 24 heures * 60 minutes
     const STRICTLY = FALSE;
-
     const PROFILE = '@PROFILE';
-
     const ID_REGEX = '[0-9]+';
-
     const RUBRIC_SEPARATOR = '.';
     const RUBRIC_REGEX = '[-\w'.self::RUBRIC_SEPARATOR.']+';
     const SUBDASHBOARD_REGEX = '[-\w]+';
@@ -500,8 +501,25 @@ class AP // Application Parameters
         return $str;
     }
 
-    public static function getMaterialIconsCodes() {
-        return new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
+    public static function getMiCodes() {
+        return static::$miCodes ?? static::$miCodes = new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
+    }
+
+    public static function getMiCode($miName) {
+        return isset(static::$miCodes) ? static::$miCodes[$miName] : static::getMiCodes()[$miName];
+    }
+
+    public static function getRecentMiCodes() {
+        return new Collection(json_decode(Cookie::get('recentMiCodes'), TRUE));
+    }
+
+    public static function getPostStatus() {
+        return array_map(
+            function ($postStatus) {
+                return (object) $postStatus;
+            },
+            static::POST_STATUS_MI
+        );
     }
 
     public static function getPostStatusMI($status) {
@@ -554,6 +572,7 @@ class AP // Application Parameters
                 'color: '.static::gradeColor($color, 0.4);
         }, static::BS_COLORS);
     }
+
     public static function getNotifications($contentType) {
         return static::NOTIFICATIONS[$contentType];
     }
@@ -561,6 +580,4 @@ class AP // Application Parameters
     public static function betweenBrackets($str, $withSpace = TRUE) {
         return !empty($str) ? ($withSpace ? ' ' : '')."({$str})" : '';
     }
-
 }
-

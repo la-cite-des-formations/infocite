@@ -2,7 +2,6 @@
 
 namespace App;
 
-use DateTime;
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,8 +15,8 @@ class Post extends Model
     protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at'];
     protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
     protected $casts = [
-        'published_at' => 'nullable|date:Y-m-d',
-        'expired_at' => 'nullable|date:Y-m-d',
+        'published_at' => 'date:Y-m-d',
+        'expired_at' => 'date:Y-m-d',
     ];
 
     public function rubric()
@@ -164,6 +163,52 @@ class Post extends Model
         return self::query()
             ->when($search, function ($query) use ($search) {
                 $query->where('title', 'like', "%$search%");
+            })
+            ->when($rubricId, function ($query) use ($rubricId) {
+                $query->where('rubric_id', $rubricId);
+            })
+            ->when($authorId, function ($query) use ($authorId) {
+                $query->where('author_id', $authorId);
+            })
+            ->when($phase, function ($query) use ($phase) {
+                switch ($phase) {
+                    case 'unpublished' :
+                        $query
+                            ->where('published', FALSE);
+                        break;
+
+                    case 'forthcoming' :
+                        $query
+                            ->where('published_at', '>', today()->format('Y-m-d'));
+                        break;
+
+                    case 'released' :
+                        $query
+                            ->where('published', TRUE)
+                            ->where(function ($query) {
+                                $query
+                                    ->where('published_at', '<=', today()->format('Y-m-d'))
+                                    ->orWhereNull('published_at');
+                            })
+                            ->where(function ($query) {
+                                $query
+                                    ->where('expired_at', '>', today()->format('Y-m-d'))
+                                    ->orWhereNull('expired_at');
+                            });
+                        break;
+
+                    case 'archived' :
+                        $query
+                            ->where('expired_at', '<=', today()->format('Y-m-d'))
+                            ->where('auto_delete', FALSE);
+                        break;
+
+                    case 'expired' :
+                        $query
+                            ->where('expired_at', '<=', today()->format('Y-m-d'))
+                            ->where('auto_delete', TRUE);
+                        break;
+                }
             });
     }
 
