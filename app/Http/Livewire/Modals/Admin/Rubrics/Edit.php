@@ -8,6 +8,7 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Post;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class Edit extends Component
 {

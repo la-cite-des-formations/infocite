@@ -60,7 +60,7 @@
 @isset($profiles)
  @section('table-body')
   @foreach ($profiles as $profile)
-   @canany(['view', 'update', 'delete', 'adminRights'], [$profile, TRUE])
+   @if(auth()->user()->canany(['view', 'update', 'delete'], [$profile, TRUE]) || auth()->user()->can('adminRights', ['App\\User', TRUE]))
     <tr class="row">
         <td scope="row" class="col">
           @can('deleteAny', ['App\\User', TRUE])
@@ -74,7 +74,7 @@
             {{ $profile->users->count() }}
         </td>
         <td class="col-3 d-flex justify-content-end mb-auto">
-          @canany(['view', 'adminRights'], [$profile, TRUE])
+          @if(auth()->user()->can('view', [$profile, TRUE]) || auth()->user()->can('adminRights', ['App\\User', TRUE]))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $profile->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
                 <span class="material-icons">preview</span>
@@ -94,7 +94,7 @@
           @endcan
         </td>
     </tr>
-   @endcan
+   @endif
   @endforeach
  @endsection
 @endisset

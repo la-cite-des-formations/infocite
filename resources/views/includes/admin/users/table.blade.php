@@ -60,7 +60,7 @@
 @isset($users)
  @section('table-body')
   @foreach ($users as $user)
-   @canany(['view', 'update', 'delete', 'adminRights'], $user)
+   @if(auth()->user()->canany(['view', 'update', 'delete'], $user) || auth()->user()->can('adminRights', 'App\\User'))
     <tr class="row @if($user->is_frozen) table-warning @endif">
         <td scope="row" class="col">
           @can('deleteAny', 'App\\User')
@@ -74,12 +74,12 @@
             {{ $user->getInfo($userInfo) }}
         </td>
         <td class="col-3 d-flex justify-content-end mb-auto">
-          @canany(['view', 'adminRights'], $user)
+          @if(auth()->user()->can('view', $user) || auth()->user()->can('adminRights', 'App\\User'))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $user->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
                 <span class="material-icons">preview</span>
             </a>
-          @endcan
+          @endif
           @can('update', $user)
             <a wire:click="showModal('edit', {mode : 'edition', id : {{ $user->id }}})"
                 class="spot spot-success text-success" role="button" title="Modifier">
@@ -94,7 +94,7 @@
           @endcan
         </td>
     </tr>
-   @endcan
+   @endif
   @endforeach
  @endsection
 @endisset
