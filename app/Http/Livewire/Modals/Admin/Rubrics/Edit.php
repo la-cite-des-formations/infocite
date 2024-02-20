@@ -33,7 +33,7 @@ class Edit extends Component
     protected $rules = [
         'rubric.name' => 'required|string|max:255',
         'rubric.title' => 'required|string|max:255',
-        'rubric.description' => 'nullable|string',
+        'rubric.description' => 'required|string',
         'rubric.icon' => 'nullable|string|max:255',
         'rubric.is_parent' => 'required|boolean',
         'rubric.parent_id' => 'nullable|numeric',
