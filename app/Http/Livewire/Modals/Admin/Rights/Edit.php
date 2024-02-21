@@ -82,7 +82,9 @@ class Edit extends Component
                 'general' => [
                     'icon' => 'list_alt',
                     'title' => "Définir les droits utilisateurs",
-                    'hidden' => FALSE,
+                    'hidden' =>
+                        auth()->user()->cant('create', 'App\\Right') &&
+                        auth()->user()->cant('update', $this->right),
                 ],
                 'groups' => [
                     'icon' => 'groups',
@@ -164,6 +166,13 @@ class Edit extends Component
                 ],
             ],
         ];
+
+        $this->setCurrentTab(
+            'formTabs',
+            auth()->user()->can('create', 'App\\Right') || auth()->user()->can('update', $this->right) ?
+                'general' :
+                (auth()->user()->can('adminRights', 'App\\User') ? 'users' : 'profiles')
+        );
     }
 
     public function mount($data) {

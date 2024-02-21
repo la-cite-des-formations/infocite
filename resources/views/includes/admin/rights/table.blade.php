@@ -60,7 +60,9 @@
 @isset($rights)
  @section('table-body')
   @foreach ($rights as $right)
-   @canany(['view', 'update', 'delete'], $right)
+   @if(auth()->user()->canany(['view', 'update', 'delete'], $right) ||
+        auth()->user()->can('adminRights', 'App\\User') ||
+        auth()->user()->can('adminRights', ['App\\User', TRUE]))
     <tr class="row">
         <td scope="row" class="col-4">
           @can('deleteAny', 'App\\Right')
@@ -72,18 +74,22 @@
         </td>
         <td class="col-5">{{ $right->rolesFromDashboard() }}</td>
         <td class="col d-flex justify-content-end mb-auto">
-          @can('view', $right)
+          @if(auth()->user()->can('view', $right) ||
+                auth()->user()->can('adminRights', 'App\\User') ||
+                auth()->user()->can('adminRights', ['App\\User', TRUE]))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $right->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
                 <span class="material-icons">preview</span>
             </a>
-          @endcan
-          @can('update', $right)
+          @endif
+          @if(auth()->user()->can('update', $right) ||
+                auth()->user()->can('adminRights', 'App\\User') ||
+                auth()->user()->can('adminRights', ['App\\User', TRUE]))
             <a wire:click="showModal('edit', {mode : 'edition', id : {{ $right->id }}})"
                 class="spot spot-success text-success" role="button" title="Modifier">
                 <span class="material-icons">mode</span>
             </a>
-          @endcan
+          @endif
           @can('delete', $right)
             <a wire:click="showModal('delete', [{{ $right->id }}])"
                 class="spot spot-danger text-danger" role="button" title="Supprimer">
@@ -92,7 +98,7 @@
           @endcan
         </td>
     </tr>
-   @endcan
+   @endif
   @endforeach
  @endsection
 @endisset

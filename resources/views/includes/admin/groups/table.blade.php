@@ -66,7 +66,7 @@
 @isset($groups)
  @section('table-body')
   @foreach ($groups as $group)
-   @canany(['view', 'update', 'delete'], $group)
+   @canany(['view', 'update', 'handle', 'delete'], $group)
     <tr class="row">
         <td scope="row" class="col-5">
           @can('deleteAny', 'App\\Group')
