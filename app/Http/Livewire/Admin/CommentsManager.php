@@ -39,7 +39,7 @@ class CommentsManager extends Component
             'comments' => Comment::filter($this->filter)
                 ->orderByRaw('user_id, created_at DESC')
                 ->paginate($this->perPage),
-            'authors' => User::allWhoCan('comment'),
+            'authors' => User::allWho('have-commented-posts'),
             'rubrics' => Rubric::allWithPosts(),
             'posts' => Post::allCommentable()
                 ->when($this->filter['rubricId'], function ($query) {

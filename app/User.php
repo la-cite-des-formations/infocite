@@ -4,7 +4,6 @@ namespace App;
 
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -471,54 +470,73 @@ class User extends Authenticatable
             });
     }
 
-    public static function allWhoCan(string $action) {
-        switch ($action) {
-            case 'comment' :
-                return self::query()
-                    ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
-                    ->join('rights', 'rightables.right_id', '=', 'rights.id')
-                    ->where('rightables.rightable_type', 'User')
-                    ->where('rights.name', 'comments')
+    public static function haveRolesOnRight(string $rightName, int $roles) {
+        return static::query()
+            ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
+            ->join('rights', 'rightables.right_id', '=', 'rights.id')
+            ->where('rightables.rightable_type', 'User')
+            ->where('rights.name', $rightName)
+            ->whereRaw('rightables.roles & '.$roles)
+            ->where('users.name', '<>', AP::PROFILE)
+            ->select('users.*')
+            ->union(
+                static::query()
+                    ->join('profile_user', 'profile_user.user_id', '=', 'users.id')
+                    ->whereIn('profile_user.profile_id', function ($query) use($rightName, $roles) {
+                        $query->select('users.id')
+                            ->from('users')
+                            ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
+                            ->join('rights', 'rightables.right_id', '=', 'rights.id')
+                            ->where('rightables.rightable_type', 'User')
+                            ->where('rights.name', $rightName)
+                            ->whereRaw('rightables.roles & '.$roles)
+                            ->where('users.name', AP::PROFILE);
+                    })
                     ->where('users.name', '<>', AP::PROFILE)
-                    ->whereRaw('rightables.roles & '.Roles::IS_EDITR)
                     ->select('users.*')
-                    ->union(
-                        self::query()
-                            ->join('profile_user', 'profile_user.user_id', '=', 'users.id')
-                            ->whereIn('profile_user.profile_id', function ($query) {
-                                $query->select('users.id')
-                                    ->from('users')
-                                    ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
-                                    ->join('rights', 'rightables.right_id', '=', 'rights.id')
-                                    ->where('users.name', AP::PROFILE)
-                                    ->where('rightables.rightable_type', 'User')
-                                    ->where('rights.name', 'comments')
-                                    ->whereRaw('rightables.roles & '.Roles::IS_EDITR);
-                            })
-                            ->where('users.name', '<>', AP::PROFILE)
-                            ->select('users.*')
-                    )
-                    ->union(
-                        self::query()
-                            ->join('group_user', 'group_user.user_id', '=', 'users.id')
-                            ->whereIn('group_user.group_id', function ($query) {
-                                $query->select('groups.id')
-                                    ->from('groups')
-                                    ->join('rightables', 'rightables.rightable_id', '=', 'groups.id')
-                                    ->join('rights', 'rightables.right_id', '=', 'rights.id')
-                                    ->where('rightables.rightable_type', 'Group')
-                                    ->where('rights.name', 'comments')
-                                    ->whereRaw('rightables.roles & '.Roles::IS_EDITR);
-                            })
-                            ->where('users.name', '<>', AP::PROFILE)
-                            ->select('users.*')
-                    )
+            )
+            ->union(
+                static::query()
+                    ->join('group_user', 'group_user.user_id', '=', 'users.id')
+                    ->whereIn('group_user.group_id', function ($query) use($rightName, $roles) {
+                        $query->select('groups.id')
+                            ->from('groups')
+                            ->join('rightables', 'rightables.rightable_id', '=', 'groups.id')
+                            ->join('rights', 'rightables.right_id', '=', 'rights.id')
+                            ->where('rightables.rightable_type', 'Group')
+                            ->where('rights.name', $rightName)
+                            ->whereRaw('rightables.roles & '.$roles);
+                    })
+                    ->where('users.name', '<>', AP::PROFILE)
+                    ->select('users.*')
+            )
+            ->orderByRaw('name, first_name')
+            ->distinct()
+            ->get();
+    }
+
+    public static function allWho(string $action) {
+        switch ($action) {
+            case 'can-comment-posts' :
+                return static::haveRolesOnRight('comments', Roles::IS_EDITR);
+
+            case 'can-edit-posts' :
+                return static::haveRolesOnRight('posts', Roles::IS_EDITR);
+
+            case 'have-edited-posts' :
+                return static::query()
+                    ->whereIn('id', Post::all()->pluck('author_id')->unique())
                     ->orderByRaw('name, first_name')
-                    ->distinct()
+                    ->get();
+
+            case 'have-commented-posts' :
+                return static::query()
+                    ->whereIn('id', Comment::all()->pluck('user_id')->unique())
+                    ->orderByRaw('name, first_name')
                     ->get();
 
             default :
-                return NULL;
+                return static::all();
         }
     }
 }

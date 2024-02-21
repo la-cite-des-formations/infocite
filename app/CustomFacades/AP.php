@@ -513,6 +513,15 @@ class AP // Application Parameters
         return new Collection(json_decode(Cookie::get('recentMiCodes'), TRUE));
     }
 
+    public static function getPostStatus() {
+        return array_map(
+            function ($postStatus) {
+                return (object) $postStatus;
+            },
+            static::POST_STATUS_MI
+        );
+    }
+
     public static function getPostStatusMI($status) {
         return (object) static::POST_STATUS_MI[$status];
     }
