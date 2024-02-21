@@ -76,7 +76,7 @@
                                 </a>
                                @endcan
                               @endif
-                              @if($post->isCommentable())
+                              @can('viewAny', ['App\\Comment', $post->id])
                                 <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
                                 <div class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
                                     type="text" title="Commentaires">

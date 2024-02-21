@@ -19,12 +19,14 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->boolean('published')->default(FALSE);
-            $table->unsignedInteger('rubric_id')->index()->nullable();
+            $table->unsignedInteger('rubric_id')->index()->nullable()->default(NULL);
             $table->foreign('rubric_id')->references('id')->on('rubrics');
-            $table->unsignedInteger('author_id')->index()->nullable();
+            $table->unsignedInteger('author_id')->index()->nullable()->default(NULL);
             $table->foreign('author_id')->references('id')->on('users');
-            $table->unsignedInteger('corrector_id')->index()->nullable();
+            $table->unsignedInteger('corrector_id')->index()->nullable()->default(NULL);
             $table->foreign('corrector_id')->references('id')->on('users');
+            $table->date('published_at')->nullable()->default(NULL);
+            $table->date('expired_at')->nullable()->default(NULL);
             $table->timestamps();
         });
     }

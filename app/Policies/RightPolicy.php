@@ -54,7 +54,7 @@ class RightPolicy
      */
     public function update(User $user, Right $right)
     {
-        return $user->hasRole('rights', Roles::IS_MODER, 'Right', $right->id);
+        return $user->hasRole('rights', Roles::IS_MODER, 'Right', $right->id) ;
     }
 
     /**
