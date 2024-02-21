@@ -118,11 +118,11 @@ class Post extends Model
     }
 
     public function getForthcomingAttribute() {
-        return isset($this->published_at) && $this->published_at > today()->format('Y-m-d');
+        return isset($this->published_at) && $this->published_at->format('Y-m-d') > today()->format('Y-m-d');
     }
 
     public function getExpiredAttribute() {
-        return isset($this->expired_at) && $this->expired_at <= today()->format('Y-m-d');
+        return isset($this->expired_at) && $this->expired_at->format('Y-m-d') <= today()->format('Y-m-d');
     }
 
     public function getReleasedAttribute() {
