@@ -52,9 +52,13 @@ class Edit extends Component
             $this->rubric->contains_posts = TRUE;
         }
 
-        if ($id && $this->rubric->parent_id) {
-            $this->rubric->rank = explode('-', $this->rubric->rank)[1];
-        }
+        if ($id)
+            if ($this->rubric->parent_id) {
+                $this->rubric->rank = (int) explode('-', $this->rubric->rank)[1];
+            }
+            else {
+                $this->rubric->rank = (int) $this->rubric->rank;
+            }
 
         $currentUser = auth()->user();
 
@@ -225,7 +229,7 @@ class Edit extends Component
         if ($this->rubric->is_parent) {
             foreach ($this->rubric->childs as $childRubric) {
                 $rank = explode('-', $childRubric->rank);
-                $rank[0] = $this->rubric->rank;
+                $rank[0] = substr("000".$this->rubric->rank, -3);
                 $childRubric->rank = implode('-', $rank);
                 $childRubric->save();
             }
@@ -234,7 +238,10 @@ class Edit extends Component
         $rank = $this->rubric->rank;
 
         if ($this->rubric->parent_id) {
-            $this->rubric->rank = "{$this->rubric->parent->rank}-{$rank}";
+            $this->rubric->rank = substr("000".$this->rubric->parent->rank, -3).'-'.substr("000".$this->rubric->rank, -3);
+        }
+        else {
+            $this->rubric->rank = substr("000".$this->rubric->rank, -3);
         }
 
         $this->rubric
