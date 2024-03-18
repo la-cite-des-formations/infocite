@@ -20,7 +20,7 @@ class ViewController extends Controller
         $rubric = Rubric::firstWhere('segment', $rubricSegments[0]);
 
         if (count($rubricSegments) > 1) {
-            $rubric = $rubric->childs()->firstWhere('segment', $rubricSegments[1]);
+            $rubric = $rubric->childs->firstWhere('segment', $rubricSegments[1]);
         }
 
         return $rubric;
