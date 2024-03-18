@@ -39,7 +39,7 @@ class PostsManager extends Component
         ]);
         $this->perPage = session('postsPerPage', 16);
         $this->setMode();
-        $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+        $this->rubric = $viewBag->rubric;
         $this->isFavoriteRubric = $this->rubric->isFavorite();
         $this->setNotifications();
     }

@@ -40,7 +40,7 @@ class EditPostManager extends Component
     public function mount($viewBag) {
         session(['appsBackRoute' => request()->getRequestUri()]);
         $this->backRoute = session('backRoute');
-        $this->currentRubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+        $this->currentRubric = $viewBag->rubric;
         $this->mode = $viewBag->mode;
         $this->post = Post::findOrNew($viewBag->post_id);
         if ($this->currentRubric->name != 'Une' && !$this->post->rubric_id) {
