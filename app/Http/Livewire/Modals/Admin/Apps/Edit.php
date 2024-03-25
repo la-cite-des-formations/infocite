@@ -96,11 +96,11 @@ class Edit extends Component
     public function mount($data) {
         extract($data);
 
-        $currentUser = auth()->user();
+        $authUser = auth()->user();
 
-        $this->canAdd = $currentUser->can('create', App::class) || $currentUser->can('createFor', App::class);
+        $this->canAdd = $authUser->can('create', App::class) || $authUser->can('createFor', App::class);
 
-        if ($currentUser->can('createFor', App::class) && $currentUser->cant('create', App::class)) {
+        if ($authUser->can('createFor', App::class) && $authUser->cant('create', App::class)) {
             $this->rules['app.owner_id'] = 'required|integer';
         }
 

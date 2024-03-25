@@ -44,19 +44,21 @@ class Edit extends Component
     public function setGroup($id = NULL) {
         $this->group = $this->group ?? Group::findOrNew($id);
 
-        $loggedInUser = auth()->user();
+        $authUser = auth()->user();
 
         $this->formTabs = [
             'name' => 'formTabs',
-            'currentTab' => $loggedInUser->can(['create', 'update'], $this->group) ? 'general' : 'members',
+            'currentTab' =>
+                $authUser->can('create', 'App\\Group') || $authUser->can('update', $this->group) ?
+                    'general' :
+                    'members',
             'panesPath' => 'includes.admin.groups',
             'withMarge' => TRUE,
             'tabs' => [
                 'general' => [
                     'icon' => 'list_alt',
                     'title' => "Définir le groupe",
-                    'hidden' => $loggedInUser->cant(['create', 'update'], $this->group),
-
+                    'hidden' => $authUser->cant('create', 'App\\Group') && $authUser->cant('update', $this->group),
                 ],
                 'members' => [
                     'icon' => 'groups',
