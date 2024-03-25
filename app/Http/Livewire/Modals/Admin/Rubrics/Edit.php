@@ -60,7 +60,7 @@ class Edit extends Component
                 $this->rubric->rank = (int) $this->rubric->rank;
             }
 
-        $currentUser = auth()->user();
+        $authUser = auth()->user();
 
         $this->formTabs = [
             'name' => 'formTabs',
@@ -78,7 +78,7 @@ class Edit extends Component
                     'title' => "Associer des groupes",
                     'hidden' =>
                         !$this->rubric->id ||
-                        $currentUser->cant('handle', $this->rubric),
+                        $authUser->cant('handle', $this->rubric),
                 ],
                 'posts' => [
                     'icon' => 'article',
@@ -86,7 +86,7 @@ class Edit extends Component
                     'hidden' =>
                         !$this->rubric->id ||
                         !$this->rubric->contains_posts ||
-                        $currentUser->cant('handle', $this->rubric),
+                        $authUser->cant('handle', $this->rubric),
                 ],
             ],
         ];
