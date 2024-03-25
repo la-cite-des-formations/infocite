@@ -49,7 +49,7 @@ class Edit extends Component
         $this->formTabs = [
             'name' => 'formTabs',
             'currentTab' =>
-                $authUser->can('create', 'App\\Group') || $authUser->can('update', $this->group) ?
+                $authUser->can('create', Group::class) || $authUser->can('update', $this->group) ?
                     'general' :
                     'members',
             'panesPath' => 'includes.admin.groups',
@@ -58,7 +58,7 @@ class Edit extends Component
                 'general' => [
                     'icon' => 'list_alt',
                     'title' => "Définir le groupe",
-                    'hidden' => $authUser->cant('create', 'App\\Group') && $authUser->cant('update', $this->group),
+                    'hidden' => $authUser->cant('create', Group::class) && $authUser->cant('update', $this->group),
                 ],
                 'members' => [
                     'icon' => 'groups',
@@ -96,17 +96,6 @@ class Edit extends Component
                 ],
             ],
         ];
-    }
-
-    public function updatedGroupType() {
-        $this->membersTabs['tabs']['function']['hidden'] = $this->group->type === 'S';
-        $this->membersTabs['tabs']['roles']['hidden'] = $this->group->type !== 'S';
-
-        if ($this->membersTabs['currentTab'] === 'function' &&
-            $this->membersTabs['tabs']['function']['hidden']) $this->membersTabs['currentTab'] = 'roles';
-
-        if ($this->membersTabs['currentTab'] === 'roles' &&
-            $this->membersTabs['tabs']['roles']['hidden']) $this->membersTabs['currentTab'] = 'function';
     }
 
     public function mount($data) {
