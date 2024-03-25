@@ -73,6 +73,8 @@ class Edit extends Component
             $this->dashboardRolesCbx[$role->id] = $this->right->dashboard_roles & $role->flag;
         }
 
+        $authUser = auth()->user();
+
         $this->formTabs = [
             'name' => 'formTabs',
             'currentTab' => 'general',
@@ -83,28 +85,28 @@ class Edit extends Component
                     'icon' => 'list_alt',
                     'title' => "Définir les droits utilisateurs",
                     'hidden' =>
-                        auth()->user()->cant('create', 'App\\Right') &&
-                        auth()->user()->cant('update', $this->right),
+                        $authUser->cant('create', 'App\\Right') &&
+                        $authUser->cant('update', $this->right),
                 ],
                 'groups' => [
                     'icon' => 'groups',
                     'title' => "Gérer les groupes associés",
                     'hidden' =>
-                        auth()->user()->cant('adminRights', 'App\\User') ||
+                        $authUser->cant('adminRights', 'App\\User') ||
                         empty($this->right->id),
                 ],
                 'profiles' => [
                     'icon' => 'portrait',
                     'title' => "Gérer les profils associés",
                     'hidden' =>
-                        auth()->user()->cant('adminRights', ['App\\User', self::IS_PROFILE]) ||
+                        $authUser->cant('adminRights', ['App\\User', self::IS_PROFILE]) ||
                         empty($this->right->id),
                 ],
                 'users' => [
                     'icon' => 'person',
                     'title' => "Gérer les utilisateurs associés",
                     'hidden' =>
-                        auth()->user()->cant('adminRights', 'App\\User') ||
+                        $authUser->cant('adminRights', 'App\\User') ||
                         empty($this->right->id),
                 ],
             ],
@@ -169,9 +171,9 @@ class Edit extends Component
 
         $this->setCurrentTab(
             'formTabs',
-            auth()->user()->can('create', 'App\\Right') || auth()->user()->can('update', $this->right) ?
+            $authUser->can('create', 'App\\Right') || $authUser->can('update', $this->right) ?
                 'general' :
-                (auth()->user()->can('adminRights', 'App\\User') ? 'users' : 'profiles')
+                ($authUser->can('adminRights', 'App\\User') ? 'users' : 'profiles')
         );
     }
 
