@@ -203,10 +203,7 @@ class Edit extends Component
 
         $this->group
             ->users()
-            ->syncWithoutDetaching($this->group->type === 'S' ?
-                array_fill_keys($this->selectedAvailableUsers, ['function' => '0000']) :
-                $this->selectedAvailableUsers
-            );
+            ->syncWithoutDetaching($this->selectedAvailableUsers);
 
         $this->selectedAvailableUsers = [];
 
