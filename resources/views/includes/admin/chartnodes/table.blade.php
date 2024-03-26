@@ -40,7 +40,7 @@
     </tr>
 @endsection
 
-@isset($chartnodees)
+@isset($chartnodes)
  @section('table-body')
   @foreach ($chartnodes as $chartnode)
     <tr class="row">
