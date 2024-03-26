@@ -23,7 +23,7 @@
                 <div class="btn-group btn-group-sm" role="group" aria-label="Affichage">
                     <button class="btn btn-primary"
                         title="Afficher l'organigramme procédural"
-                        wire:click="drawOrgChart('Process')" type="button">
+                        wire:click="drawOrgChart()" type="button">
                         <i class="material-icons md-18 align-middle me-1">developer_board</i>Organigramme procédural
                     </button>
                     <button class="btn btn-warning"
