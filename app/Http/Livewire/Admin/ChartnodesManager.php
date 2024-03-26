@@ -6,16 +6,16 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
-use App\Process;
+use App\Chartnode;
 
-class ProcessesManager extends Component
+class ChartnodesManager extends Component
 {
     use WithPagination;
     use WithFilter;
     use WithModal;
 
-    public $models = 'processes';
-    public $elements = 'processes';
+    public $models = 'chartnodes';
+    public $elements = 'chartnodes';
 
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['modalClosed', 'render'];
@@ -30,7 +30,7 @@ class ProcessesManager extends Component
     public function render()
     {
         return view('livewire.admin.models-manager', [
-            'processes' => Process::filter($this->filter)
+            'chartnodes' => Chartnode::filter($this->filter)
                 ->orderBy('name', 'ASC')
                 ->paginate($this->perPage),
             'dashboard' => 'org-chart',

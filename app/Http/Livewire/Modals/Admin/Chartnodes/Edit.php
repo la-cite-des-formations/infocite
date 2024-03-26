@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Livewire\Modals\Admin\Processes;
+namespace App\Http\Livewire\Modals\Admin\Chartnodes;
 
-use App\Actor;
 use App\Format;
 use App\Group;
-use App\Process;
+use App\Chartnode;
 use App\Http\Livewire\WithAlert;
 use Livewire\Component;
 
@@ -13,7 +12,7 @@ class Edit extends Component
 {
     use WithAlert;
 
-    public $process;
+    public $chartnode;
     public $createProcessGroup;
     public $newProcessGroup = NULL;
     public $mode;
@@ -21,33 +20,32 @@ class Edit extends Component
     public $formTabs;
 
     protected $rules = [
-        'process.name' => 'required|string|max:255',
-        'process.group_id' => 'required|integer',
-        'process.parent_id' => 'nullable|integer',
-        'process.manager_id' => 'nullable|integer',
-        'process.format_id' => 'required|integer',
-        'process.rank' => 'required|string|max:20',
+        'chartnode.name' => 'required|string|max:255',
+        'chartnode.code_fonction' => 'required|integer',
+        'chartnode.parent_id' => 'nullable|integer',
+        'chartnode.format_id' => 'required|integer',
+        'chartnode.rank' => 'required|string|max:20',
         'newProcessGroup.name' => 'string|max:255',
         'newProcessGroup.type' => 'string|size:1',
     ];
 
-    public function setProcess($id = NULL) {
-        $this->process = $this->process ?? Process::findOrNew($id);
+    public function setChartnode($id = NULL) {
+        $this->chartnode = $this->chartnode ?? Chartnode::findOrNew($id);
 
-        if (!$this->process->id) {
-            $this->process->rank = '-';
+        if (!$this->chartnode->id) {
+            $this->chartnode->rank = '-';
             $this->createProcessGroup = FALSE;
         }
 
         $this->formTabs = [
             'name' => 'formTabs',
             'currentTab' => 'general',
-            'panesPath' => 'includes.admin.processes',
+            'panesPath' => 'includes.admin.chartnodes',
             'withMarge' => TRUE,
             'tabs' => [
                 'general' => [
                     'icon' => 'list_alt',
-                    'title' => "Définir le processus fonctionnel",
+                    'title' => "Définir le noeud graphique",
                     'hidden' => FALSE,
                 ],
             ],
@@ -58,7 +56,7 @@ class Edit extends Component
         extract($data);
 
         $this->mode = $mode ?? 'view';
-        $this->setProcess($id ?? NULL);
+        $this->setChartnode($id ?? NULL);
     }
 
     public function refresh() {
@@ -77,12 +75,12 @@ class Edit extends Component
     public function switchMode($mode) {
         $this->mode = $mode;
 
-        if ($mode == 'creation') $this->process = NULL;
+        if ($mode == 'creation') $this->chartnode = NULL;
         if ($mode != 'view') {
-            $this->setProcess();
+            $this->setChartnode();
         }
         else {
-            $this->process = Process::find($this->process->id);
+            $this->chartnode = Chartnode::find($this->chartnode->id);
         };
     }
 
@@ -92,32 +90,25 @@ class Edit extends Component
         if ($this->createProcessGroup) {
             $this->validate(['newProcessGroup.name' => 'required|string|max:255']);
             $this->newProcessGroup->save();
-            $this->process->group_id = $this->newProcessGroup->id;
+            $this->chartnode->group_id = $this->newProcessGroup->id;
         }
 
         $this->validate();
 
-        if ($this->process->manager_id && is_null(Actor::find($this->process->manager_id))) {
-            // le manager n'existe pas en tant qu'acteur, il faut le définir
-            (new Actor([
-                'id' => $this->process->manager_id
-            ]))->save();
-        }
-
-        $this->process->save();
+        $this->chartnode->save();
 
         if ($this->mode === 'creation') {
             $this->switchMode('edition');
 
             $this->sendAlert([
                 'alertClass' => 'success',
-                'message' => "Création du processus fonctionnel effectuée avec succès.",
+                'message' => "Création du noeud graphique effectuée avec succès.",
             ]);
         }
         else {
             $this->sendAlert([
                 'alertClass' => 'success',
-                'message' => "Modification du processus fonctionnel effectuée avec succès.",
+                'message' => "Modification du noeud graphique effectuée avec succès.",
             ]);
         }
     }
@@ -126,7 +117,7 @@ class Edit extends Component
         if ($this->createProcessGroup) {
             $this->newProcessGroup = new Group([
                 'type' => 'P',
-                'name' => $this->process->name,
+                'name' => $this->chartnode->name,
             ]);
         }
         else {
@@ -134,44 +125,20 @@ class Edit extends Component
         }
     }
 
-    public function updatedProcessGroupId() {
-        $this->render();
-    }
-
-    public function updatedProcessParentId() {
-        $this->process->rank = $this->process->parent_id ?
-            Process::find($this->process->parent_id)->rank.'-' :
+    public function updatedChartnodeParentId() {
+        $this->chartnode->rank = $this->chartnode->parent_id ?
+            Chartnode::find($this->chartnode->parent_id)->rank.'-' :
             '-';
-        $this->render();
-    }
-
-    private function getManagers() {
-        $managers = [];
-
-        if ($this->process->group_id) {
-            $managers = $this->process->actors;
-        }
-
-        if ($this->process->parent_id) {
-            $managers = $managers->merge($this->process->parent->actors);
-
-            if ($this->process->parent->parent_id) {
-                $managers = $managers->merge($this->process->parent->parent->actors);
-            }
-        }
-
-        return $managers;
     }
 
     public function render()
     {
         return $this->mode === 'view' ?
-            view('livewire.modals.admin.processes.sheet') :
+            view('livewire.modals.admin.chartnodes.sheet') :
             view('livewire.modals.admin.models-form', [
-                'addButtonTitle' => 'Ajouter un processus fonctionnel',
+                'addButtonTitle' => 'Ajouter un noeud graphique',
                 'groups' => Group::where('type', 'P')->orderBy('name')->get(),
-                'managers' => $this->getManagers(),
-                'parents' => Process::where('id', '!=', $this->process->id)->orderBy('name')->get(),
+                'parents' => Chartnode::where('id', '!=', $this->chartnode->id)->orderBy('name')->get(),
                 'formats' => Format::all(),
             ]);
     }
