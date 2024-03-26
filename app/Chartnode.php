@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
-class Process extends Model
+class Chartnode extends Model
 {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'manager_id', 'parent_id', 'format_id', 'rank', 'group_id'];
+    protected $fillable = ['name', 'parent_id', 'format_id', 'rank', 'code_fonction'];
 
     /**
      * The attributes that should be cast.
@@ -22,7 +22,6 @@ class Process extends Model
      * @var array
      */
     protected $casts = [
-        'manager_id' => NullableField::class,
         'parent_id' => NullableField::class,
     ];
 
@@ -48,19 +47,16 @@ class Process extends Model
             "</p>";
     }
 
+    public function getGroupAttribute() {
+        return Group::query()
+            ->where('type', 'P')
+            ->where('code_ypareo', $this->code_fonction)
+            ->first();
+    }
+
     public function format() {
         return $this
             ->belongsTo('App\Format');
-    }
-
-    public function manager() {
-        return $this
-            ->belongsTo('App\User', 'manager_id');
-    }
-
-    public function group() {
-        return $this
-            ->belongsTo('App\Group');
     }
 
     public function actors() {
@@ -73,12 +69,12 @@ class Process extends Model
 
     public function parent() {
         return $this
-            ->belongsTo('App\Process', 'parent_id');
+            ->belongsTo(self::class, 'parent_id');
     }
 
     public function childs() {
         return $this
-            ->hasMany('App\Process', 'parent_id');
+            ->hasMany(self::class, 'parent_id');
     }
 
     public static function getOrgChart() {
@@ -86,17 +82,17 @@ class Process extends Model
 
         self::all()
             ->sortBy('rank')
-            ->each(function ($process) use ($orgChartBoxes) {
+            ->each(function ($chartnode) use ($orgChartBoxes) {
                 $orgChartBoxes->add([
                     'data' => [
                         [
-                            'v' => (string) $process->id,
-                            'f' => $process->boxFormat
+                            'v' => (string) $chartnode->id,
+                            'f' => $chartnode->boxFormat
                         ],
-                        (string) $process->parent_id,
+                        (string) $chartnode->parent_id,
                         '',
                     ],
-                    'style' => is_object($process->format) ? $process->format->style : '',
+                    'style' => is_object($chartnode->format) ? $chartnode->format->style : '',
                 ]);
             });
 
