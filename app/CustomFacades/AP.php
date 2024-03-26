@@ -48,7 +48,7 @@ class AP // Application Parameters
         'org-chart' => [
             'formats' => ['name' => 'org-chart'],
             'actors' => ['name' => 'org-chart'],
-            'processes' => ['name' => 'org-chart'],
+            'chartnodes' => ['name' => 'org-chart'],
         ],
     ];
 
@@ -78,9 +78,9 @@ class AP // Application Parameters
     ];
 
     const GROUP_TYPES = [
-        'C' => 'Classe',
-        'E' => 'Équipe pédagogique',
-        'P' => 'Processus',
+        'C' => 'Classe apprenants',
+        'E' => 'Classe formateurs',
+        'P' => 'Fonction / Processus',
         'S' => 'Système',
         'A' => 'Autre',
     ];
@@ -293,14 +293,14 @@ class AP // Application Parameters
                 'gate' => 'manage-formats',
                 'route' => ['name' => 'admin.formats.index', 'parameters' => NULL]
             ],
-            'processes' => [
-                'title' => 'Processus',
-                'table_title' => 'Gestion des processus fonctionnels',
-                'description' => "Gérer les processus fonctionnels",
+            'chartnodes' => [
+                'title' => 'Noeuds graphiques',
+                'table_title' => 'Gestion des noeuds graphiques',
+                'description' => "Gérer les noeuds graphiques",
                 'icon_name' => 'developer_board',
                 'color' => 'orange',
-                'gate' => 'manage-processes',
-                'route' => ['name' => 'admin.processes.index', 'parameters' => NULL]
+                'gate' => 'manage-chartnodes',
+                'route' => ['name' => 'admin.chartnodes.index', 'parameters' => NULL]
             ],
             'actors' => [
                 'title' => 'Hiérarchie',
