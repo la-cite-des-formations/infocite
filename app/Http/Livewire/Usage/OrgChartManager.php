@@ -21,8 +21,8 @@ class OrgChartManager extends Component
         $this->firstLoad = !$this->rendered;
     }
 
-    public function drawOrgChart($type = 'Process') {
-        $this->orgChartTitle = $type == 'Process' ? "Organigramme procédural" : "Organigramme relationnel";
+    public function drawOrgChart($type = 'Chartnode') {
+        $this->orgChartTitle = $type == 'Chartnode' ? "Organigramme procédural" : "Organigramme relationnel";
 
         $orgChart = ("App\\{$type}")::getOrgChart();
 
