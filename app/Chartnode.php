@@ -26,24 +26,20 @@ class Chartnode extends Model
     ];
 
     public function getActorsListAttribute() {
-        return $this->actors->pluck('identity')->implode(', ');
+        return $this->actors->pluck('chartnode_identity')->implode(', ');
     }
 
     public function getBoxFormatAttribute() {
         return is_object($this->format) ?
+
             "<p class='fw-bold {$this->format->title_color}'>{$this->name}</p>".
             "<p class='{$this->format->subtitle_font_style} {$this->format->subtitle_color}'>".
-                ($this->manager ?
-                    $this->manager->identity :
-                    $this->actors_list
-                ).
+                $this->actors_list.
             "</p>" :
+
             "<p class='fw-bold'>{$this->name}</p>".
             "<p>".
-                ($this->manager ?
-                    $this->manager->identity :
-                    $this->actors_list
-                ).
+                $this->actors_list.
             "</p>";
     }
 

@@ -4,6 +4,7 @@ namespace App;
 
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -376,6 +377,16 @@ class User extends Authenticatable
         return $this->isProfile() ?
             "{$this->first_name} (profil)" :
             "{$this->first_name} {$this->name}";
+    }
+
+    public function getChartnodeIdentityAttribute() {
+        $referent = DB::table('referents')
+            ->select('label')
+            ->where('id', $this->id)
+            ->first();
+
+        return "{$this->first_name} {$this->name}".
+            AP::betweenBrackets(is_object($referent) ? $referent->label : '');
     }
 
     public function getInfo($userInfo) {
