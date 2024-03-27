@@ -32,14 +32,14 @@
   @else
     <div class="form-group row flex-fill mt-2 mb-1 mx-0">
         <label class="col-3 text-right my-auto pr-2" for="process-group">Service / Fonction</label>
-        <select id="process-group" wire:model="process.code_fonction" type="input" class="col form-control">
+        <select id="process-group" wire:model="chartnode.code_fonction" type="input" class="col form-control">
             <option label="Choisir le service ou la fonction de rattachement..."></option>
           @foreach($groups as $group)
-            <option value='{{ $group->id }}'>{{ $group->name }}</option>
+            <option value='{{ $group->code_ypareo }}'>{{ $group->name }}</option>
           @endforeach
         </select>
     </div>
-   @error('process.code_fonction')
+   @error('chartnode.code_fonction')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])
    @enderror
   @endif
