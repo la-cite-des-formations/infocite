@@ -25,7 +25,7 @@
             </div>
             Noeud
         </th>
-        <th scope="col" class="col-4">
+        <th scope="col" class="col-4 py-2">
             <div class="btn-group mr-1">
                 <span class="material-icons"></span>
             </div>
