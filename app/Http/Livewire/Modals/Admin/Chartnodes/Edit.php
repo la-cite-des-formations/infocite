@@ -90,7 +90,7 @@ class Edit extends Component
         if ($this->createProcessGroup) {
             $this->validate(['newProcessGroup.name' => 'required|string|max:255']);
             $this->newProcessGroup->save();
-            $this->chartnode->group_id = $this->newProcessGroup->id;
+            $this->chartnode->code_fonction = $this->newProcessGroup->code_ypareo;
         }
 
         $this->validate();
