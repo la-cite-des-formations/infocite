@@ -6,7 +6,7 @@
             <div class="btn-group dropleft mr-1">
                 <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des noeuds graphiques">
-                    <span class="material-icons">developer_board</span>
+                    <span class="material-icons">crop_din</span>
                 </button>
                 <div class="dropdown-menu">
                     <a href="javascript:onchoiceSelection('chartnode-cbx', 'all')" class="d-flex dropdown-item">
@@ -23,7 +23,13 @@
                     </a>
                 </div>
             </div>
-            Processus
+            Noeud
+        </th>
+        <th scope="col" class="col-4">
+            <div class="btn-group mr-1">
+                <span class="material-icons"></span>
+            </div>
+            Noeud parent
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
@@ -50,6 +56,7 @@
                 {{ $chartnode->name }}
             </label>
         </td>
+        <td class="col-4">{{ is_object($chartnode->parent) ? $chartnode->parent->name : '-' }}</td>
         <td class="col d-flex justify-content-end mb-auto">
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $chartnode->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
