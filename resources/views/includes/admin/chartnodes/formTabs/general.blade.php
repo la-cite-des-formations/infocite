@@ -8,41 +8,18 @@
     @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])
   @enderror
 
-  @can('createProcessGroup', ['App\\Group'])
-    <div class="form-group row flex-fill mt-2 mb-1 mx-0">
-        <div class="col-3"></div>
-        <div class="form-check">
-            <input id="create-process-group" wire:model="createProcessGroup"
-                type="checkbox" class="form-check-input">
-            <label class="my-auto" for="create-process-group">Créer le service ou la fonction de rattachement</label>
-        </div>
-    </div>
-  @endcan
-
-  @if($createProcessGroup)
-    <div class="form-group row flex-fill mt-2 mb-1 mx-0">
-        <label class="col-3 text-right my-auto pr-2" for="group-name">Service / Fonction</label>
-        <input id="group-name" wire:model="newProcessGroup.name" type="input"
-            class="col form-control" placeholder="Nom du service ou de la fonction associé(e)">
-    </div>
-   @error('newProcessGroup.name')
-    @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])
-   @enderror
-
-  @else
     <div class="form-group row flex-fill mt-2 mb-1 mx-0">
         <label class="col-3 text-right my-auto pr-2" for="process-group">Service / Fonction</label>
-        <select id="process-group" wire:model="process.code_fonction" type="input" class="col form-control">
+        <select id="process-group" wire:model="chartnode.code_fonction" type="input" class="col form-control">
             <option label="Choisir le service ou la fonction de rattachement..."></option>
           @foreach($groups as $group)
-            <option value='{{ $group->id }}'>{{ $group->name }}</option>
+            <option value='{{ $group->code_ypareo }}'>{{ $group->name }}</option>
           @endforeach
         </select>
     </div>
-   @error('process.code_fonction')
+   @error('chartnode.code_fonction')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-3'])
    @enderror
-  @endif
 
     <div class="form-group row flex-fill mt-2 mb-1 mx-0">
         <label class="col-3 text-right my-auto pr-2" for="chartnode-parent">Parent</label>

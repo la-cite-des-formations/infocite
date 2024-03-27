@@ -13,7 +13,7 @@
     <div class="alert alert-success mb-3">
         <div class="d-flex">
             <div class="my-auto mr-3">
-                <span class="material-icons-outlined md-36">developer_board</span>
+                <span class="material-icons-outlined md-36">crop_din</span>
             </div>
             <div class="my-auto">
                 <h5 class="mb-0">{{ $chartnode->name }}</h5>

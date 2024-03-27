@@ -13,8 +13,6 @@ class Edit extends Component
     use WithAlert;
 
     public $chartnode;
-    public $createProcessGroup;
-    public $newProcessGroup = NULL;
     public $mode;
     public $canAdd = TRUE;
     public $formTabs;
@@ -25,8 +23,6 @@ class Edit extends Component
         'chartnode.parent_id' => 'nullable|integer',
         'chartnode.format_id' => 'required|integer',
         'chartnode.rank' => 'required|string|max:20',
-        'newProcessGroup.name' => 'string|max:255',
-        'newProcessGroup.type' => 'string|size:1',
     ];
 
     public function setChartnode($id = NULL) {
@@ -34,7 +30,6 @@ class Edit extends Component
 
         if (!$this->chartnode->id) {
             $this->chartnode->rank = '-';
-            $this->createProcessGroup = FALSE;
         }
 
         $this->formTabs = [
@@ -87,12 +82,6 @@ class Edit extends Component
     public function save() {
         if ($this->mode === 'view') return;
 
-        if ($this->createProcessGroup) {
-            $this->validate(['newProcessGroup.name' => 'required|string|max:255']);
-            $this->newProcessGroup->save();
-            $this->chartnode->group_id = $this->newProcessGroup->id;
-        }
-
         $this->validate();
 
         $this->chartnode->save();
@@ -110,18 +99,6 @@ class Edit extends Component
                 'alertClass' => 'success',
                 'message' => "Modification du noeud graphique effectuée avec succès.",
             ]);
-        }
-    }
-
-    public function updatedCreateProcessGroup() {
-        if ($this->createProcessGroup) {
-            $this->newProcessGroup = new Group([
-                'type' => 'P',
-                'name' => $this->chartnode->name,
-            ]);
-        }
-        else {
-            $this->newProcessGroup = NULL;
         }
     }
 
