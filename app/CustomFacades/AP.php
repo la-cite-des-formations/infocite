@@ -294,10 +294,10 @@ class AP // Application Parameters
                 'route' => ['name' => 'admin.formats.index', 'parameters' => NULL]
             ],
             'chartnodes' => [
-                'title' => 'Noeuds graphiques',
-                'table_title' => 'Gestion des noeuds graphiques',
-                'description' => "Gérer les noeuds graphiques",
-                'icon_name' => 'developer_board',
+                'title' => 'Nœuds ',
+                'table_title' => "Gestion des nœuds graphiques",
+                'description' => "Gérer les nœuds graphiques",
+                'icon_name' => 'crop_din',
                 'color' => 'orange',
                 'gate' => 'manage-chartnodes',
                 'route' => ['name' => 'admin.chartnodes.index', 'parameters' => NULL]
