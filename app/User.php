@@ -354,7 +354,7 @@ class User extends Authenticatable
     public function isManager() {
         $isManager = FALSE;
 
-        Process::all()->each(function ($process) use(&$isManager) {
+        Chartnode::all()->each(function ($process) use(&$isManager) {
             if ($this->id == $process->manager_id) {
                 return $isManager = TRUE;
             }
@@ -379,14 +379,24 @@ class User extends Authenticatable
             "{$this->first_name} {$this->name}";
     }
 
-    public function getChartnodeIdentityAttribute() {
+    public function getLabelAttribute() {
         $referent = DB::table('referents')
-            ->select('label')
             ->where('id', $this->id)
             ->first();
 
-        return "{$this->first_name} {$this->name}".
-            AP::betweenBrackets(is_object($referent) ? $referent->label : '');
+        return is_object($referent) ? $referent->label : '';
+    }
+
+    public function getChartnodeIdentityAttribute() {
+        return $this->identity.AP::betweenBrackets($this->label ?: '');
+    }
+
+    public function getProcessAttribute() {
+        $processUser = Chartnode::query()
+            ->where('code_fonction', $this->groups(['P'])->first()->code_ypareo)
+            ->first();
+
+        return is_object($processUser) ? $processUser->name : '';
     }
 
     public function getInfo($userInfo) {
@@ -545,6 +555,10 @@ class User extends Authenticatable
                     ->whereIn('id', Comment::all()->pluck('user_id')->unique())
                     ->orderByRaw('name, first_name')
                     ->get();
+
+            case 'have-label' :
+                return static::query()
+                    ->whereIn('id', DB::table('referents')->pluck('id'));
 
             default :
                 return static::all();
