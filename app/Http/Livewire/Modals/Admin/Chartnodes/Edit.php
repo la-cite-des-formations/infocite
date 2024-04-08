@@ -19,7 +19,7 @@ class Edit extends Component
 
     protected $rules = [
         'chartnode.name' => 'required|string|max:255',
-        'chartnode.code_fonction' => 'required|integer',
+        'chartnode.code_fonction' => 'nullable|integer',
         'chartnode.parent_id' => 'nullable|integer',
         'chartnode.format_id' => 'required|integer',
         'chartnode.rank' => 'required|string|max:20',
