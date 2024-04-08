@@ -47,8 +47,9 @@ class AP // Application Parameters
         ],
         'org-chart' => [
             'formats' => ['name' => 'org-chart'],
-            'actors' => ['name' => 'org-chart'],
             'chartnodes' => ['name' => 'org-chart'],
+            'labels' => ['name' => 'org-chart'],
+            //'actors' => ['name' => 'org-chart'],
         ],
     ];
 
@@ -302,15 +303,24 @@ class AP // Application Parameters
                 'gate' => 'manage-chartnodes',
                 'route' => ['name' => 'admin.chartnodes.index', 'parameters' => NULL]
             ],
-            'actors' => [
-                'title' => 'Hiérarchie',
-                'table_title' => 'Gestion des liens hiérarchiques',
-                'description' => "Gérer les liens hiérarchiques",
-                'icon_name' => 'supervisor_account',
+            'labels' => [
+                'title' => 'Libellés ',
+                'table_title' => "Consultation des libellés référents",
+                'description' => "Consulter les libellés référents",
+                'icon_name' => 'assignment',
                 'color' => 'orange',
-                'gate' => 'manage-actors',
-                'route' => ['name' => 'admin.actors.index', 'parameters' => NULL]
+                'gate' => 'manage-labels',
+                'route' => ['name' => 'admin.labels.index', 'parameters' => NULL]
             ],
+            // 'actors' => [
+            //     'title' => 'Hiérarchie',
+            //     'table_title' => 'Gestion des liens hiérarchiques',
+            //     'description' => "Gérer les liens hiérarchiques",
+            //     'icon_name' => 'supervisor_account',
+            //     'color' => 'orange',
+            //     'gate' => 'manage-actors',
+            //     'route' => ['name' => 'admin.actors.index', 'parameters' => NULL]
+            // ],
         ],
     ];
 
