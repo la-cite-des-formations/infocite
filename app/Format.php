@@ -29,7 +29,7 @@ class Format extends Model
 
     public function processes() {
         return $this
-            ->hasMany('App\Process');
+            ->hasMany('App\Chartnode');
     }
 
     public function getStyleAttribute() {
