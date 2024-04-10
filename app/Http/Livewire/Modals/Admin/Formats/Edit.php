@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Modals\Admin\Formats;
 
+use App\Chartnode;
 use App\CustomFacades\AP;
 use App\Format;
 use App\Http\Livewire\WithAlert;
-use App\Process;
 use Livewire\Component;
 
 class Edit extends Component
@@ -91,7 +91,7 @@ class Edit extends Component
     public function addSelectedAvailableProcesses() {
         if ($this->isEmpty('selectedAvailableProcesses', "Aucun processus sélectionné")) return;
 
-        Process::query()
+        Chartnode::query()
             ->whereIn('id', $this->selectedAvailableProcesses)
             ->update(['format_id' => $this->format->id]);
 
@@ -115,7 +115,7 @@ class Edit extends Component
     private function removeSelectedRelatedProcesses() {
         if ($this->isEmpty('selectedRelatedProcesses', "Aucun processus sélectionné")) return;
 
-        Process::query()
+        Chartnode::query()
             ->whereIn('id', $this->selectedRelatedProcesses)
             ->update(['format_id' => NULL]);
 
@@ -158,7 +158,7 @@ class Edit extends Component
     private function availableProcesses() {
         $search = $this->processSearch;
 
-        return Process::query()
+        return Chartnode::query()
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'LIKE', "%{$search}%");
             })
