@@ -80,8 +80,9 @@ class AP // Application Parameters
 
     const GROUP_TYPES = [
         'C' => 'Classe apprenants',
-        'E' => 'Classe formateurs',
-        'P' => 'Fonction / Processus',
+        'F' => 'Classe formateurs',
+        'E' => 'Equipe Pédagogique',
+        'P' => 'Fonction (Processus)',
         'S' => 'Système',
         'A' => 'Autre',
     ];
@@ -97,6 +98,16 @@ class AP // Application Parameters
             'withoutGroupId' => [
                 'icon' => 'school',
                 'header' => 'Classe'
+            ],
+            'withGroupId' => [
+                'icon' => 'build',
+                'header' => 'Fonction'
+            ],
+        ],
+        'F' => [
+            'withoutGroupId' => [
+                'icon' => 'build',
+                'header' => 'Fonction'
             ],
             'withGroupId' => [
                 'icon' => 'build',
@@ -165,15 +176,20 @@ class AP // Application Parameters
             'choiceLabel' => 'Choisir une classe...',
             'dtLabel' => 'Classes'
         ],
-        'E' => [
+        'F' => [
             'icon' => 'school',
             'choiceLabel' => 'Choisir une classe...',
             'dtLabel' => 'Classes'
         ],
+        'E' => [
+            'icon' => 'corporate_fare',
+            'choiceLabel' => 'Choisir une équipe pédagogique...',
+            'dtLabel' => 'Equipes pédagogiques'
+        ],
         'P' => [
             'icon' => 'corporate_fare',
-            'choiceLabel' => 'Choisir un service...',
-            'dtLabel' => 'Processus'
+            'choiceLabel' => 'Choisir une fonction...',
+            'dtLabel' => 'Fonctions'
         ],
         'S' => [
             'icon' => 'groups',
