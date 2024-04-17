@@ -51,11 +51,6 @@ class Group extends Model
             ->orderByRaw('name ASC');
     }
 
-    public function process() {
-        return $this
-            ->hasOne('App\Process');
-    }
-
     public function getRightableRoles() {
         if (isset($this->pivot)) {
             $roles = NULL;
