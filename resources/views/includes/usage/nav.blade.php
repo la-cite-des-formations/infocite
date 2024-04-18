@@ -58,6 +58,9 @@
                     <a href="/infos" class="nav-link">Mes infos</a>
                 </li>
                 <li>
+                    <a href="/favoris" class="nav-link">Mes favoris</a>
+                </li>
+                <li>
                     <a href="{{ route('logout') }}" class="nav-link text-danger justify-content-start"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                        <span class="bx bx-log-in-circle me-1"></span>{{ __('Logout') }}

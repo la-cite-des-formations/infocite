@@ -40,7 +40,7 @@
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
                 <div class="row justify-content-center">
-                    <h2 clas="col-9">{{ $rubric->title }}</h2>
+                    <h2 class="col-9">{{ $rubric->title }}</h2>
                 </div>
                 <p>{{ $rubric->description }}</p>
             </div>

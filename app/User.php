@@ -72,6 +72,14 @@ class User extends Authenticatable
             ->where('is_favorite', TRUE);
     }
 
+    public function myFavoritesRubrics(){
+        return $this
+            ->belongsToMany('App\Rubric', 'rubric_user')
+            ->orderBy('created_at', 'DESC')
+            ->withPivot(['rubric_id']);
+
+    }
+
     public function myNotifications() {
         $myNotifications = new Collection();
 
