@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Http\Livewire\WithFavoritesHandling;
+use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
 use App\Rubric;
 use Livewire\Component;
@@ -20,6 +21,7 @@ class PostsManager extends Component
     use WithNotifications;
     use WithUsageMode;
     use WithFavoritesHandling;
+    use WithPinnedHandling;
 
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 12, 16, 24, 48, 60];
@@ -71,6 +73,9 @@ class PostsManager extends Component
     public function render() {
         $this->rendered = TRUE;
         $user = auth()->user();
+        $pinnedPosts = Post::whereHas('pinnedPost', function ($query) {
+            $query->where('is_pinned', true);
+        })->get();
 
         return view('livewire.usage.posts-manager', [
             'posts' => Post::query()
@@ -106,6 +111,8 @@ class PostsManager extends Component
                 })
                 ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
                 ->paginate($this->perPage),
+            'pinnedPost'=> $pinnedPosts
+
         ]);
     }
 }

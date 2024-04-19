@@ -43,7 +43,7 @@ class Post extends Model
     public function readers() {
         return $this
             ->belongsToMany('App\User')
-            ->withPivot(['is_favorite', 'is_read', 'tags']);
+            ->withPivot(['is_favorite', 'is_read', 'tags','is_pinned']);
     }
 
     public function notificableReaders() {
@@ -224,5 +224,16 @@ class Post extends Model
                     ->where('resource_type', 'Post')
                     ->whereRaw('!(rightables.roles & '.Roles::IS_EDITR.')');
             });
+    }
+
+    public function isPinned(){
+        $postUser = $this->readers->find(auth()->user()->id);
+        return $postUser ? $postUser->pivot->is_pinned : FALSE;
+    }
+
+    public function pinnedPost(){
+        return $this
+            ->belongsToMany('App\Post', 'post_user')
+            ->withPivot(['is_pinned']);
     }
 }
