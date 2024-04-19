@@ -8,6 +8,7 @@ use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
 use App\Post;
+use App\Rubric;
 use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -48,6 +49,19 @@ class FavorisManager extends Component
             redirect()->route('post.index', ['rubric' => Post::find($postId)->rubric->route(), 'post_id' => $postId]);
         }
         $this->blockRedirection = FALSE;
+    }
+
+    public function removeFavoriteRubric($rubric_id) {
+        $this->rubric = Rubric::find($rubric_id);
+
+        if ($this->rubric->isFavorite()) {
+            $this->rubric
+                ->users()
+                ->detach(auth()->user()->id);
+        }
+
+
+        $this->emitSelf('render');
     }
 
     public function blockRedirection() {

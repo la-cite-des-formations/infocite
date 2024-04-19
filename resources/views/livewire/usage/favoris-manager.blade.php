@@ -8,11 +8,22 @@
             <h4>Mes rubrics favorites</h4>
         </div>
         <div class="container-fluid d-flex flex-row flex-wrap w-75 m-auto">
-            @foreach($rubrics as $favoritesRubric)
-                @can('access', $favoritesRubric)
-                    <a href="{{$favoritesRubric->route()}}" class="d-block btn btn-dark m-2 p-2 col-2 text-center align-items-center d-flex justify-content-center">{{$favoritesRubric->name}}</a>
-                @endcan
-            @endforeach
+            @if($rubrics->count() > 0)
+                @foreach($rubrics as $rubric)
+                    @can('access', $rubric)
+
+                        <a href="{{$rubric->route()}}" class="position-relative d-block btn btn-dark m-2 p-3 col-2 text-center align-items-center d-flex justify-content-center">{{$rubric->name}}
+                        <button class="position-absolute top-0 end-0 btn btn-outline border-0 p-0"
+                                title="Retirer des favoris"
+                                wire:click.prevent="removeFavoriteRubric({{$rubric->id}})" type="button">
+                            <i class='bx bxs-message-square-x bx-rotate-90' style='color:rgba(255,1,51,0.99)'  ></i>
+                        </button>
+                    </a>
+                    @endcan
+                @endforeach
+            @else
+                <p class="fst-italic m-auto">Aucune rubics en favoris</p>
+            @endif
         </div>
     </section>
 {{--Liste des articles en favoris--}}
@@ -25,6 +36,7 @@
                 </div>
             </div>
             <div class="row">
+                @if($posts->count() > 0)
                 @foreach ($posts as $i => $post)
                     @can('read', $post)
                         <div wire:click='redirectToPost({{ $post->id }})' role="button"
@@ -77,6 +89,9 @@
                 @endforeach
             </div>
             @include('includes.pagination', ['elements' => $posts])
+            @else
+                <p class="fst-italic text-center">Aucun article en favoris</p>
+            @endif
         </div>
     </section>
 </div>
