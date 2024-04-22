@@ -202,4 +202,14 @@ class PostPolicy
 
         return FALSE;
     }
+
+    public function pin(User $user, Post $post){
+
+            // vérification des droits de l'utilisateur pour épingler ('Moderateur')
+            // l'article concerné
+            $canPinPost = $user->hasRole('posts', Roles::IS_MODER, 'Post', $post->id,);
+
+            return (bool)$canPinPost;
+
+    }
 }
