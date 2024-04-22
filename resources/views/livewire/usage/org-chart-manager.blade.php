@@ -19,12 +19,15 @@
                 </div>
             </div>
         </div>
-        <div class="m-3" @if ($firstLoad) data-aos="fade-up" @endif>
+        <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title pb-2">
                 <h2 class="title-icon"><i class="material-icons md-36 me-2">{{ $rubric->icon }}</i>{{ $rubric->title }}</h2>
                 <p>{{ $rubric->description }}</p>
             </div>
-            <div id="orgchart" class="overflow-auto"></div>
+            <h3>Mode d'emploi</h3>
+            <p>Pour simplifier la lecture de l'organigramme celui-ci a été rendu dynamique.</p>
+            <p>En double cliquant sur un bloc processus particulier, vous pouvez réduire ou développer ses processus enfants. De la même façon pour gagner de la place, la légende située sur la gauche est également réductible. Par défaut, l'organigramme s'affiche entièrement développé. À tout moment, vous pouvez revenir à cet état initial en cliquant sur l'icône de rafraichissement situé en haut à droite de cette rubrique. De plus, un ascenseur horizontal situé juste en dessous vous permettra de parcourir latéralement l'ensemble du diagramme organisationnel. À vous de jouer...</p>
         </div>
+        <div id="orgchart" class="overflow-auto m-3"></div>
     </section>
 </div>
