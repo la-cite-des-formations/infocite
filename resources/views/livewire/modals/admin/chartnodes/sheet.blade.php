@@ -26,7 +26,7 @@
             <dd class="col-6 pl-0">{{ is_object($chartnode->group) ? $chartnode->group->name : 'aucun' }}</dd>
           @if ($chartnode->actors->isNotEmpty())
             <dt class="col-12 pl-0">Acteurs</dt>
-            <ul>
+            <ul class="col-12">
               @foreach ($chartnode->actors as $actor)
                 <li>{{ $actor->identity }}</li>
               @endforeach
@@ -36,7 +36,7 @@
             <dd class="col-6 pl-0 mt-3">{{ is_object($chartnode->parent) ? $chartnode->parent->name : 'aucun' }}</dd>
           @if ($chartnode->childs->isNotEmpty())
             <dt class="col-12 pl-0">Noeuds enfants</dt>
-            <ul>
+            <ul class="col-12">
               @foreach ($chartnode->childs as $childNode)
                 <li>{{ $childNode->name }}</li>
               @endforeach
