@@ -64,7 +64,7 @@
                     <div class="row justify-content-center">
                         <h2 class="col-9">Articles épinglés</h2>
                     </div>
-                    <p>Tour les articles à ne pas manquer </p>
+                    <p>Articles à ne pas manquer... </p>
                 </div>
                 <div class="row">
                     @foreach ($pinnedPost as $i => $post)
