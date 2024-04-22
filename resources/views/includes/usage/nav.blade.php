@@ -4,7 +4,9 @@
        @can('access', $rubric)
         <li @if ($rubric->hasChilds()) class="dropdown" role="button" @endif>
           @if ($rubric->hasChilds())
+
             <a href="javascript:void(0)">
+                <i class="material-icons me-2">{{ $rubric->icon }}</i>
                 <span>{{ $rubric->name }}</span>
                 <i class="bi bi-chevron-down"></i>
             </a>
@@ -19,12 +21,15 @@
             <ul>
               @foreach ($rubric->childs as $childRubric)
                @can('access', $childRubric)
-                <li>
-                    <a  @if ($currentRoute == $childRubric->route())
-                            href="#{{ $viewBag->template }}" class="nav-link scrollto"
-                        @else
-                            href="{{ $childRubric->route() }}" class="nav-link"
-                        @endif>{{ $childRubric->name }}</a>
+                <li >
+                    <div class="container d-flex flex-row justify-content-start">
+                        <i class="material-icons">{{ $childRubric->icon }}</i>
+                        <a class="col"  @if ($currentRoute == $childRubric->route())
+                                href="#{{ $viewBag->template }}" class="nav-link scrollto"
+                            @else
+                                href="{{ $childRubric->route() }}" class="nav-link"
+                            @endif>{{ $childRubric->name }}</a>
+                    </div>
                 </li>
                @endcan
               @endforeach
