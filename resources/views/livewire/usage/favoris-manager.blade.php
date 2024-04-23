@@ -5,20 +5,20 @@
     <section id="myFavoritesRubrics" class="services section-bg">
         <div class="section-title">
             <h2 class="title-icon"><i class="bx bx-star me-1"></i>Mes favoris</h2>
-            <h4>Mes rubrics favorites</h4>
+            <h4>Mes rubriques favorites</h4>
         </div>
-        <div class="container-fluid d-flex flex-row flex-wrap w-75 m-auto">
+        <div class="container-fluid d-flex flex-row flex-wrap w-75">
             @if($rubrics->count() > 0)
                 @foreach($rubrics as $rubric)
                     @can('access', $rubric)
-
-                        <a href="{{$rubric->route()}}" class="position-relative d-block btn btn-dark m-2 p-3 col-2 text-center align-items-center d-flex justify-content-center">{{$rubric->name}}
-                        <button class="position-absolute top-0 end-0 btn btn-outline border-0 p-0"
-                                title="Retirer des favoris"
-                                wire:click.prevent="removeFavoriteRubric({{$rubric->id}})" type="button">
-                            <i class='bx bxs-message-square-x bx-rotate-90' style='color:rgba(255,1,51,0.99)'  ></i>
-                        </button>
-                    </a>
+                        <div class="favoriteRubrics">
+                            <a href="{{$rubric->route()}}" class="favoriteRubricsLink">{{$rubric->name}}</a>
+                            <button class="removeFavoriteRubricsButton "
+                                    title="Retirer des favoris"
+                                    wire:click.prevent="removeFavoriteRubric({{$rubric->id}})" type="button">
+                                <i class='bx bxs-message-square-x bx-rotate-90' style='color:rgba(255,1,51,0.99)'  ></i>
+                            </button>
+                        </div>
                     @endcan
                 @endforeach
             @else

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\CustomFacades\AP;
+use App\Roles;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -55,5 +56,9 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->hasRole($right->name, $right->roles);
             });
         }
+
+        Gate::define('pin',function($user) {
+            return $user->hasRole('posts', Roles::IS_MODER);
+        });
     }
 }

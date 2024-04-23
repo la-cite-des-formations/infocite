@@ -3,7 +3,7 @@
     </section>
 
     @if (session()->has('error_alert'))
-        <div id="errorAlert" class="position-fixed start-50 translate-middle-x bg-danger text-white mt-2 w-50 p-2" style="z-index: 9999;opacity: 0.8;">
+        <div id="errorAlert" class="alert alert-danger position-fixed start-50 translate-middle-x text-white mt-2 w-50 p-2" style="z-index: 9999;opacity: 0.8;">
             <p class="text-center pt-1">{{ session('error_alert') }}</p>
         </div>
     @endif
@@ -187,7 +187,7 @@
                                             <i class="bx bx-star"></i>
                                         </button>
                                         <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                                        @can('pin',$post)
+                                        @can('pin')
                                         <button class="btn @if ($post->isPinned()) btn-success @else btn-secondary @endif btn-sm"
                                                 title="@if ($post->isPinned()) Désépingler l'article @else épingler l'article @endif"
                                                 wire:click="switchPinnedPost({{ $post->id }})" type="button">
