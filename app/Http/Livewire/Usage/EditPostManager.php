@@ -6,6 +6,7 @@ use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
+use App\Http\Livewire\WithPinnedHandling;
 use App\Notification;
 use App\Post;
 use App\Right;
@@ -18,12 +19,14 @@ class EditPostManager extends Component
     use WithModal;
     use WithAlert;
     use WithIconpicker;
+    use WithPinnedHandling;
 
     public $backRoute;
     public $currentRubric;
     public $mode;
     public $post;
     public $blockComments;
+    public $pinPost;
 
     protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
@@ -35,6 +38,7 @@ class EditPostManager extends Component
         'post.auto_delete' => '',
         'post.published_at' => 'date|nullable',
         'post.expired_at' => 'date|nullable',
+
     ];
 
     public function mount($viewBag) {
@@ -119,6 +123,17 @@ class EditPostManager extends Component
                     'alertClass' => 'success',
                     'message' => "Modification de la mise en forme effectuée avec succès."
                 ]);
+        }
+        if($this->pinPost){
+            $this->countPinnedPosts();
+            if( $this->countPinnedPosts < 4){
+                $this->post->is_pinned = TRUE;
+
+            }else{
+                $this->addError('post.pinPost', 'Le nombre maximum d\'articles épinglé (4 articles) est déjà atteint : vous ne pouvez pas épingler cet article');
+                return;
+            }
+
         }
 
         // sauvegarde

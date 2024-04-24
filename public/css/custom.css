@@ -318,9 +318,10 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .services .icon-box {
-    width: 320px;
-    min-height: 320px;
+    width: 520px;
+    min-height: 260px;
 }
+
 
 .title-icon i {
     vertical-align: top;
@@ -571,6 +572,17 @@ a:hover {
 
 .services .icon-box .icon i {
     color: var(--select-color-1) !important;
+
+
+}
+
+.icon .material-icons{
+    float: left;
+    font-size: 4em;
+    line-height: 80%;
+    margin: -0.1em 0;
+    padding-right: 0.1em;
+
 }
 
 .services .icon-box h4 a {
@@ -850,3 +862,16 @@ a:hover {
 /*@media screen and (max-width: ) {*/
 /*    */
 /*}*/
+
+/*--------------------------------------------------------------
+# Articles épinglés
+--------------------------------------------------------------*/
+
+.pinnedPost .icon-box{
+
+    border-radius: 20px;
+    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));;
+}
+
+
+

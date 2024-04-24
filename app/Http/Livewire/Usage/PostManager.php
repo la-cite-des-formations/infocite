@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Usage;
 use App\Comment;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
+use App\Http\Livewire\WithPinnedHandling;
 use App\Notification;
 use App\Post;
 use Livewire\Component;
@@ -19,6 +20,7 @@ class PostManager extends Component
     use WithNotifications;
     use WithUsageMode;
     use WithFavoritesHandling;
+    use WithPinnedHandling;
 
     public $rubric;
     public $post;

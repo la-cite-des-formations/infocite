@@ -19,6 +19,7 @@ class Post extends Model
         'expired_at' => 'date:Y-m-d',
     ];
 
+
     public function rubric()
     {
         return $this->belongsTo('App\Rubric');
@@ -43,7 +44,7 @@ class Post extends Model
     public function readers() {
         return $this
             ->belongsToMany('App\User')
-            ->withPivot(['is_favorite', 'is_read', 'tags','is_pinned']);
+            ->withPivot(['is_favorite', 'is_read', 'tags']);
     }
 
     public function notificableReaders() {
@@ -147,6 +148,10 @@ class Post extends Model
         return AP::strLimiter(strip_tags($this->content));
     }
 
+    public function previewTitle() {
+        return AP::strLimiter(strip_tags($this->title));
+    }
+
     public function identity() {
         return "{$this->title} ({$this->rubric->name})";
     }
@@ -226,14 +231,10 @@ class Post extends Model
             });
     }
 
-    public function isPinned(){
-        $postUser = $this->readers->find(auth()->user()->id);
-        return $postUser ? $postUser->pivot->is_pinned : FALSE;
+    public function isPinned(): bool
+    {
+
+        return $this->is_pinned ? TRUE : FALSE;
     }
 
-    public function pinnedPost(){
-        return $this
-            ->belongsToMany('App\Post', 'post_user')
-            ->withPivot(['is_pinned']);
-    }
 }

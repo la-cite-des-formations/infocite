@@ -73,9 +73,9 @@ class PostsManager extends Component
     public function render() {
         $this->rendered = TRUE;
         $user = auth()->user();
-        $pinnedPosts = Post::whereHas('pinnedPost', function ($query) {
-            $query->where('is_pinned', true);
-        })->get();
+        $pinnedPosts =Post::query()
+            ->where('is_pinned','=',TRUE)
+            ->get();
 
         return view('livewire.usage.posts-manager', [
             'posts' => Post::query()
