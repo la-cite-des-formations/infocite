@@ -207,6 +207,35 @@ class AP // Application Parameters
         ],
     ];
 
+    const UNE_FILTER = [
+        'notViewPosts' =>
+            [
+                'name'=>'notViewPosts',
+                'libelle'=>'Articles pas encore consultés',
+            ],
+        'favoritePosts'=>
+            [
+                'name'=>'favoritePosts',
+                'libelle'=>'Articles en favoris',
+            ],
+
+        'mostConsultedPosts' =>
+            [
+                'name'=>'mostConsultedPosts',
+                'libelle'=>'Articles les plus consultés',
+            ],
+        'mostRecentlyPosts' =>
+            [
+                'name'=>'mostRecentlyPosts',
+                'libelle'=>'Articles les plus récents',
+            ],
+        'mostCommentedPosts' =>
+            [
+                'name'=>'mostCommentedPosts',
+                'libelle'=>'Articles les plus commentés',
+            ],
+    ];
+
     const DASHBOARD_FUNCTIONS = [
         'main' => [
             'users' => [
@@ -605,5 +634,10 @@ class AP // Application Parameters
 
     public static function betweenBrackets($str, $withSpace = TRUE) {
         return !empty($str) ? ($withSpace ? ' ' : '')."({$str})" : '';
+    }
+
+    public static function getUneFilter()
+    {
+        return static::UNE_FILTER;
     }
 }

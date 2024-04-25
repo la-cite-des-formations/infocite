@@ -72,6 +72,8 @@
             {{--            </div>--}}
             <!-- Affichage des articles épinglés uniquement sur la "Une"-->
 
+
+
             @if($rubric->name === 'Une')
                 <div class="section-title">
                     <div class="row justify-content-center">
@@ -94,7 +96,8 @@
                                     <h4>
                                         <div class="icon">
                                             <a class=""><i
-                                                    class="material-icons">{{ $post->icon }}</i>{!! $post->previewTitle() !!}</a>
+                                                    class="material-icons">{{ $post->icon }}</i>{!! $post->previewTitle() !!}
+                                            </a>
                                         </div>
                                     </h4>
 
@@ -167,7 +170,22 @@
         {{--Articles à la Une--}}
         <section id="breadcrumbs" class="breadcrumbs my-4">
         </section>
-
+        <!--Bouton de filtre, de trie et d'affichage-->
+        <div class="container d-flex flex-column">
+            <div class="align-self-start">
+                <div class="input-group" role="group">
+                    <div class="input-group-append">
+                        <button wire:click='toggleFilter' class="btn btn-sm btn-secondary"
+                                title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
+                            <span class="material-icons md-18">filter_list</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if($showFilter)
+            @include('livewire.usage.search-manager',['filter'=>$filter])
+        @endif
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
                 <div class="row justify-content-center">
@@ -186,7 +204,8 @@
                                 <!-- Titre de l'article et icone-->
                                 <h4>
                                     <div class="icon">
-                                        <a class=""><i class="material-icons">{{ $post->icon }}</i>{!! $post->previewTitle() !!}
+                                        <a class=""><i
+                                                class="material-icons">{{ $post->icon }}</i>{!! $post->previewTitle() !!}
                                         </a>
                                     </div>
                                 </h4>
@@ -197,10 +216,10 @@
                                 <!-- Boutons d'actions -->
                                 <div wire:click.prefetch='blockRedirection' class="align-self-end mt-auto">
                                     <div class="input-group" role="group" aria-label="Actions">
-                                            @if (!$post->released && is_object($post->status))
-                                                <i class="me-2 material-icons text-danger"
-                                                   title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                            @endif
+                                        @if (!$post->released && is_object($post->status))
+                                            <i class="me-2 material-icons text-danger"
+                                               title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                                        @endif
                                         <!-- Article publié ou non (pas un bouton d'action) -->
                                         @if ($mode == 'edition')
                                             @can('update', $post)
