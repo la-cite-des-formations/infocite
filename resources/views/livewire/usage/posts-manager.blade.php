@@ -174,7 +174,7 @@
             <div class="align-self-start">
                 <div class="input-group" role="group">
                     <div class="input-group-append">
-                        <button wire:click='toggleFilter' class="btn btn-sm btn-secondary"
+                        <button wire:click='toggleFilterMenu' class="btn btn-sm btn-secondary"
                                 title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
                             <span class="material-icons md-18">filter_list</span>
                         </button>

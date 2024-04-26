@@ -154,6 +154,8 @@ class PostsManager extends Component
 //********************************Filter/Sort********************************************//
 //***************************************************************************************//
 
+
+//********************************Requests***********************************************//
     public function favoritePosts()
     {
         $user = User::find(auth()->user()->id);
@@ -196,6 +198,13 @@ class PostsManager extends Component
             ->orderBy('updated_at','DESC')
             ->paginate($this->perPage);
     }
+
+
+//********************************Updates***********************************************//
+
+    /*
+    * renvoi les articles filtrés par..
+    */
     public function updatedFilter()
     {
         foreach ($this->filter as $key => $value) {
@@ -210,13 +219,11 @@ class PostsManager extends Component
     }
 
     public function updatingFilter(){
-        foreach ($this->filter as $key => $value){
-            $this->filter[$key] = '';
-        }
-        foreach ($this->sorter as $key => $value){
-            $this->sorter[$key] = '';
-        }
+        $this->resetFilter();
     }
+    /*
+     * renvoi les articles triés par..
+     */
     public function updatedSorter()
     {
         foreach ($this->sorter as $key => $value) {
@@ -231,6 +238,24 @@ class PostsManager extends Component
     }
 
     public function updatingSorter(){
+        $this->resetFilter();
+    }
+
+//********************************Utilities***********************************************//
+
+    /*
+     * Réinitialise les filtre en cas de reduction du menu des filtres
+     */
+    public function toggleFilterMenu(){
+        if(!$this->showFilter){
+            $this->resetFilter();
+        }
+        $this->toggleFilter();
+    }
+    /*
+     * Réinitialisation des filtres
+     */
+    public function resetFilter(){
         foreach ($this->sorter as $key => $value){
             $this->sorter[$key] = '';
         }
