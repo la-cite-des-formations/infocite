@@ -219,6 +219,10 @@ class AP // Application Parameters
                 'libelle'=>'Articles en favoris',
             ],
 
+    ];
+
+    const UNE_SORTER = [
+
         'mostConsultedPosts' =>
             [
                 'name'=>'mostConsultedPosts',
@@ -639,5 +643,10 @@ class AP // Application Parameters
     public static function getUneFilter()
     {
         return static::UNE_FILTER;
+    }
+
+    public static function getUneSorted()
+    {
+        return static::UNE_SORTER;
     }
 }

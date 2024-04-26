@@ -8,6 +8,7 @@ use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
 use App\Rubric;
 use App\User;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
@@ -34,12 +35,15 @@ class PostsManager extends Component
     public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
+    protected $posts;
 
     protected $listeners = ['modalClosed', 'deletePost'];
 
     public $filter =[
         'favoritePosts'=>'',
         'notViewPosts'=>'',
+    ];
+    public $sorter =[
         'mostConsultedPosts'=>'',
         'mostRecentlyPosts'=>'',
         'mostCommentedPosts'=>'',
@@ -141,7 +145,7 @@ class PostsManager extends Component
 
         return view('livewire.usage.posts-manager', [
 
-            'posts' => $this->updatedFilter(),
+            'posts' => $this->posts ?? $this->allPosts(),
             'pinnedPost' => $this->pinnedPosts(),
         ]);
     }
@@ -196,34 +200,45 @@ class PostsManager extends Component
     {
         foreach ($this->filter as $key => $value) {
             if ($value == 'on') {
-                switch ($key) {
-                    case 'favoritePosts' :
-                        return $this->favoritePosts();
-
-                    case 'notViewPosts' :
-                        return $this->notViewPosts();
-
-                    case 'mostConsultedPosts' :
-                        return $this->mostConsultedPosts();
-
-                    case 'mostRecentlyPosts' :
-                        return $this->mostRecentlyPosts();
-
-                    case 'mostCommentedPosts' :
-                        return $this->mostCommentedPosts();
-
-
+                $methodName = Str::camel($key);
+                if (method_exists($this, $methodName)) {
+                    return  $this->posts = $this->{$methodName}();
                 }
             }
         }
-
-        return $this->allPosts();
+        return  $this->posts = $this->allPosts();
     }
+
     public function updatingFilter(){
         foreach ($this->filter as $key => $value){
             $this->filter[$key] = '';
         }
+        foreach ($this->sorter as $key => $value){
+            $this->sorter[$key] = '';
+        }
     }
+    public function updatedSorter()
+    {
+        foreach ($this->sorter as $key => $value) {
+            if ($value == 'on') {
+                $methodName = Str::camel($key);
+                if (method_exists($this, $methodName)) {
+                    return $this->posts =  $this->{$methodName}();
+                }
+            }
+        }
+        return  $this->posts = $this->allPosts();
+    }
+
+    public function updatingSorter(){
+        foreach ($this->sorter as $key => $value){
+            $this->sorter[$key] = '';
+        }
+        foreach ($this->filter as $key => $value){
+            $this->filter[$key] = '';
+        }
+    }
+
 
 
 }

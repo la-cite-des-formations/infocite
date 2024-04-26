@@ -873,5 +873,63 @@ a:hover {
     background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));;
 }
 
+/*--------------------------------------------------------------
+# Filtre et tri de la Une
+--------------------------------------------------------------*/
+.sectionFilterUneButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+.filterUneButton>label{
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--select-color-10);
+    border-radius: 10px;
+    height: 3vh;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+
+}
+
+
+.colorFilterUneEnabled{
+
+    background-color: var(--select-color-1);
+}
+.colorFilterUneEnabled:hover{
+
+    background-color: var(--select-color-11);
+}
+
+.colorFilterUneDisabled{
+    background-color: var(--select-color-11);
+}
+
+.colorFilterUneDisabled:hover{
+    background-color: var(--select-color-1);
+}
+
+.separator{
+
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-image: linear-gradient(to right, var(--select-color-14), var(--select-color-1)) 1;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    margin-left: 18px;
+
+}
+
+
+
 
 
