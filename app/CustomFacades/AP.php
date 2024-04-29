@@ -218,6 +218,11 @@ class AP // Application Parameters
                 'name'=>'favoritePosts',
                 'libelle'=>'Articles en favoris',
             ],
+        'postsInFavoritesRubrics'=>
+            [
+                'name'=>'postsInFavoritesRubrics',
+                'libelle'=>'Articles dans les rubriques favorites',
+            ]
 
     ];
 

@@ -2,12 +2,12 @@
     <section id="breadcrumbs" class="breadcrumbs my-4">
     </section>
 {{--Liste des rubrics en favori--}}
-    <section id="myFavoritesRubrics" class="services section-bg">
+    <section id="myFavoritesRubrics" class="container aos-init aos-animate ">
         <div class="section-title">
             <h2 class="title-icon"><i class="bx bx-star me-1"></i>Mes favoris</h2>
             <h4>Mes rubriques favorites</h4>
         </div>
-        <div class="container-fluid d-flex flex-row flex-wrap w-75">
+        <div class="favoritesRubricsSection container ">
             @if($rubrics->count() > 0)
                 @foreach($rubrics as $rubric)
                     @can('access', $rubric)
@@ -16,7 +16,7 @@
                             <button class="removeFavoriteRubricsButton "
                                     title="Retirer des favoris"
                                     wire:click.prevent="removeFavoriteRubric({{$rubric->id}})" type="button">
-                                <i class='bx bxs-message-square-x bx-rotate-90' style='color:rgba(255,1,51,0.99)'  ></i>
+                                <i class='bx bxs-message-square-x bx-rotate-90' style='color:var(--select-color-17)'  ></i>
                             </button>
                         </div>
                     @endcan

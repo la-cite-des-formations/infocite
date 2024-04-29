@@ -171,19 +171,21 @@
         </section>
         <!--Bouton de filtre, de trie et d'affichage-->
         <div class="container d-flex flex-column">
-            <div class="align-self-start">
-                <div class="input-group" role="group">
-                    <div class="input-group-append">
-                        <button wire:click='toggleFilterMenu' class="btn btn-sm btn-secondary"
-                                title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
-                            <span class="material-icons md-18">filter_list</span>
-                        </button>
+            @if($rubric->name === 'Une')
+                <div class="align-self-start">
+                    <div class="input-group" role="group">
+                        <div class="input-group-append">
+                            <button wire:click='toggleFilterMenu' class="btn btn-sm btn-secondary"
+                                    title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
+                                <span class="material-icons md-18">filter_list</span>
+                            </button>
+                        </div>
                     </div>
+                    @if($showFilter)
+                        @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
+                    @endif
                 </div>
-                @if($showFilter)
-                    @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
-                @endif
-            </div>
+            @endif
         </div>
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">

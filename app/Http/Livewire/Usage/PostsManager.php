@@ -42,6 +42,7 @@ class PostsManager extends Component
     public $filter =[
         'favoritePosts'=>'',
         'notViewPosts'=>'',
+        'postsInFavoritesRubrics'=>'',
     ];
     public $sorter =[
         'mostConsultedPosts'=>'',
@@ -165,6 +166,20 @@ class PostsManager extends Component
                 ->paginate($this->perPage);
     }
 
+    public function postsInFavoritesRubrics(){
+        $user = auth()->user();
+        $favoriteRubricIds =
+            $user
+            ->myFavoritesRubrics()
+            ->pluck('id');
+
+        return Post::whereIn('rubric_id', $favoriteRubricIds)
+            ->orderBy('rubric_id','DESC')
+            ->paginate($this->perPage);
+
+
+    }
+
     public function notViewPosts()
     {
         $userId = auth()->user()->id;
@@ -263,7 +278,5 @@ class PostsManager extends Component
             $this->filter[$key] = '';
         }
     }
-
-
 
 }
