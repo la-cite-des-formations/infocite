@@ -860,7 +860,7 @@ a:hover {
     align-items: center;
     text-align: center;
     padding: 15px;
-    height: 5vh;
+    height: 8vh;
     width: 275px;
     margin: 10px;
 }
@@ -892,7 +892,7 @@ a:hover {
     }
     .favoriteRubricsLink {
 
-        height: 5vh;
+        height: 8vh;
         width: 30vw;
         padding: 10px;
 
