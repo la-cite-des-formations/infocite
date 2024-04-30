@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\CustomFacades\AP;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
 use App\Rubric;
 use App\User;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -37,17 +39,19 @@ class PostsManager extends Component
     public $blockRedirection = FALSE;
     protected $posts;
 
+
     protected $listeners = ['modalClosed', 'deletePost'];
 
-    public $filter =[
-        'favoritePosts'=>'',
-        'notViewPosts'=>'',
-        'postsInFavoritesRubrics'=>'',
+    public $filter = [
+        'favoritePosts' => '',
+        'notViewPosts' => '',
+        'postsInFavoritesRubrics' => '',
+        'allPosts' => '',
     ];
-    public $sorter =[
-        'mostConsultedPosts'=>'',
-        'mostRecentlyPosts'=>'',
-        'mostCommentedPosts'=>'',
+    public $sorter = [
+        'mostConsultedPosts' => '',
+        'mostRecentlyPosts' => '',
+        'mostCommentedPosts' => '',
     ];
 
     public function mount($viewBag)
@@ -62,8 +66,8 @@ class PostsManager extends Component
         $this->rubric = $viewBag->rubric;
         $this->isFavoriteRubric = $this->rubric->isFavorite();
         $this->setNotifications();
-
-
+        $this->lastFilterActive();
+        $this->lastSorterActive();
     }
 
     public function booted()
@@ -140,143 +144,13 @@ class PostsManager extends Component
             ->paginate($this->perPage);
     }
 
-
     public function render()
     {
-
         return view('livewire.usage.posts-manager', [
-
             'posts' => $this->posts ?? $this->allPosts(),
             'pinnedPost' => $this->pinnedPosts(),
         ]);
     }
 
-//***************************************************************************************//
-//********************************Filter/Sort********************************************//
-//***************************************************************************************//
-
-
-//********************************Requests***********************************************//
-    public function favoritePosts()
-    {
-        $user = User::find(auth()->user()->id);
-        return
-            $user
-                ->myFavoritesPosts()
-                ->paginate($this->perPage);
-    }
-
-    public function postsInFavoritesRubrics(){
-        $user = auth()->user();
-        $favoriteRubricIds =
-            $user
-            ->myFavoritesRubrics()
-            ->pluck('id');
-
-        return Post::whereIn('rubric_id', $favoriteRubricIds)
-            ->orderBy('rubric_id','DESC')
-            ->paginate($this->perPage);
-
-
-    }
-
-    public function notViewPosts()
-    {
-        $userId = auth()->user()->id;
-        return Post::whereDoesntHave('readers', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
-            ->orWhereHas('readers', function ($query) use ($userId) {
-                $query->where('user_id', $userId)->where('is_read', false);
-            })
-            ->paginate($this->perPage);
-
-    }
-
-    public function mostConsultedPosts()
-    {
-        return Post::withCount('readers')
-        ->orderByDesc('readers_count')
-        ->paginate($this->perPage);
-    }
-
-    public function mostCommentedPosts()
-    {
-        return Post::withCount('comments')
-            ->orderByDesc('comments_count')
-            ->paginate($this->perPage);
-    }
-
-    public function mostRecentlyPosts(){
-
-        return Post::query()
-            ->orderBy('updated_at','DESC')
-            ->paginate($this->perPage);
-    }
-
-
-//********************************Updates***********************************************//
-
-    /*
-    * renvoi les articles filtrés par..
-    */
-    public function updatedFilter()
-    {
-        foreach ($this->filter as $key => $value) {
-            if ($value == 'on') {
-                $methodName = Str::camel($key);
-                if (method_exists($this, $methodName)) {
-                    return  $this->posts = $this->{$methodName}();
-                }
-            }
-        }
-        return  $this->posts = $this->allPosts();
-    }
-
-    public function updatingFilter(){
-        $this->resetFilter();
-    }
-    /*
-     * renvoi les articles triés par..
-     */
-    public function updatedSorter()
-    {
-        foreach ($this->sorter as $key => $value) {
-            if ($value == 'on') {
-                $methodName = Str::camel($key);
-                if (method_exists($this, $methodName)) {
-                    return $this->posts =  $this->{$methodName}();
-                }
-            }
-        }
-        return  $this->posts = $this->allPosts();
-    }
-
-    public function updatingSorter(){
-        $this->resetFilter();
-    }
-
-//********************************Utilities***********************************************//
-
-    /*
-     * Réinitialise les filtre en cas de reduction du menu des filtres
-     */
-    public function toggleFilterMenu(){
-        if(!$this->showFilter){
-            $this->resetFilter();
-        }
-        $this->toggleFilter();
-    }
-    /*
-     * Réinitialisation des filtres
-     */
-    public function resetFilter(){
-        foreach ($this->sorter as $key => $value){
-            $this->sorter[$key] = '';
-        }
-        foreach ($this->filter as $key => $value){
-            $this->filter[$key] = '';
-        }
-    }
 
 }

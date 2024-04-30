@@ -208,40 +208,50 @@ class AP // Application Parameters
     ];
 
     const UNE_FILTER = [
+        'allPosts'=>
+            [
+                'name'=>'allPosts',
+                'libelle'=>'Tout les articles à la Une',
+                'icone'=>'article',
+            ],
         'notViewPosts' =>
             [
                 'name'=>'notViewPosts',
                 'libelle'=>'Articles pas encore consultés',
+                'icone'=>'fiber_new',
             ],
         'favoritePosts'=>
             [
                 'name'=>'favoritePosts',
                 'libelle'=>'Articles en favoris',
+                'icone'=>'favorite',
             ],
         'postsInFavoritesRubrics'=>
             [
                 'name'=>'postsInFavoritesRubrics',
                 'libelle'=>'Articles dans les rubriques favorites',
-            ]
-
+                'icone'=>'favorite_border',
+            ],
     ];
 
     const UNE_SORTER = [
-
         'mostConsultedPosts' =>
             [
                 'name'=>'mostConsultedPosts',
                 'libelle'=>'Articles les plus consultés',
+                'icone'=>'remove_red_eye',
             ],
         'mostRecentlyPosts' =>
             [
                 'name'=>'mostRecentlyPosts',
                 'libelle'=>'Articles les plus récents',
+                'icone'=>'access_time',
             ],
         'mostCommentedPosts' =>
             [
                 'name'=>'mostCommentedPosts',
                 'libelle'=>'Articles les plus commentés',
+                'icone'=>'auto_awesome_motion',
             ],
     ];
 
@@ -645,13 +655,22 @@ class AP // Application Parameters
         return !empty($str) ? ($withSpace ? ' ' : '')."({$str})" : '';
     }
 
-    public static function getUneFilter()
+    public static function getUneFiltered()
     {
         return static::UNE_FILTER;
+    }
+    public static function getUneFilteredByName($filterName)
+    {
+        return static::UNE_FILTER[$filterName];
     }
 
     public static function getUneSorted()
     {
         return static::UNE_SORTER;
     }
+    public static function getUneSortedByName($sorterName)
+    {
+        return static::UNE_SORTER[$sorterName];
+    }
+
 }

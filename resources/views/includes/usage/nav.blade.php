@@ -41,7 +41,7 @@
         <!-- A laisser en dur à la fin du menu -->
        @can('viewAny', 'App\\App')
         <li>
-            <a href="#apps" class="nav-link scrollto" title="Mes applications">
+            <a href="#apps" id="mediumScreen" class="nav-link scrollto" title="Mes applications">
                 <div class="myapps">
                     <span class="bx bx-extension me-1"></span>Mes applis
                 </div>
@@ -49,7 +49,7 @@
         </li>
        @endcan
         <li>
-            <a href="#search" class="nav-link scrollto" title="Rechercher...">
+            <a href="#search" id="mediumScreen" class="nav-link scrollto" title="Rechercher...">
                 <span class="bx bx-search-alt display-6"></span>
             </a>
         </li>
@@ -58,22 +58,24 @@
                 <span class="bx bx-user-circle display-6"></span>
                 <i class="bi bi-chevron-down"></i>
             </a>
-            <ul>
-                <li>
-                    <a href="/infos" class="nav-link">Mes infos</a>
-                </li>
-                <li>
-                    <a href="/favoris" class="nav-link">Mes favoris</a>
-                </li>
-                <li>
-                    <a href="{{ route('logout') }}" class="nav-link text-danger justify-content-start"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                       <span class="bx bx-log-in-circle me-1"></span>{{ __('Logout') }}
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </li>
+            <ul class="myProfilMenu">
+
+                    <li>
+                        <a href="/infos" class="nav-link">Mes infos</a>
+                    </li>
+                    <li>
+                        <a href="/favoris" class="nav-link">Mes favoris</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('logout') }}" class="nav-link text-danger justify-content-start"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                           <span class="bx bx-log-in-circle me-1"></span>{{ __('Logout') }}
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
+
             </ul>
         </li>
     </ul>

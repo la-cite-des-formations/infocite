@@ -1,5 +1,5 @@
 <header id="header" class="@if($fixedTop) fixed-top @endif header-inner-pages">
-    <div class="d-flex justify-content-between align-items-center mx-5">
+    <div class="d-flex justify-content-start align-items-center ms-2 me-1">
         <a href="/" class="logo my-1">
             <img src="{{ asset('img/logo_infocite.png') }}"
                  title="Info-Cité : L'intranet de la Cité des Formations"
