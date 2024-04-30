@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
-use App\Process;
+use App\Chartnode;
 use App\User;
 
 class ActorsManager extends Component
@@ -48,7 +48,7 @@ class ActorsManager extends Component
     public function render()
     {
         return view('livewire.admin.models-manager', [
-            'processes' => Process::query()
+            'chartnodes' => Chartnode::query()
                 ->orderByRaw('name ASC')
                 ->get(),
             'actors' => User::filter($this->filter)

@@ -27,7 +27,7 @@ class Format extends Model
         'subtitle_color' => NullableField::class,
     ];
 
-    public function processes() {
+    public function chartnodes() {
         return $this
             ->hasMany('App\Chartnode');
     }

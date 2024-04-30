@@ -4,7 +4,7 @@
     <tr class="row">
         <th scope="col" class="col-4 py-2">
             <div class="btn-group mr-1">
-                <span class="material-icons">assignment</span>
+                <span class="material-icons">local_offer</span>
             </div>
             Libellé référent
         </th>
@@ -16,9 +16,9 @@
         </th>
         <th scope="col" class="col-4 py-2">
             <div class="btn-group mr-1">
-                <span class="material-icons">crop_din</span>
+                <span class="material-icons">pages</span>
             </div>
-            processus
+            Processus
         </th>
     </tr>
 @endsection
