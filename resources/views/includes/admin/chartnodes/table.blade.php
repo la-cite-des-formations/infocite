@@ -6,7 +6,7 @@
             <div class="btn-group dropleft mr-1">
                 <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des noeuds graphiques">
-                    <span class="material-icons">crop_din</span>
+                    <span class="material-icons">pages</span>
                 </button>
                 <div class="dropdown-menu">
                     <a href="javascript:onchoiceSelection('chartnode-cbx', 'all')" class="d-flex dropdown-item">
@@ -27,7 +27,7 @@
         </th>
         <th scope="col" class="col-4 py-2">
             <div class="btn-group mr-1">
-                <span class="material-icons"></span>
+                <span class="material-icons">pages</span>
             </div>
             Noeud parent
         </th>
@@ -38,7 +38,7 @@
                     <span class="material-icons">add</span>
                 </button>
                 <button wire:click="showModal('delete', getSelectionIDs('chartnode-cbx'))"
-                        class="d-flex btn btn-sm btn-danger" title="Supprimer les noeuds graphiques selectionnées">
+                        class="d-flex btn btn-sm btn-danger" title="Supprimer les noeuds graphiques selectionnés">
                     <span class="material-icons">delete</span>
                 </button>
             </div>

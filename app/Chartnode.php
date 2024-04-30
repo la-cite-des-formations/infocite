@@ -73,11 +73,31 @@ class Chartnode extends Model
             ->hasMany(self::class, 'parent_id');
     }
 
-    public static function getOrgChart() {
+    public static function getOrgChart($node = NULL) {
+        switch (TRUE) {
+            case is_object($node) :
+                $nodesIds = [];
+                if (is_object($node->parent)) {
+                    $nodesIds[] = $node->parent->id;
+                }
+                $nodesIds[] = $node->id;
+                $node->childs->each(function ($childNode) use (&$nodesIds) {
+                    $nodesIds[] = $childNode->id;
+                });
+                $chartnodes = static::whereIn('id', $nodesIds)
+                    ->orderBy('rank')
+                    ->get();
+                $chartnodes->first()->parent_id = NULL;
+            break;
+
+            default :
+                $chartnodes = static::all()
+                    ->sortBy('rank');
+        }
+
         $orgChartBoxes = new Collection();
 
-        self::all()
-            ->sortBy('rank')
+        $chartnodes
             ->each(function ($chartnode) use ($orgChartBoxes) {
                 $orgChartBoxes->add([
                     'data' => [
@@ -97,7 +117,7 @@ class Chartnode extends Model
 
     public static function saveOrgChartData() {
         Storage::put(
-            'public/orgchart/processes.json',
+            'public/orgchart/chartnodes.json',
             json_encode(self::getOrgChart()->pluck('data'), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
         );
     }

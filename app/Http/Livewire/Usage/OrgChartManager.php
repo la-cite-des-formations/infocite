@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\Chartnode;
 use Livewire\Component;
 
 class OrgChartManager extends Component
@@ -9,7 +10,6 @@ class OrgChartManager extends Component
     public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $canAdmin = TRUE;
-    public $orgChartTitle;
     public $rubric;
 
     public function mount($viewBag) {
@@ -21,10 +21,8 @@ class OrgChartManager extends Component
         $this->firstLoad = !$this->rendered;
     }
 
-    public function drawOrgChart($type = 'Chartnode') {
-        $this->orgChartTitle = $type == 'Chartnode' ? "Organigramme procédural" : "Organigramme relationnel";
-
-        $orgChart = ("App\\{$type}")::getOrgChart();
+    public function drawOrgChart() {
+        $orgChart = Chartnode::getOrgChart();
 
         $this->emit('drawOrgChart', 'small', $orgChart->pluck('data'), $orgChart->pluck('style'));
     }

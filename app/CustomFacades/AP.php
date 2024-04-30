@@ -314,7 +314,7 @@ class AP // Application Parameters
                 'title' => 'Nœuds ',
                 'table_title' => "Gestion des nœuds graphiques",
                 'description' => "Gérer les nœuds graphiques",
-                'icon_name' => 'crop_din',
+                'icon_name' => 'pages',
                 'color' => 'orange',
                 'gate' => 'manage-chartnodes',
                 'route' => ['name' => 'admin.chartnodes.index', 'parameters' => NULL]
@@ -323,7 +323,7 @@ class AP // Application Parameters
                 'title' => 'Libellés ',
                 'table_title' => "Consultation des libellés référents",
                 'description' => "Consulter les libellés référents",
-                'icon_name' => 'assignment',
+                'icon_name' => 'local_offer',
                 'color' => 'orange',
                 'gate' => 'manage-labels',
                 'route' => ['name' => 'admin.labels.index', 'parameters' => NULL]
