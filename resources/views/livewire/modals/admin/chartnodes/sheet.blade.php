@@ -1,5 +1,9 @@
 @extends('layouts.modal')
 
+@section('wire-init')
+    wire:init='drawChartnode'
+@endsection
+
 @section('modal-title', "Visualisation")
 
 @section('modal-header-options')
@@ -21,7 +25,8 @@
         </div>
     </div>
     <div class="alert alert-info mb-0">
-        <dl class="row mb-0 mx-0">
+        <div id="orgchart" class="overflow-auto m-3"></div>
+        {{-- <dl class="row mb-0 mx-0">
             <dt class="col-6 text-right pl-0">Fonction / Processus :</dt>
             <dd class="col-6 pl-0">{{ is_object($chartnode->group) ? $chartnode->group->name : 'aucun' }}</dd>
           @if ($chartnode->actors->isNotEmpty())
@@ -42,7 +47,7 @@
               @endforeach
             </ul>
           @endif
-      </dl>
+        </dl> --}}
     </div>
 @endsection
 
