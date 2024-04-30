@@ -46,17 +46,6 @@ class GroupPolicy
     }
 
     /**
-     * Determine si l'utilisateur peut créer un groupe de type 'P' (processus) - gestion de l'organigramme
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function createProcessGroup(User $user)
-    {
-        return $user->hasRole('org-chart', Roles::IS_MODER);
-    }
-
-    /**
      * Determine whether the user can update the group.
      *
      * @param  \App\User  $user

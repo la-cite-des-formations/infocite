@@ -15,9 +15,9 @@ class Edit extends Component
     public $format;
     public $mode;
     public $canAdd = TRUE;
-    public $processSearch = '';
-    public $selectedRelatedProcesses = [];
-    public $selectedAvailableProcesses = [];
+    public $chartnodeSearch = '';
+    public $selectedRelatedChartnodes = [];
+    public $selectedAvailableChartnodes = [];
     public $formTabs;
 
     protected $listeners = ['render'];
@@ -44,9 +44,9 @@ class Edit extends Component
                     'title' => "Définir la mise en forme",
                     'hidden' => FALSE,
                 ],
-                'processes' => [
-                    'icon' => 'developer_board',
-                    'title' => "Gérer les processus correspondant",
+                'chartnodes' => [
+                    'icon' => 'pages',
+                    'title' => "Gérer les nœuds correspondant",
                     'hidden' => !$this->format->id,
                 ],
             ],
@@ -83,19 +83,19 @@ class Edit extends Component
 
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
-            case 'processes' : $this->addSelectedAvailableProcesses();
+            case 'chartnodes' : $this->addSelectedAvailableChartnodes();
             return;
         }
     }
 
-    public function addSelectedAvailableProcesses() {
-        if ($this->isEmpty('selectedAvailableProcesses', "Aucun processus sélectionné")) return;
+    public function addSelectedAvailableChartnodes() {
+        if ($this->isEmpty('selectedAvailableChartnodes', "Aucun nœud graphique sélectionné")) return;
 
         Chartnode::query()
-            ->whereIn('id', $this->selectedAvailableProcesses)
+            ->whereIn('id', $this->selectedAvailableChartnodes)
             ->update(['format_id' => $this->format->id]);
 
-        $this->selectedAvailableProcesses = [];
+        $this->selectedAvailableChartnodes = [];
 
         $this
             ->emit('render', [
@@ -107,19 +107,19 @@ class Edit extends Component
 
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
-            case 'processes' : $this->removeSelectedRelatedProcesses();
+            case 'chartnodes' : $this->removeSelectedRelatedChartnodes();
             return;
         }
     }
 
-    private function removeSelectedRelatedProcesses() {
-        if ($this->isEmpty('selectedRelatedProcesses', "Aucun processus sélectionné")) return;
+    private function removeSelectedRelatedChartnodes() {
+        if ($this->isEmpty('selectedRelatedChartnodes', "Aucun nœud graphique sélectionné")) return;
 
         Chartnode::query()
-            ->whereIn('id', $this->selectedRelatedProcesses)
+            ->whereIn('id', $this->selectedRelatedChartnodes)
             ->update(['format_id' => NULL]);
 
-        $this->selectedRelatedProcesses = [];
+        $this->selectedRelatedChartnodes = [];
 
         $this
             ->emit('render', [
@@ -155,8 +155,8 @@ class Edit extends Component
         }
     }
 
-    private function availableProcesses() {
-        $search = $this->processSearch;
+    private function availableChartnodes() {
+        $search = $this->chartnodeSearch;
 
         return Chartnode::query()
             ->when($search, function ($query) use ($search) {
@@ -177,7 +177,7 @@ class Edit extends Component
             view('livewire.modals.admin.formats.sheet') :
             view('livewire.modals.admin.models-form', [
                 'addButtonTitle' => 'Ajouter une mise en forme',
-                'availableProcesses' => $this->availableProcesses(),
+                'availableChartnodes' => $this->availableChartnodes(),
                 'colors' => array_keys(AP::getFormatBgColors()),
                 'borders' => AP::getBorderStyles(),
             ]);

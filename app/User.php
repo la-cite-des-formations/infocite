@@ -362,8 +362,8 @@ class User extends Authenticatable
     public function isManager() {
         $isManager = FALSE;
 
-        Chartnode::all()->each(function ($process) use(&$isManager) {
-            if ($this->id == $process->manager_id) {
+        Chartnode::all()->each(function ($chartnode) use(&$isManager) {
+            if ($this->id == $chartnode->manager_id) {
                 return $isManager = TRUE;
             }
         });
@@ -457,17 +457,19 @@ class User extends Authenticatable
 
             case $groupType && !$groupId :
                 $users = new Collection();
-                foreach(Group::where('type', $groupType[0])->get() as $group) {
-                    $users = $users->merge($group->users);
-                }
-                $users = $users->toQuery();
+                Group::where('type', $groupType)
+                    ->get()
+                    ->each(function ($group) use (&$users) {
+                        $users = $users->merge($group->users);
+                    });
+                $users = static::whereIn('id', $users->pluck('id'));
                 break;
 
             case $groupType && $groupId :
                 $users = Group::find($groupId)->users();
                 break;
 
-            default : $users = self::query();
+            default : $users = static::query();
         }
 
         return $users
@@ -482,24 +484,10 @@ class User extends Authenticatable
             })
             ->when(isset($isFrozen), function ($query) use ($isFrozen) {
                 $query->where('is_frozen', $isFrozen);
-            })
-            ->when(isset($showUndefinedLinks), function ($query) use ($showUndefinedLinks) {
-                $actors = $query
-                    ->get()
-                    ->filter(function ($actor) use ($showUndefinedLinks) {
-                        return (is_null($actor->manager) && $showUndefinedLinks) || !$showUndefinedLinks;
-                    });
-
-                if ($actors->isEmpty()) {
-                    $query->where('id', NULL);
-                }
-                else {
-                    return $actors->toQuery();
-                }
             });
     }
 
-    public static function haveRolesOnRight(string $rightName, int $roles) {
+    public static function haveOn(string $rightName, int $roles) {
         return static::query()
             ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
             ->join('rights', 'rightables.right_id', '=', 'rights.id')
@@ -547,10 +535,10 @@ class User extends Authenticatable
     public static function allWho(string $action) {
         switch ($action) {
             case 'can-comment-posts' :
-                return static::haveRolesOnRight('comments', Roles::IS_EDITR);
+                return static::haveOn('comments', Roles::IS_EDITR);
 
             case 'can-edit-posts' :
-                return static::haveRolesOnRight('posts', Roles::IS_EDITR);
+                return static::haveOn('posts', Roles::IS_EDITR);
 
             case 'have-edited-posts' :
                 return static::query()

@@ -23,11 +23,11 @@
     </div>
     <div class="alert alert-info mb-0">
         <dl class="row mb-0 mx-0">
-          @if ($format->processes->IsNotEmpty())
-            <dt class="col-12 pl-0 mt-2">Processus correspondant</dt>
+          @if ($format->chartnodes->IsNotEmpty())
+            <dt class="col-12 pl-0 mt-2">Nœuds graphiques correspondant</dt>
             <ul>
-              @foreach ($format->processes as $process)
-                <li>{{ $process->name }}</li>
+              @foreach ($format->chartnodes as $chartnode)
+                <li>{{ $chartnode->name }}</li>
               @endforeach
             </ul>
           @endif
