@@ -40,7 +40,7 @@ class Edit extends Component
             'tabs' => [
                 'general' => [
                     'icon' => 'list_alt',
-                    'title' => "Définir le noeud graphique",
+                    'title' => "Définir le nœud graphique",
                     'hidden' => FALSE,
                 ],
             ],
@@ -52,6 +52,9 @@ class Edit extends Component
 
         $this->mode = $mode ?? 'view';
         $this->setChartnode($id ?? NULL);
+        if ($this->mode == 'view') {
+            $this->drawChartnode();
+        }
     }
 
     public function refresh() {
@@ -67,6 +70,12 @@ class Edit extends Component
         $this->$tabsSystem['currentTab'] = $tab;
     }
 
+    public function drawChartnode() {
+        $node = Chartnode::getOrgChart($this->chartnode);
+
+        $this->emit('drawOrgChart', 'small', $node->pluck('data'), $node->pluck('style'));
+    }
+
     public function switchMode($mode) {
         $this->mode = $mode;
 
@@ -76,6 +85,7 @@ class Edit extends Component
         }
         else {
             $this->chartnode = Chartnode::find($this->chartnode->id);
+            $this->drawChartnode();
         };
     }
 
@@ -91,13 +101,13 @@ class Edit extends Component
 
             $this->sendAlert([
                 'alertClass' => 'success',
-                'message' => "Création du noeud graphique effectuée avec succès.",
+                'message' => "Création du nœud graphique effectuée avec succès.",
             ]);
         }
         else {
             $this->sendAlert([
                 'alertClass' => 'success',
-                'message' => "Modification du noeud graphique effectuée avec succès.",
+                'message' => "Modification du nœud graphique effectuée avec succès.",
             ]);
         }
     }
@@ -113,7 +123,7 @@ class Edit extends Component
         return $this->mode === 'view' ?
             view('livewire.modals.admin.chartnodes.sheet') :
             view('livewire.modals.admin.models-form', [
-                'addButtonTitle' => 'Ajouter un noeud graphique',
+                'addButtonTitle' => 'Ajouter un nœud graphique',
                 'groups' => Group::where('type', 'P')->orderBy('name')->get(),
                 'parents' => Chartnode::where('id', '!=', $this->chartnode->id)->orderBy('name')->get(),
                 'formats' => Format::all(),

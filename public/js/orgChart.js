@@ -3,10 +3,9 @@
 
     function drawChart() {
         // Create the chart.
-        var orgChart = new google.visualization.OrgChart(document.getElementById('orgchart'));
-
         Livewire.on('drawOrgChart', (size, data, style) => {
             var dt = new google.visualization.DataTable();
+            var orgChart = new google.visualization.OrgChart(document.getElementById('orgchart'));
 
             dt.addColumn('string', 'NodeId');
             dt.addColumn('string', 'NodeParentId');
