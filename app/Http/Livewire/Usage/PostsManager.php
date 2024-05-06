@@ -2,15 +2,11 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\CustomFacades\AP;
+
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
-use App\Rubric;
-use App\User;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;

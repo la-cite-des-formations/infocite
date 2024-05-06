@@ -92,17 +92,18 @@
                 </div>
                 <div class="container d-flex flex-row justify-content-center">
                     <!--Personnalisation de la description de la rubric en fonction du filtre actif-->
-                    @if(Session::get('lastFilter') && $rubric->name === 'Une' && Session::get('lastFilter') !== 'allPosts')
-                        <div class="d-flex flex-row">
-                            <i class="material-icons me-2">{{ AP::getUneFilteredByName(Session::get('lastFilter'))['icone']  }}</i>
-                            <p class="m-auto">{{ AP::getUneFilteredByName(Session::get('lastFilter'))['libelle'] }}</p>
-                        </div>
-                    @elseif(Session::get('lastSorter') && $rubric->name === 'Une')
-                        <div class="d-flex flex-row">
-                            <i class="material-icons ">{{ AP::getUneSortedByName(Session::get('lastSorter'))['icone'] }}</i>
-                            <p>{{ AP::getUneSortedByName(Session::get('lastSorter'))['libelle'] }}</p>
-                        </div>
-
+                    @if($rubric->name === 'Une' && Session::get('lastFilter') !== 'allPosts')
+                        @if(Session::get('lastFilter'))
+                            <div class="d-flex flex-row">
+                                <i class="material-icons me-2">{{ AP::getUneFilteredByName(Session::get('lastFilter'))['icone']  }}</i>
+                                <p class="m-auto">{{ AP::getUneFilteredByName(Session::get('lastFilter'))['libelle'] }}</p>
+                            </div>
+                        @elseif(Session::get('lastSorter'))
+                            <div class="d-flex flex-row">
+                                <i class="material-icons ">{{ AP::getUneSortedByName(Session::get('lastSorter'))['icone'] }}</i>
+                                <p>{{ AP::getUneSortedByName(Session::get('lastSorter'))['libelle'] }}</p>
+                            </div>
+                        @endif
                     @else
                         <p>{{ $rubric->description }}</p>
                     @endif
@@ -161,6 +162,7 @@
                                                 wire:click="switchFavoritePost({{ $post->id }})" type="button">
                                                 <i class="bx bx-star"></i>
                                             </button>
+
                                             @can('pin')
                                                 <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                                                 <button
