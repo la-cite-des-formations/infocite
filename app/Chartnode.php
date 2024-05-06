@@ -76,18 +76,16 @@ class Chartnode extends Model
     public static function getOrgChart($node = NULL) {
         switch (TRUE) {
             case is_object($node) :
-                $nodesIds = [];
+                $chartnodes = new Collection();
                 if (is_object($node->parent)) {
-                    $nodesIds[] = $node->parent->id;
+                    $node->parent->parent_id = NULL;
+                    $chartnodes->add($node->parent);
                 }
-                $nodesIds[] = $node->id;
-                $node->childs->each(function ($childNode) use (&$nodesIds) {
-                    $nodesIds[] = $childNode->id;
-                });
-                $chartnodes = static::whereIn('id', $nodesIds)
-                    ->orderBy('rank')
-                    ->get();
-                $chartnodes->first()->parent_id = NULL;
+                else {
+                    $node->parent_id = NULL;
+                }
+                $chartnodes->add($node);
+                $chartnodes = $chartnodes->merge($node->childs->sortBy('rank'));
             break;
 
             default :
