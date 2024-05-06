@@ -26,6 +26,7 @@ class Chartnode extends Model
     ];
 
     public function getActorsListAttribute() {
+        // dump($this->actors->pluck('chartnode_identity')->implode(', '));
         return $this->actors->pluck('chartnode_identity')->implode(', ');
     }
 
@@ -33,14 +34,10 @@ class Chartnode extends Model
         return is_object($this->format) ?
 
             "<p class='fw-bold {$this->format->title_color}'>{$this->name}</p>".
-            "<p class='{$this->format->subtitle_font_style} {$this->format->subtitle_color}'>".
-                $this->actors_list.
-            "</p>" :
+            "<p class='{$this->format->subtitle_color}'>".$this->actors_list."</p>" :
 
             "<p class='fw-bold'>{$this->name}</p>".
-            "<p>".
-                $this->actors_list.
-            "</p>";
+            "<p>".$this->actors_list."</p>";
     }
 
     public function getGroupAttribute() {
@@ -65,12 +62,12 @@ class Chartnode extends Model
 
     public function parent() {
         return $this
-            ->belongsTo(self::class, 'parent_id');
+            ->belongsTo('App\Chartnode', 'parent_id');
     }
 
     public function childs() {
         return $this
-            ->hasMany(self::class, 'parent_id');
+            ->hasMany('App\Chartnode', 'parent_id');
     }
 
     public static function getOrgChart($node = NULL) {
