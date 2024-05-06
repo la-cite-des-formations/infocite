@@ -30,10 +30,10 @@ class PostsManager extends Component
     public $perPage = 16;
 
     public $rubric;
+    protected $posts;
     public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
-    protected $posts;
 
 
     protected $listeners = ['modalClosed', 'deletePost'];
@@ -142,6 +142,7 @@ class PostsManager extends Component
 
     public function render()
     {
+        $this->rendered = TRUE;
         return view('livewire.usage.posts-manager', [
             'posts' => $this->posts ?? $this->allPosts(),
             'pinnedPost' => $this->pinnedPosts(),

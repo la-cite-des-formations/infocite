@@ -178,7 +178,7 @@ trait WithFilter
         $this->filter['allPosts'] = 'on';
         Session::put('lastFilter','allPosts');
         $this->toggleFilter();
-//        dump($this->sorter);
+
     }
 
     /**
