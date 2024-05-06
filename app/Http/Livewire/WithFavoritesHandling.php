@@ -22,28 +22,30 @@ trait WithFavoritesHandling
         }
 
         $this->isFavoriteRubric = !$this->isFavoriteRubric;
+
     }
 
-    public function switchFavoritePost($post_id = NULL) {
-        $post = $this->post ?? Post::find($post_id);
+    public function switchFavoritePost($post_id) {
+        $post = Post::find($post_id);
 
         if ($post->isFavorite()) {
             if ($post->isRead() || $post->tags()) {
-                $this->isFavoritePost = FALSE;
+                $isFavorite = FALSE;
             }
         }
         else {
-            $this->isFavoritePost = TRUE;
+            $isFavorite = TRUE;
         }
-        if (isset($this->isFavoritePost)) {
+        if (isset($isFavorite)) {
             $post->readers()->syncWithoutDetaching([
                 auth()->user()->id => [
-                    'is_favorite' => $this->isFavoritePost
+                    'is_favorite' => $isFavorite
                 ]
             ]);
         }
         else {
             $post->readers()->detach(auth()->user()->id);
         }
+        $this->emitSelf('render');
     }
 }

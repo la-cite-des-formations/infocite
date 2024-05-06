@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\Http\Livewire\WithFavoritesHandling;
 use Livewire\Component;
 use App\Post;
 use App\Rubric;
@@ -9,10 +10,12 @@ use App\User;
 use App\Http\Livewire\WithUsageMode;
 use Livewire\WithPagination;
 
+
 class InfosManager extends Component
 {
     use WithUsageMode;
     use WithPagination;
+    use WithFavoritesHandling;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -34,29 +37,7 @@ class InfosManager extends Component
         $this->firstLoad = !$this->rendered;
     }
 
-    public function switchFavoritePost($post_id) {
-        $post = Post::find($post_id);
 
-        if ($post->isFavorite()) {
-            if ($post->isRead() || $post->tags()) {
-                $isFavorite = FALSE;
-            }
-        }
-        else {
-            $isFavorite = TRUE;
-        }
-        if (isset($isFavorite)) {
-            $post->readers()->syncWithoutDetaching([
-                auth()->user()->id => [
-                    'is_favorite' => $isFavorite
-                ]
-            ]);
-        }
-        else {
-            $post->readers()->detach(auth()->user()->id);
-        }
-        $this->emitSelf('render');
-    }
 
     public function switchFavoriteRubric($rubric_id) {
         $this->rubric = Rubric::find($rubric_id);

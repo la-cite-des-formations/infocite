@@ -193,10 +193,10 @@ trait WithFilter
         }
     }
 
-    public function updatedWithFilter()
-    {
-        $this->resetPage();
-    }
+//    public function updatedWithFilter()
+//    {
+//        $this->resetPage();
+//    }
 
     public function toggleFilter() {
         $this->showFilter = !$this->showFilter;

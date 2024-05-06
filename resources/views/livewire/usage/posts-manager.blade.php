@@ -43,8 +43,8 @@
                             <i class="bx bx-star"></i>
                         </button>
                     @else
-                        {{--                        Affichage du bouton filtre--}}
-                        <button wire:click='toggleFilterMenu' class="btn btn-sm btn-secondary"
+                        {{--Affichage du bouton filtre--}}
+                        <button wire:click='toggleFilterMenu()' class="btn btn-sm btn-secondary"
                                 title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
                             <span class="material-icons md-18">filter_list</span>
                         </button>
@@ -116,9 +116,9 @@
                             <div wire:click='redirectToPost({{ $post->id }})' role="button"
                                  class="pinnedPost col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                                  @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
-                                <div class="pinnedPost position-relative icon-box d-flex flex-column">
+                                <div class="position-relative icon-box d-flex flex-column">
                                     @if (!$post->released && is_object($post->status))
-                                        <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                                        <i class="position-absolute top-0 end-0 mt-3 me-3 material-icons text-danger"
                                            title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                                     @endif
 
@@ -201,6 +201,10 @@
                              class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                              @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                             <div class="position-relative icon-box d-flex flex-column">
+                                @if (!$post->released && is_object($post->status))
+                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                                @endif
                                 <!-- Titre de l'article et icone-->
                                 <h4>
                                     <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
@@ -209,12 +213,9 @@
                                 {{--                                <!-- Sous Titre de l'article -->--}}
                                 {{--                                <p>{!! $post->preview() !!}</p>--}}
                                 <!-- Boutons d'actions -->
-                                <div wire:click.prefetch='blockRedirection' class="align-self-end mt-auto">
-                                    <div class="input-group" role="group" aria-label="Actions">
-                                        @if (!$post->released && is_object($post->status))
-                                            <i class="me-2 material-icons text-danger"
-                                               title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                        @endif
+                                <div wire:click.prefetch='blockRedirection' class="position-relative align-self-end mt-auto">
+                                    <div class="input-group " role="group" aria-label="Actions">
+
                                         <!-- Article publié ou non (pas un bouton d'action) -->
                                         @if ($mode == 'edition')
                                             @can('update', $post)
