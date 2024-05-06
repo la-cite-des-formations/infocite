@@ -52,9 +52,6 @@ class Edit extends Component
 
         $this->mode = $mode ?? 'view';
         $this->setChartnode($id ?? NULL);
-        if ($this->mode == 'view') {
-            $this->drawChartnode();
-        }
     }
 
     public function refresh() {
@@ -71,9 +68,9 @@ class Edit extends Component
     }
 
     public function drawChartnode() {
-        $node = Chartnode::getOrgChart($this->chartnode);
+        $nodeOrgchart = Chartnode::getOrgChart($this->chartnode);
 
-        $this->emit('drawOrgChart', 'small', $node->pluck('data'), $node->pluck('style'));
+        $this->emit('drawOrgChart', 'small', $nodeOrgchart->pluck('data'), $nodeOrgchart->pluck('style'));
     }
 
     public function switchMode($mode) {
