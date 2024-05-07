@@ -77,6 +77,9 @@
                                     </button>
                                 @endcan
                             @endif
+{{--                            @dump($this->firstLoad)--}}
+{{--                                @dump($this->rendered)--}}
+{{--                                @dump($this->isFavoritePost)--}}
                             <button class="btn btn-sm @if ($isFavoritePost) btn-warning @else btn-secondary @endif"
                                     title="@if ($isFavoritePost) Retirer des favoris @else Ajouter aux favoris @endif"
                                     wire:click="switchFavoritePost" type="button">
@@ -85,9 +88,10 @@
                             @can('pin')
                                 <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                                 <button
-                                    class="btn @if ($post->isPinned()) btn-success @else btn-secondary @endif btn-sm"
-                                    title="@if ($post->isPinned()) Désépingler l'article @else épingler l'article @endif"
-                                    wire:click="switchPinnedPost({{ $post->id }})" type="button">
+                                    class="btn @if ($this->post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
+                                    wire:click="switchPinnedPost({{ $post->id }})"
+                                    title="@if ($this->post->is_pinned) Désépingler l'article @else épingler l'article @endif"
+                                    type="button">
                                     <i class='bx bx-pin'></i>
                                 </button>
                             @endcan

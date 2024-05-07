@@ -30,6 +30,7 @@ class PostManager extends Component
 
     protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
 
+
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
@@ -90,7 +91,6 @@ class PostManager extends Component
 
     public function render() {
         $this->rendered = TRUE;
-
         return view('livewire.usage.post-manager');
     }
 }

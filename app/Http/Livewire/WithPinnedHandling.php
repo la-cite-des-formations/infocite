@@ -6,7 +6,6 @@ use App\Post;
 
 trait WithPinnedHandling
 {
-    public $isPinned;
     public $countPinnedPosts;
 
     public function countPinnedPosts(){
@@ -16,15 +15,21 @@ trait WithPinnedHandling
             ->count();
     }
 
-    public function switchPinnedPost($post_id = NULL) {
+    public function pinnedPosts()
+    {
+        return Post::query()
+            ->where('is_pinned', '=', TRUE)
+            ->get();
+    }
+
+    public function switchPinnedPost($post_id) {
         $post = $this->post ?? Post::find($post_id);
 
         //on récupère le nombre d'article épinglé
         $this->countPinnedPosts();
 
-        if ($post->isPinned()) {
+        if ($post->is_pinned) {
 
-            $this->isPinned = FALSE;
             Post::query()
                 ->where('id', $post_id)
                 ->update(['is_pinned' => FALSE]);
@@ -37,11 +42,11 @@ trait WithPinnedHandling
                     ->where('id', $post_id)
                     ->update(['is_pinned' => TRUE]);
             }else{
-                $this->isPinned = FALSE;
                 session()->flash('error_alert', 'Le nombre d\'articles épinglés ne doit pas excéder 4');
             }
 
         }
-
+        $this->emitSelf('render');
     }
+
 }

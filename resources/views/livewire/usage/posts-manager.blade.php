@@ -50,6 +50,9 @@
                         </button>
                     @endif
                 </div>
+                <button wire:click="switchDisplayPosts">Affichage</button>
+                @dump($this->listeDisplay)
+                @dump($this->firstLoad)
             </div>
             @if($showFilter)
                 @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
@@ -166,8 +169,8 @@
                                             @can('pin')
                                                 <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                                                 <button
-                                                    class="btn @if ($post->isPinned()) btn-success @else btn-secondary @endif btn-sm"
-                                                    title="@if ($post->isPinned()) Désépingler l'article @else épingler l'article @endif"
+                                                    class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
+                                                    title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
                                                     wire:click="switchPinnedPost({{ $post->id }})" type="button">
                                                     <i class='bx bx-pin'></i>
                                                 </button>
@@ -199,7 +202,7 @@
             <div class="row">
                 @foreach ($posts as $i => $post)
                     @can('read', $post)
-                        <div wire:click='redirectToPost({{ $post->id }})' role="button"
+                        <div wire:key = '{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
                              class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                              @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                             <div class="position-relative icon-box d-flex flex-column">
@@ -242,14 +245,15 @@
                                         <button
                                             class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
                                             title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                            wire:click="switchFavoritePost({{ $post->id }})" type="button">
+                                            wire:click="switchFavoritePost({{ $post->id }})"
+                                            type="button">
                                             <i class="bx bx-star"></i>
                                         </button>
                                         <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                                         @can('pin')
                                             <button
-                                                class="btn @if ($post->isPinned()) btn-success @else btn-secondary @endif btn-sm"
-                                                title="@if ($post->isPinned()) Désépingler l'article @else épingler l'article @endif"
+                                                class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
+                                                title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
                                                 wire:click="switchPinnedPost({{ $post->id }})" type="button">
                                                 <i class='bx bx-pin'></i>
                                             </button>

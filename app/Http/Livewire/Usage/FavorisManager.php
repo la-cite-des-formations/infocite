@@ -43,6 +43,11 @@ class FavorisManager extends Component
         $this->setNotifications();
 
     }
+    public function booted()
+    {
+        $this->firstLoad = !$this->rendered;
+    }
+
 
     public function redirectToPost($postId) {
         if (!$this->blockRedirection) {
@@ -70,6 +75,7 @@ class FavorisManager extends Component
 
     public function render()
     {
+        $this->rendered = TRUE;
         $user = User::find(auth()->user()->id);
         $favoritesPosts = $user->myFavoritesPosts()->paginate($this->perPage);
         $favoritesRubrics = $user->myFavoritesRubrics;

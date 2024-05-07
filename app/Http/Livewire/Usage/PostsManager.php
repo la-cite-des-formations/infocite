@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Usage;
 
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithFilter;
+use App\Http\Livewire\WithFilterPosts;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
 use Livewire\Component;
@@ -23,11 +24,12 @@ class PostsManager extends Component
     use WithUsageMode;
     use WithFavoritesHandling;
     use WithPinnedHandling;
-    use WithFilter;
+    use WithFilterPosts;
 
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 12, 16, 24, 48, 60];
     public $perPage = 16;
+    public $listeDisplay = FALSE;
 
     public $rubric;
     protected $posts;
@@ -95,11 +97,12 @@ class PostsManager extends Component
         $this->blockRedirection = TRUE;
     }
 
-    public function pinnedPosts()
+    public function switchDisplayPosts()
     {
-        return Post::query()
-            ->where('is_pinned', '=', TRUE)
-            ->get();
+        $this->listeDisplay = !$this->listeDisplay;
+
+        $this->firstLoad = true;
+        $this->resetPage();
     }
 
     public function allPosts()

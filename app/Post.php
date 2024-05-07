@@ -20,6 +20,7 @@ class Post extends Model
     ];
 
 
+
     public function rubric()
     {
         return $this->belongsTo('App\Rubric');
@@ -227,10 +228,6 @@ class Post extends Model
             });
     }
 
-    public function isPinned(): bool
-    {
 
-        return $this->is_pinned ? TRUE : FALSE;
-    }
 
 }
