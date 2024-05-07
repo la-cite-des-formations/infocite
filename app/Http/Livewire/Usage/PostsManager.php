@@ -4,7 +4,6 @@ namespace App\Http\Livewire\Usage;
 
 
 use App\Http\Livewire\WithFavoritesHandling;
-use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithFilterPosts;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
@@ -143,11 +142,22 @@ class PostsManager extends Component
             ->paginate($this->perPage);
     }
 
+    protected function getFilteredOrSortedPosts(){
+
+        if (session()->has('lastFilter')){
+            return $this->lastFilterActive();
+        }elseif (session()->has('lastSorter')){
+            return $this->lastSorterActive();
+        }else{
+            return $this->allPosts();
+        }
+    }
+
     public function render()
     {
         $this->rendered = TRUE;
         return view('livewire.usage.posts-manager', [
-            'posts' => $this->posts ?? $this->allPosts(),
+            'posts' =>$this->getFilteredOrSortedPosts(),
             'pinnedPost' => $this->pinnedPosts(),
         ]);
     }
