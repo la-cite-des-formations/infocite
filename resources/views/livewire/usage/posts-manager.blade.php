@@ -10,8 +10,12 @@
         </div>
     @endif
 
+
+    <!--Section notification, bouton mode édition, filtre et afichage-->
     <section id="posts" class="services section-bg">
         <div class="container d-flex flex-column">
+            <button id="bouton1" class="" wire:click="switchDisplayPosts">Affichage</button>
+            <!--Bouton affichage liste/grille-->
             <div class="align-self-end">
                 <div class="input-group" role="group">
                     <button class="btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
@@ -43,14 +47,14 @@
                             <i class="bx bx-star"></i>
                         </button>
                     @else
-                        {{--Affichage du bouton filtre--}}
+                        <!--Bouton filtre-->
                         <button wire:click='toggleFilterMenu()' class="btn btn-sm btn-secondary"
                                 title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
                             <span class="material-icons md-18">filter_list</span>
                         </button>
                     @endif
                 </div>
-                <button wire:click="switchDisplayPosts">Affichage</button>
+
                 @dump($this->listeDisplay)
                 @dump($this->firstLoad)
             </div>
@@ -58,37 +62,36 @@
                 @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
             @endif
         </div>
-        {{--        <div class="d-flex flex-row">--}}
-        {{--            <div class="" style="background: var(--select-color-1); width: 100px">1</div>--}}
-        {{--            <div class="" style="background: var(--select-color-2); width: 100px">2</div>--}}
-        {{--            <div class="" style="background: var(--select-color-3); width: 100px">3</div>--}}
-        {{--            <div class="" style="background: var(--select-color-4); width: 100px">4</div>--}}
-        {{--            <div class="" style="background: var(--select-color-5); width: 100px">5</div>--}}
-        {{--            <div class="" style="background: var(--select-color-6); width: 100px">6</div>--}}
-        {{--            <div class="" style="background: var(--select-color-7); width: 100px">7</div>--}}
-        {{--            <div class="" style="background: var(--select-color-8); width: 100px">8</div>--}}
-        {{--            <div class="" style="background: var(--select-color-9); width: 100px">9</div>--}}
-        {{--            <div class="" style="background: var(--select-color-10); width: 100px">10</div>--}}
-        {{--            <div class="" style="background: var(--select-color-11); width: 100px">11</div>--}}
-        {{--            <div class="" style="background: var(--select-color-12); width: 100px">12</div>--}}
-        {{--            <div class="" style="background: var(--select-color-13); width: 100px">13</div>--}}
-        {{--            <div class="" style="background: var(--select-color-14); width: 100px">14</div>--}}
-        {{--            <div class="" style="background: var(--select-color-15); width: 100px">15</div>--}}
-        {{--            <div class="" style="background: var(--select-color-16); width: 100px">16</div>--}}
-        {{--            <div class="" style="background: var(--select-color-17); width: 100px">17</div>--}}
-        {{--            <div class="" style="background: var(--select-color-18); width: 100px">18</div>--}}
-        {{--            <div class="" style="background: var(--select-color-19); width: 100px">19</div>--}}
-        {{--            <div class="" style="background: var(--select-color-20); width: 100px">20</div>--}}
-        {{--            <div class="" style="background: var(--select-color-21); width: 100px">21</div>--}}
-        {{--            <div class="" style="background: var(--select-color-22); width: 100px">22</div>--}}
-        {{--        </div>--}}
+        <div class="d-flex flex-row">
+            <div class="" style="background: var(--select-color-1); width: 100px">1</div>
+            <div class="" style="background: var(--select-color-2); width: 100px">2</div>
+            <div class="" style="background: var(--select-color-3); width: 100px">3</div>
+            <div class="" style="background: var(--select-color-4); width: 100px">4</div>
+            <div class="" style="background: var(--select-color-5); width: 100px">5</div>
+            <div class="" style="background: var(--select-color-6); width: 100px">6</div>
+            <div class="" style="background: var(--select-color-7); width: 100px">7</div>
+            <div class="" style="background: var(--select-color-8); width: 100px">8</div>
+            <div class="" style="background: var(--select-color-9); width: 100px">9</div>
+            <div class="" style="background: var(--select-color-10); width: 100px">10</div>
+            <div class="" style="background: var(--select-color-11); width: 100px">11</div>
+            <div class="" style="background: var(--select-color-12); width: 100px">12</div>
+            <div class="" style="background: var(--select-color-13); width: 100px">13</div>
+            <div class="" style="background: var(--select-color-14); width: 100px">14</div>
+            <div class="" style="background: var(--select-color-15); width: 100px">15</div>
+            <div class="" style="background: var(--select-color-16); width: 100px">16</div>
+            <div class="" style="background: var(--select-color-17); width: 100px">17</div>
+            <div class="" style="background: var(--select-color-18); width: 100px">18</div>
+            <div class="" style="background: var(--select-color-19); width: 100px">19</div>
+            <div class="" style="background: var(--select-color-20); width: 100px">20</div>
+            <div class="" style="background: var(--select-color-21); width: 100px">21</div>
+            <div class="" style="background: var(--select-color-22); width: 100px">22</div>
+        </div>
         {{--        @dump($filter)--}}
         {{--        @dump($sorter)--}}
 
-        {{--Articles à la Une--}}
 
-
-        <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
+        {{--Titre de la rubric--}}
+        <div class="container">
             <div class="section-title">
                 <div class="row justify-content-center">
                     <h2 class="col-9">{{ $rubric->title }}</h2>
@@ -112,33 +115,71 @@
                     @endif
                 </div>
             </div>
-            <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
-            @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+
+            <!-- Affichage des articles en liste -->
+            @if($listeDisplay)
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <table class="displayList">
+                                <thead>
+                                <tr>
+                                    <th class="col-4"><span>Titre de l'article</span></th>
+                                    <th class="col-2"><span>Rubric</span></th>
+                                    <th class="text-center col-3"><span>Dernière Maj :</span></th>
+                                    <th><span>Statut</span></th>
+                                    <th><span>Option</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+                                    @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
+                                    <tr>
+                                        <td colspan="5">
+                                            <hr class="separatorDisplayList">
+                                        </td>
+                                    </tr>
+                                @endif
+                                @include('livewire.usage.posts-list',['posts'=>$posts])
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @else
+
+                <!--Affichage des articles en carte-->
                 <div class="row">
-                    @foreach ($pinnedPost as $i => $post)
+                    <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
+                    @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+                        @include('livewire.usage.posts-pinnedPosts')
+                    @endif
+                    <!-- Affichage des articles-->
+                    @foreach ($posts as $i => $post)
+
                         @can('read', $post)
-                            <div wire:click='redirectToPost({{ $post->id }})' role="button"
-                                 class="pinnedPost col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
+                            <div wire:key='{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
+                                 class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                                  @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                                 <div class="position-relative icon-box d-flex flex-column">
                                     @if (!$post->released && is_object($post->status))
-                                        <i class="position-absolute top-0 end-0 mt-3 me-3 material-icons text-danger"
+                                        <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
                                            title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                                     @endif
-
                                     <!-- Titre de l'article et icone-->
                                     <h4>
-                                        <div class="icon">
-                                            <i class="material-icons text-danger bx bxs-pin bx-rotate-90"
-                                               title="pinnedIcon"></i>
-                                        </div>
+                                        <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
                                         <a>{{ $post->title }}</a>
                                     </h4>
-                                    {{--                                    <!-- Sous Titre de l'article -->--}}
-                                    {{--                                    <p>{!! $post->preview() !!}</p>--}}
+                                    <!-- Sous Titre de l'article -->
+                                    <p>{!! $post->preview() !!}</p>
                                     <!-- Boutons d'actions -->
-                                    <div wire:click.prefetch='blockRedirection' class="align-self-end mt-auto">
-                                        <div class="input-group" role="group" aria-label="Actions">
+                                    <div wire:click.prefetch='blockRedirection'
+                                         class="position-relative align-self-end mt-auto">
+                                        <div class="input-group " role="group" aria-label="Actions">
+
+                                            <!-- Article publié ou non (pas un bouton d'action) -->
                                             @if ($mode == 'edition')
                                                 @can('update', $post)
                                                     <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
@@ -162,12 +203,12 @@
                                             <button
                                                 class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
                                                 title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                                wire:click="switchFavoritePost({{ $post->id }})" type="button">
+                                                wire:click="switchFavoritePost({{ $post->id }})"
+                                                type="button">
                                                 <i class="bx bx-star"></i>
                                             </button>
-
+                                            <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                                             @can('pin')
-                                                <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                                                 <button
                                                     class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
                                                     title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
@@ -199,88 +240,6 @@
                     @endforeach
                 </div>
             @endif
-            <div class="row">
-                @foreach ($posts as $i => $post)
-                    @can('read', $post)
-                        <div wire:key = '{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
-                             class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
-                             @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
-                            <div class="position-relative icon-box d-flex flex-column">
-                                @if (!$post->released && is_object($post->status))
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
-                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                @endif
-                                <!-- Titre de l'article et icone-->
-                                <h4>
-                                    <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                                    <a>{{ $post->title }}</a>
-                                </h4>
-                                {{--                                <!-- Sous Titre de l'article -->--}}
-                                {{--                                <p>{!! $post->preview() !!}</p>--}}
-                                <!-- Boutons d'actions -->
-                                <div wire:click.prefetch='blockRedirection' class="position-relative align-self-end mt-auto">
-                                    <div class="input-group " role="group" aria-label="Actions">
-
-                                        <!-- Article publié ou non (pas un bouton d'action) -->
-                                        @if ($mode == 'edition')
-                                            @can('update', $post)
-                                                <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
-                                                   title="Modifier" role="button" class="btn btn-sm btn-success">
-                                                    <i class="bx bx-pencil"></i>
-                                                </a>
-                                            @endcan
-                                        @endif
-                                        @can('viewAny', ['App\\Comment', $post->id])
-                                            <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
-                                            <div
-                                                class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
-                                                type="text" title="Commentaires">
-                                                @if ($post->comments->count() > 0)
-                                                    <span class="me-1">{{ $post->comments->count() }}</span>
-                                                @endif
-                                                <i class="bx bx-comment-detail"></i>
-                                            </div>
-                                        @endcan
-                                        <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
-                                        <button
-                                            class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                                            title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                            wire:click="switchFavoritePost({{ $post->id }})"
-                                            type="button">
-                                            <i class="bx bx-star"></i>
-                                        </button>
-                                        <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                                        @can('pin')
-                                            <button
-                                                class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
-                                                title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
-                                                wire:click="switchPinnedPost({{ $post->id }})" type="button">
-                                                <i class='bx bx-pin'></i>
-                                            </button>
-                                        @endcan
-                                        <!-- Article deja lu ? : class success si deja lu -->
-                                        <div
-                                            class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
-                                            type="text" @if ($post->isRead()) title="Déjà consulté"
-                                            @else title="À consulter" @endif>
-                                            <i class="bx bx-message-alt-check"></i>
-                                        </div>
-                                        @if ($mode == 'edition')
-                                            @can('delete', $post)
-                                                <button
-                                                    wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
-                                                    type="button" class="btn btn-sm btn-danger" title="Supprimer">
-                                                    <i class="bx bx-trash"></i>
-                                                </button>
-                                            @endcan
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endcan
-                @endforeach
-            </div>
             @include('includes.pagination', ['elements' => $posts])
         </div>
     </section>

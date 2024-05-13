@@ -149,6 +149,10 @@ class Post extends Model
         return AP::strLimiter(strip_tags($this->content));
     }
 
+    public function previewTitle() {
+        return AP::strLimiter(strip_tags($this->title),60);
+    }
+
     public function identity() {
         return "{$this->title} ({$this->rubric->name})";
     }

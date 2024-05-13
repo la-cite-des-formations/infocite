@@ -99,8 +99,6 @@ class PostsManager extends Component
     public function switchDisplayPosts()
     {
         $this->listeDisplay = !$this->listeDisplay;
-
-        $this->firstLoad = true;
         $this->resetPage();
     }
 

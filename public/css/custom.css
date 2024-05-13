@@ -856,11 +856,9 @@ a:hover {
     flex-direction: row;
     flex-wrap: wrap;
     width: 75vw;
-
 }
 
 .favoriteRubrics{
-
     display: flex;
     flex-direction: row;
 }
@@ -869,7 +867,6 @@ a:hover {
 }
 
 .favoriteRubricsLink {
-
     background: none;
     color: white;
     font-size: 16px;
@@ -935,10 +932,9 @@ a:hover {
 # Articles épinglés
 --------------------------------------------------------------*/
 
-.pinnedPost .icon-box{
-
+.pinnedPost .icon-box {
     border-radius: 20px;
-    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));;
+    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));
 }
 
 /*--------------------------------------------------------------
@@ -961,23 +957,20 @@ a:hover {
     margin-left: 10px;
     margin-bottom: 10px;
     text-align: start;
-
 }
-
 
 .colorFilterUneEnabled{
 
     color: var(--select-color-15);
     background-color: #198754;
     border-color: #198754;
-
 }
 .colorFilterUneDisabled{
-    background-color: var(--select-color-4);
+    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));
 }
 
 .colorFilterUneDisabled:hover{
-    background-color: var(--select-color-2);
+    background-image: linear-gradient(to bottom right, var(--select-color-14),var(--select-color-12),var(--select-color-10));
 }
 
 .separator{
@@ -1010,8 +1003,47 @@ a:hover {
     }
 }
 
+/*--------------------------------------------------------------
+# Display liste
+--------------------------------------------------------------*/
 
+.separatorDisplayList {
+    height: 1px;
+    border: none;
+    width: 50%;
+    margin: auto;
+    background-color: var(--select-color-17);
+}
 
+.displayList tbody td .title-description{
+    font-size: 0.875em;
+    font-style: italic;
+}
+
+.displayList {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.displayList tbody > tr > td {
+    font-size: 0.875em;
+    background-color: var(--select-color-10);
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 75px;
+}
+
+.displayList tbody > tr.pinnedPost > td {
+    background-image: linear-gradient(to bottom, var(--select-color-10),var(--select-color-12),var(--select-color-14)) ;
+}
+
+.displayList thead > tr > th span {
+    border-bottom: 2px solid var(--select-color-14);
+    display: inline-block;
+    padding: 0 5px 5px;
+    font-weight: normal;
+}
 
 
 
