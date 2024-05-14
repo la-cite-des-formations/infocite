@@ -15,12 +15,12 @@
         <div class="container d-flex flex-column">
                 <div class="input-group" role="group">
                     <!--Bouton affichage liste/grille-->
-                    <button id="bouton1" class="displayGridButton btn rounded-start" title="Grille"
+                    <button class="@if(session('displayPosts') === 'grid') btn-primary @else btn-secondary  @endif btn rounded-start" title="Grille"
                             wire:click="displayGridPosts()">
                         <i class='align-items-center bx bxs-grid-alt bx-flip-vertical' ></i>
                         Grille
                     </button>
-                    <button id="bouton1" class="displayListButton btn rounded-end" title="Liste"
+                    <button class="@if(session('displayPosts') === 'list')  btn-primary @else btn-secondary  @endif btn rounded-end" title="Liste"
                             wire:click="displayListPosts()">
                         <i class='align-items-center bx bx-list-ul bx-flip-horizontal' ></i>
                         Liste
@@ -66,30 +66,30 @@
                 @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
             @endif
         </div>
-        <div class="d-flex flex-row">
-            <div class="" style="background: var(--select-color-1); width: 100px">1</div>
-            <div class="" style="background: var(--select-color-2); width: 100px">2</div>
-            <div class="" style="background: var(--select-color-3); width: 100px">3</div>
-            <div class="" style="background: var(--select-color-4); width: 100px">4</div>
-            <div class="" style="background: var(--select-color-5); width: 100px">5</div>
-            <div class="" style="background: var(--select-color-6); width: 100px">6</div>
-            <div class="" style="background: var(--select-color-7); width: 100px">7</div>
-            <div class="" style="background: var(--select-color-8); width: 100px">8</div>
-            <div class="" style="background: var(--select-color-9); width: 100px">9</div>
-            <div class="" style="background: var(--select-color-10); width: 100px">10</div>
-            <div class="" style="background: var(--select-color-11); width: 100px">11</div>
-            <div class="" style="background: var(--select-color-12); width: 100px">12</div>
-            <div class="" style="background: var(--select-color-13); width: 100px">13</div>
-            <div class="" style="background: var(--select-color-14); width: 100px">14</div>
-            <div class="" style="background: var(--select-color-15); width: 100px">15</div>
-            <div class="" style="background: var(--select-color-16); width: 100px">16</div>
-            <div class="" style="background: var(--select-color-17); width: 100px">17</div>
-            <div class="" style="background: var(--select-color-18); width: 100px">18</div>
-            <div class="" style="background: var(--select-color-19); width: 100px">19</div>
-            <div class="" style="background: var(--select-color-20); width: 100px">20</div>
-            <div class="" style="background: var(--select-color-21); width: 100px">21</div>
-            <div class="" style="background: var(--select-color-22); width: 100px">22</div>
-        </div>
+{{--        <div class="d-flex flex-row">--}}
+{{--            <div class="" style="background: var(--select-color-1); width: 100px">1</div>--}}
+{{--            <div class="" style="background: var(--select-color-2); width: 100px">2</div>--}}
+{{--            <div class="" style="background: var(--select-color-3); width: 100px">3</div>--}}
+{{--            <div class="" style="background: var(--select-color-4); width: 100px">4</div>--}}
+{{--            <div class="" style="background: var(--select-color-5); width: 100px">5</div>--}}
+{{--            <div class="" style="background: var(--select-color-6); width: 100px">6</div>--}}
+{{--            <div class="" style="background: var(--select-color-7); width: 100px">7</div>--}}
+{{--            <div class="" style="background: var(--select-color-8); width: 100px">8</div>--}}
+{{--            <div class="" style="background: var(--select-color-9); width: 100px">9</div>--}}
+{{--            <div class="" style="background: var(--select-color-10); width: 100px">10</div>--}}
+{{--            <div class="" style="background: var(--select-color-11); width: 100px">11</div>--}}
+{{--            <div class="" style="background: var(--select-color-12); width: 100px">12</div>--}}
+{{--            <div class="" style="background: var(--select-color-13); width: 100px">13</div>--}}
+{{--            <div class="" style="background: var(--select-color-14); width: 100px">14</div>--}}
+{{--            <div class="" style="background: var(--select-color-15); width: 100px">15</div>--}}
+{{--            <div class="" style="background: var(--select-color-16); width: 100px">16</div>--}}
+{{--            <div class="" style="background: var(--select-color-17); width: 100px">17</div>--}}
+{{--            <div class="" style="background: var(--select-color-18); width: 100px">18</div>--}}
+{{--            <div class="" style="background: var(--select-color-19); width: 100px">19</div>--}}
+{{--            <div class="" style="background: var(--select-color-20); width: 100px">20</div>--}}
+{{--            <div class="" style="background: var(--select-color-21); width: 100px">21</div>--}}
+{{--            <div class="" style="background: var(--select-color-22); width: 100px">22</div>--}}
+{{--        </div>--}}
         {{--        @dump($filter)--}}
         {{--        @dump($sorter)--}}
 
@@ -119,38 +119,33 @@
                     @endif
                 </div>
             </div>
-
             <!-- Affichage des articles en liste -->
-            @if($displayPosts == 'list')
+            @if(session('displayPosts')==='list')
                 <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <table class="displayList">
-                                <thead>
-                                <tr>
-                                    <th class="col-4"><span>Titre de l'article</span></th>
-                                    <th class="col-2"><span>Rubric</span></th>
-                                    <th class="text-center col-3"><span>Dernière Maj :</span></th>
-                                    <th><span>Statut</span></th>
-                                    <th><span>Option</span></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
-                                    @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
-                                    <tr>
-                                        <td colspan="5">
-                                            <hr class="separatorDisplayList">
-                                        </td>
-                                    </tr>
-                                @endif
-                                @include('livewire.usage.posts-list',['posts'=>$posts])
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <table class="displayList">
+                        <thead>
+                        <tr>
+                            <th class="col-4"><span>Titre de l'article</span></th>
+                            <th class="col-2"><span>Rubric</span></th>
+                            <th class="text-center col-3"><span>Dernière Maj :</span></th>
+                            <th class="col-2"><span>Statut</span></th>
+                            <th class="col-1"><span>Option</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+                            @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
+                            <tr>
+                                <td colspan="5">
+                                    <hr class="separatorDisplayList">
+                                </td>
+                            </tr>
+                        @endif
+                        @include('livewire.usage.posts-list',['posts'=>$posts])
+                        </tbody>
+                    </table>
                 </div>
-            @elseif($displayPosts === 'grid')
+            @else
                 <!--Affichage des articles en carte-->
                 <div class="row">
                     <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->

@@ -28,8 +28,6 @@ class PostsManager extends Component
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 12, 16, 24, 48, 60];
     public $perPage = 16;
-    public $displayPosts='grid';
-    public $listeDisplay = false;
 
     public $rubric;
     protected $posts;
@@ -99,12 +97,12 @@ class PostsManager extends Component
 
     public function displayListPosts()
     {
-        $this->displayPosts = 'list';
+        session(['displayPosts'=>'list']);
         $this->resetPage();
     }
     public function displayGridPosts()
     {
-        $this->displayPosts = 'grid';
+        session(['displayPosts'=>'grid']);
         $this->resetPage();
     }
 
