@@ -120,7 +120,7 @@
                 </div>
             </div>
             <!-- Affichage des articles en liste -->
-            @if(session('displayPosts')==='list')
+            @if(session('displayPosts')==='list' && !empty($posts->all()))
                 <table class="displayList w-100">
                     <thead>
                         <tr>

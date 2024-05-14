@@ -1,10 +1,8 @@
 @foreach ($posts as $i => $post)
-
     @can('read', $post)
         <tr wire:click='redirectToPost({{ $post->id }})' role="button"
             class="@if($post->is_pinned) pinnedPost @endif icon-box"
-            @class(['pinnedPost'=>$post->is_pinned])
-            >
+            @class(['pinnedPost'=>$post->is_pinned])>
             <td class="d-flex flex-row">
                 <!-- Titre de l'article et icone-->
 
