@@ -121,9 +121,8 @@
             </div>
             <!-- Affichage des articles en liste -->
             @if(session('displayPosts')==='list')
-                <div class="container">
-                    <table class="displayList">
-                        <thead>
+                <table class="displayList w-100">
+                    <thead>
                         <tr>
                             <th class="col-4"><span>Titre de l'article</span></th>
                             <th class="col-2"><span>Rubric</span></th>
@@ -131,29 +130,29 @@
                             <th class="col-2"><span>Statut</span></th>
                             <th class="col-1"><span>Option</span></th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
-                            @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
-                            <tr>
-                                <td colspan="5">
-                                    <hr class="separatorDisplayList">
-                                </td>
-                            </tr>
-                        @endif
-                        @include('livewire.usage.posts-list',['posts'=>$posts])
-                        </tbody>
-                    </table>
-                </div>
+                    </thead>
+                    <tbody>
+                    @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+                        @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
+                        <tr>
+                            <td colspan="5">
+                                <hr class="separatorDisplayList">
+                            </td>
+                        </tr>
+                    @endif
+                    @include('livewire.usage.posts-list',['posts'=>$posts])
+                    </tbody>
+                </table>
             @else
                 <!--Affichage des articles en carte-->
-                <div class="row">
+                <div>
                     <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
                     @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
                         @include('livewire.usage.posts-pinnedPosts')
                     @endif
                     <!-- Affichage des articles-->
-
+                </div>
+                <div class="row">
                     @foreach ($posts as $i => $post)
                         @can('read', $post)
                             <div wire:key='{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
