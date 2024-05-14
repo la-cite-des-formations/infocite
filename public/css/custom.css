@@ -1006,6 +1006,17 @@ a:hover {
 /*--------------------------------------------------------------
 # Display liste
 --------------------------------------------------------------*/
+.displayGridButton{
+
+    background-color: var(--select-color-20);
+    color: var(--select-color-15);
+}
+
+.displayListButton{
+
+    background-color: var(--select-color-20);
+    color: var(--select-color-15);
+}
 
 .separatorDisplayList {
     height: 1px;

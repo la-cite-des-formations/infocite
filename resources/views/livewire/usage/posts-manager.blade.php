@@ -10,14 +10,22 @@
         </div>
     @endif
 
-
     <!--Section notification, bouton mode édition, filtre et afichage-->
     <section id="posts" class="services section-bg">
         <div class="container d-flex flex-column">
-            <button id="bouton1" class="" wire:click="switchDisplayPosts">Affichage</button>
-            <!--Bouton affichage liste/grille-->
-            <div class="align-self-end">
                 <div class="input-group" role="group">
+                    <!--Bouton affichage liste/grille-->
+                    <button id="bouton1" class="displayGridButton btn rounded-start" title="Grille"
+                            wire:click="displayGridPosts()">
+                        <i class='align-items-center bx bxs-grid-alt bx-flip-vertical' ></i>
+                        Grille
+                    </button>
+                    <button id="bouton1" class="displayListButton btn rounded-end" title="Liste"
+                            wire:click="displayListPosts()">
+                        <i class='align-items-center bx bx-list-ul bx-flip-horizontal' ></i>
+                        Liste
+                    </button>
+                    <div class="flex-grow-1"></div>
                     <button class="btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
                             wire:click="showModal('notify')" type="button">
                         @if ($notifications->count() > 0)
@@ -54,10 +62,6 @@
                         </button>
                     @endif
                 </div>
-
-                @dump($this->listeDisplay)
-                @dump($this->firstLoad)
-            </div>
             @if($showFilter)
                 @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
             @endif
@@ -117,7 +121,7 @@
             </div>
 
             <!-- Affichage des articles en liste -->
-            @if($listeDisplay)
+            @if($displayPosts === 'list')
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
@@ -147,8 +151,7 @@
                         </div>
                     </div>
                 </div>
-            @else
-
+            @elseif($displayPosts === 'grid')
                 <!--Affichage des articles en carte-->
                 <div class="row">
                     <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
@@ -156,6 +159,7 @@
                         @include('livewire.usage.posts-pinnedPosts')
                     @endif
                     <!-- Affichage des articles-->
+
                     @foreach ($posts as $i => $post)
 
                         @can('read', $post)
