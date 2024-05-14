@@ -121,11 +121,10 @@
             </div>
 
             <!-- Affichage des articles en liste -->
-            @if($displayPosts === 'list')
+            @if($displayPosts == 'list')
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-
                             <table class="displayList">
                                 <thead>
                                 <tr>
@@ -161,7 +160,6 @@
                     <!-- Affichage des articles-->
 
                     @foreach ($posts as $i => $post)
-
                         @can('read', $post)
                             <div wire:key='{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
                                  class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
