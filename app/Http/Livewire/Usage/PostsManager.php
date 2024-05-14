@@ -148,9 +148,9 @@ class PostsManager extends Component
 
     protected function getFilteredOrSortedPosts(){
 
-        if (session()->has('lastFilter') && $this->rubric === 'Une'){
+        if (session()->has('lastFilter') && $this->rubric->name === 'Une'){
             return $this->lastFilterActive();
-        }elseif (session()->has('lastSorter') && $this->rubric === 'Une'){
+        }elseif (session()->has('lastSorter') && $this->rubric->name === 'Une'){
             return $this->lastSorterActive();
         }else{
             return $this->allPosts();
