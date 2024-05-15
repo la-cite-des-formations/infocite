@@ -17,6 +17,7 @@
                 <h2 class="title-icon"><i class="bx bx-extension me-1"></i>Mes applications</h2>
                 <p>Toutes les applications auxquelles vous pouvez vous connecter depuis l'intranet de la Cité des Formations</p>
             </div>
+            <!--Affichage des App sous forme de list. conditionné par l'affichage des postes-->
             @if(session('displayPosts')==='list')
                 <table class="table">
                     <thead>
@@ -60,6 +61,7 @@
                     </tbody>
                 </table>
             @else
+            <!--Affichage des App sous forme de grille. conditionné par l'affichage des postes-->
                 <div class="row">
                   @foreach (auth()->user()->myApps() as $i => $app)
                    @can('view', $app)
