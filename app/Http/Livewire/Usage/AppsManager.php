@@ -6,6 +6,7 @@ use App\App;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
 use Livewire\WithPagination;
+use mysql_xdevapi\Session;
 
 class AppsManager extends Component
 {
@@ -17,7 +18,7 @@ class AppsManager extends Component
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
 
-    protected $listeners = ['deleteApp', 'render'];
+    protected $listeners = ['deleteApp', 'render','displayUpdated'=>'render'];
 
     public function mount($viewBag) {
         $this->rubricSegment = $viewBag->rubricSegment;

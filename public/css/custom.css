@@ -872,7 +872,6 @@ a:hover {
     font-size: 16px;
     background: var(--select-color-5);
     border-radius: 30px;
-    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -885,7 +884,6 @@ a:hover {
     margin: 10px;
 }
 .removeFavoriteRubricsButton{
-
     display: block;
     height: 20px;
     border: none;
@@ -900,7 +898,6 @@ a:hover {
         height: 7vh;
     }
     .favoriteRubrics{
-
         justify-content: center;
         align-items: center;
     }
@@ -911,7 +908,6 @@ a:hover {
         justify-content: center;
     }
     .favoriteRubricsLink {
-
         height: 8vh;
         width: 30vw;
         padding: 10px;
@@ -922,9 +918,7 @@ a:hover {
 @media (max-width:  769px){
 
     .favoriteRubricsLink{
-        height: 7vh;
         width: 50vw;
-
     }
 }
 

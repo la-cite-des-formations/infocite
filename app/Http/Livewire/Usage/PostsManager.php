@@ -8,6 +8,7 @@ use App\Http\Livewire\WithFilterPosts;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Post;
 use Livewire\Component;
+use Livewire\Livewire;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
@@ -99,11 +100,15 @@ class PostsManager extends Component
     {
         session(['displayPosts'=>'list']);
         $this->resetPage();
+        //Modification de l'affichage des applications
+        $this->emit('displayUpdated');
     }
     public function displayGridPosts()
     {
         session(['displayPosts'=>'grid']);
         $this->resetPage();
+        //Modification de l'affichage des applications
+        $this->emit('displayUpdated');
     }
 
     public function allPosts()
