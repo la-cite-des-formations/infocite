@@ -62,9 +62,11 @@
                         </button>
                     @endif
                 </div>
+            <div id="filterContainer" >
             @if($showFilter)
                 @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
             @endif
+            </div>
         </div>
 {{--        <div class="d-flex flex-row">--}}
 {{--            <div class="" style="background: var(--select-color-1); width: 100px">1</div>--}}
@@ -121,7 +123,7 @@
             </div>
             <!-- Affichage des articles en liste -->
             @if(session('displayPosts')==='list' && !empty($posts->all()))
-                <table class="displayList w-100">
+                <table class="displayList w-100" >
                     <thead>
                         <tr>
                             <th class="col-4"><span>Titre de l'article</span></th>
@@ -131,16 +133,18 @@
                             <th class="col-1"><span>Option</span></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody >
                     @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
                         @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
                         <tr>
-                            <td colspan="5">
-                                <hr class="separatorDisplayList">
+                            <td colspan="5" >
+                                <hr class="separatorDisplayList" >
                             </td>
                         </tr>
                     @endif
-                    @include('livewire.usage.posts-list',['posts'=>$posts])
+                    <div id="scrollToResult">
+                        @include('livewire.usage.posts-list',['posts'=>$posts])
+                    </div>
                     </tbody>
                 </table>
             @else
@@ -150,9 +154,9 @@
                     @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
                         @include('livewire.usage.posts-pinnedPosts')
                     @endif
-                    <!-- Affichage des articles-->
+                    <!-- Affichage des autres articles-->
                 </div>
-                <div class="row">
+                <div class="row" id="scrollToResult" >
                     @foreach ($posts as $i => $post)
                         @can('read', $post)
                             <div wire:key='{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
