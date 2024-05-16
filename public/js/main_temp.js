@@ -15,9 +15,4 @@ document.getElementById('paginationContainer').addEventListener('click', functio
     console.log('paginationContainer')
 });
 
-document.getElementById('filterContainer').addEventListener('click', function() {
-    scrollToAnchorWithOffset('scrollToResult', 450);
-    console.log('filterContainer')
-});
-
 

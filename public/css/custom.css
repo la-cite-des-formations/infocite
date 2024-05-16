@@ -450,6 +450,7 @@ a:hover {
     .myProfilMenu{
         margin-left: -140px !important;
     }
+
 }
 
 
@@ -460,7 +461,7 @@ a:hover {
     }
 }
 
-@media (max-width: 1173px) {
+@media (min-width: 992px) and (max-width: 1173px) {
     nav > ul > li > a#mediumScreen{
         display: none !important;
     }
@@ -878,8 +879,8 @@ a:hover {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 5px;
-    height: 8vh;
+    padding: 2px;
+    height: 60px;
     width: 275px;
     margin: 10px;
 }
@@ -895,7 +896,7 @@ a:hover {
         background-color: transparent;
         border-radius: 10px;
         width: 7vw;
-        height: 7vh;
+        height: 50px;
     }
     .favoriteRubrics{
         justify-content: center;
@@ -908,7 +909,7 @@ a:hover {
         justify-content: center;
     }
     .favoriteRubricsLink {
-        height: 8vh;
+        height: 65px;
         width: 30vw;
         padding: 10px;
 

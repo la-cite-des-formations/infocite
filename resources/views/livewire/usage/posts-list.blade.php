@@ -27,10 +27,9 @@
                 <span>{{$post->updated_at->format('d/m/Y')}}</span>
             </td>
             <td class="position-relative">
-                <div wire:click.prefetch='blockRedirection'
-                     class=" align-self-end mt-auto">
-                    <div class="input-group " role="group" aria-label="Actions">
+                <div wire:click.prefetch='blockRedirection' class=" align-self-end mt-auto">
 
+                    <div class="input-group " role="group" aria-label="Actions">
                         <!-- Article publié ou non (pas un bouton d'action) -->
                         @if ($mode == 'edition')
                             @can('update', $post)
@@ -72,7 +71,7 @@
                             @endcan
                         @endif
                         @if (!$post->released && is_object($post->status))
-                            <i class="position-absolute bottom-100 end-100 material-icons text-danger"
+                            <i class=" material-icons text-danger m-1"
                                title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                         @endif
                     </div>

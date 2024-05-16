@@ -127,10 +127,10 @@
                     <thead>
                         <tr>
                             <th class="col-4"><span>Titre de l'article</span></th>
-                            <th class="col-2"><span>Rubric</span></th>
-                            <th class="text-center col-3"><span>Dernière Maj :</span></th>
-                            <th class="col-2"><span>Statut</span></th>
-                            <th class="col-1"><span>Option</span></th>
+                            <th class="col-2"><span>Rubrique</span></th>
+                            <th class="text-center col-3"><span>Maj</span></th>
+                            <th class="col-2"><span>Infos</span></th>
+                            <th class="col-1"><span>Options</span></th>
                         </tr>
                     </thead>
                     <tbody >
