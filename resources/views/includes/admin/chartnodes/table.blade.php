@@ -2,7 +2,7 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col-4">
+        <th scope="col" class="col-3">
             <div class="btn-group dropleft mr-1">
                 <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des noeuds graphiques">
@@ -25,11 +25,17 @@
             </div>
             Noeud
         </th>
-        <th scope="col" class="col-4 py-2">
+        <th scope="col" class="col-3 py-2">
             <div class="btn-group mr-1">
                 <span class="material-icons">pages</span>
             </div>
             Noeud parent
+        </th>
+        <th scope="col" class="col-4 py-2">
+            <div class="btn-group mr-1">
+                <span class="material-icons">build</span>
+            </div>
+            Fonction associée
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
@@ -50,13 +56,14 @@
  @section('table-body')
   @foreach ($chartnodes as $chartnode)
     <tr class="row">
-        <td scope="row" class="col-4">
+        <td scope="row" class="col-3">
             <input type="checkbox" class="ml-0 form-check-input chartnode-cbx" id="{{ $chartnode->id }}">
             <label class="ml-4 text-primary d-flex" for="{{ $chartnode->id }}">
                 {{ $chartnode->name }}
             </label>
         </td>
-        <td class="col-4">{{ is_object($chartnode->parent) ? $chartnode->parent->name : '-' }}</td>
+        <td class="col-3">{{ is_object($chartnode->parent) ? $chartnode->parent->name : '-' }}</td>
+        <td class="col-4">{{ is_object($chartnode->group) ? $chartnode->group->name : '-' }}</td>
         <td class="col d-flex justify-content-end mb-auto">
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $chartnode->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
