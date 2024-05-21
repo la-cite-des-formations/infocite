@@ -120,10 +120,16 @@ class Chartnode extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query
-                    ->where('name', 'like', "%$search%");
+        $chartnodes = static::all()
+            ->when($search, function ($chartnodes) use ($search) {
+                return $chartnodes->filter(function ($chartnode) use ($search) {
+                    return
+                        str_contains(strtolower($chartnode->name), $search) ||
+                        (is_object($chartnode->parent) && str_contains(strtolower($chartnode->parent->name), $search)) ||
+                        (is_object($chartnode->group) && str_contains(strtolower($chartnode->group->name), $search));
+                });
             });
+
+        return $chartnodes->isEmpty() ? static::whereNull('id') : $chartnodes->toQuery();
     }
 }

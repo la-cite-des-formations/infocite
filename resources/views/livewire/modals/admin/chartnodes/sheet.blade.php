@@ -26,28 +26,6 @@
     </div>
     <div class="alert alert-info mb-0">
         <div id="orgchart" class="overflow-auto m-3"></div>
-        {{-- <dl class="row mb-0 mx-0">
-            <dt class="col-6 text-right pl-0">Fonction / Processus :</dt>
-            <dd class="col-6 pl-0">{{ is_object($chartnode->group) ? $chartnode->group->name : 'aucun' }}</dd>
-          @if ($chartnode->actors->isNotEmpty())
-            <dt class="col-12 pl-0">Acteurs</dt>
-            <ul class="col-12">
-              @foreach ($chartnode->actors as $actor)
-                <li>{{ $actor->identity }}</li>
-              @endforeach
-            </ul>
-          @endif
-            <dt class="col-6 text-right pl-0 mt-3">Noeud parent : </dt>
-            <dd class="col-6 pl-0 mt-3">{{ is_object($chartnode->parent) ? $chartnode->parent->name : 'aucun' }}</dd>
-          @if ($chartnode->childs->isNotEmpty())
-            <dt class="col-12 pl-0">Noeuds enfants</dt>
-            <ul class="col-12">
-              @foreach ($chartnode->childs as $childNode)
-                <li>{{ $childNode->name }}</li>
-              @endforeach
-            </ul>
-          @endif
-        </dl> --}}
     </div>
 @endsection
 
