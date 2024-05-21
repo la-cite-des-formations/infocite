@@ -42,7 +42,7 @@ class Format extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
+        return static::query()
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%$search%");
             });
