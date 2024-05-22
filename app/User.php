@@ -3,6 +3,7 @@
 namespace App;
 
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use WithSearching;
     use Notifiable;
 
     /**
@@ -454,29 +456,37 @@ class User extends Authenticatable
                     ->each(function ($group) use (&$users) {
                         $users = $users->merge($group->users);
                     });
-                $users = static::whereIn('id', $users->pluck('id'));
+                $query = static::whereIn('id', $users->pluck('id'));
                 break;
 
             case $groupType && $groupId :
-                $users = Group::find($groupId)->users();
+                $query = Group::find($groupId)->users();
                 break;
 
-            default : $users = static::query();
+            default : $query = static::query();
         }
 
-        return $users
+        $users = $query
             ->when(!$profiles, function ($query) {
                 $query->where('name', '<>', AP::PROFILE);
             })
             ->when($profiles, function ($query) {
                 $query->where('name', AP::PROFILE);
             })
-            ->when($search, function ($query) use ($search) {
-                $query->whereRaw("CONCAT(name, ' ', first_name) LIKE ?", "%{$search}%");
-            })
             ->when(isset($isFrozen), function ($query) use ($isFrozen) {
                 $query->where('is_frozen', $isFrozen);
+            })
+            ->get()
+            ->when($search, function ($users) use ($search, $filter) {
+                return $users->filter(function ($user) use ($search, $filter) {
+                    $columns = [$user->identity];
+                    if (!$filter['profiles']) $columns[] = $user->getInfo(AP::getUserInfo($filter['groupType'], $filter['groupId']));
+
+                    return static::tableContains($columns, $search);
+                });
             });
+
+        return $users->isEmpty() ? static::whereNull('id') : $users->toQuery();
     }
 
     public static function haveOn(string $rightName, int $roles) {

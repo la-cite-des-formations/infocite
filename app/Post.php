@@ -3,10 +3,13 @@
 namespace App;
 
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    use WithSearching;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -160,10 +163,7 @@ class Post extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('title', 'like', "%$search%");
-            })
+        $posts = static::query()
             ->when($rubricId, function ($query) use ($rubricId) {
                 $query->where('rubric_id', $rubricId);
             })
@@ -209,7 +209,19 @@ class Post extends Model
                             ->where('auto_delete', TRUE);
                         break;
                 }
+            })
+            ->get()
+            ->when($search, function ($posts) use ($search) {
+                return $posts->filter(function ($post) use ($search) {
+                    return static::tableContains([
+                        $post->title,
+                        $post->author->identity,
+                        $post->status->title,
+                    ], $search);
+                });
             });
+
+        return $posts->isEmpty() ? static::whereNull('id') : $posts->toQuery();
     }
 
     public static function allCommentable() {
