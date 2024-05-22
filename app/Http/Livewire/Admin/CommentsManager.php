@@ -24,6 +24,7 @@ class CommentsManager extends Component
     protected $listeners = ['modalClosed', 'render'];
 
     public $filter = [
+        'searchOnly' => FALSE,
         'search' => '',
         'authorId' => '',
         'rubricId' => '',
