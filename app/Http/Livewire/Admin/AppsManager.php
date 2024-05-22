@@ -21,6 +21,7 @@ class AppsManager extends Component
     protected $listeners = ['modalClosed', 'render'];
 
     public $filter = [
+        'searchOnly' => FALSE,
         'authType' => '',
         'type' => 'I', // applications institutionnelles par défaut
         'search' => '',

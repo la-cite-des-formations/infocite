@@ -1,7 +1,7 @@
 @extends('layouts.card')
 
 @section('card-title', AP::getDashboardFunction($models, isset($dashboard) ? $dashboard : 'main')->table_title)
-@if(count($filter) > 1)
+@if(!$filter['searchOnly'])
   @section('add-filter')
     <div class="collapse @if($showFilter) show @endif" id="filter">
         <hr/>

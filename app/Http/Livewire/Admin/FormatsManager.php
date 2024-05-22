@@ -21,6 +21,7 @@ class FormatsManager extends Component
     protected $listeners = ['modalClosed', 'render'];
 
     public $filter = [
+        'searchOnly' => TRUE,
         'search' => ''
     ];
 

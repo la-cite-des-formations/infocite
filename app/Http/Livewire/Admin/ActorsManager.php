@@ -24,6 +24,7 @@ class ActorsManager extends Component
 
     public $actorInfo;
     public $filter = [
+        'searchOnly' => FALSE,
         'profiles' => FALSE,
         'search' => '',
         'groupType' => 'P+',

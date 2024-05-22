@@ -7,7 +7,7 @@
             </div>
         </div>
         <input wire:model='filter.search' type="text" class="form-control" placeholder="Rechercher...">
-      @if(count($filter) > 1)
+      @if(!$filter['searchOnly'])
         <!-- bouton d'activation du filtre spécifique -->
         <div class="input-group-append">
             <button wire:click='toggleFilter' class="btn btn-sm btn-secondary" title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
