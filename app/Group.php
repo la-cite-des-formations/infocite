@@ -3,10 +3,13 @@
 namespace App;
 
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
+    use WithSearching;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -94,12 +97,20 @@ class Group extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%$search%");
-            })
+        $groups = static::query()
             ->when($type, function ($query) use ($type) {
                 $query->where('type', $type);
+            })
+            ->get()
+            ->when($search, function ($groups) use ($search) {
+                return $groups->filter(function ($group) use ($search) {
+                    return static::tableContains([
+                        $group->name,
+                        AP::getGroupType($group->type),
+                    ], $search);
+                });
             });
+
+        return $groups->isEmpty() ? static::whereNull('id') : $groups->toQuery();
     }
 }

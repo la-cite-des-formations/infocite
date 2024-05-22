@@ -77,7 +77,7 @@
             </label>
         </td>
         <td scope="row" class="col-3">{{ $rubric->parent ? $rubric->parent->name : '-' }}</td>
-        <td scope="row" class="col-3">{{ AP::getRubricPosition($rubric->position) }} ({{ $rubric->position.$rubric->rank }})</td>
+        <td scope="row" class="col-3">{{ $rubric->global_position }}</td>
         <td class="col d-flex justify-content-end mb-auto">
           @can('view', $rubric)
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $rubric->id }}})"

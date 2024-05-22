@@ -26,10 +26,11 @@ class ProfilesManager extends Component
     public $userInfo;
     public $groupFilter;
     public $filter = [
+        'searchOnly' => TRUE,
         'profiles' => TRUE,
         'search' => '',
         'groupType' => '',
-        'groupID' => '',
+        'groupId' => '',
         'isFrozen' => '',
     ];
 
@@ -42,7 +43,7 @@ class ProfilesManager extends Component
     }
 
     public function updatingFilterGroupType() {
-        $this->filter['groupID'] = '';
+        $this->filter['groupId'] = '';
     }
 
     public function updatedFilterGroupType() {
@@ -51,9 +52,9 @@ class ProfilesManager extends Component
 
     public function updatedFilter() {
 
-        $this->userInfo = AP::getUserInfo($this->filter['groupType'], $this->filter['groupID']);
+        $this->userInfo = AP::getUserInfo($this->filter['groupType'], $this->filter['groupId']);
         $this->userInfo['groupType'] = $this->filter['groupType'];
-        $this->userInfo['groupID'] = $this->filter['groupID'];
+        $this->userInfo['groupId'] = $this->filter['groupId'];
     }
 
     public function render()

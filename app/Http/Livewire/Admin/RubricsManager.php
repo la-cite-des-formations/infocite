@@ -21,6 +21,7 @@ class RubricsManager extends Component
     protected $listeners = ['modalClosed', 'render'];
 
     public $filter = [
+        'searchOnly' => TRUE,
         'search' => '',
         //'is_parent' => NULL,
     ];

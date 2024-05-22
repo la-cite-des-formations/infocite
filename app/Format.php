@@ -4,10 +4,13 @@ namespace App;
 
 use App\Casts\NullableField;
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class Format extends Model
 {
+    use WithSearching;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -42,9 +45,16 @@ class Format extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return static::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%$search%");
+        $formats = static::query()
+            ->get()
+            ->when($search, function ($formats) use ($search) {
+                return $formats->filter(function ($format) use ($search) {
+                    return static::tableContains([
+                        $format->name,
+                    ], $search);
+                });
             });
+
+        return $formats->isEmpty() ? static::whereNull('id') : $formats->toQuery();
     }
 }

@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
+use App\Http\Livewire\WithSearching;
 use App\User;
 
 class LabelsManager extends Component
@@ -13,6 +14,7 @@ class LabelsManager extends Component
     use WithPagination;
     use WithFilter;
     use WithModal;
+    use WithSearching;
 
     public $models = 'labels';
     public $elements = 'referents';
@@ -21,6 +23,7 @@ class LabelsManager extends Component
     protected $listeners = ['modalClosed', 'render'];
 
     public $filter = [
+        'searchOnly' => TRUE,
         'search' => '',
     ];
 
@@ -28,15 +31,16 @@ class LabelsManager extends Component
     public $perPage = 10;
 
     private function getReferents() {
-        $search = strtolower($this->filter['search']);
+        $search = $this->filter['search'];
         $referents = User::allWho('have-label')
             ->get()
             ->when($search, function ($referents) use ($search) {
                 return $referents->filter(function ($referent) use ($search) {
-                    return
-                        str_contains(strtolower($referent->label), $search) ||
-                        str_contains(strtolower($referent->identity), $search) ||
-                        str_contains(strtolower($referent->process), $search);
+                    return static::tableContains([
+                        $referent->label,
+                        $referent->identity,
+                        $referent->process,
+                    ], $search);
                 });
             });
 

@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    use WithSearching;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -30,10 +33,7 @@ class Comment extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('content', 'like', "%$search%");
-            })
+        $comments = static::query()
             ->when($authorId, function ($query) use ($authorId) {
                 $query->where('user_id', $authorId);
             })
@@ -42,6 +42,18 @@ class Comment extends Model
             })
             ->when($postId, function ($query) use ($postId) {
                 $query->where('post_id', $postId);
+            })
+            ->get()
+            ->when($search, function ($comments) use ($search) {
+                return $comments->filter(function ($comment) use ($search) {
+                    return static::tableContains([
+                        $comment->content,
+                        $comment->post->title,
+                        $comment->author->identity,
+                    ], $search);
+                });
             });
+
+        return $comments->isEmpty() ? static::whereNull('id') : $comments->toQuery();
     }
 }
