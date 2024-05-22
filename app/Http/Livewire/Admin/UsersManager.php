@@ -25,6 +25,7 @@ class UsersManager extends Component
     public $userInfo;
     public $groupFilter;
     public $filter = [
+        'searchOnly' => FALSE,
         'profiles' => FALSE,
         'search' => '',
         'groupType' => '',

@@ -6,9 +6,11 @@ use App\Casts\NullableField;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Livewire\WithSearching;
 
 class Chartnode extends Model
 {
+    use WithSearching;
     /**
      * The attributes that are mass assignable.
      *
@@ -123,10 +125,11 @@ class Chartnode extends Model
         $chartnodes = static::all()
             ->when($search, function ($chartnodes) use ($search) {
                 return $chartnodes->filter(function ($chartnode) use ($search) {
-                    return
-                        str_contains(strtolower($chartnode->name), $search) ||
-                        (is_object($chartnode->parent) && str_contains(strtolower($chartnode->parent->name), $search)) ||
-                        (is_object($chartnode->group) && str_contains(strtolower($chartnode->group->name), $search));
+                    $columns = [$chartnode->name];
+                    if (is_object($chartnode->parent)) $columns[] = $chartnode->parent->name;
+                    if (is_object($chartnode->group)) $columns[] = $chartnode->group->name;
+
+                    return static::tableContains($columns, $search);
                 });
             });
 

@@ -3,10 +3,13 @@
 namespace App;
 
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class Right extends Model
 {
+    use WithSearching;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -105,10 +108,17 @@ class Right extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query
-                    ->where('description', 'like', "%$search%");
+        $rights = static::query()
+            ->get()
+            ->when($search, function ($rights) use ($search) {
+                return $rights->filter(function ($right) use ($search) {
+                    return static::tableContains([
+                        $right->name,
+                        $right->rolesFromDashboard(),
+                    ], $search);
+                });
             });
+
+        return $rights->isEmpty() ? static::whereNull('id') : $rights->toQuery();
     }
 }

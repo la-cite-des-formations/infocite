@@ -3,10 +3,12 @@
 namespace App;
 
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class App extends Model
 {
+    use WithSearching;
     /**
      * The attributes that are mass assignable.
      *
@@ -75,10 +77,7 @@ class App extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%$search%");
-            })
+        $apps = static::query()
             ->when($authType, function ($query) use ($authType) {
                 $query->where('auth_type', $authType);
             })
@@ -88,6 +87,17 @@ class App extends Model
             ->when($type == 'I', function ($query) {
                 $query->whereNull('owner_id');
             })
-            ->orderBy('name');
+            ->orderBy('name')
+            ->get()
+            ->when($search, function ($apps) use ($search) {
+                return $apps->filter(function ($app) use ($search) {
+                    return static::tableContains([
+                        $app->name,
+                        $app->url,
+                    ], $search);
+                });
+            });
+
+        return $apps->isEmpty() ? static::whereNull('id') : $apps->toQuery();
     }
 }

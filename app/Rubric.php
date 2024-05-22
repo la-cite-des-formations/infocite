@@ -3,10 +3,13 @@
 namespace App;
 
 use App\CustomFacades\AP;
+use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
 class Rubric extends Model
 {
+    use WithSearching;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -123,6 +126,10 @@ class Rubric extends Model
         return $this->name.($this->parent_id ? " ({$this->parent->name})" : '');
     }
 
+    public function getGlobalPositionAttribute() {
+        return AP::getRubricPosition($this->position).AP::betweenBrackets($this->position.$this->rank);
+    }
+
     public static function sort() {
         return self::query()
             ->orderByRaw('position ASC, rank ASC')
@@ -140,17 +147,22 @@ class Rubric extends Model
     public static function filter(array $filter) {
         extract($filter);
 
-        return self::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%$search%");
-            })
-            /*->when($is_parent, function ($query) {
-                $query->where('is_parent', TRUE);
-            })*/;
+        $rubrics = static::query()
+            ->get()
+            ->when($search, function ($rubrics) use ($search) {
+                return $rubrics->filter(function ($rubric) use ($search) {
+                    $columns = [$rubric->name, $rubric->global_position];
+                    if (is_object($rubric->parent)) $columns[] = $rubric->parent->name;
+
+                    return static::tableContains($columns, $search);
+                });
+            });
+
+        return $rubrics->isEmpty() ? static::whereNull('id') : $rubrics->toQuery();
     }
 
     public static function allWithPosts() {
-        return self::query()
+        return static::query()
             ->whereRaw('contains_posts')
             ->orderByRaw('position, rank')
             ->get();
