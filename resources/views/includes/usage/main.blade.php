@@ -1,10 +1,16 @@
 <main id="main">
+    <div>
+        <br><br><br>
+        <h2>Notification :</h2>
+        <p id="notificationPush"></p>
+        <p class="text-center">{{auth()->user()->name}}</p>
+    </div>
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
   @can('viewAny', 'App\\App')
+
     @livewire('usage.apps-manager', ['viewBag' => $viewBag])
   @endcan
-
     <section id="search" class="search-form">
         <div class="container">
             <div class="row justify-content-center">
@@ -19,6 +25,7 @@
                 </div>
             </div>
         </div>
+
     </section>
     @livewire('modal-manager', ['parent' => "usage.{$viewBag->template}-manager"])
 </main>

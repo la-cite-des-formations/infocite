@@ -10,9 +10,16 @@ function scrollToAnchorWithOffset(anchorID, offset) {
     }
 }
 
-document.getElementById('paginationContainer').addEventListener('click', function() {
-    scrollToAnchorWithOffset('scrollToResult', 100);
-    console.log('paginationContainer')
-});
+if(document.getElementById('paginationContainer')){
+    document.getElementById('paginationContainer').addEventListener('click', function() {
+        scrollToAnchorWithOffset('scrollToResult', 100);
+        console.log('paginationContainer')
+    });
+}
 
+Echo.channel(`notificationPostChannel.${window.userId}`)
+    .listen('NotificationPusher', (notification) => {
+        let showNotification = document.getElementById('notificationPush')
+        showNotification.innerText = notification.message + notification.post
+    });
 

@@ -3,11 +3,13 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Comment;
+use App\Events\NotificationPusher;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Notification;
 use App\Post;
+use App\User;
 use Livewire\Component;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
@@ -67,6 +69,13 @@ class PostManager extends Component
                 ['release_at' => today()->format('Y-m-d')]
             );
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
+
+            //Recuperation des utilisateurs ayant cet article en favori
+            $userIds =User::query()->whereHas('myFavoritesPosts',function ($query) {
+                $query->where('post_id','=',$this->post->id);
+            })->get()->pluck('id')->toArray();
+            //boradcasting de la notification
+            broadcast(new NotificationPusher($newNotification, $userIds))->toOthers();
 
             $this->emitSelf('render');
         }
