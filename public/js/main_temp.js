@@ -19,6 +19,8 @@ if(document.getElementById('paginationContainer')){
 
 Echo.channel(`notificationPostChannel.${window.userId}`)
     .listen('NotificationPusher', (notification) => {
+
+        //Edition de la notification
         let notificationElement = document.getElementById('notificationPush')
         let notificationTitle = document.getElementById('notifTitle')
         let notificationBody = document.getElementById('notifBody')
@@ -29,10 +31,9 @@ Echo.channel(`notificationPostChannel.${window.userId}`)
         notificationBody.innerText = notification.post_title
         postRedirectElement.href = notification.href
 
-        // Enregistrer l'heure de réception de la notification
+        // Horodatage de la notification
         let receivedTime = new Date();
 
-        // Fonction pour mettre à jour le temps écoulé
         function updateElapsedTime() {
             let now = new Date();
             let elapsed = Math.floor((now - receivedTime) / 1000); // temps écoulé en secondes
@@ -40,12 +41,30 @@ Echo.channel(`notificationPostChannel.${window.userId}`)
             elapsedTimeElement.innerText = `Il y a ${minutes} mins`;
         }
 
-        // Mettre à jour le temps écoulé toutes les secondes
         setInterval(updateElapsedTime, 60);
 
+        //création de la notification
         let notificationPush = new bootstrap.Toast(notificationElement, {
             autohide: false
         });
+
+        //Affichage de la notification et modification du titre de l'onglet
         notificationPush.show();
-        console.log('test')
+
+        let originalTitle = document.title
+        let newTilte = "New notification"
+        let blink = true
+
+        let interval = setInterval(()=>{
+            document.title = blink ? newTilte : originalTitle
+            blink = !blink
+        }, 1000)
+
+        //Stop blink quand l'utilisateur focus la page
+        window.addEventListener('focus',()=>{
+            clearInterval(interval);
+            document.title = originalTitle
+        })
+
+
     });
