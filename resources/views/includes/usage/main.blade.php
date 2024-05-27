@@ -1,10 +1,21 @@
 <main id="main">
-    <div>
-        <br><br><br>
-        <h2>Notification :</h2>
-        <p id="notificationPush"></p>
-        <p class="text-center">{{auth()->user()->name}}</p>
-    </div>
+
+        {{--NotificationPush--}}
+    <div class="container mt-5 position-relative">
+        <div id="notificationPush" class="toast" style="z-index: 9999; position: fixed; bottom : 0; right: 0;"
+             role="alert" aria-live="assertive" aria-atomic="true">
+            <div>
+                <div class="toast-header">
+                    <strong id="notifTitle" class="me-auto"></strong>
+                    <small id="time"></small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <a id="postRedirect">
+                    <div id="notifBody" class="toast-body"></div>
+                </a>
+            </div>
+        </div>
+
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
   @can('viewAny', 'App\\App')

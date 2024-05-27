@@ -38,7 +38,8 @@ class NotificationPusher implements ShouldBroadcast
     {
         return [
             'message'=>$this->notification->message,
-            'post'=>$this->post->title,
+            'post_title'=>$this->post->title,
+            'href'=>$this->notification->h_ref,
         ];
     }
 

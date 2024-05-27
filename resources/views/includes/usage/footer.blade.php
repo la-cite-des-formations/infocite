@@ -64,4 +64,8 @@
 <!-- Modal JS File -->
 <script src="{{ asset('js/confirmManager.js') }}"></script>
 
+<script src="{{ mix('js/app.js') }}"></script>
+<script>
+
+</script>
 @livewireScripts(['nonce' => csp_nonce()])

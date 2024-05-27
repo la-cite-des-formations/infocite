@@ -71,9 +71,12 @@ class PostManager extends Component
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
             //Recuperation des utilisateurs ayant cet article en favori
-            $userIds =User::query()->whereHas('myFavoritesPosts',function ($query) {
+            $userIds =User::query()
+                ->where('notificationSubscribed',true)
+                ->whereHas('myFavoritesPosts',function ($query) {
                 $query->where('post_id','=',$this->post->id);
             })->get()->pluck('id')->toArray();
+
             //boradcasting de la notification
             broadcast(new NotificationPusher($newNotification, $userIds))->toOthers();
 

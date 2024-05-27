@@ -71,6 +71,14 @@ class InfosManager extends Component
         $this->blockRedirection = TRUE;
     }
 
+    public function switchSubscription(){
+
+        $user = auth()->user();
+        User::query()
+            ->where('id', $user->id)
+            ->update(['notificationSubscribed' => !$user->notificationSubscribed]);
+    }
+
     public function render() {
         $this->rendered = TRUE;
 

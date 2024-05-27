@@ -167,7 +167,9 @@ class EditPostManager extends Component
             //Boradcasting notification
             //Recupérer tout les utilisateurs qui ont la rubrique de l'article en favoris OU l'article lui même en favori
             $currentPostRubricId = Post::query()->where('id',$this->post->id)->pluck('rubric_id')->first();
-            $userIds = User::query()->whereHas('myFavoritesRubrics',function ($query) use ($currentPostRubricId) {
+            $userIds = User::query()
+                ->where('notificationSubscribed',true)
+                ->whereHas('myFavoritesRubrics',function ($query) use ($currentPostRubricId) {
                 $query->where('rubric_id',$currentPostRubricId);
             })->orWhereHas('myFavoritesPosts',function ($query) {
                 $query->where('post_id','=',$this->post->id);
