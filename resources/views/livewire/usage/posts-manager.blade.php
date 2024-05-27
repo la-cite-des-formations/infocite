@@ -68,30 +68,30 @@
             @endif
             </div>
         </div>
-{{--        <div class="d-flex flex-row">--}}
-{{--            <div class="" style="background: var(--select-color-1); width: 100px">1</div>--}}
-{{--            <div class="" style="background: var(--select-color-2); width: 100px">2</div>--}}
-{{--            <div class="" style="background: var(--select-color-3); width: 100px">3</div>--}}
-{{--            <div class="" style="background: var(--select-color-4); width: 100px">4</div>--}}
-{{--            <div class="" style="background: var(--select-color-5); width: 100px">5</div>--}}
-{{--            <div class="" style="background: var(--select-color-6); width: 100px">6</div>--}}
-{{--            <div class="" style="background: var(--select-color-7); width: 100px">7</div>--}}
-{{--            <div class="" style="background: var(--select-color-8); width: 100px">8</div>--}}
-{{--            <div class="" style="background: var(--select-color-9); width: 100px">9</div>--}}
-{{--            <div class="" style="background: var(--select-color-10); width: 100px">10</div>--}}
-{{--            <div class="" style="background: var(--select-color-11); width: 100px">11</div>--}}
-{{--            <div class="" style="background: var(--select-color-12); width: 100px">12</div>--}}
-{{--            <div class="" style="background: var(--select-color-13); width: 100px">13</div>--}}
-{{--            <div class="" style="background: var(--select-color-14); width: 100px">14</div>--}}
-{{--            <div class="" style="background: var(--select-color-15); width: 100px">15</div>--}}
-{{--            <div class="" style="background: var(--select-color-16); width: 100px">16</div>--}}
-{{--            <div class="" style="background: var(--select-color-17); width: 100px">17</div>--}}
-{{--            <div class="" style="background: var(--select-color-18); width: 100px">18</div>--}}
-{{--            <div class="" style="background: var(--select-color-19); width: 100px">19</div>--}}
-{{--            <div class="" style="background: var(--select-color-20); width: 100px">20</div>--}}
-{{--            <div class="" style="background: var(--select-color-21); width: 100px">21</div>--}}
-{{--            <div class="" style="background: var(--select-color-22); width: 100px">22</div>--}}
-{{--        </div>--}}
+        <div class="d-flex flex-row">
+            <div class="" style="background: var(--select-color-1); width: 100px">1</div>
+            <div class="" style="background: var(--select-color-2); width: 100px">2</div>
+            <div class="" style="background: var(--select-color-3); width: 100px">3</div>
+            <div class="" style="background: var(--select-color-4); width: 100px">4</div>
+            <div class="" style="background: var(--select-color-5); width: 100px">5</div>
+            <div class="" style="background: var(--select-color-6); width: 100px">6</div>
+            <div class="" style="background: var(--select-color-7); width: 100px">7</div>
+            <div class="" style="background: var(--select-color-8); width: 100px">8</div>
+            <div class="" style="background: var(--select-color-9); width: 100px">9</div>
+            <div class="" style="background: var(--select-color-10); width: 100px">10</div>
+            <div class="" style="background: var(--select-color-11); width: 100px">11</div>
+            <div class="" style="background: var(--select-color-12); width: 100px">12</div>
+            <div class="" style="background: var(--select-color-13); width: 100px">13</div>
+            <div class="" style="background: var(--select-color-14); width: 100px">14</div>
+            <div class="" style="background: var(--select-color-15); width: 100px">15</div>
+            <div class="" style="background: var(--select-color-16); width: 100px">16</div>
+            <div class="" style="background: var(--select-color-17); width: 100px">17</div>
+            <div class="" style="background: var(--select-color-18); width: 100px">18</div>
+            <div class="" style="background: var(--select-color-19); width: 100px">19</div>
+            <div class="" style="background: var(--select-color-20); width: 100px">20</div>
+            <div class="" style="background: var(--select-color-21); width: 100px">21</div>
+            <div class="" style="background: var(--select-color-22); width: 100px">22</div>
+        </div>
         {{--        @dump($filter)--}}
         {{--        @dump($sorter)--}}
 

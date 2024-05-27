@@ -63,9 +63,6 @@
 
 <!-- Modal JS File -->
 <script src="{{ asset('js/confirmManager.js') }}"></script>
-
 <script src="{{ mix('js/app.js') }}"></script>
-<script>
-
-</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @livewireScripts(['nonce' => csp_nonce()])
