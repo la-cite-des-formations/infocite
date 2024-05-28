@@ -89,8 +89,8 @@ Echo.channel(`notificationPostChannel.${window.userId}`)
             position: "right", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-                color :"var(--select-color-11)",
-                background: "linear-gradient(to bottom right, var(--select-color-1),var(--select-color-15),var(--select-color-3))",
+                color :"var(--select-color-10)",
+                background: "linear-gradient(to right, var(--select-color-1),var(--select-color-11))",
             },
         }).showToast()
 
