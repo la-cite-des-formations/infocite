@@ -58,6 +58,7 @@
                     @endif
                     <a href="{{ route('rubric.index', ['rubric' => $post->rubric->route()]) }}">{{ $post->rubric->identity() }}</a>
                 </p>
+                <p class="fst-italic">Dernière mise à jours le {{$post->updated_at->format('d/m/Y')}}</p>
             </div>
             <div class="card mx-lg-5">
                 <div class="card-header d-flex justify-content-end">
@@ -77,9 +78,6 @@
                                     </button>
                                 @endcan
                             @endif
-{{--                            @dump($this->firstLoad)--}}
-{{--                                @dump($this->rendered)--}}
-{{--                                @dump($this->isFavoritePost)--}}
                             <button class="btn btn-sm @if ($isFavoritePost) btn-warning @else btn-secondary @endif"
                                     title="@if ($isFavoritePost) Retirer des favoris @else Ajouter aux favoris @endif"
                                     wire:click="switchFavoritePost" type="button">

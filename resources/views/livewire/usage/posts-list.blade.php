@@ -6,7 +6,7 @@
             <td class="d-flex flex-row">
                 <!-- Titre de l'article et icone-->
 
-                <div class="icon">
+                <div class="icon mt-2">
                     @if($post->is_pinned)
                         <i class="material-icons me-2 text-danger bx bxs-pin bx-rotate-90" title="pinnedIcon"></i>
                     @else
@@ -14,8 +14,8 @@
                     @endif
                 </div>
                 <div class="d-flex flex-column">
-                    <h5 class="align-items-center">
-                        <a>{{ $post->previewTitle() }}</a>
+                    <h5 class="align-items-center mt-2 mb-0">
+                        {{ $post->previewTitle() }}
                     </h5>
                     <span class="title-description">{!! $post->preview() !!}</span>
                 </div>
