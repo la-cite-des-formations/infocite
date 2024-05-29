@@ -18,6 +18,8 @@
 {{--    @dump(session('lastFilter'))--}}
 {{--    @dump(session('lastSorter'))--}}
 
+    @dump(session('lastFilter'))
+    @dump(session('lastSorter'))
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
   @can('viewAny', 'App\\App')
