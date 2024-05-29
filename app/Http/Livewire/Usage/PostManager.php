@@ -77,7 +77,7 @@ class PostManager extends Component
                 $query->where('post_id','=',$this->post->id);
             })->get()->pluck('id')->toArray();
 
-            //boradcasting de la notification
+            //Diffusion de la notification
             broadcast(new NotificationPusher($newNotification, $userIds))->toOthers();
 
             $this->emitSelf('render');

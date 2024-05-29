@@ -123,11 +123,12 @@
 
                 </dl>
             </div>
-            <div class="container d-flex flex-row justify-content-center col-12">
+
+            <div class="container d-flex flex-row justify-content-center col-12 mt-4">
                 <p class=" d-flex col-4 align-items-center">Activer / désactiver les notifications</p>
-                <div class="subscribeNotification @if(auth()->user()->notificationSubscribed) enabledNotification @else disabledNotification @endif" wire:click='switchSubscription()'>
-                    <input type="checkbox" value="None" id="subscribe" name="check" @if(auth()->user()->notificationSubscribed) checked @endif />
-                    <label for="subscribe"></label>
+                <div class="subscribeNotification @if(auth()->user()->notificationSubscribed) enabledNotification @else disabledNotification @endif" >
+                    <input type="checkbox" value="None" id="subscribe" name="check" @if(auth()->user()->notificationSubscribed) checked @endif  />
+                    <label for="subscribe" wire:click='switchSubscription()'></label>
                     <span class="text-off">OFF</span>
                     <span class="text-on">ON</span>
                 </div>

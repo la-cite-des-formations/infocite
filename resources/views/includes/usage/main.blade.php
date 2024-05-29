@@ -15,6 +15,8 @@
 {{--                </a>--}}
 {{--            </div>--}}
 {{--        </div>--}}
+{{--    @dump(session('lastFilter'))--}}
+{{--    @dump(session('lastSorter'))--}}
 
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
