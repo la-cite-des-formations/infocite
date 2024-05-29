@@ -89,6 +89,7 @@ trait WithFilterPosts
      */
     public function updatedFilter()
     {
+
         foreach ($this->filter as $key => $value) {
             if ($value == 'on') {
                 Session::put('lastFilter', $key);
@@ -107,7 +108,7 @@ trait WithFilterPosts
      * Fonction qui s'execute automatiquement après la fonction updatedFilter()
      */
     public function updatingFilter(){
-        Session::remove('lastSorter');
+        session(['lastSorter'=>null]);
         $this->firstLoad = true;
         $this->resetFilter();
     }
@@ -119,6 +120,7 @@ trait WithFilterPosts
      */
     public function updatedSorter()
     {
+
         foreach ($this->sorter as $key => $value) {
             if ($value == 'on') {
                 Session::put('lastSorter', $key);
@@ -137,7 +139,7 @@ trait WithFilterPosts
      * Fonction qui s'execute automatiquement après la fonction updatingSorter()
      */
     public function updatingSorter(){
-        Session::remove('lastFilter');
+        session(['lastFilter'=>null]);
         $this->firstLoad = true;
         $this->resetFilter();
     }
@@ -180,7 +182,10 @@ trait WithFilterPosts
     public function toggleFilterMenu(){
         $this->resetFilter();
         $this->filter['allPosts'] = 'on';
-        Session::put('lastFilter','allPosts');
+        session([
+            'lastFilter'=>'allPosts',
+            'lastSorter'=>null,
+        ]);
         $this->toggleFilter();
 
     }
@@ -190,11 +195,12 @@ trait WithFilterPosts
      */
     public function resetFilter(){
 
+
         foreach ($this->sorter as $key => $value){
-            $this->sorter[$key] = '';
+            $this->sorter[$key] = null;
         }
         foreach ($this->filter as $key => $value){
-            $this->filter[$key] = '';
+            $this->filter[$key] = null;
         }
 
     }
