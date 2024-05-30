@@ -129,9 +129,10 @@ class Rubric extends Model
             ->get();
     }
 
-    public static function getRubrics(string $position) {
+    public static function getRubrics(string $position, string $application = 'infocite') {
         return self::query()
             ->where('position', $position)
+            ->where('application', $application)
             ->where('rank', 'NOT LIKE', '%-%')
             ->orderBy('rank')
             ->get();

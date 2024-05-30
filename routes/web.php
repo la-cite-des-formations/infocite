@@ -54,9 +54,36 @@ Route::get('dashboard/{sub_dashboard}', 'DashboardController@index')
 Route::post('upload', 'ViewController@upload')->name('upload');
 
 
+
+
+
+
+// STAR ////////////////
+Route::group(['prefix' => 'star'], function () {
+    Route::get('/', 'Star\StarViewController@index');
+    Route::get('/educatif.mediation', 'Star\StarViewController@mediation');
+    Route::get('/educatif.mediation/bilan', 'Star\StarViewController@mediationBilan');
+    Route::get('/educatif.mesures-educatives', 'Star\StarViewController@mesureed');
+    Route::get('/educatif.assiduite', 'Star\StarViewController@assiduite');
+    Route::get('/educatif.ash', 'Star\StarViewController@ash');
+
+    // Ajouter d'autres routes ici...
+});
+// $star = Route::namespace('STAR')
+//     ->prefix('STAR')
+//     ->name('STAR.');
+
+// $star->get('mesure-educ', 'star/controller')->name('mesure-educ');
+
+
+// END STAR ///////////
+
+
+
+// ^
   //\
  //!\\ l'ordre des routes suivantes est important.
-//===\\
+//___\\
 
 Route::get('personal-apps/create', 'ViewController@createPersonalApp')
     ->where(['rubric' => AP::RUBRIC_REGEX])
