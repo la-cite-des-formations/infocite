@@ -384,39 +384,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       clearInterval(interval);
       document.title = originalTitle;
     });
-  }); // Echo.channel(`notificationPostChannel.${window.userId}`)
-  //     .listen('NotificationPusher', (notification) => {
-  //
-  //         Toastify({
-  //             text: `${notification.message} ${notification.post_title} `,
-  //             duration: -1,
-  //             destination: notification.href,
-  //             newWindow: false,
-  //             close: true,
-  //             gravity: "bottom", // `top` or `bottom`
-  //             position: "right", // `left`, `center` or `right`
-  //             stopOnFocus: true, // Prevents dismissing of toast on hover
-  //             style: {
-  //                 color :"var(--select-color-11)",
-  //                 background: "linear-gradient(to right, var(--select-color-10),var(--select-color-16),var(--select-color-11))",
-  //             },
-  //         }).showToast()
-  //
-  //         let originalTitle = document.title
-  //         let newTilte = "New notification"
-  //         let blink = true
-  //
-  //         let interval = setInterval(()=>{
-  //             document.title = blink ? newTilte : originalTitle
-  //             blink = !blink
-  //         }, 1000)
-  //
-  //         //Stop blink quand l'utilisateur focus la page
-  //         window.addEventListener('focus',()=>{
-  //             clearInterval(interval);
-  //             document.title = originalTitle
-  //         });
-  //     });
+  });
 })();
 /******/ })()
 ;
