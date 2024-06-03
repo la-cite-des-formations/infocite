@@ -50,14 +50,19 @@
 <script src="{{ asset('vendor/php-email-form/validate.js') }}" defer></script>
 
 <!-- New Tab Redirection JS File -->
-<script src="{{ asset('js/new-tab-redirection.js') }}" defer>
+<script src="{{ asset('js/new-tab-redirection.js') }}" defer></script>
 
-</script>
+<!--auth-->
+@if(isset(auth()->user()->id) )
+<script>window.userId = {{auth()->user()->id}}</script>
+@endif
 <!-- Template Main JS File -->
+<script src="{{ asset('js/bootstrap.js') }}" defer></script>
 <script src="{{ asset('js/main.js') }}" defer></script>
 <script src="{{ asset('js/main_temp.js') }}" defer></script>
 
 <!-- Modal JS File -->
 <script src="{{ asset('js/confirmManager.js') }}"></script>
-
+<script src="{{ mix('js/app.js') }}"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @livewireScripts(['nonce' => csp_nonce()])

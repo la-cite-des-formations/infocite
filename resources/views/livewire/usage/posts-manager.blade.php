@@ -92,6 +92,9 @@
 {{--            <div class="" style="background: var(--select-color-21); width: 100px">21</div>--}}
 {{--            <div class="" style="background: var(--select-color-22); width: 100px">22</div>--}}
 {{--        </div>--}}
+        {{--        @dump($filter)--}}
+        {{--        @dump($sorter)--}}
+
 
         {{--Titre de la rubric--}}
         <div class="container">

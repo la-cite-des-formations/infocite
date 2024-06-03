@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\Events\NotificationPusher;
 use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
@@ -12,6 +13,7 @@ use App\Post;
 use App\Right;
 use App\Roles;
 use App\Rubric;
+use App\User;
 use Livewire\Component;
 
 class EditPostManager extends Component
@@ -161,8 +163,23 @@ class EditPostManager extends Component
             $postNotification
                 ->users()
                 ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
-        }
 
+            //Boradcasting notification
+            //Recupérer tout les utilisateurs qui ont la rubrique de l'article en favoris OU l'article lui même en favori
+            $currentPostRubricId = Post::query()->where('id',$this->post->id)->pluck('rubric_id')->first();
+            $userIds = User::query()
+                ->where('notificationSubscribed',true)
+                ->whereHas('myFavoritesRubrics',function ($query) use ($currentPostRubricId) {
+                $query->where('rubric_id',$currentPostRubricId);
+            })->orWhereHas('myFavoritesPosts',function ($query) {
+                $query->where('post_id','=',$this->post->id);
+            })->get()->pluck('id')->toArray();
+
+            //Broadcaster la notification
+            broadcast( new NotificationPusher($postNotification, $userIds))->toOthers();
+
+
+        }
         // redirection
         redirect()->route($redirectionRoute, [
             'rubric' => Rubric::find($this->post->rubric_id)->route(),
