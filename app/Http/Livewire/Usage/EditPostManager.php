@@ -126,10 +126,16 @@ class EditPostManager extends Component
                     'message' => "Modification de la mise en forme effectuée avec succès."
                 ]);
         }
-        if($this->pinPost){
+        if($this->pinPost && $this->post->published_at){
             $this->countPinnedPosts();
             if( $this->countPinnedPosts < 4){
-                $this->post->is_pinned = TRUE;
+                if ($this->post->published_at <= today()){
+                    $this->post->is_pinned = TRUE;
+
+                }else{
+                    $this->addError('post.pinPost', 'La date de publication doit-être inférieur ou égale à la date d\'ajourdhui : '.today()->format('d/m/Y'));
+                    return;
+                }
 
             }else{
                 $this->addError('post.pinPost', 'Le nombre maximum d\'articles épinglé (4 articles) est déjà atteint : vous ne pouvez pas épingler cet article');

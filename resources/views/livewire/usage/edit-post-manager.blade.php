@@ -61,21 +61,6 @@
                     </textarea>
                 </div>
             </div>
-            @can('pin')
-                @error('post.pinPost')
-                @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
-                @enderror
-                <div class="row mb-3">
-                    <div class="col-2"></div>
-                    <div class="col-8">
-                        <div class="form-check">
-                            <input id="pin-post" wire:model="pinPost"
-                                   type="checkbox" class="form-check-input">
-                            <label class="my-auto" for="pin-post">Épingler l'article</label>
-                        </div>
-                    </div>
-                </div>
-            @endcan
             @can('block', ['App\\Comment'])
                 <div class="row mb-3">
                     <div class="col-2"></div>
@@ -90,7 +75,7 @@
             @endcan
             @can('publish', ['App\\Post', $currentRubric->id])
                 @error('post.published')
-                @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+                    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
                 @enderror
                 <div class="row mb-3">
                     <div class="col-2"></div>
@@ -105,7 +90,7 @@
                 </div>
                 @if ($post->published)
                     @error('post.published_at')
-                    @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+                        @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
                     @enderror
                     <div class="row mb-3">
                         <label class="col-4 fw-bold text-end my-auto" for="post-published_at">Date de
@@ -148,6 +133,21 @@
                             </div>
                         </div>
                     </div>
+                    @can('pin')
+                        @error('post.pinPost')
+                            @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
+                        @enderror
+                        <div class="row mb-3 d-flex justify-content-center">
+                            <div class="col-4"></div>
+                            <div class="col-8">
+                                <div class="form-check">
+                                    <input id="pin-post" wire:model="pinPost"
+                                           type="checkbox" class="form-check-input">
+                                    <label class="my-auto" for="pin-post">Épingler l'article</label>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
                 @endif
             @endcan
             <div class="row">

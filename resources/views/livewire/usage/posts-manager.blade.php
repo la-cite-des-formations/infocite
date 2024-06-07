@@ -26,7 +26,7 @@
                         Liste
                     </button>
                     <div class="flex-grow-1"></div>
-                    <button class="btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
+                    <button class="btn btn-sm rounded-start @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
                             wire:click="showModal('notify')" type="button">
                         @if ($notifications->count() > 0)
                             <span class="me-1">{{ $notifications->count() }}</span>

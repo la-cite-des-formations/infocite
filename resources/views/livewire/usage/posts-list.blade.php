@@ -8,9 +8,9 @@
 
                 <div class="icon mt-2">
                     @if($post->is_pinned)
-                        <i class="material-icons me-2 text-danger bx bxs-pin bx-rotate-90" title="pinnedIcon"></i>
+                        <i class="material-icons me-2 ms-1 text-danger bx bxs-pin bx-rotate-90" title="pinnedIcon"></i>
                     @else
-                        <i class="material-icons me-2">{{ $post->icon }}</i>
+                        <i class="material-icons me-2 ms-1">{{ $post->icon }}</i>
                     @endif
                 </div>
                 <div class="d-flex flex-column">

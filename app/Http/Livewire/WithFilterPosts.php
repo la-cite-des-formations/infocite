@@ -51,6 +51,7 @@ trait WithFilterPosts
             ->orWhereHas('readers', function ($query) use ($userId) {
                 $query->where('user_id', $userId)->where('is_read', false);
             })
+            ->orderBy('updated_at', 'DESC')
             ->paginate($this->perPage);
     }
 
