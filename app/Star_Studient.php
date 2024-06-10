@@ -2,10 +2,40 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Star_Studient extends Model
+class StarStudient extends Model
 {
-    use HasFactory;
+    protected $table = 'star_studients';
+
+    protected $fillable = [
+        'code_apprenant',
+        'birthday',
+        'gender',
+        'level_id',
+        'trainning_id',
+        'adress',
+        'city',
+        'postal_code',
+        'family_situation',
+        'language',
+        'quality',
+        'status',
+        'attendance',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'code_apprenant', 'code_ypareo');
+    }
+
+    public function level()
+    {
+        return $this->belongsTo(StarLevel::class, 'level_id');
+    }
+
+    public function trainning()
+    {
+        return $this->belongsTo(StarTrainning::class, 'trainning_id');
+    }
 }

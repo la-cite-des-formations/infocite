@@ -1,6 +1,7 @@
 <?php
 
 use App\CustomFacades\AP;
+use App\Http\Controllers\Star\StarDBController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -75,6 +76,8 @@ Route::group(['prefix' => 'star'], function () {
 
 // $star->get('mesure-educ', 'star/controller')->name('mesure-educ');
 
+
+Route::get('/star/blend-db', [StarDBController::class, 'BlendDB']);
 
 // END STAR ///////////
 

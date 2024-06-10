@@ -51,6 +51,20 @@ class StarYpareoController extends Controller
     static public function getDegreesPrep()
     {
         $url = "/r/v1/diplomes-prepares";
+        $api_data_degree = StarYpareoController::APIcall($url);
+        return  $api_data_degree;
+    }
+
+    static public function getStudients()
+    {
+        $url = "/r/v1/formation-longue/apprenants/";
+        $api_data_studients = StarYpareoController::APIcall($url);
+        return  $api_data_studients;
+    }
+
+    static public function getStudient($code)
+    {
+        $url = "/r/v1/apprenants/$code";
         $api_data_studients = StarYpareoController::APIcall($url);
         return  $api_data_studients;
     }

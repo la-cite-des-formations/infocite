@@ -2,10 +2,19 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Star_Degree extends Model
+class StarDegree extends Model
 {
-    use HasFactory;
+    protected $table = 'star_degrees';
+
+    protected $fillable = [
+        'code_degree',
+        'name',
+    ];
+
+    public function trainnings()
+    {
+        return $this->hasMany(StarTrainning::class, 'degree_id');
+    }
 }

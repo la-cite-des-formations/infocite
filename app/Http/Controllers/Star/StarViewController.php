@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Star;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Star\StarYpareoController;
+use App\Http\Controllers\Star\StarDBController;
 use App\Rubric;
 
 class StarViewController extends Controller
 {
     public function index()
     {
-        $diplome = StarYpareoController::getDegreesPrep();
-        dump($diplome);
-        return view("star.home", ['rubrics' => Rubric::getRubrics('N', 'star'), 'diplome' => StarYpareoController::getDegreesPrep()]);
+        // $starDBController = new StarDBController();
+        // $starDBController::BlendDB();
+        $studient = StarYpareoController::getStudients();
+        // dd($studient);
+        return view("star.home", ['rubrics' => Rubric::getRubrics('N', 'star'), 'studient' => $studient]);
     }
 
     public function mediation()
