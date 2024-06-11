@@ -22,6 +22,8 @@ class Post extends Model
         'expired_at' => 'date:Y-m-d',
     ];
 
+
+
     public function rubric()
     {
         return $this->belongsTo('App\Rubric');
@@ -150,6 +152,10 @@ class Post extends Model
         return AP::strLimiter(strip_tags($this->content));
     }
 
+    public function previewTitle() {
+        return AP::strLimiter(strip_tags($this->title),60);
+    }
+
     public function identity() {
         return "{$this->title} ({$this->rubric->name})";
     }
@@ -237,4 +243,7 @@ class Post extends Model
                     ->whereRaw('!(rightables.roles & '.Roles::IS_EDITR.')');
             });
     }
+
+
+
 }

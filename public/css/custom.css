@@ -318,9 +318,11 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .services .icon-box {
-    width: 320px;
-    min-height: 320px;
+    border-radius: 20px;
+    width: 520px;
+    min-height: 260px;
 }
+
 
 .title-icon i {
     vertical-align: top;
@@ -443,6 +445,29 @@ a:hover {
 #header.header-scrolled, #header.header-inner-pages {
     background: var(--select-color-5) !important;
 }
+
+@media (min-width: 992px) {
+    .myProfilMenu{
+        margin-left: -140px !important;
+    }
+
+}
+
+
+@media (max-width: 1534px){
+
+    header > div > a > img{
+        display: none;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1173px) {
+    nav > ul > li > a#mediumScreen{
+        display: none !important;
+    }
+}
+
+
 
 .navbar a:hover, .navbar .active, .navbar .active:focus, .navbar li:hover > a {
     color: var(--select-color-1) !important;
@@ -571,7 +596,18 @@ a:hover {
 
 .services .icon-box .icon i {
     color: var(--select-color-1) !important;
+
+
 }
+
+/*.icon .material-icons{*/
+/*    float: left;*/
+/*    font-size: 4em;*/
+/*    line-height: 80%;*/
+/*    margin: -0.1em 0;*/
+/*    padding-right: 0.1em;*/
+
+/*}*/
 
 .services .icon-box h4 a {
     color: var(--select-color-3) !important;
@@ -811,3 +847,289 @@ a:hover {
 .search-icons:focus {
     box-shadow: none;
 }
+
+
+/*--------------------------------------------------------------
+# Favoris
+--------------------------------------------------------------*/
+.favoritesRubricsSection {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 75vw;
+}
+
+.favoriteRubrics{
+    display: flex;
+    flex-direction: row;
+}
+.favoriteRubrics > button{
+    background-color: transparent;
+}
+
+.favoriteRubricsLink {
+    background: none;
+    color: white;
+    font-size: 16px;
+    background: var(--select-color-5);
+    border-radius: 30px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2px;
+    height: 60px;
+    width: 275px;
+    margin: 10px;
+}
+.removeFavoriteRubricsButton{
+    display: block;
+    height: 20px;
+    border: none;
+}
+
+@media (max-width:  992px) {
+
+    div.favoriteRubrics > button {
+        background-color: transparent;
+        border-radius: 10px;
+        width: 7vw;
+        height: 50px;
+    }
+    .favoriteRubrics{
+        justify-content: center;
+        align-items: center;
+    }
+
+    .favoritesRubricsSection {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .favoriteRubricsLink {
+        height: 65px;
+        width: 30vw;
+        padding: 10px;
+
+    }
+}
+
+@media (max-width:  769px){
+
+    .favoriteRubricsLink{
+        width: 50vw;
+    }
+}
+
+/*--------------------------------------------------------------
+# Articles épinglés
+--------------------------------------------------------------*/
+
+.pinnedPost .icon-box {
+    border-radius: 20px;
+    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));
+}
+
+/*--------------------------------------------------------------
+# Filtre et tri de la Une
+--------------------------------------------------------------*/
+.sectionFilterUneButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 80vw;
+}
+.filterUneButton>label{
+
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    height: 5vh;
+    padding: 3px 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    text-align: start;
+}
+
+.colorFilterUneEnabled{
+
+    color: var(--select-color-15);
+    background-color: #198754;
+    border-color: #198754;
+}
+.colorFilterUneDisabled{
+    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));
+}
+
+.colorFilterUneDisabled:hover{
+    background-image: linear-gradient(to bottom right, var(--select-color-14),var(--select-color-12),var(--select-color-10));
+}
+
+.separator{
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-image: linear-gradient(to right, var(--select-color-1), var(--select-color-14)) 2;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    width: 97%;
+}
+
+@media  (max-width:  1200px) {
+    .sectionFilterUneButton{
+        flex-direction: column;
+        align-items: start;
+        width: 80vw;
+    }
+
+    .filterUneButton>label{
+        width: 500px;
+    }
+}
+
+@media  (max-width:  767px) {
+
+    .filterUneButton>label{
+        width: 330px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Display liste
+--------------------------------------------------------------*/
+
+
+.separatorDisplayList {
+    height: 1px;
+    border: none;
+    width: 50%;
+    margin: auto;
+    background-color: var(--select-color-17);
+}
+
+.displayList tbody td .title-description{
+    font-size: 0.875em;
+    font-style: italic;
+}
+
+.displayList {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.displayList tbody > tr > td {
+    font-size: 0.875em;
+    background-color: var(--select-color-10);
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 75px;
+}
+
+.displayList tbody > tr.pinnedPost > td {
+    background-image: linear-gradient(to bottom, var(--select-color-10),var(--select-color-12),var(--select-color-14)) ;
+}
+
+.displayList thead > tr > th span {
+    border-bottom: 2px solid var(--select-color-14);
+    display: inline-block;
+    padding: 0 5px 5px;
+    font-weight: normal;
+}
+
+@media (max-width: 1200px){
+    .displayList td:nth-child(3),
+    .displayList th:nth-child(3) {
+        display: none;
+    }
+}
+@media (max-width: 992px){
+    .displayList td:nth-child(2),
+    .displayList th:nth-child(2) {
+        display: none;
+    }
+}
+@media (max-width: 768px){
+    .displayList td:nth-child(4),
+    .displayList th:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 576px){
+    .displayList td:nth-child(5),
+    .displayList th:nth-child(5) {
+        display: none;
+    }
+}
+
+
+/*--------------------------------------------------------------
+# Disable/enable notification
+--------------------------------------------------------------*/
+.subscribeNotification {
+    width: 80px;
+    height: 26px;
+    background: #333;
+    border-radius: 50px;
+    position: relative;
+    box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.subscribeNotification .text-off {
+    font: 12px/26px Arial, sans-serif;
+    color: #000;
+    position: absolute;
+    left: 10px;
+    font-weight: bold;
+    z-index: 0;
+    display: none;
+}
+
+.subscribeNotification .text-on {
+    font: 12px/26px Arial, sans-serif;
+    color: #00bf00;
+    position: absolute;
+    right: 10px;
+    font-weight: bold;
+    z-index: 0;
+    display: none;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, .15);
+}
+
+.subscribeNotification input[type=checkbox] {
+    visibility: hidden;
+}
+
+.subscribeNotification label {
+    display: block;
+    width: 34px;
+    height: 20px;
+    border-radius: 50px;
+    transition: all .4s ease;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    z-index: 1;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+    background: #fcfff4;
+}
+
+.subscribeNotification input[type=checkbox]:checked + label {
+    left: 43px;
+}
+
+.subscribeNotification input[type=checkbox]:checked ~ .text-on {
+    display: block;
+}
+
+.subscribeNotification input[type=checkbox]:not(:checked) ~ .text-off {
+    display: block;
+}
+
+

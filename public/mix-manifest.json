@@ -1,5 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/main.js": "/js/main.js",
+    "/js/bootstrap.js": "/js/bootstrap.js",
     "/css/app.css": "/css/app.css",
     "/js/tinymce/.npmignore": "/js/tinymce/.npmignore",
     "/js/tinymce/bower.json": "/js/tinymce/bower.json",

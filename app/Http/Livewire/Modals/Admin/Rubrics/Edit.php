@@ -34,7 +34,7 @@ class Edit extends Component
         'rubric.name' => 'required|string|max:255',
         'rubric.title' => 'required|string|max:255',
         'rubric.description' => 'required|string',
-        'rubric.icon' => 'nullable|string|max:255',
+        'rubric.icon' => 'required|string|max:255',
         'rubric.is_parent' => 'required|boolean',
         'rubric.parent_id' => 'nullable|numeric',
         'rubric.position' => 'required',

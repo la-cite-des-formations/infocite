@@ -1,5 +1,5 @@
-<div class="row">
-    <div class="col">
+<div class="row" >
+    <div class="col" id="paginationContainer">
         {{ $elements->links() }}
     </div>
     <div class="col text-muted">
