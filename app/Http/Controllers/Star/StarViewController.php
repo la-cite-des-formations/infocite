@@ -13,8 +13,8 @@ class StarViewController extends Controller
     {
         // $starDBController = new StarDBController();
         // $starDBController::BlendDB();
-        $studient = StarYpareoController::getStudients();
-        // dd($studient);
+        $studient = StarYpareoController::getStudient(1405596);
+        dd($studient);
         return view("star.home", ['rubrics' => Rubric::getRubrics('N', 'star'), 'studient' => $studient]);
     }
 
