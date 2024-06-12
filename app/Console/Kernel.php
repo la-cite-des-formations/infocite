@@ -7,31 +7,19 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
+    // Enregistrer les commandes artisan
     protected $commands = [
-        //
+        Commands\BlendDBCommand::class,
     ];
 
-    /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
+    // Définir la planification des commandes
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Planifier l'exécution de la commande star:blend-db toutes les heures
+        $schedule->command('star:blend-db')->everyThirtyMinutes();
     }
 
-    /**
-     * Register the commands for the application.
-     *
-     * @return void
-     */
+    // Enregistrer les commandes pour l'application
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
