@@ -4,32 +4,39 @@
        @can('access', $rubric)
         <li @if ($rubric->hasChilds()) class="dropdown" role="button" @endif>
           @if ($rubric->hasChilds())
-
-            <a href="javascript:void(0)">
-                <i class="material-icons me-2">{{ $rubric->icon }}</i>
-                <span>{{ $rubric->name }}</span>
+            <a href="#">
+                <div class="d-flex flex-wrap justify-content-around">
+                    <span class="material-icons">{{ $rubric->icon }}</span>
+                    <span class="mx-1">{{ $rubric->name }}</span>
+                </div>
                 <i class="bi bi-chevron-down"></i>
             </a>
           @else
-            <a  @if ($currentRoute == $rubric->route())
-                    href="#{{ $viewBag->template }}" class="nav-link scrollto"
-                @else
-                    href="{{ $rubric->route() }}" class="nav-link"
-                @endif>{{ $rubric->name }}</a>
+            <a @if ($currentRoute == $rubric->route())
+                href="#{{ $viewBag->template }}" class="nav-link scrollto"
+              @else
+                href="{{ $rubric->route() }}" class="nav-link"
+              @endif>
+                <div class="d-flex flex-wrap justify-content-around">
+                    <span class="material-icons">{{ $rubric->icon }}</span>
+                    <span class="mx-1">{{ $rubric->name }}</span>
+                </div>
+            </a>
           @endif
           @if ($rubric->hasChilds())
             <ul>
               @foreach ($rubric->childs as $childRubric)
                @can('access', $childRubric)
-                <li >
-                    <div class="container d-flex flex-row justify-content-start">
-                        <i class="material-icons">{{ $childRubric->icon }}</i>
-                        <a class="col"  @if ($currentRoute == $childRubric->route())
-                                href="#{{ $viewBag->template }}" class="nav-link scrollto"
-                            @else
-                                href="{{ $childRubric->route() }}" class="nav-link"
-                            @endif>{{ $childRubric->name }}</a>
-                    </div>
+                <li>
+                    <a class="justify-content-start"
+                      @if ($currentRoute == $childRubric->route())
+                        href="#{{ $viewBag->template }}" class="nav-link scrollto"
+                      @else
+                        href="{{ $childRubric->route() }}" class="nav-link"
+                      @endif>
+                        <span class="material-icons fs-5 ms-0 me-1">{{ $childRubric->icon }}</span>
+                        {{ $childRubric->name }}
+                    </a>
                 </li>
                @endcan
               @endforeach
@@ -41,41 +48,39 @@
         <!-- A laisser en dur à la fin du menu -->
        @can('viewAny', 'App\\App')
         <li>
-            <a href="#apps" id="mediumScreen" class="nav-link scrollto" title="Mes applications">
+            <a href="#apps" class="nav-link scrollto" title="Mes applications">
                 <div class="myapps">
-                    <span class="bx bx-extension me-1"></span>Mes applis
+                    <span class="material-icons me-1">apps</span>Mes applis
                 </div>
             </a>
         </li>
        @endcan
         <li>
-            <a href="#search" id="mediumScreen" class="nav-link scrollto" title="Rechercher...">
-                <span class="bx bx-search-alt display-6"></span>
+            <a href="#search" class="nav-link scrollto" title="Rechercher...">
+                <span class="bx bx-search-alt fs-1"></span>
             </a>
         </li>
-        <li class="dropdown text-white" role="button">
-            <a>
-                <span class="bx bx-user-circle display-6"></span>
+        <li class="dropdown" role="button">
+            <a href="#">
+                <span class="bx bx-user-circle fs-1"></span>
                 <i class="bi bi-chevron-down"></i>
             </a>
-            <ul class="myProfilMenu">
-
-                    <li>
-                        <a href="/infos" class="nav-link">Mes infos</a>
-                    </li>
-                    <li>
-                        <a href="/favoris" class="nav-link">Mes favoris</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('logout') }}" class="nav-link text-danger justify-content-start"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                           <span class="bx bx-log-in-circle me-1"></span>{{ __('Logout') }}
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
-
+            <ul class="end-0">
+                <li>
+                    <a href="/infos" class="dropdown-item">Mes infos</a>
+                </li>
+                <li>
+                    <a href="/favoris" class="dropdown-item">Mes favoris</a>
+                </li>
+                <li>
+                    <a href="{{ route('logout') }}" class="dropdown-item text-danger justify-content-start"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <span class="bx bx-log-in-circle fs-5 me-1"></span>{{ __('Logout') }}
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
             </ul>
         </li>
     </ul>

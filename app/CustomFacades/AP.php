@@ -211,25 +211,25 @@ class AP // Application Parameters
         'allPosts'=>
             [
                 'name'=>'allPosts',
-                'libelle'=>'Tout les articles à la Une',
+                'libelle'=>'Articles actuellement publiés',
                 'icone'=>'article',
             ],
         'notViewPosts' =>
             [
                 'name'=>'notViewPosts',
-                'libelle'=>'Articles pas encore consultés',
+                'libelle'=>'Articles non consultés',
                 'icone'=>'fiber_new',
             ],
         'favoritePosts'=>
             [
                 'name'=>'favoritePosts',
-                'libelle'=>'Articles en favoris',
+                'libelle'=>'Articles favoris',
                 'icone'=>'favorite',
             ],
         'postsInFavoritesRubrics'=>
             [
                 'name'=>'postsInFavoritesRubrics',
-                'libelle'=>'Articles dans les rubriques favorites',
+                'libelle'=>'Articles des rubriques favorites',
                 'icone'=>'favorite_border',
             ],
     ];

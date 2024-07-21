@@ -452,7 +452,6 @@ body {
   --------------------------------------------------------------*/
   section {
     padding: 60px 0;
-      padding-top: 10px;
     overflow: hidden;
   }
 
@@ -736,7 +735,7 @@ body {
   --------------------------------------------------------------*/
   .services .icon-box {
     box-shadow: 0px 0 25px 0 rgba(0, 0, 0, 0.1);
-    padding: 10px 30px;
+    padding: 50px 30px;
     transition: all ease-in-out 0.4s;
     background: #fff;
   }
@@ -1574,4 +1573,3 @@ body {
       padding-top: 4px;
     }
   }
-

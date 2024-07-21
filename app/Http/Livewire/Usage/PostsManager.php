@@ -27,8 +27,8 @@ class PostsManager extends Component
     use WithFilterPosts;
 
     protected $paginationTheme = 'bootstrap';
-    public $perPageOptions = [8, 12, 16, 24, 48, 60];
-    public $perPage = 16;
+    public $perPageOptions = [12, 24, 36, 48, 60];
+    public $perPage = 12;
 
     public $rubric;
     protected $posts;
@@ -58,7 +58,7 @@ class PostsManager extends Component
             'appsBackRoute' => request()->getRequestUri(),
         ]);
 
-        $this->perPage = session('postsPerPage', 16);
+        $this->perPage = session('postsPerPage', 12);
         $this->setMode();
         $this->rubric = $viewBag->rubric;
         $this->isFavoriteRubric = $this->rubric->isFavorite();

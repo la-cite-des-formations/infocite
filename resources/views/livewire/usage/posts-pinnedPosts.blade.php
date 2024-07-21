@@ -2,9 +2,10 @@
     @foreach ($pinnedPost as $i => $post)
         @can('read', $post)
             <div wire:click='redirectToPost({{ $post->id }})' role="button"
-                 class="pinnedPost col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
+                 class="pinned-post col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
                  @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
                 <div class="position-relative icon-box  d-flex flex-column">
+                    <span class="position-absolute start-50 bi bi-pin-angle-fill"></span>
                     @if (!$post->released && is_object($post->status))
                         <i class="position-absolute top-0 end-0 mt-3 me-3 material-icons text-danger"
                            title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
@@ -12,10 +13,7 @@
 
                     <!-- Titre de l'article et icone-->
                     <h4>
-                        <div class="icon">
-                            <i class="material-icons text-danger bx bxs-pin bx-rotate-90"
-                               title="pinnedIcon"></i>
-                        </div>
+                        <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
                         <a>{{ $post->title }}</a>
                     </h4>
                     <!-- Sous Titre de l'article -->

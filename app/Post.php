@@ -104,6 +104,13 @@ class Post extends Model
             ->hasRole('comments', Roles::IS_EDITR, 'Post', $this->id);
     }
 
+    public function commentsInfo() {
+        $commentsNb = $this->comments->count();
+        $commentsNbLabel = $commentsNb ?: 'Aucun';
+
+        return "{$commentsNbLabel} ".($commentsNb > 1 ? 'commentaires' : 'commentaire');
+    }
+
     public function isFavorite() {
         $postUser = $this->readers->find(auth()->user()->id);
 

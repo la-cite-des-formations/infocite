@@ -14,7 +14,7 @@
       @endcan
         <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
             <div class="section-title">
-                <h2 class="title-icon"><i class="bx bx-extension me-1"></i>Mes applications</h2>
+                <h2 class="title-icon"><i class="material-icons md-36 me-1">apps</i>Mes applications</h2>
                 <p>Toutes les applications auxquelles vous pouvez vous connecter depuis l'intranet de la Cité des Formations</p>
             </div>
             <!--Affichage des App sous forme de list. conditionné par l'affichage des postes-->
