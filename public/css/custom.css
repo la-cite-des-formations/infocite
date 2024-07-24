@@ -372,26 +372,26 @@ label>.material-icons, label>.material-icons-outlined {
     font-size: 12px;
 }
 
-.services .icon-box .list-group-item {
+.services .posts-list .icon-box .list-group-item {
     color: #fff;
 }
 
 .services .icon-box .btn-group-sm>.btn,
-.services .icon-box .list-group-item,
+.services .posts-list .icon-box .list-group-item,
 .services .icon-box .btn-sm {
     padding: .20rem .4rem;
     font-size: .7rem;
 }
 
 .services .icon-box .btn-group-sm>.btn:first-child,
-.services .icon-box .list-group-item:first-child,
+.services .posts-list .icon-box .list-group-item:first-child,
 .services .icon-box .btn-sm:first-child {
     border-top-left-radius: .16rem;
     border-bottom-left-radius: .16rem;
 }
 
 .services .icon-box .btn-group-sm>.btn:last-child,
-.services .icon-box .list-group-item:last-child,
+.services .posts-list .icon-box .list-group-item:last-child,
 .services .icon-box .btn-sm:last-child {
     border-top-right-radius: .16rem;
     border-bottom-right-radius: .16rem;
@@ -738,6 +738,10 @@ a:hover {
     background: var(--select-color-17) !important;
 }
 
+.pricing .table>:not(:first-child) {
+    border-top: 2px solid var(--select-color-1);
+}
+
 .faq .faq-list .icon-help {
     color: var(--select-color-1) !important;
 }
@@ -965,6 +969,9 @@ a:hover {
 
 .services .pinned-post .bi-pin-angle-fill {
     color: var(--select-color-1);
+}
+
+.services :not(tr).pinned-post .bi-pin-angle-fill {
     top: calc(2 * var(--pinned-icon-box-py) / 3 - 16px);
     /* z-index: 1; */
 }
@@ -1076,67 +1083,77 @@ a:hover {
 /*--------------------------------------------------------------
 # Display liste
 --------------------------------------------------------------*/
-
-.services tr.icon-box p {
+.services .posts-list .icon-box p {
     margin-bottom: 0;
 }
 
-.services tr.icon-box h4 {
+.services .posts-list .icon-box h4 {
     margin-bottom: 0;
 }
 
-.services tr.icon-box > td {
+.services .posts-list .icon-box td {
+    height: 0;
     padding: 0;
 }
 
-.services tr.icon-box > td > div {
+.services .posts-list .icon-box td > div{
+    height: 100%;
+}
+
+.services .posts-list .icon-box td:first-child > div {
     padding: calc(var(--icon-box-py) * 9 / 25) var(--icon-box-px);
 }
 
-.services tr.icon-box:hover:not(.pinned-post) {
+.services .posts-list .icon-box:hover:not(.pinned-post) {
     transform: translateX(10px);
 }
 
-.services tr.pinned-post {
-    background-image: linear-gradient(to bottom left, var(--select-color-10),var(--select-color-12),var(--select-color-14));
+.services .posts-list .pinned-post {
+    background-image: linear-gradient(to bottom left, var(--select-color-10), var(--select-color-12), var(--select-color-14));
 }
 
-.services tr.pinned-post:first-child td:first-child > div {
-    border-top-left-radius: 10px;
-}
-
-.services tr.pinned-post:first-child td:last-child > div {
-    border-top-right-radius: 10px;
-}
-
-.services tr.pinned-post td > div {
+.services .posts-list .pinned-post td > div {
     border-top: 2px dashed var(--select-color-1);
     border-bottom: 2px dashed var(--select-color-1);
 }
 
-.services tr.pinned-post td:first-child > div {
+.services .posts-list .pinned-post td:first-child > div {
     border-left: 2px dashed var(--select-color-1);
-    transform-style: preserve-3d;
+    /* transform-style: preserve-3d;
     transform: perspective(60cm);
-    transform-origin: 50% calc(2 * var(--pinned-icon-box-py) / 3);
+    transform-origin: 100% 50%; */
 }
 
-.services tr.pinned-post td:last-child > div {
+.services .posts-list .pinned-post td:last-child > div {
     border-right: 2px dashed var(--select-color-1);
 }
 
-.services tr.icon-box.pinned-post:hover {
+.services .posts-list .pinned-post td:first-child > div {
+    border-top-left-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:last-child > div {
+    border-top-right-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:first-child > div {
+    border-bottom-left-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:last-child > div {
+    border-bottom-right-radius: 10px;
+}
+
+.services .posts-list .icon-box.pinned-post:hover {
     box-shadow: -5px 13px 25px 0 rgba(0, 0, 0, 0.5);
     background-image: linear-gradient(to bottom left, var(--select-color-10) 25%, var(--select-color-12),var(--select-color-14));
-    transform: none;
-    /* td:first-child > div {transform: rotate3d(1, 0.5, 0, 9deg);} */
+    transform: unset;
+    /* td:first-child > div {
+        transform: rotate3d(1, 0.5, 0, 9deg);
+    } */
 }
 
 /* .separatorDisplayList {
-    height: 1px;
-    border: none;
-    width: 50%;
-    margin: auto;
     background-color: var(--select-color-17);
 } */
 

@@ -134,7 +134,8 @@ class PostsManager extends Component
                 ->get()
                 ->filter(function ($post) use ($user) {
                     return
-                        $user->can('read', $post) && (
+                        $user->can('read', $post) &&
+                        !$post->is_pinned && (
                             $this->mode == 'edition' ||
                             $post->released && $this->rubric->name != 'Archives' ||
                             $post->archived && $this->rubric->name == 'Archives'

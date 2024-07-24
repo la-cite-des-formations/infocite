@@ -57,7 +57,7 @@
                 </button>
               @else
                 <!--Bouton filtre-->
-                <button wire:click='toggleFilterMenu()' class="d-flex align-items-center btn btn-sm btn-secondary"
+                <button wire:click='toggleFilter()' class="d-flex align-items-center btn btn-sm btn-secondary"
                         title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
                     <span class="material-icons fs-5">filter_list</span>
                 </button>
@@ -90,125 +90,123 @@
                     </div>
                 </div>
             </div>
+          @if(session('displayPosts')==='list' && !empty($posts->all()))
             <!-- Affichage des articles en liste -->
-            @if(session('displayPosts')==='list' && !empty($posts->all()))
-                <table class="posts-list w-100 mb-3" >
-                    <thead>
-                        <tr>
-                            <th class="col-6"><span class="ms-5">Article</span></th>
-                            <th class="col-2"><span class="ms-2">Rubrique</span></th>
-                            <th class="col text-center"><span>Maj</span></th>
-                            <th class="col"><span class="ms-3">Infos</span></th>
-                            <th class="col"><span class="ms-3">Options</span></th>
-                        </tr>
-                    </thead>
-                    <tbody >
-                    @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
-                        @include('livewire.usage.posts-list',['posts'=>$pinnedPost])
-                        <tr>
-                            <td colspan="5" >
-                                <hr class="separatorDisplayList" >
-                            </td>
-                        </tr>
-                    @endif
-                    <div id="scrollToResult">
-                        @include('livewire.usage.posts-list',['posts'=>$posts])
-                    </div>
-                    </tbody>
-                </table>
-            @else
-                <!--Affichage des articles en carte-->
-                <div>
-                    <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
-                    @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
-                        @include('livewire.usage.posts-pinnedPosts')
-                    @endif
-                    <!-- Affichage des autres articles-->
-                </div>
-                <div class="row" id="scrollToResult" >
-                    @foreach ($posts as $i => $post)
-                        @can('read', $post)
-                            <div wire:key='{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
-                                 class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
-                                 @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 6 + 1) * 100 }}" @endif>
-                                <div class="position-relative icon-box d-flex flex-column">
-                                  @if (!$post->released && is_object($post->status))
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
-                                       title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                  @endif
-                                    <!-- Titre de l'article et icone-->
-                                    <h4>
-                                        <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
-                                        <a>{{ $post->title }}</a>
-                                    </h4>
-                                    <!-- Sous Titre de l'article -->
-                                    <p>{!! $post->preview() !!}</p>
-                                    <!-- Boutons d'actions -->
-                                    <div wire:click.prefetch='blockRedirection'
-                                         class="position-relative align-self-end mt-auto">
-                                        <div class="input-group " role="group" aria-label="Actions">
-
-                                            <!-- Article publié ou non (pas un bouton d'action) -->
-                                            @if ($mode == 'edition')
-                                                @can('update', $post)
-                                                    <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
-                                                       title="Modifier" role="button" class="btn btn-sm btn-success">
-                                                        <i class="bx bx-pencil"></i>
-                                                    </a>
-                                                @endcan
-                                            @endif
-                                            @can('viewAny', ['App\\Comment', $post->id])
-                                                <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
-                                                <div
-                                                    class="input-group-text btn-sm @if ($post->comments->count() > 0) btn-primary @else btn-secondary @endif"
-                                                    type="text" title="Commentaires">
-                                                    @if ($post->comments->count() > 0)
-                                                        <span class="me-1">{{ $post->comments->count() }}</span>
-                                                    @endif
-                                                    <i class="bx bx-comment-detail"></i>
-                                                </div>
-                                            @endcan
-                                            <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
-                                            <button
-                                                class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                                                title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                                wire:click="switchFavoritePost({{ $post->id }})"
-                                                type="button">
-                                                <i class="bx bx-star"></i>
-                                            </button>
-                                            <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                                            @can('pin')
-                                                <button
-                                                    class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
-                                                    title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
-                                                    wire:click="switchPinnedPost({{ $post->id }})" type="button">
-                                                    <i class='bx bx-pin'></i>
-                                                </button>
-                                            @endcan
-                                            <!-- Article deja lu ? : class success si deja lu -->
-                                            <div
-                                                class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
-                                                type="text" @if ($post->isRead()) title="Déjà consulté"
-                                                @else title="À consulter" @endif>
-                                                <i class="bx bx-message-alt-check"></i>
-                                            </div>
-                                            @if ($mode == 'edition')
-                                                @can('delete', $post)
-                                                    <button
-                                                        wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
-                                                        type="button" class="btn btn-sm btn-danger" title="Supprimer">
-                                                        <i class="bx bx-trash"></i>
-                                                    </button>
-                                                @endcan
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
+            <table class="posts-list w-100 mb-3" >
+                <thead>
+                    <tr>
+                        <th class="col-6 ps-5">Article</th>
+                        <th class="col-2">Rubrique</th>
+                        <th class="col text-center">Maj</th>
+                        <th class="col">Infos</th>
+                        <th class="col">Options</th>
+                    </tr>
+                </thead>
+                <tbody >
+                  @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+                    @include('livewire.usage.posts-list', ['posts' => $pinnedPost, 'withPinning' => TRUE])
+                    <tr height="@if ($pinnedPost->isNotEmpty()) 30px @else 10px @endif"></tr>
+                  @else
+                    <tr height="10px"></tr>
+                  @endif
+                    @include('livewire.usage.posts-list', ['posts' => $posts, 'withPinning' => FALSE])
+                </tbody>
+            </table>
+          @else
+            <!--Affichage des articles en carte-->
+           @if($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+            <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
+            @include('livewire.usage.posts-pinnedPosts')
+           @endif
+            <!-- Affichage des autres articles-->
+            <div class="row">
+              @foreach ($posts as $i => $post)
+               @can('read', $post)
+                <div wire:key='{{$post->id}}' wire:click='redirectToPost({{ $post->id }})' role="button"
+                    class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
+                    @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 6 + 1) * 100 }}" @endif>
+                    <div class="position-relative icon-box d-flex flex-column">
+                      @if (!$post->released && is_object($post->status))
+                        <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
+                            title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                      @endif
+                        <!-- Titre de l'article et icone-->
+                        <h4>
+                            <div class="icon">
+                                <i class="material-icons">{{ $post->icon }}</i>
                             </div>
-                        @endcan
-                    @endforeach
+                            <a>{{ $post->title }}</a>
+                        </h4>
+                        <!-- Sous Titre de l'article -->
+                        <p>{!! $post->preview() !!}</p>
+                        <!-- Boutons d'actions -->
+                        <div wire:click.prefetch='blockRedirection'
+                            class="position-relative align-self-end mt-auto">
+                            <div class="input-group " role="group" aria-label="Actions">
+                                <!-- Article publié ou non (pas un bouton d'action) -->
+                              @if ($mode == 'edition')
+                               @can('update', $post)
+                                <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                                    title="Modifier" role="button" class="btn btn-sm btn-success">
+                                    <i class="bx bx-pencil"></i>
+                                </a>
+                               @endcan
+                              @endif
+                              @can('viewAny', ['App\\Comment', $post->id])
+                                <!-- NB de commentaires déposés sur l'article : class primary si au moins 1 commentaire  -->
+                                <div @class([
+                                    'input-group-text btn-sm',
+                                    'btn-primary' => $post->comments->isNotEmpty(),
+                                    'btn-secondary' => $post->comments->isEmpty()
+                                  ]) type="text" title="Commentaires">
+                                    {{ $post->comments->count() ?: '' }}
+                                    <i @class([
+                                        "bx bx-comment-detail",
+                                        "ms-1" => $post->comments->isNotEmpty(),
+                                      ])></i>
+                                </div>
+                              @endcan
+                                <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
+                                <button
+                                    class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
+                                    title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                                    wire:click="switchFavoritePost({{ $post->id }})"
+                                    type="button">
+                                    <i class="bx bx-star"></i>
+                                </button>
+                                <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
+                                @can('pin')
+                                    <button
+                                        class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
+                                        title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
+                                        wire:click="switchPinnedPost({{ $post->id }})" type="button">
+                                        <i class='bx bx-pin'></i>
+                                    </button>
+                                @endcan
+                                <!-- Article deja lu ? : class success si deja lu -->
+                                <div
+                                    class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
+                                    type="text" @if ($post->isRead()) title="Déjà consulté"
+                                    @else title="À consulter" @endif>
+                                    <i class="bx bx-message-alt-check"></i>
+                                </div>
+                                @if ($mode == 'edition')
+                                    @can('delete', $post)
+                                        <button
+                                            wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
+                                            type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    @endcan
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            @endif
+               @endcan
+              @endforeach
+            </div>
+          @endif
             @include('includes.pagination', ['elements' => $posts])
         </div>
     </section>
