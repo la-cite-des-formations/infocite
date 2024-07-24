@@ -29,6 +29,14 @@
     <div class="alert alert-info mb-0">
         <p>{!! $post->content !!}</p>
         <dl class="row mb-0 mx-0">
+          @if ($post->published_at)
+            <dt class="col-3 text-right pl-0 mt-3">Publication</dt>
+            <dd class="col-9 pl-0 mt-3">{{ $post->published_at->format('d/m/Y') }}</dd>
+          @endif
+          @if ($post->expired_at)
+            <dt class="col-3 text-right pl-0">Expiration</dt>
+            <dd class="col-9 pl-0">{{ $post->expired_at->format('d/m/Y') }}</dd>
+          @endif
             <dt class="col-3 text-right pl-0 mt-3">Créé le</dt>
             <dd class="col-9 pl-0 mt-3">{{ "{$post->created_at->format('d/m/Y')} ({$post->author->identity})" }}</dd>
           @if ($post->corrector_id)

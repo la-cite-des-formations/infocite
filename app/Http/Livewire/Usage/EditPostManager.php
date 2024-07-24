@@ -147,6 +147,13 @@ class EditPostManager extends Component
         // sauvegarde
         $this->post->save();
 
+        // mise en favoris de l'article pour l'éditeur
+        $this->post->readers()->syncWithoutDetaching([
+            auth()->user()->id => [
+                'is_favorite' => TRUE
+            ]
+        ]);
+
         // notification associée
         if ($this->post->published) {
             $newPostNotification = Notification::query()

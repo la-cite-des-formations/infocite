@@ -1,8 +1,8 @@
 <main id="main">
 
 {{--NotificationPush avec Toastify de Bootstrap--}}
-    <div class="container mt-5 position-relative">
-        <div id="toast-container" style="position: fixed; bottom: 0; right: 0; z-index: 9999;">
+    <div class="container position-relative">
+        <div id="toast-container" style="position: fixed; top: 50px; bottom: 0; right: 0; z-index: 9999;">
         </div>
     </div>
 

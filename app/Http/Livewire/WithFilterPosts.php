@@ -16,11 +16,18 @@ trait WithFilterPosts
      */
     public function favoritePosts()
     {
-        $user = User::find(auth()->user()->id);
-        return
-            $user
-                ->myFavoritesPosts()
-                ->paginate($this->perPage);
+        return User::find(auth()->user()->id)
+            ->myFavoritesPosts()
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhere('expired_at', NULL);
+                    });
+            })
+            ->paginate($this->perPage);
     }
 
     /**
@@ -28,14 +35,22 @@ trait WithFilterPosts
      */
 
     public function postsInFavoritesRubrics(){
-        $user = auth()->user();
-        $favoriteRubricIds =
-            $user
+        return Post::query()
+            ->whereIn('rubric_id', auth()->user()
                 ->myFavoritesRubrics()
-                ->pluck('id');
-
-        return Post::whereIn('rubric_id', $favoriteRubricIds)
+                ->pluck('id')
+            )
             ->orderBy('rubric_id','DESC')
+            ->orderBy('created_at', 'DESC')
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhere('expired_at', NULL);
+                    });
+            })
             ->paginate($this->perPage);
     }
 
@@ -45,13 +60,25 @@ trait WithFilterPosts
     public function notViewPosts()
     {
         $userId = auth()->user()->id;
+
         return Post::whereDoesntHave('readers', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })
             ->orWhereHas('readers', function ($query) use ($userId) {
-                $query->where('user_id', $userId)->where('is_read', false);
+                $query
+                    ->where('user_id', $userId)
+                    ->where('is_read', false);
             })
             ->orderBy('updated_at', 'DESC')
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhere('expired_at', NULL);
+                    });
+            })
             ->paginate($this->perPage);
     }
 
@@ -62,16 +89,15 @@ trait WithFilterPosts
     {
         return Post::withCount('readers')
             ->orderByDesc('readers_count')
-            ->paginate($this->perPage);
-    }
-
-    /**
-     * Retourne les posts les plus commentés
-     */
-    public function mostCommentedPosts()
-    {
-        return Post::withCount('comments')
-            ->orderByDesc('comments_count')
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhere('expired_at', NULL);
+                    });
+            })
             ->paginate($this->perPage);
     }
 
@@ -82,6 +108,34 @@ trait WithFilterPosts
 
         return Post::query()
             ->orderBy('updated_at','DESC')
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhere('expired_at', NULL);
+                    });
+            })
+            ->paginate($this->perPage);
+    }
+
+    /**
+     * Retourne les posts les plus commentés
+     */
+    public function mostCommentedPosts()
+    {
+        return Post::withCount('comments')
+            ->orderByDesc('comments_count')
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhere('expired_at', NULL);
+                    });
+            })
             ->paginate($this->perPage);
     }
 
