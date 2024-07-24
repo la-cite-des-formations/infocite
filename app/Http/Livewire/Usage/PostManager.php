@@ -3,10 +3,13 @@
 namespace App\Http\Livewire\Usage;
 
 use App\Comment;
+use App\Events\NotificationPusher;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
+use App\Http\Livewire\WithPinnedHandling;
 use App\Notification;
 use App\Post;
+use App\User;
 use Livewire\Component;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
@@ -19,6 +22,7 @@ class PostManager extends Component
     use WithNotifications;
     use WithUsageMode;
     use WithFavoritesHandling;
+    use WithPinnedHandling;
 
     public $rubric;
     public $post;
@@ -27,6 +31,7 @@ class PostManager extends Component
     public $firstLoad = TRUE;
 
     protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
+
 
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
@@ -65,6 +70,16 @@ class PostManager extends Component
             );
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
+            //Recuperation des utilisateurs ayant cet article en favori
+            $userIds =User::query()
+                ->where('notificationSubscribed',true)
+                ->whereHas('myFavoritesPosts',function ($query) {
+                $query->where('post_id','=',$this->post->id);
+            })->get()->pluck('id')->toArray();
+
+            //Diffusion de la notification
+            broadcast(new NotificationPusher($newNotification, $userIds))->toOthers();
+
             $this->emitSelf('render');
         }
 
@@ -88,7 +103,6 @@ class PostManager extends Component
 
     public function render() {
         $this->rendered = TRUE;
-
         return view('livewire.usage.post-manager');
     }
 }

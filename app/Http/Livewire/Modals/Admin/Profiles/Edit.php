@@ -153,7 +153,7 @@ class Edit extends Component
 
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
-            case 'profile' : $this->addSelectedAvailableUsersAndApllyProfile();
+            case 'users' : $this->addSelectedAvailableUsersAndApllyProfile();
             return;
 
             case 'apps' : $this->addSelectedAvailableApps();
@@ -280,7 +280,7 @@ class Edit extends Component
 
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
-            case 'profile' : $this->removeSelectedLinkedUsers();
+            case 'users' : $this->removeSelectedLinkedUsers();
             return;
 
             case 'apps' : $this->removeSelectedLinkedApps();

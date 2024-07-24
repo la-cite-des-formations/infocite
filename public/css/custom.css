@@ -104,7 +104,19 @@
     --select-color-19: rgb(calc(0.348 * var(--theme-r2) + 97) calc(0.348 * var(--theme-g2) + 97) calc(0.348 * var(--theme-b2) + 97));
     --select-color-20: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.8);
     --select-color-21: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.08);
-    --select-color-22: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.125)
+    --select-color-22: rgba(calc(0.279 * var(--theme-r2) + 55), calc(0.279 * var(--theme-g2) + 55), calc(0.279 * var(--theme-b2) + 55), 0.125);
+
+    --dropdown-max-items: 10;
+    --dropdown-item-step: 41px;
+    --dropdown-menu-offset: 23px;
+
+    --icon-box-p-size: 4;
+    --icon-box-py: calc(5px * var(--icon-box-p-size));
+    --icon-box-px: calc(3px * var(--icon-box-p-size));
+
+    --pinned-icon-box-p-size: 8;
+    --pinned-icon-box-py: calc(5px * var(--pinned-icon-box-p-size));
+    --pinned-icon-box-px: calc(3px * var(--pinned-icon-box-p-size));
 }
 
 /* Rules for sizing the icon. */
@@ -288,9 +300,11 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .navbar .myapps, .navbar .myapps:focus {
-    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
     border-radius: 50px;
-    font-size: 14px;
+    font-size: 15px;
     border: 2px solid var(--select-color-1);
     font-weight: 600;
 }
@@ -300,8 +314,6 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .navbar-mobile .myapps, .navbar-mobile .myapps:focus {
-    margin: 15px;
-    justify-content: start;
     color: var(--select-color-3);
 }
 
@@ -316,10 +328,76 @@ label>.material-icons, label>.material-icons-outlined {
         padding-left: 20px !important;
     }
 }
+.google-visualization-orgchart-table {
+    border-collapse: unset;
+}
 
 .services .icon-box {
-    width: 320px;
-    min-height: 320px;
+    padding: var(--icon-box-py) var(--icon-box-px);
+}
+
+.services div.icon-box {
+    width: 520px;
+    min-height: 208px;
+}
+
+.services div.icon-box .icon {
+    margin-bottom: 4px;
+}
+
+.services .icon-box .icon i {
+    color: var(--select-color-1);
+    font-size: 30px;
+}
+
+.services .icon-box h4 {
+    font-size: 20px;
+}
+
+.services div.icon-box h4 {
+    margin-bottom: 12px;
+}
+
+.services .icon-box h4 a {
+    color: var(--select-color-3);
+}
+
+.services .icon-box:hover h4 a {
+    color: var(--select-color-1);
+}
+
+.services div.icon-box p {
+    margin-bottom: 4px;
+}
+
+.services .icon-box p {
+    line-height: 20px;
+    font-size: 12px;
+}
+
+.services .posts-list .icon-box .list-group-item {
+    color: #fff;
+}
+
+.services .icon-box .btn-group-sm>.btn,
+.services .posts-list .icon-box .list-group-item,
+.services .icon-box .btn-sm {
+    padding: .20rem .4rem;
+    font-size: .7rem;
+}
+
+.services .icon-box .btn-group-sm>.btn:first-child,
+.services .posts-list .icon-box .list-group-item:first-child,
+.services .icon-box .btn-sm:first-child {
+    border-top-left-radius: .16rem;
+    border-bottom-left-radius: .16rem;
+}
+
+.services .icon-box .btn-group-sm>.btn:last-child,
+.services .posts-list .icon-box .list-group-item:last-child,
+.services .icon-box .btn-sm:last-child {
+    border-top-right-radius: .16rem;
+    border-bottom-right-radius: .16rem;
 }
 
 .title-icon i {
@@ -335,10 +413,6 @@ label>.material-icons, label>.material-icons-outlined {
 
 .box.featured:hover {
     background-color:rgba(55, 81, 126, 0.125)
-}
-
-table {
-    border-collapse: unset !important;
 }
 
 @media (max-width: 992px) {
@@ -411,6 +485,10 @@ table {
     margin-right: auto;
 }
 
+#header {
+    min-height: 96px;
+}
+
 #header .logo img {
     max-height: 48px;
 }
@@ -457,7 +535,13 @@ a:hover {
 }
 
 .navbar .dropdown ul {
+    max-height: calc(var(--dropdown-max-items) * var(--dropdown-item-step) + var(--dropdown-menu-offset));
+    overflow: auto;
     box-shadow: 0px 0px 30px var(--select-color-7) !important;
+}
+
+.navbar .dropdown ul.end-0 {
+    left: unset;
 }
 
 .navbar .dropdown ul a {
@@ -569,18 +653,6 @@ a:hover {
     background-color: var(--select-color-13) !important;
 }
 
-.services .icon-box .icon i {
-    color: var(--select-color-1) !important;
-}
-
-.services .icon-box h4 a {
-    color: var(--select-color-3) !important;
-}
-
-.services .icon-box:hover h4 a {
-    color: var(--select-color-1) !important;
-}
-
 .cta {
     background: linear-gradient(var(--select-color-5), var(--select-color-5)), url("../img/cta-bg.jpg") fixed center center !important;
 }
@@ -667,6 +739,10 @@ a:hover {
 
 .pricing .featured .buy-btn:hover {
     background: var(--select-color-17) !important;
+}
+
+.pricing .table>:not(:first-child) {
+    border-top: 2px solid var(--select-color-1);
 }
 
 .faq .faq-list .icon-help {
@@ -811,3 +887,398 @@ a:hover {
 .search-icons:focus {
     box-shadow: none;
 }
+
+
+/*--------------------------------------------------------------
+# Favoris
+--------------------------------------------------------------*/
+.favoritesRubricsSection {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 75vw;
+}
+
+.favoriteRubrics{
+    display: flex;
+    flex-direction: row;
+}
+.favoriteRubrics > button{
+    background-color: transparent;
+}
+
+.favoriteRubricsLink {
+    background: none;
+    color: white;
+    font-size: 16px;
+    background: var(--select-color-5);
+    border-radius: 30px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2px;
+    height: 60px;
+    width: 275px;
+    margin: 10px;
+}
+.removeFavoriteRubricsButton{
+    display: block;
+    height: 20px;
+    border: none;
+}
+
+@media (max-width:  992px) {
+
+    div.favoriteRubrics > button {
+        background-color: transparent;
+        border-radius: 10px;
+        width: 7vw;
+        height: 50px;
+    }
+    .favoriteRubrics{
+        justify-content: center;
+        align-items: center;
+    }
+
+    .favoritesRubricsSection {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .favoriteRubricsLink {
+        height: 65px;
+        width: 30vw;
+        padding: 10px;
+
+    }
+}
+
+@media (max-width:  769px){
+
+    .favoriteRubricsLink{
+        width: 50vw;
+    }
+}
+
+/*--------------------------------------------------------------
+# Articles épinglés
+--------------------------------------------------------------*/
+.services .pinned-post .icon-box p {
+    margin-bottom: 8px;
+}
+
+.services .pinned-post .bi-pin-angle-fill {
+    color: var(--select-color-1);
+}
+
+.services :not(tr).pinned-post .bi-pin-angle-fill {
+    top: calc(2 * var(--pinned-icon-box-py) / 3 - 16px);
+    /* z-index: 1; */
+}
+
+.services .pinned-post .icon-box {
+    padding: var(--pinned-icon-box-py) var(--pinned-icon-box-px);
+    min-height: 260px;
+    transform-style: preserve-3d;
+    transform: perspective(60cm);
+    transform-origin: 50% calc(2 * var(--pinned-icon-box-py) / 3);
+    border-radius: 10px;
+    border: 2px dashed var(--select-color-1);
+    background-image: linear-gradient(to bottom left, var(--select-color-10),var(--select-color-12),var(--select-color-14));
+}
+
+.services .pinned-post .icon-box .btn-group-sm>.btn, .services .pinned-post .icon-box .btn-sm {
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    border-radius: .2rem;
+}
+
+.services .pinned-post .icon-box:hover {
+    box-shadow: -5px 13px 25px 0 rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(to bottom left, var(--select-color-10) 25%, var(--select-color-12),var(--select-color-14));
+    /* transform: rotate3d(1, 0.5, 0, 9deg); */
+}
+
+
+/*--------------------------------------------------------------
+# Filtre et tri de la Une
+--------------------------------------------------------------*/
+.sectionFilterUneButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 80vw;
+}
+.filterUneButton>label{
+
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    height: 5vh;
+    padding: 3px 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    text-align: start;
+}
+
+.colorFilterUneEnabled{
+
+    color: var(--select-color-15);
+    background-color: #198754;
+    border-color: #198754;
+}
+.colorFilterUneDisabled{
+    background-image: linear-gradient(to bottom right, var(--select-color-10),var(--select-color-12),var(--select-color-14));
+}
+
+.colorFilterUneDisabled:hover{
+    background-image: linear-gradient(to bottom right, var(--select-color-14),var(--select-color-12),var(--select-color-10));
+}
+
+.separator {
+    position: relative;
+    border-end-end-radius: 5px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    /* border-bottom-color: transparent; */
+    border-right-width: 1px;
+    border-right-style: solid;
+    /* border-right-color: transparent; */
+    border-image: linear-gradient(to right, var(--select-color-1), var(--select-color-14)) 2;
+    /* background-clip: padding-box; */
+    margin-top: 10px;
+    padding-bottom: 10px;
+    width: 97%;
+}
+
+ /* .separator::before {
+    position: absolute;
+    padding: 1px;
+    border-end-end-radius: 5px;
+    background: linear-gradient(to right, var(--select-color-1), var(--select-color-14)) 2;
+    content: '';
+    z-index: -1;
+} */
+
+@media  (max-width:  1200px) {
+    .sectionFilterUneButton{
+        flex-direction: column;
+        align-items: start;
+        width: 80vw;
+    }
+
+    .filterUneButton>label{
+        width: 500px;
+    }
+}
+
+@media  (max-width:  767px) {
+    .filterUneButton>label{
+        width: 330px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Display liste
+--------------------------------------------------------------*/
+
+.services .posts-list .icon-box p {
+    margin-bottom: 0;
+}
+
+.services .posts-list .icon-box h4 {
+    margin-bottom: 0;
+}
+
+.services .posts-list .icon-box td {
+    height: 0;
+    padding: 0;
+}
+
+.services .posts-list .icon-box td > div{
+    height: 100%;
+}
+
+.services .posts-list .icon-box td:first-child > div {
+    padding: calc(var(--icon-box-py) * 9 / 25) var(--icon-box-px);
+}
+
+.services .posts-list .icon-box:hover:not(.pinned-post) {
+    transform: translateX(10px);
+}
+
+.services .posts-list .pinned-post {
+    background-image: linear-gradient(to bottom left, var(--select-color-10), var(--select-color-12), var(--select-color-14));
+}
+
+.services .posts-list .pinned-post td > div {
+    border-top: 2px dashed var(--select-color-1);
+    border-bottom: 2px dashed var(--select-color-1);
+}
+
+.services .posts-list .pinned-post td:first-child > div {
+    border-left: 2px dashed var(--select-color-1);
+    /* transform-style: preserve-3d;
+    transform: perspective(60cm);
+    transform-origin: 100% 50%; */
+}
+
+.services .posts-list .pinned-post td:last-child > div {
+    border-right: 2px dashed var(--select-color-1);
+}
+
+.services .posts-list .pinned-post td:first-child > div {
+    border-top-left-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:last-child > div {
+    border-top-right-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:first-child > div {
+    border-bottom-left-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:last-child > div {
+    border-bottom-right-radius: 10px;
+}
+
+.services .posts-list .icon-box.pinned-post:hover {
+    box-shadow: -5px 13px 25px 0 rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(to bottom left, var(--select-color-10) 25%, var(--select-color-12),var(--select-color-14));
+    transform: unset;
+    /* td:first-child > div {
+        transform: rotate3d(1, 0.5, 0, 9deg);
+    } */
+}
+
+/* .separatorDisplayList {
+    background-color: var(--select-color-17);
+} */
+
+/* .displayList tbody td .title-description{
+    font-size: 0.875em;
+    font-style: italic;
+} */
+
+/* .displayList {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+} */
+
+/* .displayList tbody > tr > td {
+    font-size: 0.875em;
+    background-color: var(--select-color-10);
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 75px;
+} */
+
+/* .displayList tbody > tr.pinnedPost > td {
+    background-image: linear-gradient(to bottom, var(--select-color-10),var(--select-color-12),var(--select-color-14)) ;
+} */
+
+/* .displayList thead > tr > th span {
+    border-bottom: 2px solid var(--select-color-14);
+    display: inline-block;
+    padding: 0 5px 5px;
+    font-weight: normal;
+} */
+
+/* @media (max-width: 1200px){
+    .displayList td:nth-child(3),
+    .displayList th:nth-child(3) {
+        display: none;
+    }
+} */
+/* @media (max-width: 992px){
+    .displayList td:nth-child(2),
+    .displayList th:nth-child(2) {
+        display: none;
+    }
+} */
+/* @media (max-width: 768px){
+    .displayList td:nth-child(4),
+    .displayList th:nth-child(4) {
+        display: none;
+    }
+} */
+
+/* @media (max-width: 576px){
+    .displayList td:nth-child(5),
+    .displayList th:nth-child(5) {
+        display: none;
+    }
+} */
+
+
+/*--------------------------------------------------------------
+# Disable/enable notification
+--------------------------------------------------------------*/
+.subscribeNotification {
+    width: 80px;
+    height: 26px;
+    background: #333;
+    border-radius: 50px;
+    position: relative;
+    box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.subscribeNotification .text-off {
+    font: 12px/26px Arial, sans-serif;
+    color: #000;
+    position: absolute;
+    left: 10px;
+    font-weight: bold;
+    z-index: 0;
+    display: none;
+}
+
+.subscribeNotification .text-on {
+    font: 12px/26px Arial, sans-serif;
+    color: #00bf00;
+    position: absolute;
+    right: 10px;
+    font-weight: bold;
+    z-index: 0;
+    display: none;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, .15);
+}
+
+.subscribeNotification input[type=checkbox] {
+    visibility: hidden;
+}
+
+.subscribeNotification label {
+    display: block;
+    width: 34px;
+    height: 20px;
+    border-radius: 50px;
+    transition: all .4s ease;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    z-index: 1;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+    background: #fcfff4;
+}
+
+.subscribeNotification input[type=checkbox]:checked + label {
+    left: 43px;
+}
+
+.subscribeNotification input[type=checkbox]:checked ~ .text-on {
+    display: block;
+}
+
+.subscribeNotification input[type=checkbox]:not(:checked) ~ .text-off {
+    display: block;
+}
+
+

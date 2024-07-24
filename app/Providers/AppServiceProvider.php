@@ -28,5 +28,9 @@ class AppServiceProvider extends ServiceProvider
             'Group' => 'App\Group',
             'User' => 'App\User',
         ]);
+        session([
+            'displayPosts'=>'grid',
+            'lastFilter'=>'allPosts',
+        ]);
     }
 }

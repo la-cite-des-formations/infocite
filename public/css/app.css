@@ -203,7 +203,7 @@ svg {
 }
 
 table {
-  border-collapse: separate;
+  border-collapse: collapse;
 }
 
 caption {
