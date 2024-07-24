@@ -67,10 +67,16 @@
             </a>
             <ul class="end-0">
                 <li>
-                    <a href="/infos" class="dropdown-item">Mes infos</a>
+                    <a href="/infos" class="dropdown-item justify-content-start">
+                        <span class="material-icons-outlined fs-5 ms-0 me-1">info</span>
+                        Mes infos
+                    </a>
                 </li>
                 <li>
-                    <a href="/favoris" class="dropdown-item">Mes favoris</a>
+                    <a href="/favoris" class="dropdown-item justify-content-start">
+                        <span class="material-icons fs-5 ms-0 me-1">star_border</span>
+                        Mes favoris
+                    </a>
                 </li>
                 <li>
                     <a href="{{ route('logout') }}" class="dropdown-item text-danger justify-content-start"

@@ -61,9 +61,10 @@ trait WithFilterPosts
     {
         $userId = auth()->user()->id;
 
-        return Post::whereDoesntHave('readers', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
+        return Post::query()
+            ->whereDoesntHave('readers', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
             ->orWhereHas('readers', function ($query) use ($userId) {
                 $query
                     ->where('user_id', $userId)
