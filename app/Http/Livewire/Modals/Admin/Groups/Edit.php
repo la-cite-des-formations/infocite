@@ -377,10 +377,10 @@ class Edit extends Component
             ->when($this->group->type === 'C', function ($users) {
                 $users->where('is_staff', FALSE);
             })
-            ->when($this->group->type === 'P', function ($users) {
+            ->when($this->group->type === 'P' || $this->group->type === 'E', function ($users) {
                 $users->where('is_staff', TRUE);
             })
-            ->when($this->group->type === 'E', function ($users) {
+            ->when($this->group->type === 'F', function ($users) {
                 $users
                     ->whereIn(
                         'id',
