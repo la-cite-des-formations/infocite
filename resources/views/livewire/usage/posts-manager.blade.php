@@ -57,8 +57,14 @@
                 </button>
               @else
                 <!--Bouton filtre-->
-                <button wire:click='toggleFilter()' class="d-flex align-items-center btn btn-sm btn-secondary"
-                        title="{{ $showFilter ? 'Masquer' : 'Afficher'}} le filtre">
+                <button wire:click='toggleFilter()'
+                        @class([
+                            "d-flex align-items-center",
+                            "btn btn-sm",
+                            "btn-secondary" => $filter['allPosts'] == 'on',
+                            "btn-success" => is_null($filter['allPosts'])
+                        ])
+                        title="{{ $showFilter ? 'Masquer' : 'Afficher' }} le filtre">
                     <span class="material-icons fs-5">filter_list</span>
                 </button>
               @endif
@@ -66,7 +72,7 @@
         </div>
       @if($showFilter)
         <div id="filterContainer" >
-            @include('livewire.usage.search-manager',['filter'=>$filter, 'sorter'=>$sorter])
+            @include('livewire.usage.search-manager', ['filter' => $filter, 'sorter' => $sorter])
         </div>
       @endif
         {{--Titre de la rubric--}}
