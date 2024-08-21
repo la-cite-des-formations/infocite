@@ -36,7 +36,7 @@
                         "input-group-text btn-sm",
                         "btn-primary" => $post->comments->isNotEmpty(),
                         "btn-secondary" => $post->comments->isEmpty(),
-                      ]) type="text" title="Commentaires">
+                      ]) type="text" title="{{ $post->commentsInfo() }}">
                         {{ $post->comments->count() ?: '' }}
                         <i @class(["bx bx-comment-detail", "ms-1" => $post->comments->isNotEmpty()])></i>
                     </div>

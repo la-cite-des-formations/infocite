@@ -15,19 +15,34 @@
         <div class="container d-flex justify-content-between mb-3">
             <div class="btn-group" role="group">
                 <!--Bouton affichage liste/grille-->
-                <button class="d-flex align-items-center btn @if(session('displayPosts') === 'grid') btn-primary @else btn-secondary @endif" title="Grille"
-                        wire:click="displayGridPosts()">
+                <button @class([
+                            "d-flex align-items-center",
+                            "btn",
+                            "btn-primary" => session('displayPosts') === 'grid',
+                            "btn-secondary" => session('displayPosts') !== 'grid'
+                        ])
+                        title="Grille" wire:click="displayGridPosts()">
                     <span class="bx bxs-grid-alt me-1" ></span>
                     Grille
                 </button>
-                <button class="d-flex align-items-center btn @if(session('displayPosts') === 'list') btn-primary @else btn-secondary @endif" title="Liste"
-                        wire:click="displayListPosts()">
+                <button @class([
+                            "d-flex align-items-center",
+                            "btn",
+                            "btn-primary" => session('displayPosts') === 'list',
+                            "btn-secondary" => session('displayPosts') !== 'list'
+                        ])
+                        title="Liste" wire:click="displayListPosts()">
                     <span class="bx bx-list-ul me-1" ></span>
                     Liste
                 </button>
             </div>
             <div class="btn-group" role="group">
-                <button class="d-flex align-items-center btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
+                <button @class([
+                            "d-flex align-items-center",
+                            "btn btn-sm",
+                            "btn-secondary" => $notifications->isEmpty(),
+                            "btn-danger" => $notifications->isNotEmpty()
+                        ])
                         wire:click="showModal('notify')" type="button" title="voir les notifications">
                   @if ($notifications->count() > 0)
                     <span class="me-1">{{ $notifications->count() }}</span>
@@ -37,7 +52,11 @@
               @can('edit', ['App\\Post', $rubric->id])
                 <button class="d-flex align-items-center btn btn-sm btn-primary" wire:click='switchMode' type="button"
                         title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
-                    <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
+                    <span @class([
+                              "bx",
+                              "bx-pencil" => $mode == 'view',
+                              "bx-show" => $mode != 'view'
+                          ])></span>
                 </button>
               @endcan
               @if ($mode == 'edition')
@@ -50,7 +69,12 @@
                @endcan
               @endif
               @if($rubric->name != 'Une')
-                <button class="d-flex align-items-center btn @if ($isFavoriteRubric) btn-warning @else btn-secondary @endif btn-sm"
+                <button @class([
+                            "d-flex align-items-center",
+                            "btn btn-sm",
+                            "btn-warning" => $isFavoriteRubric,
+                            "btn-secondary" => !$isFavoriteRubric
+                        ])
                         title="@if ($isFavoriteRubric) Retirer des favoris @else Ajouter aux favoris @endif"
                         wire:click="switchFavoriteRubric" type="button">
                     <span class="bx bx-star"></span>
@@ -62,7 +86,7 @@
                             "d-flex align-items-center",
                             "btn btn-sm",
                             "btn-secondary" => $filter['allPosts'] == 'on',
-                            "btn-success" => is_null($filter['allPosts'])
+                            "btn-success" => $filter['allPosts'] != 'on'
                         ])
                         title="{{ $showFilter ? 'Masquer' : 'Afficher' }} le filtre">
                     <span class="material-icons fs-5">filter_list</span>
@@ -86,11 +110,19 @@
                     <div class="d-flex align-items-center">
                       @if($rubric->name === 'Une')
                        @if(Session::get('lastFilter'))
-                        <span class="material-icons fs-2 me-1">{{ AP::getUneFilteredByName(Session::get('lastFilter'))['icone'] }}</span>
-                        <p class="m-auto">{{ AP::getUneFilteredByName(Session::get('lastFilter'))['libelle'] }}</p>
+                        <span class="material-icons fs-2 me-1">
+                            {{ AP::getUneFilteredByName(Session::get('lastFilter'))['icone'] }}
+                        </span>
+                        <p class="m-auto">
+                            {{ AP::getUneFilteredByName(Session::get('lastFilter'))['libelle'] }}
+                        </p>
                        @elseif(Session::get('lastSorter'))
-                        <span class="material-icons fs-2 me-1">{{ AP::getUneSortedByName(Session::get('lastSorter'))['icone'] }}</span>
-                        <p>{{ AP::getUneSortedByName(Session::get('lastSorter'))['libelle'] }}</p>
+                        <span class="material-icons fs-2 me-1">
+                            {{ AP::getUneSortedByName(Session::get('lastSorter'))['icone'] }}
+                        </span>
+                        <p>
+                            {{ AP::getUneSortedByName(Session::get('lastSorter'))['libelle'] }}
+                        </p>
                        @endif
                       @endif
                     </div>
@@ -164,7 +196,7 @@
                                     'input-group-text btn-sm',
                                     'btn-primary' => $post->comments->isNotEmpty(),
                                     'btn-secondary' => $post->comments->isEmpty()
-                                  ]) type="text" title="Commentaires">
+                                  ]) type="text" title="{{ $post->commentsInfo() }}">
                                     {{ $post->comments->count() ?: '' }}
                                     <i @class([
                                         "bx bx-comment-detail",
@@ -173,38 +205,44 @@
                                 </div>
                               @endcan
                                 <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
-                                <button
-                                    class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                                    title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
-                                    wire:click="switchFavoritePost({{ $post->id }})"
-                                    type="button">
+                                <button @class([
+                                            "btn btn-sm",
+                                            "btn-warning" => $post->isFavorite(),
+                                            "btn-secondary" => !$post->isFavorite()
+                                        ])
+                                        title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                                        wire:click="switchFavoritePost({{ $post->id }})" type="button">
                                     <i class="bx bx-star"></i>
                                 </button>
                                 <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                                @can('pin')
-                                    <button
-                                        class="btn @if ($post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
+                              @can('pin')
+                                <button @class([
+                                            "btn btn-sm",
+                                            "btn-success" => $post->is_pinned,
+                                            "btn-secondary" => !$post->is_pinned
+                                        ])
                                         title="@if ($post->is_pinned) Désépingler l'article @else épingler l'article @endif"
                                         wire:click="switchPinnedPost({{ $post->id }})" type="button">
-                                        <i class='bx bx-pin'></i>
-                                    </button>
-                                @endcan
+                                    <i class='bx bx-pin'></i>
+                                </button>
+                              @endcan
                                 <!-- Article deja lu ? : class success si deja lu -->
-                                <div
-                                    class="input-group-text @if ($post->isRead()) btn-success @else btn-danger @endif btn-sm"
-                                    type="text" @if ($post->isRead()) title="Déjà consulté"
-                                    @else title="À consulter" @endif>
+                                <div @class([
+                                            "input-group-text btn-sm",
+                                            "btn-success" => $post->isRead(),
+                                            "btn-danger" => !$post->isRead()
+                                        ])
+                                        type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
                                     <i class="bx bx-message-alt-check"></i>
                                 </div>
-                                @if ($mode == 'edition')
-                                    @can('delete', $post)
-                                        <button
-                                            wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
-                                            type="button" class="btn btn-sm btn-danger" title="Supprimer">
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    @endcan
-                                @endif
+                              @if ($mode == 'edition')
+                               @can('delete', $post)
+                                <button wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
+                                        type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                    <i class="bx bx-trash"></i>
+                                </button>
+                               @endcan
+                              @endif
                             </div>
                         </div>
                     </div>
