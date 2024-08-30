@@ -38,15 +38,15 @@ class StarViewController extends Controller
 
     public function ash()
     {
-        return view("star.service.educatif.ash", ['rubrics' => Rubric::getRubrics('N', 'star')]);
+        return view("star.service.educatif.ash.preview", ['rubrics' => Rubric::getRubrics('N', 'star')]);
     }
 
     public function mesureed()
     {
-        return view("star.service.educatif.mesureed", ['rubrics' => Rubric::getRubrics('N', 'star')]);
+        return view("star.service.educatif.mesuresed.preview", ['rubrics' => Rubric::getRubrics('N', 'star')]);
     }
     public function assiduite()
     {
-        return view("star.service.educatif.assiduite", ['rubrics' => Rubric::getRubrics('N', 'star')]);
+        return view("star.service.educatif.assiduite.preview", ['rubrics' => Rubric::getRubrics('N', 'star')]);
     }
 }
