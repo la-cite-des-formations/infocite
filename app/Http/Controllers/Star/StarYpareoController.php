@@ -41,16 +41,30 @@ class StarYpareoController extends Controller
         return $data;
     }
 
-    static public function getTraining()
+    static public function getTrainings()
     {
         $url = "/r/v1/formations";
         $api_data_formations = StarYpareoController::APIcall($url);
         return  $api_data_formations;
     }
 
+    static public function getSectors()
+    {
+        $url = "/r/v1//secteurs-activite";
+        $api_data_secteurs = StarYpareoController::APIcall($url);
+        return  $api_data_secteurs;
+    }
+
     static public function getDegreesPrep()
     {
         $url = "/r/v1/diplomes-prepares";
+        $api_data_degree = StarYpareoController::APIcall($url);
+        return  $api_data_degree;
+    }
+
+    static public function getDegreesObt()
+    {
+        $url = "/r/v1/diplomes-obtenus";
         $api_data_degree = StarYpareoController::APIcall($url);
         return  $api_data_degree;
     }

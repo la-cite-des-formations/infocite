@@ -15,7 +15,7 @@
             <select name="sector" id="sector">
                 <option value="" disabled selected>Secteur</option>
             </select>
-            <select name="trainning" id="trainning">
+            <select name="training" id="training">
                 <option value="" disabled selected>Formation</option>
             </select>
             <select name="level" id="level">

@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StarTrainning extends Model
+class StarTraining extends Model
 {
-    protected $table = 'star_trainnings';
+    protected $table = 'star_trainings';
 
     protected $fillable = [
-        'code_trainning',
-        'name_trainning',
+        'code_training',
+        'name_training',
         'sector_id',
         'degree_id',
     ];
@@ -27,6 +27,6 @@ class StarTrainning extends Model
 
     public function students()
     {
-        return $this->hasMany(StarStudient::class, 'trainning_id');
+        return $this->hasMany(StarStudient::class, 'training_id');
     }
 }

@@ -9,14 +9,18 @@ class Kernel extends ConsoleKernel
 {
     // Enregistrer les commandes artisan
     protected $commands = [
-        Commands\BlendDBCommand::class,
+        Commands\BlendDBStudientsCommand::class,
+        Commands\BlendDBDegreesCommand::class,
     ];
 
     // Définir la planification des commandes
     protected function schedule(Schedule $schedule)
     {
-        // Planifier l'exécution de la commande star:blend-db toutes les heures
-        $schedule->command('star:blend-db')->everyThirtyMinutes();
+        // Planifier l'exécution de la commande star:blend-db toutes les 30 minutes
+        $schedule->command('star:blend-db-studients')->everyThirtyMinutes();
+
+        // Planifier l'exécution de la commande star:blend-db-degrees toutes les 30 minutes
+        $schedule->command('star:blend-db-degrees')->monthly();
     }
 
     // Enregistrer les commandes pour l'application

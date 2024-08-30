@@ -13,9 +13,17 @@ class StarViewController extends Controller
     {
         // $starDBController = new StarDBController();
         // $starDBController::BlendDB();
-        $studient = StarYpareoController::getStudient(1405596);
-        // dd($studient);
-        return view("star.home", ['rubrics' => Rubric::getRubrics('N', 'star'), 'studient' => $studient]);
+        // $trainings = StarYpareoController::getDegreesPrep();
+        // foreach ($trainings as $training) {
+        //     if ($training['plusUtilise'] == 0) {
+        //         dump($training);
+        //     }
+        // }
+
+        dump(Rubric::getRubrics('N', 'star'));
+
+
+        return view("star.home", ['rubrics' => Rubric::getRubrics('N', 'star')]);
     }
 
     public function mediation()

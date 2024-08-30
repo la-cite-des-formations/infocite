@@ -3,64 +3,102 @@
 namespace App\Http\Controllers\Star;
 
 use App\Http\Controllers\Controller;
+use App\StarDegree;
+use App\StarLevel;
+use App\StarSector;
 use App\User;
 use App\StarStudient;
+use App\StarTraining;
 use DateTime;
 use Exception;
 
 class StarDBController extends Controller
 {
     // Fonction principale pour synchroniser les données des étudiants
-    public static function BlendDB()
+    public static function BlendDBStudients()
     {
         try {
-            // Récupération des utilisateurs ayant le statut 'Apprenti'
+            // USERS -> APPRENTIS
             $users = User::where('status', 'Apprenti')->get();
 
-            // Parcourir chaque utilisateur pour synchroniser leurs données
+            // PARCOURS ALL USERS
             foreach ($users as $user) {
-                // Récupérer les données de l'étudiant depuis une API externe
+                // GET ALL STUDIENTS // YPAREO //
                 $studient = StarYpareoController::getStudient($user['code_ypareo']);
+                dd($studient);
 
-                // Valider les données de l'étudiant
+                // DATA STUDEINT VALIDE ?
                 if (!self::validateStudientData($studient)) {
-                    echo 'Invalid data for user: ' . $user->code_ypareo . PHP_EOL;
+                    echo "Les données de l'utilisateur sont invalides: " . $user->code_ypareo . PHP_EOL;
                     continue; // Passer à l'utilisateur suivant si les données sont invalides
                 }
 
-                // Vérifier si les inscriptions sont valides
+
+                // INSCRIPTION VALIDE ?
                 if (!isset($studient['inscriptions']) || !is_array($studient['inscriptions']) || empty($studient['inscriptions'])) {
-                    echo 'Inscription data is not valid or empty for user: ' . $user->code_ypareo . PHP_EOL;
+                    echo "Les donnée d'inscription sont invalides: " . $user->code_ypareo . PHP_EOL;
                     continue; // Passer à l'utilisateur suivant si les inscriptions sont invalides
                 }
-
-                // Récupérer la dernière inscription
+                // LAST INSCRIPTION
                 $lastInscription = end($studient['inscriptions']);
-                
-                // Convertir la date de naissance en objet DateTime
+
+
+                // CLÉ ÉTRANGÈRE //
+                // TRAINING
+                $trainingID = StarTraining::where('code_training', $lastInscription['formation']['codeFormation'])->get('id');
+                // dd($trainingID);
+
+                // LEVEL
+                $levelID = StarLevel::where('code_level', $lastInscription['annee']['codeAnnee'])->get('id');
+                // dd($levelID);
+
+                // DATE NAISSANCE
                 $birthday = DateTime::createFromFormat('d/m/Y', $studient['dateNaissance']);
-                
-                // Vérifier si l'étudiant existe déjà dans la base de données
+
+
+                // EXISTANT
                 $existingStudient = StarStudient::where('code_apprenant', $studient['codeApprenant'])->first();
-                
-                // Trouver une adresse valide parmi les adresses fournies
+
+
+                // ADRESSE VERIF
                 $adresse = self::getValidAddress($studient);
 
+
+                // QUALITY
                 if ($user->quality) {
                     $quality = $user->quality;
-                }else {
+                } else {
                     $quality = null;
                 }
 
-                // Préparer les données de l'étudiant pour l'insertion/mise à jour
-                $data = self::prepareStudientData($user, $studient, $lastInscription, $birthday, $adresse, $quality);
 
+                // DATA PREPARATION
+                $data = [
+                    'code_apprenant' => $studient['codeApprenant'],
+                    'birthday' => $birthday,
+                    'gender' => $studient['sexe'],
+                    'level_id' => $levelID,
+                    'training_id' => $trainingID,
+                    'adress' => $adresse['adr1'] ?? null,
+                    'city' => $adresse['ville'] ?? null,
+                    'postal_code' => $adresse['cp'] ?? null,
+                    'language' => $user->language ?? null,
+                    'quality' => $quality,
+                    'status' => $lastInscription['statut']['nomStatut'],
+                    'attendance' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+
+                // EXISTANT
                 if ($existingStudient) {
-                    // Mettre à jour l'enregistrement existant
+                    // MAJ
                     $existingStudient->update($data);
                 } else {
-                    // Créer un nouvel enregistrement pour l'étudiant
-                    self::createNewStudient($data);
+                    // CREATE
+                    $newstudient = new StarStudient($data);
+                    $newstudient->save();
                 }
             }
 
@@ -72,14 +110,14 @@ class StarDBController extends Controller
         }
     }
 
-    // Valide les données de l'étudiant
+    // VALIDE STUDIENT
     private static function validateStudientData(array $studient)
     {
         return isset($studient['dateNaissance'], $studient['sexe'], $studient['inscriptions']) &&
-               is_array($studient['inscriptions']) && !empty($studient['inscriptions']);
+            is_array($studient['inscriptions']) && !empty($studient['inscriptions']);
     }
 
-    // Trouve une adresse valide parmi les adresses fournies
+    // FIND ADRESSE VALIDE
     private static function getValidAddress(array $studient)
     {
         $addresses = ['adresse', 'adresse2', 'adresse3'];
@@ -91,37 +129,149 @@ class StarDBController extends Controller
         return null; // Retourner null si aucune adresse valide n'est trouvée
     }
 
-    // Valide les données de l'adresse
+    // VALIDE ADRESSE
     private static function validateAddress(array $address)
     {
         return isset($address['adr1'], $address['ville'], $address['cp']);
     }
 
-    // Préparer les données de l'étudiant pour l'insertion/mise à jour
-    private static function prepareStudientData($user, $studient, $lastInscription, $birthday, $adresse, $quality)
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Fonction pour synchroniser les diplômes
+    public static function BlendDBDegrees()
     {
-        return [
-            'code_apprenant' => $studient['codeApprenant'],
-            'birthday' => $birthday,
-            'gender' => $studient['sexe'],
-            'level_id' => null,
-            'trainning_id' => null,
-            'adress' => $adresse['adr1'] ?? null,
-            'city' => $adresse['ville'] ?? null,
-            'postal_code' => $adresse['cp'] ?? null,
-            'language' => $user->language ?? null,
-            'quality' => $quality,
-            'status' => $lastInscription['statut']['nomStatut'],
-            'attendance' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
+        try {
+            // Récupérer les formations depuis l'API externe
+            $trainings = StarYpareoController::getTrainings();
+
+            // Parcourir chaque formation pour récupérer les diplômes
+            foreach (array_slice($trainings, 1) as $training) {
+                if ($training['plusUtilise'] == 0) {
+                    // Récupérer les données de diplôme
+                    $degreeName = $training['diplome']['nomDiplome'];
+                    $degreeCode = $training['diplome']['codeDiplome'];
+
+                    // Vérifier si les données de diplôme ne sont pas nulles
+                    if ($degreeName && $degreeCode) {
+                        // Vérifier si le diplôme existe déjà pour éviter les doublons
+                        $existingDegree = StarDegree::where('code_degree', $degreeCode)->first();
+
+                        $data = [
+                            'code_degree' => $degreeCode,
+                            'name' => $degreeName,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+
+                        // Verifier si l'apprennant existe
+                        if ($existingDegree) {
+                            // Mettre à jour l'enregistrement existant
+                            $existingDegree->update($data);
+                        } else {
+                            // Créer un nouvel enregistrement pour l'étudiant
+                            self::createNewDegree($data);
+                        }
+                    } else {
+                        // Afficher un message d'avertissement si les données de diplôme sont manquantes
+                        echo 'Erreur de Donnée: ' . PHP_EOL;
+                        dump($training);
+                    }
+                }
+            }
+            // Afficher un message de succès
+            echo 'Les Diplomes ont correctement été ajoutés.' . PHP_EOL;
+        } catch (Exception $e) {
+            // Gérer les exceptions et afficher un message d'erreur
+            echo 'Erreur lors de l\'insertion des diplômes: ' . $e->getMessage() . PHP_EOL;
+        }
+    }
+    // Crée un nouvel enregistrement pour l'étudiant
+    private static function createNewDegree($data)
+    {
+        $newDegree = new StarDegree($data);
+        $newDegree->save(); // Sauvegarder les données dans la base de données
     }
 
-    // Crée un nouvel enregistrement pour l'étudiant
-    private static function createNewStudient($data)
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static function BlendDBSectors()
     {
-        $newstudient = new StarStudient($data);
-        $newstudient->save(); // Sauvegarder les données dans la base de données
+        try {
+            // Récupérer les secteurs depuis l'API externe
+            $sectors = StarYpareoController::getSectors();
+            // Parcourir chaque secteur
+            foreach ($sectors as $sector) {
+                if ($sector['plusUtilise'] == 0) {
+                    // dd($sector);
+                    $existingSector = StarSector::where('code_sector', $sector['codeSecteurActivite'])->first();
+
+                    $data = [
+                        'code_sector' => $sector['codeSecteurActivite'],
+                        'name' => $sector['nomSecteurActivite'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                    if (!$existingSector) {
+                        // Créer un nouvel enregistrement pour le diplôme
+                        $newSector = new StarSector($data);
+                        // Sauvegarder le nouveau diplôme dans la base de données
+                        $newSector->save();
+                    } else {
+                        $existingSector->update($data);
+                    }
+                }
+            }
+            // Afficher un message de succès
+            echo 'Les Diplomes ont correctement été ajoutés.' . PHP_EOL;
+        } catch (Exception $e) {
+            // Gérer les exceptions et afficher un message d'erreur
+            echo 'Erreur lors de l\'insertion des Secteur: ' . $e->getMessage() . PHP_EOL;
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static function BlendDBTrainings()
+    {
+        try {
+            // Récupérer les formations depuis l'API externe
+            $trainings = StarYpareoController::getTrainings();
+
+            // Parcourir chaque formation
+            foreach (array_slice($trainings, 1) as $training) {
+                // Tri parmi les anciennes formation plus utilisée
+                if ($training['plusUtilise'] == 0) {
+                    // dd($training);
+                    // Trouver le diplome associé
+                    $degreeID = StarDegree::where('code_degree', $training['diplome']['codeDiplome'])->value('id');
+
+                    // dd($degreeID);
+
+                    if (!$degreeID) {
+                        echo 'Diplôme non trouvé pour le code: ' . $training['diplome']['codeDiplome'] . PHP_EOL;
+                        continue; // Passer à la prochaine formation si le diplôme n'est pas trouvé
+                    }
+
+                    $sectorID = StarSector::where('name', $training['nomSecteurActivite'])->value('id');
+
+                    $existingTraining = StarTraining::where('code_training', $training['codeFormation'])->first();
+
+                    if (!$existingTraining) {
+                        $newtraining = new StarTraining([
+                            'code_training' => $training['codeFormation'],
+                            'name_training' => $training['nomFormation'],
+                            'sector_id' => $sectorID,
+                            'degree_id' => $degreeID,
+
+                        ]);
+                        $newtraining->save();
+                    }
+                }
+            }
+            // Afficher un message de succès
+            echo 'Les Formations ont correctement été ajoutés.' . PHP_EOL;
+        } catch (Exception $e) {
+            // Gérer les exceptions et afficher un message d'erreur
+            echo 'Erreur lors de l\'insertion des Formations: ' . $e->getMessage() . PHP_EOL;
+        }
     }
 }

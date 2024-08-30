@@ -77,7 +77,10 @@ Route::group(['prefix' => 'star'], function () {
 // $star->get('mesure-educ', 'star/controller')->name('mesure-educ');
 
 
-Route::get('/star/blend-db', [StarDBController::class, 'BlendDB']);
+Route::get('/star/blend-db-studient', [StarDBController::class, 'BlendDBStudients']);
+Route::get('/star/blend-db-degree', [StarDBController::class, 'BlendDBDegrees']);
+Route::get('/star/blend-db-training', [StarDBController::class, 'BlendDBTrainings']);
+Route::get('/star/blend-db-sector', [StarDBController::class, 'BlendDBSectors']);
 
 // END STAR ///////////
 

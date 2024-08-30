@@ -13,7 +13,7 @@ class StarStudient extends Model
         'birthday',
         'gender',
         'level_id',
-        'trainning_id',
+        'training_id',
         'adress',
         'city',
         'postal_code',
@@ -34,8 +34,8 @@ class StarStudient extends Model
         return $this->belongsTo(StarLevel::class, 'level_id');
     }
 
-    public function trainning()
+    public function training()
     {
-        return $this->belongsTo(StarTrainning::class, 'trainning_id');
+        return $this->belongsTo(StarTraining::class, 'training_id');
     }
 }

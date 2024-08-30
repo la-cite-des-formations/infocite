@@ -1,5 +1,5 @@
 <nav>
-    <ul>
+    <ul class="liste">
         @foreach($rubrics as $rubric)
         <li @if ($rubric->hasChilds()) class="dropdown" role="button" @endif>
             @if ($rubric->hasChilds())
@@ -10,7 +10,7 @@
             <ul class="sous">
                 @foreach ($rubric->childs as $childRubric)
                 <li>
-                    <a href="/star{{ $childRubric->route() }}" class="nav-link">
+                    <a href="/star/{{$rubric->segment}}.{{ $childRubric->segment }}" class="nav-link">
                         <h4>{{ $childRubric->name }}</h4>
                     </a>
                 </li>
@@ -19,16 +19,27 @@
             @endif
         </li>
         @endforeach
+        
+
     </ul>
 </nav>
 
 <style>
     nav {
         color: white;
+        width: 80%;
+        height: 100%;
     }
 
     nav ul {
+        width: 100%;
         list-style-type: none;
+        
+    }
+
+    .liste{
+        display: flex;
+        justify-content: start;
     }
 
     nav ul li {

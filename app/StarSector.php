@@ -13,8 +13,8 @@ class StarSector extends Model
         'name',
     ];
 
-    public function trainnings()
+    public function trainings()
     {
-        return $this->hasMany(StarTrainning::class, 'sector_id');
+        return $this->hasMany(StarTraining::class, 'sector_id');
     }
 }

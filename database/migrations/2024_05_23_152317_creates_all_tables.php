@@ -14,64 +14,52 @@ class CreatesAllTables extends Migration
     public function up()
     {
         Schema::create('star_studients', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('code_apprenant')->unique();// Clé étrangère vers users
+            $table->increments('id');
+            $table->integer('code_apprenant')->unsigned();// Clé étrangère vers users
             $table->date('birthday');
             $table->enum('gender', ['F', 'M']);
-            $table->unsignedBigInteger('level_id')->nullable();
-            $table->unsignedBigInteger('trainning_id')->nullable();
+            $table->integer('level_id')->nullable()->unsigned();
+            $table->integer('training_id')->nullable()->unsigned();
             $table->string('adress')->nullable();
             $table->string('city')->nullable();
             $table->integer('postal_code')->nullable();
             $table->string('family_situation')->nullable();
             $table->string('language', 3);
-            $table->enum('quality', ['D', 'E', 'I']);
+            $table->enum('quality', ['D', 'E', 'I'])->nullable();
             $table->string('status')->nullable();
-            $table->float('attendance');
+            $table->float('attendance')->nullable();
             $table->timestamps();
         });echo "Table studients created.\n";
-        Schema::create('star_trainnings', function (Blueprint $table) {
-            $table->id();
-            $table->integer('code_trainning')->unique();
-            $table->string('name_trainning');
-            $table->unsignedBigInteger('sector_id');
-            $table->unsignedBigInteger('degree_id');
+        
+        Schema::create('star_trainings', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('code_training')->unsigned();
+            $table->string('name_training');
+            $table->integer('sector_id')->unsigned();
+            $table->integer('degree_id')->unsigned();
             $table->timestamps();
-        });echo "Table trainnings created.\n";
+        });echo "Table trainings created.\n";
+        
         Schema::create('star_sectors', function (Blueprint $table) {
-            $table->id();
-            $table->integer('code_sector')->unique();
+            $table->increments('id');
+            $table->integer('code_sector')->unsigned();
             $table->string('name');
             $table->timestamps();
         });echo "Table sectors created.\n";
+        
         Schema::create('star_levels', function (Blueprint $table) {
-            $table->id();
-            $table->integer('code_level')->unique();
+            $table->increments('id');
+            $table->integer('code_level')->unsigned();
             $table->string('name');
             $table->timestamps();
         });echo "Table levels created.\n";
+        
         Schema::create('star_degrees', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->integer('code_degree')->unsigned();
             $table->string('name');
             $table->timestamps();
         });echo "Table degrees created.\n";
-        
-        Schema::table('users', function (Blueprint $table) {
-            // Ajouter une contrainte unique à la colonne code_ypareo
-            $table->unsignedBigInteger('code_ypareo')->unique()->change();
-        });
-        
-        Schema::table('star_studients', function (Blueprint $table) {
-            $table->foreign('code_apprenant')->references('code_ypareo')->on('users')->onDelete('cascade');
-            $table->foreign('level_id')->references('id')->on('star_levels')->onDelete('set null');
-            $table->foreign('trainning_id')->references('id')->on('star_trainnings')->onDelete('set null');
-        });echo "les clés de sutidents ont été ajouté.\n";
-        Schema::table('star_trainnings', function (Blueprint $table) {
-            $table->foreign('sector_id')->references('id')->on('star_sectors')->onDelete('cascade');
-            $table->foreign('degree_id')->references('id')->on('star_degrees')->onDelete('cascade');
-        });
-        
     }
 
     /**
@@ -82,22 +70,9 @@ class CreatesAllTables extends Migration
     public function down()
     {
         Schema::dropIfExists('star_studients');
-        Schema::dropIfExists('star_trainnings');
+        Schema::dropIfExists('star_trainings');
         Schema::dropIfExists('star_sectors');
         Schema::dropIfExists('star_levels');
         Schema::dropIfExists('star_degrees');
-        Schema::table('users', function (Blueprint $table) {
-            // Supprimer la contrainte unique
-            $table->dropUnique(['code_ypareo']);
-        });
-        Schema::table('star_trainnings', function (Blueprint $table) {
-            $table->dropForeign(['sector_id']);
-            $table->dropForeign(['degree_id']);
-        });
-        Schema::table('star_studients', function (Blueprint $table) {
-            $table->dropForeign(['code_apprenant']);
-            $table->dropForeign(['level_id']);
-            $table->dropForeign(['trainning_id']);
-        });
     }
 }

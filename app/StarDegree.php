@@ -13,8 +13,8 @@ class StarDegree extends Model
         'name',
     ];
 
-    public function trainnings()
+    public function trainings()
     {
-        return $this->hasMany(StarTrainning::class, 'degree_id');
+        return $this->hasMany(StarTraining::class, 'degree_id');
     }
 }
