@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\Livewire;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
+use App\Http\Livewire\WithNotificationListener;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
 
@@ -25,6 +26,7 @@ class PostsManager extends Component
     use WithFavoritesHandling;
     use WithPinnedHandling;
     use WithFilterPosts;
+    use WithNotificationListener;
 
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [12, 24, 36, 48, 60];
@@ -37,7 +39,7 @@ class PostsManager extends Component
     public $blockRedirection = FALSE;
 
 
-    protected $listeners = ['modalClosed', 'deletePost'];
+    protected $listeners = ['modalClosed', 'deletePost', 'pushedNotification'];
 
     public $filter = [
         'favoritePosts' => '',
