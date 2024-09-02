@@ -1156,70 +1156,15 @@ a:hover {
     } */
 }
 
-/* .separatorDisplayList {
-    background-color: var(--select-color-17);
-} */
-
-/* .displayList tbody td .title-description{
-    font-size: 0.875em;
-    font-style: italic;
-} */
-
-/* .displayList {
-    border-collapse: separate;
-    border-spacing: 0 10px;
-} */
-
-/* .displayList tbody > tr > td {
-    font-size: 0.875em;
-    background-color: var(--select-color-10);
-    vertical-align: middle;
-    padding-top: 0;
-    padding-bottom: 0;
-    height: 75px;
-} */
-
-/* .displayList tbody > tr.pinnedPost > td {
-    background-image: linear-gradient(to bottom, var(--select-color-10),var(--select-color-12),var(--select-color-14)) ;
-} */
-
-/* .displayList thead > tr > th span {
-    border-bottom: 2px solid var(--select-color-14);
-    display: inline-block;
-    padding: 0 5px 5px;
-    font-weight: normal;
-} */
-
-/* @media (max-width: 1200px){
-    .displayList td:nth-child(3),
-    .displayList th:nth-child(3) {
-        display: none;
-    }
-} */
-/* @media (max-width: 992px){
-    .displayList td:nth-child(2),
-    .displayList th:nth-child(2) {
-        display: none;
-    }
-} */
-/* @media (max-width: 768px){
-    .displayList td:nth-child(4),
-    .displayList th:nth-child(4) {
-        display: none;
-    }
-} */
-
-/* @media (max-width: 576px){
-    .displayList td:nth-child(5),
-    .displayList th:nth-child(5) {
-        display: none;
-    }
-} */
-
 
 /*--------------------------------------------------------------
 # Disable/enable notification
 --------------------------------------------------------------*/
+.toast-header {
+    background-color: var(--select-color-18);
+    color: var(--select-color-2);
+}
+
 .subscribeNotification {
     width: 80px;
     height: 26px;
