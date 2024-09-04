@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Usage;
 
-
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
@@ -21,33 +20,32 @@ class FavorisManager extends Component
     use WithUsageMode;
     use WithFavoritesHandling;
 
+    public $rubric;
 
     protected $paginationTheme = 'bootstrap';
-    public $perPageOptions = [8, 12, 16, 24, 48, 60];
-    public $perPage = 16;
+    public $perPageOptions = [12, 24, 36, 48, 60];
+    public $perPage;
 
     public $rendered = FALSE;
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
-
-
 
     public function mount($viewBag) {
         session([
             'backRoute' => request()->getRequestUri(),
             'appsBackRoute' => request()->getRequestUri(),
         ]);
-        $this->perPage = session('postsPerPage', 16);
+        $this->perPage = session('postsPerPage', 12);
         $this->rubric = $viewBag->rubric;
         $this->setMode();
         $this->setNotifications();
 
     }
+
     public function booted()
     {
         $this->firstLoad = !$this->rendered;
     }
-
 
     public function redirectToPost($postId) {
         if (!$this->blockRedirection) {
@@ -65,7 +63,6 @@ class FavorisManager extends Component
                 ->detach(auth()->user()->id);
         }
 
-
         $this->emitSelf('render');
     }
 
@@ -81,8 +78,8 @@ class FavorisManager extends Component
         $favoritesRubrics = $user->myFavoritesRubrics;
 
         return view('livewire.usage.favoris-manager',[
-            'posts'=>$favoritesPosts,
-            'rubrics'=> $favoritesRubrics,
-            ]);
+            'posts' => $favoritesPosts,
+            'rubrics' => $favoritesRubrics,
+        ]);
     }
 }

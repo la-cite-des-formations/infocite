@@ -72,12 +72,12 @@
                         Mes infos
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="/favoris" class="dropdown-item justify-content-start">
                         <span class="material-icons fs-5 ms-0 me-1">star_border</span>
                         Mes favoris
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <a href="{{ route('logout') }}" class="dropdown-item text-danger justify-content-start"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
