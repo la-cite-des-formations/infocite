@@ -320,7 +320,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
   Echo.channel("notificationPostChannel.".concat(window.userId)).listen('NotificationPusher', function (notification) {
     // Création des éléments de la notification
-    console.log('nouvelle notification')
     var notificationElement = document.createElement('div');
     notificationElement.classList.add('toast', 'mb-2');
     notificationElement.setAttribute('role', 'alert');
@@ -361,7 +360,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var elapsed = Math.floor((now - receivedTime) / 1000); // temps écoulé en secondes
 
       var minutes = Math.floor(elapsed / 60);
-      time.innerText = "Il y a ".concat(minutes, " min");
+      time.innerText = "Il y a ".concat(minutes, " mins");
     }
 
     setInterval(updateElapsedTime, 60000); // Mettre à jour toutes les minutes
@@ -373,7 +372,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
     notificationPush.show();
     var originalTitle = document.title;
-    var newTitle = "Nouvelle notification";
+    var newTitle = "New notification";
     var blink = true;
     var interval = setInterval(function () {
       document.title = blink ? newTitle : originalTitle;
@@ -384,8 +383,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       clearInterval(interval);
       document.title = originalTitle;
     });
-
-    Livewire.emit('pushedNotification');
   });
 })();
 /******/ })()

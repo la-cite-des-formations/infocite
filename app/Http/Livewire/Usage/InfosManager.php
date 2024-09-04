@@ -22,13 +22,15 @@ class InfosManager extends Component
     public $rubric;
     public $rendered = FALSE;
     public $firstLoad = TRUE;
-    public $perPageOptions = [4, 8, 16];
-    public $perPage = 8;
+    public $perPageOptions = [12, 24, 36, 48, 60];
+    public $perPage;
     public $blockRedirection = FALSE;
 
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
+
+        $this->perPage = session('favoritesPostsPerPage', 12);
         $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
     }
@@ -57,6 +59,7 @@ class InfosManager extends Component
     }
 
     public function updatedPerPage() {
+        session(['favoritesPostsPerPage' => $this->perPage]);
         $this->resetPage();
     }
 
@@ -86,10 +89,10 @@ class InfosManager extends Component
 
         return view('livewire.usage.infos-manager', [
             'user' => $user,
-            'favoritesPosts' => $user->myFavoritesPosts()
+            'favoritesPosts' => $user
+                ->myFavoritesPosts()
                 ->paginate($this->perPage),
-            'favoritesRubrics' => $user->rubrics()
-                ->paginate($this->perPage),
+            'favoritesRubrics' => $user->rubrics,
         ]);
     }
 }

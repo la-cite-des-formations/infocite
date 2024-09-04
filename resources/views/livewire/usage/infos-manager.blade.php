@@ -138,12 +138,12 @@
         <!-- Mes rubriques favoris -->
         <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
             <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">category</i>Mes rubriques favoris</h3>
-          @if ($favoritesRubrics->total() == 0)
+          @if ($favoritesRubrics->count() == 0)
             <p class="text-center">Aucune rubrique dans les favoris</p>
           @else
            @foreach ($user->rubrics as $i => $rubric)
             <div class="column aos-init aos-animate mt-2 mb-3"
-                 @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
+                 @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 20 + 1) * 100 }}" @endif>
                 <div class="rubrics-div">
                     <p class="fs-5 text-center">
                         <a href="{{ route('rubric.index', ['rubric' => $rubric->route()]) }}">{{ $rubric->name }}</a>
@@ -169,8 +169,8 @@
               @foreach ($favoritesPosts as $i => $post)
                @can('read', $post)
                 <div wire:click='redirectToPost({{ $post->id }})' role="button"
-                     class="col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
-                     @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
+                     class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
+                     @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 6 + 1) * 100 }}" @endif>
                     <div class="position-relative icon-box d-flex flex-column">
                       @if (!$post->released && is_object($post->status))
                         <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
