@@ -13,11 +13,13 @@
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel-lang/lang": "~6.1",
+        "laravel-notification-channels/pusher-push-notifications": "^4.2",
         "laravel/framework": "^8.0",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "livewire/livewire": "^2.4",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-csp": "^2.6",
         "tinymce/tinymce": "^6.0"
     },

@@ -22,6 +22,8 @@ class Post extends Model
         'expired_at' => 'date:Y-m-d',
     ];
 
+
+
     public function rubric()
     {
         return $this->belongsTo('App\Rubric');
@@ -102,6 +104,13 @@ class Post extends Model
             ->hasRole('comments', Roles::IS_EDITR, 'Post', $this->id);
     }
 
+    public function commentsInfo() {
+        $commentsNb = $this->comments->count();
+        $commentsNbLabel = $commentsNb ?: 'Aucun';
+
+        return "{$commentsNbLabel} ".($commentsNb > 1 ? 'commentaires' : 'commentaire');
+    }
+
     public function isFavorite() {
         $postUser = $this->readers->find(auth()->user()->id);
 
@@ -148,6 +157,10 @@ class Post extends Model
 
     public function preview() {
         return AP::strLimiter(strip_tags($this->content));
+    }
+
+    public function previewTitle() {
+        return AP::strLimiter(strip_tags($this->title),60);
     }
 
     public function identity() {
@@ -237,4 +250,7 @@ class Post extends Model
                     ->whereRaw('!(rightables.roles & '.Roles::IS_EDITR.')');
             });
     }
+
+
+
 }

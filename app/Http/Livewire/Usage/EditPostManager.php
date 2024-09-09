@@ -2,15 +2,19 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\Events\NotificationPusher;
 use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
+use App\Http\Livewire\WithNotificationListener;
+use App\Http\Livewire\WithPinnedHandling;
 use App\Notification;
 use App\Post;
 use App\Right;
 use App\Roles;
 use App\Rubric;
+use App\User;
 use Livewire\Component;
 
 class EditPostManager extends Component
@@ -18,12 +22,15 @@ class EditPostManager extends Component
     use WithModal;
     use WithAlert;
     use WithIconpicker;
+    use WithPinnedHandling;
+    use WithNotificationListener;
 
     public $backRoute;
     public $currentRubric;
     public $mode;
     public $post;
     public $blockComments;
+    public $pinPost;
 
     protected $listeners = ['modalClosed', 'save', 'contentChange'];
     protected $rules = [
@@ -35,6 +42,7 @@ class EditPostManager extends Component
         'post.auto_delete' => '',
         'post.published_at' => 'date|nullable',
         'post.expired_at' => 'date|nullable',
+
     ];
 
     public function mount($viewBag) {
@@ -121,6 +129,30 @@ class EditPostManager extends Component
                 ]);
         }
 
+        if ($this->pinPost && $this->post->published_at) {
+            $this->countPinnedPosts();
+
+            if ( $this->countPinnedPosts < 4) {
+                if ($this->post->published_at <= today()) {
+                    $this->post->is_pinned = TRUE;
+                }
+                else {
+                    $this->addError(
+                        'post.pinPost',
+                        'La date de publication doit-être inférieur ou égale à la date d\'aujourdhui : '.today()->format('d/m/Y')
+                    );
+                    return;
+                }
+            }
+            else {
+                $this->addError(
+                    'post.pinPost',
+                    'Le nombre maximum d\'articles épinglé (4 articles) est déjà atteint : vous ne pouvez pas épingler cet article'
+                );
+                return;
+            }
+        }
+
         // sauvegarde
         $this->post->save();
 
@@ -150,9 +182,28 @@ class EditPostManager extends Component
                     ['content_type' => 'NP', 'post_id' => $this->post->id, 'release_at' => $this->post->published_at]
                 );
             }
+
             $postNotification
                 ->users()
                 ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
+
+            //Boradcasting notification
+            //Recupérer tout les utilisateurs qui ont la rubrique de l'article en favoris OU l'article lui même en favori
+            $currentPostRubricId = Post::query()->where('id',$this->post->id)->pluck('rubric_id')->first();
+            $userIds = User::query()
+                ->where('notificationSubscribed',true)
+                ->whereHas('myFavoritesRubrics', function ($query) use ($currentPostRubricId) {
+                    $query->where('rubric_id', $currentPostRubricId);
+                })
+                ->orWhereHas('myFavoritesPosts',function ($query) {
+                    $query->where('post_id','=',$this->post->id);
+                })
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            //Broadcaster la notification
+            broadcast(new NotificationPusher($postNotification, $userIds))->toOthers();
         }
 
         // redirection

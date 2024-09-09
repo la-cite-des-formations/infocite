@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\Http\Livewire\WithFavoritesHandling;
 use Livewire\Component;
 use App\Post;
 use App\Rubric;
@@ -9,23 +10,27 @@ use App\User;
 use App\Http\Livewire\WithUsageMode;
 use Livewire\WithPagination;
 
+
 class InfosManager extends Component
 {
     use WithUsageMode;
     use WithPagination;
+    use WithFavoritesHandling;
 
     protected $paginationTheme = 'bootstrap';
 
     public $rubric;
     public $rendered = FALSE;
     public $firstLoad = TRUE;
-    public $perPageOptions = [4, 8, 16];
-    public $perPage = 8;
+    public $perPageOptions = [12, 24, 36, 48, 60];
+    public $perPage;
     public $blockRedirection = FALSE;
 
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
+
+        $this->perPage = session('favoritesPostsPerPage', 12);
         $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
     }
@@ -34,29 +39,7 @@ class InfosManager extends Component
         $this->firstLoad = !$this->rendered;
     }
 
-    public function switchFavoritePost($post_id) {
-        $post = Post::find($post_id);
 
-        if ($post->isFavorite()) {
-            if ($post->isRead() || $post->tags()) {
-                $isFavorite = FALSE;
-            }
-        }
-        else {
-            $isFavorite = TRUE;
-        }
-        if (isset($isFavorite)) {
-            $post->readers()->syncWithoutDetaching([
-                auth()->user()->id => [
-                    'is_favorite' => $isFavorite
-                ]
-            ]);
-        }
-        else {
-            $post->readers()->detach(auth()->user()->id);
-        }
-        $this->emitSelf('render');
-    }
 
     public function switchFavoriteRubric($rubric_id) {
         $this->rubric = Rubric::find($rubric_id);
@@ -76,6 +59,7 @@ class InfosManager extends Component
     }
 
     public function updatedPerPage() {
+        session(['favoritesPostsPerPage' => $this->perPage]);
         $this->resetPage();
     }
 
@@ -90,6 +74,14 @@ class InfosManager extends Component
         $this->blockRedirection = TRUE;
     }
 
+    public function switchSubscription(){
+
+        $user = auth()->user();
+        User::query()
+            ->where('id', $user->id)
+            ->update(['notificationSubscribed' => !$user->notificationSubscribed]);
+    }
+
     public function render() {
         $this->rendered = TRUE;
 
@@ -97,10 +89,10 @@ class InfosManager extends Component
 
         return view('livewire.usage.infos-manager', [
             'user' => $user,
-            'favoritesPosts' => $user->myFavoritesPosts()
+            'favoritesPosts' => $user
+                ->myFavoritesPosts()
                 ->paginate($this->perPage),
-            'favoritesRubrics' => $user->rubrics()
-                ->paginate($this->perPage),
+            'favoritesRubrics' => $user->rubrics,
         ]);
     }
 }

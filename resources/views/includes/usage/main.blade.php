@@ -1,4 +1,11 @@
 <main id="main">
+
+    {{--NotificationPush avec Toastify de Bootstrap--}}
+    <div class="container position-relative">
+        <div id="toast-container" style="position: fixed; top: 84px; bottom: 0; right: 110px; z-index: 9999;">
+        </div>
+    </div>
+
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
   @can('viewAny', 'App\\App')
@@ -20,5 +27,6 @@
             </div>
         </div>
     </section>
+
     @livewire('modal-manager', ['parent' => "usage.{$viewBag->template}-manager"])
 </main>

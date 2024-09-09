@@ -63,6 +63,12 @@ class User extends Authenticatable
                 ->groupBy('post_id')
                 ->pluck('post_id')
             )
+            ->where('published', TRUE)
+            ->where(function ($query) {
+                $query
+                    ->where('expired_at', '>', today()->format('Y-m-d'))
+                    ->orWhere('expired_at', NULL);
+            })
             ->orderBy('created_at', 'DESC');
     }
 
@@ -71,7 +77,21 @@ class User extends Authenticatable
             ->belongsToMany('App\Post', 'post_user')
             ->orderBy('created_at', 'DESC')
             ->withPivot(['is_favorite'])
-            ->where('is_favorite', TRUE);
+            ->where('is_favorite', TRUE)
+            ->where('published', TRUE)
+            ->where(function ($query) {
+                $query
+                    ->where('expired_at', '>', today()->format('Y-m-d'))
+                    ->orWhere('expired_at', NULL);
+            });
+    }
+
+    public function myFavoritesRubrics(){
+        return $this
+            ->belongsToMany('App\Rubric', 'rubric_user')
+            ->orderBy('created_at', 'DESC')
+            ->withPivot(['rubric_id']);
+
     }
 
     public function myNotifications() {
