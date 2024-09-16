@@ -58,6 +58,7 @@
 @endif
 
 <!-- Template Main JS File -->
+<script src="{{ asset('js/bootstrap.js') }}" defer></script>
 <script src="{{ asset('js/main.js') }}" defer></script>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
