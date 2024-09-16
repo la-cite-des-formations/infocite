@@ -56,12 +56,12 @@
 @if(isset(auth()->user()->id) )
 <script>window.userId = {{auth()->user()->id}}</script>
 @endif
+
 <!-- Template Main JS File -->
-<script src="{{ asset('js/bootstrap.js') }}" defer></script>
 <script src="{{ asset('js/main.js') }}" defer></script>
-{{-- <script src="{{ asset('js/main_temp.js') }}" defer></script> --}}
-<script src="{{ asset('js/app.js') }}"></script>
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 @livewireScripts(['nonce' => csp_nonce()])
 
 <!-- Modal JS File -->
