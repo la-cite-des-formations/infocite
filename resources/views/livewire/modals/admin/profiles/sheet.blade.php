@@ -14,17 +14,13 @@
 @section('modal-body')
     <div class="alert alert-success mb-3">
         <div class="d-flex align-items-center">
-            <div class="my-auto me-3">
-                <span class="material-icons md-36">portrait</span>
-            </div>
-            <div class="my-auto">
-                <h5>{{ $profile->first_name }}</h5>
-            </div>
+            <span class="mx-2 material-icons md-36">portrait</span>
+            <h5 class="ms-1 my-auto">{{ $profile->first_name }}</h5>
         </div>
     </div>
     <div class="alert alert-warning mb-0">
-        <dl class="row mb-0 mx-0">
-          @foreach (AP::getGroupTypes() as $typeKey => $typeName)
+        <dl class="row m-0">
+            @foreach (AP::getGroupTypes() as $typeKey => $typeName)
            @if ($profile->groups([$typeKey])->get()->isNotEmpty())
             <dt class="col-12 ps-0">{{ AP::getGroupFilter($typeKey)['dtLabel']." associés" }}</dt>
             <ul>

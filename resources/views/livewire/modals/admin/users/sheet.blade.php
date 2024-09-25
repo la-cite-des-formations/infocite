@@ -14,26 +14,24 @@
 @section('modal-body')
     <div class="alert @if($user->is_frozen) alert-warning @else alert-success @endif mb-3">
         <div class="d-flex align-items-center">
-            <div class="my-auto me-3">
-              @if($user->avatar)
-                <img class="img-thumbnail rounded float-left" src="{{ $user->avatar }}">
-              @else
-                <span class="material-icons md-36">person</span>
-              @endif
-            </div>
-            <div class="my-auto">
-                <h5>{{ "$user->first_name $user->name" }}</h5>
+          @if($user->avatar)
+            <img class="mx-2 img-thumbnail rounded float-left" src="{{ $user->avatar }}">
+          @else
+            <span class="mx-2 material-icons md-36">person</span>
+          @endif
+            <div class="ms-1 my-auto">
+                <h5 class="my-auto">{{ "$user->first_name $user->name" }}</h5>
               @if(!empty($user->google_account))
                 <a class="alert-link" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
               @endif
             </div>
-            <div class="ms-auto my-auto">
+            <div class="ms-auto">
                 <span class="material-icons-outlined">@if($user->is_staff) corporate_fare @else school @endif</span>
             </div>
         </div>
     </div>
     <div class="alert alert-info mb-3">
-        <dl class="row mb-0 mx-0">
+        <dl class="row m-0">
           @if(!empty($user->birthday))
             <!-- Né(e) le __/__/____ -->
             <dt class="col-3 text-end ps-0">
@@ -101,7 +99,7 @@
         </dl>
     </div>
     <div class="alert alert-warning mb-0">
-        <dl class="row mb-0 mx-0">
+        <dl class="row m-0">
           @foreach (AP::getGroupTypes() as $typeKey => $typeName)
            @if (($typeKey == 'S' || $typeKey == 'A') && $user->groups([$typeKey])->get()->isNotEmpty())
             <dt class="col-12 ps-0">{{ AP::getGroupFilter($typeKey)['dtLabel'] }}</dt>

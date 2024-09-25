@@ -10,20 +10,20 @@
                             aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des profils">
                         <span class="material-icons">portrait</span>
                     </button>
-                    <div class="dropdown-menu">
-                        <a href="javascript:onchoiceSelection('profile-cbx', 'all')" class="d-flex dropdown-item">
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:onchoiceSelection('profile-cbx', 'all')" class="d-flex dropdown-item">
                             <span class="material-icons md-18 ms-0 me-1">check_box</span>
                             Tous
-                        </a>
-                        <a href="javascript:onchoiceSelection('profile-cbx', 'none')" class="d-flex dropdown-item">
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('profile-cbx', 'none')" class="d-flex dropdown-item">
                             <span class="material-icons md-18 ms-0 me-1">check_box_outline_blank</span>
                             Aucun
-                        </a>
-                        <a href="javascript:onchoiceSelection('profile-cbx', 'reverse')" class="d-flex dropdown-item">
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('profile-cbx', 'reverse')" class="d-flex dropdown-item">
                             <span class="material-icons md-18 ms-0 me-1">swap_horiz</span>
                             Inverser
-                        </a>
-                    </div>
+                        </a></li>
+                    </ul>
                 </div>
               @else
                 <span class="material-icons me-1">portrait</span>
