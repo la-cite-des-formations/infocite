@@ -5,7 +5,7 @@
 @if(!$deletionPerformed && $models->count())
     @section('modal-body')
         <div class="alert alert-info">
-            <div class="font-weight-bold">{{ $headerModelsList }}</div>
+            <div class="fw-bold">{{ $headerModelsList }}</div>
             <ul>
               @foreach($models as $model)
                 <li>
@@ -28,7 +28,7 @@
     @endsection
 
     @section('modal-footer')
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
       @if(!session()->has('message'))
         <button wire:click="delete" type="button" class="btn btn-primary" id="deleteButton">Supprimer</button>
       @endif
@@ -46,6 +46,6 @@
 
 @if($deletionPerformed || !$models->count())
     @section('modal-footer')
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
     @endsection
 @endif

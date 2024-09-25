@@ -1,5 +1,5 @@
-<table class="table table-sm table-hover">
-    <thead class="thead-dark">
+<table class="table table-sm table-hover admin-table">
+    <thead class="table-dark">
         @yield('table-head')
     </thead>
     <tbody>

@@ -3,46 +3,45 @@
 @section('table-head')
     <tr class="row">
         <th scope="col" class="col @cannot('deleteAny', ['App\\User', TRUE]) p-2 @endcannot">
-          @can('deleteAny', ['App\\User', TRUE])
-            <div class="btn-group dropleft mr-1">
-                <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des profils">
-                    <span class="material-icons">portrait</span>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="javascript:onchoiceSelection('profile-cbx', 'all')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box</span>
-                        Tous
-                    </a>
-                    <a href="javascript:onchoiceSelection('profile-cbx', 'none')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box_outline_blank</span>
-                        Aucun
-                    </a>
-                    <a href="javascript:onchoiceSelection('profile-cbx', 'reverse')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">swap_horiz</span>
-                        Inverser
-                    </a>
+            <div class="d-flex align-items-center">
+              @can('deleteAny', ['App\\User', TRUE])
+                <div class="btn-group dropstart">
+                    <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des profils">
+                        <span class="material-icons">portrait</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="javascript:onchoiceSelection('profile-cbx', 'all')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box</span>
+                            Tous
+                        </a>
+                        <a href="javascript:onchoiceSelection('profile-cbx', 'none')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box_outline_blank</span>
+                            Aucun
+                        </a>
+                        <a href="javascript:onchoiceSelection('profile-cbx', 'reverse')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">swap_horiz</span>
+                            Inverser
+                        </a>
+                    </div>
                 </div>
+              @else
+                <span class="material-icons me-1">portrait</span>
+              @endcannot
+                Profil
             </div>
-          @endcan
-          @cannot('deleteAny', ['App\\User', TRUE])
-            <div class="btn-group mr-1">
-                <span class="material-icons">portrait</span>
-            </div>
-          @endcannot
-            Profil
         </th>
         <th scope="col" class="col py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">scatter_plot</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">scatter_plot</span>
+                <div class="ms-1">Nombre d'utilisateurs associés</div>
             </div>
-            Nombre d'utilisateurs associés
         </th>
         <th scope="col" class="col-3 d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
                @can('create', ['App\\User', TRUE])
                 <button wire:click="showModal('edit', {mode : 'creation'})"
-                        class="d-flex btn btn-sm btn-success mr-1" title="Ajouter un profil">
+                        class="d-flex btn btn-sm btn-success me-1" title="Ajouter un profil">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
@@ -64,11 +63,14 @@
     <tr class="row">
         <td scope="row" class="col">
           @can('deleteAny', ['App\\User', TRUE])
-            <input type="checkbox" class="ml-0 form-check-input profile-cbx" id="{{ $profile->id }}">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input profile-cbx" id="{{ $profile->id }}">
+                <label  class="form-check-label text-primary"
+                        for="{{ $profile->id }}" title="{{ $profile->login }}">{{ $profile->first_name }}</label>
+            </div>
+          @else
+                <div class="text-primary">{{ $profile->first_name }}</div>
           @endcan
-            <label class="ml-4 text-primary d-flex" for="{{ $profile->id }}" title="{{ $profile->login }}">
-                {{ $profile->first_name }}
-            </label>
         </td>
         <td class="col">
             {{ $profile->users->count() }}
