@@ -26,7 +26,7 @@
             <dd class="col-9 ps-0">{{ $group->code_ypareo }}</dd>
           @endif
             <dt class="col-12 ps-0">Membres du groupe</dt>
-            <ul>
+            <ul class="ms-2">
               @if ($group->users->isNotEmpty())
                @foreach($group->users as $user)
                 <li @if($user->is_frozen) class="alert-warning" @endif>
@@ -44,7 +44,7 @@
         <dl class="row m-0">
           @if ($group->profiles->isNotEmpty())
             <dt class="col-12 ps-0">Profils associés</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($group->profiles as $profile)
                 <li>{{ $profile->first_name }}</li>
               @endforeach
@@ -52,7 +52,7 @@
           @endif
           @if ($group->apps->isNotEmpty())
             <dt class="col-12 ps-0">Applications associées</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($group->apps as $app)
                 <li>{{ $app->identity() }}</li>
               @endforeach
@@ -60,7 +60,7 @@
           @endif
           @if ($group->rights->isNotEmpty())
             <dt class="col-12 ps-0">Droits particuliers</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($group->rights->sortByDesc('pivot.priority')->sortBy('name') as $right)
                 <li>{{ $right->description.$right->rightsResourceableString() }}</li>
                 <dd class="col-12 px-0 mb-0">{{ $right->getRightableRoles() }}</dd>

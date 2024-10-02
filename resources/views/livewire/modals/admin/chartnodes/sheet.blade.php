@@ -15,12 +15,10 @@
 
 @section('modal-body')
     <div class="alert alert-success mb-3">
-        <div class="d-flex">
-            <div class="my-auto mr-3">
-                <span class="material-icons-outlined md-36">pages</span>
-            </div>
-            <div class="my-auto">
-                <h5 class="mb-0">{{ $chartnode->name }}</h5>
+        <div class="d-flex align-items-center">
+            <span class="mx-2 material-icons-outlined md-36">pages</span>
+            <div class="ms-1 my-auto">
+                <h5 class="my-auto">{{ $chartnode->name }}</h5>
             </div>
         </div>
     </div>
@@ -31,6 +29,6 @@
 
 @section('modal-footer')
     <div class="btn-toolbar" role="toolbar">
-        <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
     </div>
 @endsection

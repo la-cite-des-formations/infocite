@@ -1,4 +1,4 @@
-<div wire:ignore.self id="icon-picker" class="col dropend">
+<div wire:ignore.self id="icon-picker" @class(['col dropend', 'admin-interface' => isset($inAdminInterface)])>
     <button wire:ignore.self id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" type="button"
             class="btn btn-light choice-icon-btn dropdown-toggle">
         <span class="material-icons me-1 mt-1">{{ $$model->icon ?: '...' }}</span>

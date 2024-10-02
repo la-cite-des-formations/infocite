@@ -79,7 +79,7 @@
         </td>
         <td scope="row" class="col-3">{{ AP::getGroupType($group->type) }}</td>
         <td scope="row" class="col">{{ $group->users->count() }}</td>
-        <td class="col d-flex justify-content-end mb-auto">
+        <td class="col d-flex justify-content-end align-items-center">
           @can('view', $group)
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $group->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">

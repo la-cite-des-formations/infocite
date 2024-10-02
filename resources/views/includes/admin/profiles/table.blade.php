@@ -75,7 +75,7 @@
         <td class="col">
             {{ $profile->users->count() }}
         </td>
-        <td class="col-3 d-flex justify-content-end mb-auto">
+        <td class="col-3 d-flex justify-content-end align-items-center">
           @if(auth()->user()->can('view', [$profile, TRUE]) || auth()->user()->can('adminRights', ['App\\User', TRUE]))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $profile->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">

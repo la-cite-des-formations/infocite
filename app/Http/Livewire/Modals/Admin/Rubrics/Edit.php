@@ -311,6 +311,7 @@ class Edit extends Component
         return $this->mode === 'view' ?
             view('livewire.modals.admin.rubrics.sheet') :
             view('livewire.modals.admin.models-form', [
+                'modalSize' => 'modal-lg',
                 'addButtonTitle' => 'Ajouter une rubrique',
                 'rubrics' => Rubric::filter([
                     'search' => '',

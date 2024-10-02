@@ -3,22 +3,22 @@
 @section('table-head')
     <tr class="row">
         <th scope="col" class="col-4 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">local_offer</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">local_offer</span>
+                <div class="ms-1">Libellé référent</div>
             </div>
-            Libellé référent
         </th>
         <th scope="col" class="col-4 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">person</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">person</span>
+                <div class="ms-1">Acteur</div>
             </div>
-            Acteur
         </th>
         <th scope="col" class="col-4 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">pages</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">pages</span>
+                <div class="ms-1">Processus</div>
             </div>
-            Processus
         </th>
     </tr>
 @endsection

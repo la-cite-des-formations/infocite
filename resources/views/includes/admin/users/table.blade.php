@@ -72,10 +72,8 @@
             <div class="text-primary">{{ $user->identity }}</div>
           @endcan
         </td>
-        <td class="col">
-            {{ $user->getInfo($userInfo) }}
-        </td>
-        <td class="col-3 d-flex justify-content-end mb-auto">
+        <td class="col">{{ $user->getInfo($userInfo) }}</td>
+        <td class="col-3 d-flex justify-content-end align-items-center">
           @if(auth()->user()->can('view', $user) || auth()->user()->can('adminRights', 'App\\User'))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $user->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">

@@ -868,6 +868,10 @@ a:hover {
     display: none;
 }
 
+.admin-interface a {
+    color: var(--bs-info-text-emphasis);
+}
+
 .choice-icon-btn {
     border: 1px solid rgba(108, 117, 125, 0.25);
 }
@@ -876,12 +880,24 @@ a:hover {
     background-color: var(--select-color-1);
 }
 
+.admin-interface .choice-icon-div {
+    background-color: var(--bs-info-text-emphasis);
+}
+
 .choice-icon-div:hover {
     background-color: var(--select-color-2);
 }
 
+.admin-interface .choice-icon-div:hover {
+    background-color: #055160C0;
+}
+
 .bg-icon-picker {
     background-color: var(--select-color-1);
+}
+
+.admin-interface .bg-icon-picker {
+    background-color: var(--bs-info-text-emphasis);
 }
 
 .search-icons:focus {

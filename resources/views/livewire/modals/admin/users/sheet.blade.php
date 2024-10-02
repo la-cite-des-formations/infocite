@@ -25,9 +25,7 @@
                 <a class="alert-link" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
               @endif
             </div>
-            <div class="ms-auto">
-                <span class="material-icons-outlined">@if($user->is_staff) corporate_fare @else school @endif</span>
-            </div>
+            <span class="ms-auto material-icons-outlined">@if($user->is_staff) corporate_fare @else school @endif</span>
         </div>
     </div>
     <div class="alert alert-info mb-3">
@@ -103,7 +101,7 @@
           @foreach (AP::getGroupTypes() as $typeKey => $typeName)
            @if (($typeKey == 'S' || $typeKey == 'A') && $user->groups([$typeKey])->get()->isNotEmpty())
             <dt class="col-12 ps-0">{{ AP::getGroupFilter($typeKey)['dtLabel'] }}</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach($user->groups([$typeKey])->get() as $group)
                 <li>{{ $group->name . ($group->pivot->function ? " ({$group->pivot->function})" : '') }}</li>
               @endforeach
@@ -112,7 +110,7 @@
           @endforeach
           @if ($user->profiles->isNotEmpty())
             <dt class="col-12 ps-0">Profils associés</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($user->profiles as $profile)
                 <li>{{ $profile->first_name }}</li>
               @endforeach
@@ -120,7 +118,7 @@
           @endif
           @if ($user->myApps()->isNotEmpty())
             <dt class="col-12 ps-0">Applications</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($user->myApps() as $app)
                 <li>{{ $app->identity($user->id) }}</li>
               @endforeach
@@ -128,7 +126,7 @@
           @endif
           @if ($user->allRights()->isNotEmpty())
             <dt class="col-12 ps-0">Droits appliqués</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($user->allRights()->sortByDesc('pivot.priority')->groupBy('name')->sortKeys() as $rights)
                 <li>{{ $rights->first()->description.$rights->first()->rightsResourceableString() }}</li>
                 <dd class="col-12 px-0 mb-0">{{ $rights->first()->getRightableRoles() }}</dd>
@@ -138,7 +136,7 @@
           @endif
           @if ($user->personalRights->isNotEmpty())
             <dt class="col-12 ps-0">Droits personnels</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($user->personalRights->sortByDesc('pivot.priority')->sortBy('name') as $right)
                 <li>{{ $right->description.$right->rightsResourceableString() }}</li>
                 <dd class="col-12 px-0 mb-0">{{ $right->getRightableRoles() }}</dd>
@@ -148,7 +146,7 @@
           @endif
           @if ($user->profilesRights()->isNotEmpty())
             <dt class="col-12 ps-0">Droits par profil</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($user->profilesRights() as $profileRights)
                @foreach ($profileRights->rights->sortByDesc('pivot.priority')->groupBy('name')->sortKeys() as $rights)
                 <li>{{
@@ -163,7 +161,7 @@
           @endif
           @if ($user->groupsRights()->isNotEmpty())
             <dt class="col-12 ps-0">Droits par groupe</dt>
-            <ul>
+            <ul class="ms-2">
               @foreach ($user->groupsRights()->sortByDesc('pivot.priority')->sortBy('name') as $right)
                 <li>{{
                     $user->groups->firstWhere('id', $right->pivot->rightable_id)->identity().' - '.
