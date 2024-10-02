@@ -3,46 +3,45 @@
 @section('table-head')
     <tr class="row">
         <th scope="col" class="col-5 @cannot('deleteAny', 'App\\Comment') p-2 @endcannot">
-          @can('deleteAny', 'App\\Comment')
-            <div class="btn-group dropleft mr-1">
-                <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des commentaires">
-                    <span class="material-icons">comment</span>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="javascript:onchoiceSelection('comment-cbx', 'all')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box</span>
-                        Tous
-                    </a>
-                    <a href="javascript:onchoiceSelection('comment-cbx', 'none')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box_outline_blank</span>
-                        Aucun
-                    </a>
-                    <a href="javascript:onchoiceSelection('comment-cbx', 'reverse')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">swap_horiz</span>
-                        Inverser
-                    </a>
+            <div class="d-flex align-items-center">
+              @can('deleteAny', 'App\\Comment')
+                <div class="btn-group dropstart">
+                    <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des commentaires">
+                        <span class="material-icons">comment</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:onchoiceSelection('comment-cbx', 'all')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box</span>
+                            Tous
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('comment-cbx', 'none')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box_outline_blank</span>
+                            Aucun
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('comment-cbx', 'reverse')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">swap_horiz</span>
+                            Inverser
+                        </a></li>
+                    </diulv>
                 </div>
+              @else
+                <span class="material-icons me-1">comment</span>
+              @endcan
+                Commentaire
             </div>
-          @endcan
-          @cannot('deleteAny', 'App\\Comment')
-            <div class="btn-group mr-1">
-                <span class="material-icons">comment</span>
-            </div>
-          @endcannot
-            Commentaire
         </th>
         <th scope="col" class="col-3 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">article</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">article</span>
+                <div class="ms-1">Article</div>
             </div>
-            Article
         </th>
         <th scope="col" class="col py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">face</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">face</span>
+                <div class="ms-1">Auteur</div>
             </div>
-            Auteur
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
@@ -64,15 +63,18 @@
     <tr class="row">
         <td scope="row" class="col-5">
           @can('deleteAny', 'App\\Comment')
-            <input type="checkbox" class="ml-0 form-check-input comment-cbx" id="{{ $comment->id }}">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input comment-cbx" id="{{ $comment->id }}">
+                <label  class="form-check-label text-primary"
+                        for="{{ $comment->id }}">{{ $comment->content }}</label>
+            </div>
+          @else
+            <div class="text-primary">{{ $comment->content }}</div>
           @endcan
-            <label class="ml-4 text-primary d-flex" for="{{ $comment->id }}">
-                {{ $comment->content }}
-            </label>
         </td>
         <td scope="row" class="col-3">{{ $comment->post->title }}</td>
         <td scope="row" class="col">{{ $comment->author->identity }}</td>
-        <td class="col d-flex justify-content-end mb-auto">
+        <td class="col d-flex justify-content-end align-items-center">
           @can('view', $comment)
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $comment->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">

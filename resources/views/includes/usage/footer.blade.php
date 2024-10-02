@@ -41,8 +41,9 @@
 
 <!-- Scripts -->
 <!-- Vendor JS Files -->
-<script src="{{ asset('vendor/aos/aos.js') }}" defer></script>
+<script src="{{ asset('js/app.js') }}" defer></script>
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
+<script src="{{ asset('vendor/aos/aos.js') }}" defer></script>
 <script src="{{ asset('vendor/glightbox/js/glightbox.min.js') }}" defer></script>
 <script src="{{ asset('vendor/isotope-layout/isotope.pkgd.min.js') }}" defer></script>
 <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}" defer></script>
@@ -58,7 +59,6 @@
 @endif
 
 <!-- Template Main JS File -->
-<script src="{{ asset('js/bootstrap.js') }}" defer></script>
 <script src="{{ asset('js/main.js') }}" defer></script>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -66,4 +66,4 @@
 @livewireScripts(['nonce' => csp_nonce()])
 
 <!-- Modal JS File -->
-<script src="{{ asset('js/confirmManager.js') }}"></script>
+<script src="{{ asset('js/modalManager.js') }}"></script>

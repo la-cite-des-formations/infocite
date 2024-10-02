@@ -3,46 +3,45 @@
 @section('table-head')
     <tr class="row">
         <th scope="col" class="col @cannot('deleteAny', 'App\\User') p-2 @endcannot" >
-          @can('deleteAny', 'App\\User')
-            <div class="btn-group dropleft mr-1">
-                <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des utilisateurs">
-                    <span class="material-icons">person</span>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="javascript:onchoiceSelection('user-cbx', 'all')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box</span>
-                        Tous
-                    </a>
-                    <a href="javascript:onchoiceSelection('user-cbx', 'none')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box_outline_blank</span>
-                        Aucun
-                    </a>
-                    <a href="javascript:onchoiceSelection('user-cbx', 'reverse')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">swap_horiz</span>
-                        Inverser
-                    </a>
+            <div class="d-flex align-items-center">
+              @can('deleteAny', 'App\\User')
+                <div class="btn-group dropstart">
+                    <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des utilisateurs">
+                        <span class="material-icons">person</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:onchoiceSelection('user-cbx', 'all')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box</span>
+                            Tous
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('user-cbx', 'none')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box_outline_blank</span>
+                            Aucun
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('user-cbx', 'reverse')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">swap_horiz</span>
+                            Inverser
+                        </a></li>
+                    </ul>
                 </div>
+              @else
+                <span class="material-icons me-1">person</span>
+              @endcan
+                Utilisateur
             </div>
-          @endcan
-          @cannot('deleteAny', 'App\\User')
-            <div class="btn-group mr-1">
-                <span class="material-icons">person</span>
-            </div>
-          @endcannot
-            Utilisateur
         </th>
         <th scope="col" class="col py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">{{ $userInfo['icon'] }}</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">{{ $userInfo['icon'] }}</span>
+                <div class="ms-1">{{ $userInfo['header'] }}</div>
             </div>
-            {{ $userInfo['header'] }}
         </th>
         <th scope="col" class="col-3 d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
               @can('create', 'App\\User')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
-                        class="d-flex btn btn-sm btn-success mr-1" title="Ajouter un utilisateur">
+                        class="d-flex btn btn-sm btn-success me-1" title="Ajouter un utilisateur">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
@@ -64,16 +63,17 @@
     <tr class="row @if($user->is_frozen) table-warning @endif">
         <td scope="row" class="col">
           @can('deleteAny', 'App\\User')
-            <input type="checkbox" class="ml-0 form-check-input user-cbx" id="{{ $user->id }}">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input user-cbx" id="{{ $user->id }}">
+                <label  class="form-check-label text-primary"
+                        for="{{ $user->id }}" title="{{ $user->login }}">{{ $user->identity }}</label>
+            </div>
+          @else
+            <div class="text-primary">{{ $user->identity }}</div>
           @endcan
-            <label class="ml-4 text-primary d-flex" for="{{ $user->id }}" title="{{ $user->login }}">
-                {{ $user->first_name }} {{ $user->name }}
-            </label>
         </td>
-        <td class="col">
-            {{ $user->getInfo($userInfo) }}
-        </td>
-        <td class="col-3 d-flex justify-content-end mb-auto">
+        <td class="col">{{ $user->getInfo($userInfo) }}</td>
+        <td class="col-3 d-flex justify-content-end align-items-center">
           @if(auth()->user()->can('view', $user) || auth()->user()->can('adminRights', 'App\\User'))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $user->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">

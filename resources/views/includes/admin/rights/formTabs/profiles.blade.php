@@ -1,11 +1,11 @@
 <div class="col">
-    <div class="form-row">
-        <div class="form-group col mt-1 pt-1">
+    <div class="row g-0">
+        <div class="col mt-1 pt-1">
             <label title="@if($profilesTabs['currentTab'] === 'profiles') Sélectionner les profils à retirer @endif
                           @if($profilesTabs['currentTab'] === 'roles') Sélectionner les profils dont les rôles sont à attribuer ou à désattribuer @endif"
                    for="right-profiles" class="m-auto py-2">Profils associés</label>
             <select id="right-profiles" multiple wire:model="selectedAttachedProfiles"
-                    class="form-control flex-fill" size="15">
+                    class="form-select flex-fill" size="15">
               @foreach($right->profiles as $profile)
                 <option value="{{ $profile->id.$profile->rightsResourceable() }}">
                     {{ $profile->first_name.$profile->rightsResourceableString() }}
@@ -13,7 +13,7 @@
               @endforeach
             </select>
         </div>
-        <div class="d-flex form-group col-1 my-auto">
+        <div class="d-flex col-1 my-auto">
             <div class="btn-group-vertical btn-group-sm mx-auto" role="group">
                 <button wire:click="add('profilesTabs')" class="d-flex btn btn-sm btn-success p-0" type="button"
                         title ="@if($profilesTabs['currentTab'] === 'profiles') Associer les profils sélectionnés @endif
@@ -27,7 +27,7 @@
                 </button>
             </div>
         </div>
-        <div class="form-group col mt-1 pt-1">
+        <div class="col mt-1 pt-1">
             @include('includes.tabs', ['tabsSystem' => $profilesTabs])
         </div>
     </div>

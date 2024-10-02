@@ -165,42 +165,42 @@
 .card-dashboard-teal:hover { background-color: #4dc0b540; }
 
 label>.material-icons, label>.material-icons-outlined {
-    margin: auto 0.25em !important;
+    margin: auto 0.25em;
 }
 
 .spot>.material-icons, .spot>.material-icons-outlined {
-    margin: auto 0.25em !important;
-    line-height: 1.5em !important;
+    margin: auto 0.25em;
+    line-height: 1.5em;
 }
 .spot {
-    border-radius: 50% !important;
+    border-radius: 50%;
 }
 .spot:hover {
-    background-color: lightgrey !important;
+    background-color: lightgrey;
 }
 .spot.spot-primary:hover {
-    background-color: #bcd5ef !important;
+    background-color: #bcd5ef;
 }
 .spot.spot-secondary:hover {
-    background-color: #d2d3d5 !important;
+    background-color: #d2d3d5;
 }
 .spot.spot-success:hover {
-    background-color: #c4ddca !important;
+    background-color: #c4ddca;
 }
 .spot.spot-danger:hover {
-    background-color: #e8c7ca !important;
+    background-color: #e8c7ca;
 }
 .spot.spot-warning:hover {
-    background-color: #efe3bd !important;
+    background-color: #efe3bd;
 }
 .spot.spot-info:hover {
-    background-color: #c1dce1 !important;
+    background-color: #c1dce1;
 }
 .spot.spot-light:hover {
-    background-color: #eeeeee !important;
+    background-color: #eeeeee;
 }
 .spot.spot-dark:hover {
-    background-color: #c6c8c9 !important;
+    background-color: #c6c8c9;
 }
 
 .form-check>.form-check-input {
@@ -868,6 +868,10 @@ a:hover {
     display: none;
 }
 
+.admin-interface a {
+    color: var(--bs-info-text-emphasis);
+}
+
 .choice-icon-btn {
     border: 1px solid rgba(108, 117, 125, 0.25);
 }
@@ -876,12 +880,24 @@ a:hover {
     background-color: var(--select-color-1);
 }
 
+.admin-interface .choice-icon-div {
+    background-color: var(--bs-info-text-emphasis);
+}
+
 .choice-icon-div:hover {
     background-color: var(--select-color-2);
 }
 
+.admin-interface .choice-icon-div:hover {
+    background-color: #055160C0;
+}
+
 .bg-icon-picker {
     background-color: var(--select-color-1);
+}
+
+.admin-interface .bg-icon-picker {
+    background-color: var(--bs-info-text-emphasis);
 }
 
 .search-icons:focus {
@@ -1226,4 +1242,6 @@ a:hover {
     display: block;
 }
 
-
+.admin-table>:not(:first-child) {
+    border-top: none !important;
+}

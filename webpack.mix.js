@@ -12,7 +12,8 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .js('resources/js/main.js', 'public/js')
-    .js('resources/js/bootstrap.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
-mix.copyDirectory('vendor/tinymce/tinymce', 'public/js/tinymce');
+    .sass('resources/sass/app.scss', 'public/css')
+    .sourceMaps();
+
+// mix.copyDirectory('node_modules/bootstrap/dist/js', 'public/vendor/bootstrap/js');
+// mix.copyDirectory('vendor/tinymce/tinymce', 'public/js/tinymce');

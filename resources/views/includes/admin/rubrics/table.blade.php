@@ -3,52 +3,51 @@
 @section('table-head')
     <tr class="row">
         <th scope="col" class="col-4 @cannot('deleteAny', 'App\\Rubric') p-2 @endcannot">
-          @can('deleteAny', 'App\\Rubric')
-            <div class="btn-group dropleft mr-1">
-                <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des rubriques">
-                    <span class="material-icons">window</span>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="javascript:onchoiceSelection('rubric-cbx', 'all')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box</span>
-                        Tous
-                    </a>
-                    <a href="javascript:onchoiceSelection('rubric-cbx', 'none')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box_outline_blank</span>
-                        Aucun
-                    </a>
-                    <a href="javascript:onchoiceSelection('rubric-cbx', 'reverse')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">swap_horiz</span>
-                        Inverser
-                    </a>
+            <div class="d-flex align-items-center">
+              @can('deleteAny', 'App\\Rubric')
+                <div class="btn-group dropstart">
+                    <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des rubriques">
+                        <span class="material-icons">window</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:onchoiceSelection('rubric-cbx', 'all')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box</span>
+                            Tous
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('rubric-cbx', 'none')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box_outline_blank</span>
+                            Aucun
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('rubric-cbx', 'reverse')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">swap_horiz</span>
+                            Inverser
+                        </a></li>
+                    </ul>
                 </div>
+              @else
+                <span class="material-icons me-1">window</span>
+              @endcan
+                Rubrique
             </div>
-          @endcan
-          @cannot('deleteAny', 'App\\Rubric')
-            <div class="btn-group mr-1">
-                <span class="material-icons">window</span>
-            </div>
-          @endcannot
-            Rubrique
         </th>
         <th scope="col" class="col-3 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons-outlined">account_tree</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons-outlined m-0">account_tree</span>
+                <div class="ms-1">Parent</div>
             </div>
-            Parent
         </th>
         <th scope="col" class="col-3 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">radar</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">radar</span>
+                <div class="ms-1">Position (ordre)</div>
             </div>
-            Position (ordre)
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
               @can('create', 'App\\Rubric')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
-                        class="d-flex btn btn-sm btn-success mr-1" title="Ajouter une rubrique">
+                        class="d-flex btn btn-sm btn-success me-1" title="Ajouter une rubrique">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
@@ -70,15 +69,18 @@
     <tr class="row">
         <td scope="row" class="col-4">
           @can('deleteAny', 'App\\Rubric')
-            <input type="checkbox" class="ml-0 form-check-input rubric-cbx" id="{{ $rubric->id }}">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input rubric-cbx" id="{{ $rubric->id }}">
+                <label  class="form-check-label text-primary"
+                        for="{{ $rubric->id }}">{{ $rubric->name }}</label>
+            </div>
+          @else
+            <div class="text-primary">{{ $rubric->name }}</div>
           @endcan
-            <label class="ml-4 text-primary d-flex" for="{{ $rubric->id }}">
-                {{ $rubric->name }}
-            </label>
         </td>
         <td scope="row" class="col-3">{{ $rubric->parent ? $rubric->parent->name : '-' }}</td>
         <td scope="row" class="col-3">{{ $rubric->global_position }}</td>
-        <td class="col d-flex justify-content-end mb-auto">
+        <td class="col d-flex justify-content-end align-items-center">
           @can('view', $rubric)
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $rubric->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">

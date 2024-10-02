@@ -1,12 +1,8 @@
 <!-- filtre ... -->
-<div class="pl-0 col-6">
+<div class="ps-0 col-6">
     <div class="input-group">
-        <div class="input-group-prepend">
-            <div class="input-group-text text-secondary" title="Type de groupe">
-                <span class="material-icons md-18">category</span>
-            </div>
-        </div>
-        <select wire:model='filter.groupType' class="form-control" id="profile-groupType-filter">
+        <span class="input-group-text text-secondary material-icons md-18" title="Type de groupe">category</span>
+        <select wire:model='filter.groupType' class="form-select" id="profile-groupType-filter">
             <option label='Choisir un type de groupe...'></option>
           @foreach(AP::getGroupTypes() as $typeKey => $typeName)
             <option value='{{ $typeKey }}'>{{ $typeName }}</option>
@@ -15,12 +11,8 @@
     </div>
   @if($filter['groupType'])
     <div class="input-group mt-1">
-        <div class="input-group-prepend">
-            <div class="input-group-text text-secondary" title="Groupe">
-                <span class="material-icons md-18">{{ $groupFilter['icon'] }}</span>
-            </div>
-        </div>
-        <select wire:model='filter.groupID' class="form-control" id="profile-groupID-filter">
+        <span class="input-group-text text-secondary material-icons md-18" title="Groupe">{{ $groupFilter['icon'] }}</span>
+        <select wire:model='filter.groupID' class="form-select" id="profile-groupID-filter">
             <option label="{{ $groupFilter['choiceLabel'] }}"></option>
           @foreach($groups as $group)
             <option value='{{ $group->id }}'>{{ $group->name }}</option>

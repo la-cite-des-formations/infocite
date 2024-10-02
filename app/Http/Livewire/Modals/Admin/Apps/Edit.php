@@ -327,6 +327,7 @@ class Edit extends Component
         return $this->mode === 'view' ?
             view('livewire.modals.admin.apps.sheet') :
             view('livewire.modals.admin.models-form', [
+                'modalSize' => 'modal-lg',
                 'addButtonTitle' => 'Ajouter une application',
                 'availableGroups' => $this->availableGroups(),
                 'availableProfiles' => $this->availableProfiles(),

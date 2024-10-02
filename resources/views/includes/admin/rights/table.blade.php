@@ -3,46 +3,45 @@
 @section('table-head')
     <tr class="row">
         <th scope="col" class="col-4 @cannot('deleteAny', 'App\\Right') p-2 @endcannot">
-            <div class="btn-group dropleft mr-1">
+            <div class="d-flex align-items-center">
               @can('deleteAny', 'App\\Right')
-                <button type="button" class="d-flex btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des droits utilisateurs">
-                    <span class="material-icons">key</span>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="javascript:onchoiceSelection('right-cbx', 'all')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box</span>
-                        Tous
-                    </a>
-                    <a href="javascript:onchoiceSelection('right-cbx', 'none')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">check_box_outline_blank</span>
-                        Aucun
-                    </a>
-                    <a href="javascript:onchoiceSelection('right-cbx', 'reverse')" class="d-flex dropdown-item">
-                        <span class="material-icons md-18 ml-0 mr-1">swap_horiz</span>
-                        Inverser
-                    </a>
+                <div class="btn-group dropstart">
+                    <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des droits utilisateurs">
+                        <span class="material-icons">key</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:onchoiceSelection('right-cbx', 'all')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box</span>
+                            Tous
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('right-cbx', 'none')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">check_box_outline_blank</span>
+                            Aucun
+                        </a></li>
+                        <li><a href="javascript:onchoiceSelection('right-cbx', 'reverse')" class="d-flex dropdown-item">
+                            <span class="material-icons md-18 ms-0 me-1">swap_horiz</span>
+                            Inverser
+                        </a></li>
+                    </ul>
                 </div>
+              @else
+                <span class="material-icons me-1">key</span>
+              @endcan
+                Droits utilisateurs
             </div>
-          @endcan
-          @cannot('deleteAny', 'App\\Right')
-            <div class="btn-group mr-1">
-                <span class="material-icons">key</span>
-            </div>
-          @endcannot
-            Droits utilisateurs
         </th>
         <th scope="col" class="col-5 py-2">
-            <div class="btn-group mr-1">
-                <span class="material-icons">admin_panel_settings</span>
+            <div class="d-flex align-items-center">
+                <span class="material-icons m-0">admin_panel_settings</span>
+                <div class="ms-1">Rôles exercés depuis le tableau de bord</div>
             </div>
-            Rôles exercés depuis le tableau de bord
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
               @can('create', 'App\\Right')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
-                        class="d-flex btn btn-sm btn-success mr-1" title="Ajouter des droits">
+                        class="d-flex btn btn-sm btn-success me-1" title="Ajouter des droits">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
@@ -66,14 +65,17 @@
     <tr class="row">
         <td scope="row" class="col-4">
           @can('deleteAny', 'App\\Right')
-            <input type="checkbox" class="ml-0 form-check-input right-cbx" id="{{ $right->id }}">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input right-cbx" id="{{ $right->id }}">
+                <label  class="form-check-label text-primary"
+                        for="{{ $right->id }}">{{ $right->description }}</label>
+            </div>
+          @else
+            <div class="text-primary">{{ $right->description }}</div>
           @endcan
-            <label class="ml-4 text-primary d-flex" for="{{ $right->id }}">
-                {{ $right->description }}
-            </label>
         </td>
         <td class="col-5">{{ $right->rolesFromDashboard() }}</td>
-        <td class="col d-flex justify-content-end mb-auto">
+        <td class="col d-flex justify-content-end align-items-center">
           @if(auth()->user()->can('view', $right) ||
                 auth()->user()->can('adminRights', 'App\\User') ||
                 auth()->user()->can('adminRights', ['App\\User', TRUE]))
