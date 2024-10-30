@@ -19,6 +19,8 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->boolean('published')->default(FALSE);
+            $table->boolean('auto_delete')->default(FALSE);
+            $table->boolean('is_pinned')->default(FALSE);
             $table->unsignedInteger('rubric_id')->index()->nullable()->default(NULL);
             $table->foreign('rubric_id')->references('id')->on('rubrics');
             $table->unsignedInteger('author_id')->index()->nullable()->default(NULL);

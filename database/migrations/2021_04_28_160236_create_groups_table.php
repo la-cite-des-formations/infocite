@@ -16,7 +16,7 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('code_ypareo')->unsigned()->nullable()->default(NULL);
-            $table->enum('type', ['C', 'E', 'P', 'S', 'A']);
+            $table->enum('type', ['C', 'F', 'E', 'P', 'S', 'A']);
             $table->string('name');
             $table->timestamps();
         });

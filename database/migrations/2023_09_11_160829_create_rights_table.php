@@ -32,12 +32,12 @@ class CreateRightsTable extends Migration
 
         Schema::create('rightables', function (Blueprint $table) {
             $table->unsignedInteger('right_id')->index();
-            $table->foreign('right_id')->references('id')->on('rights')->onDelete('cascade');
+            $table->foreign('right_id')->references('id')->on('rights')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('rightable_id')->index();
             $table->string('rightable_type', 10);
             $table->unsignedInteger('resource_id')->index()->nullable()->default(NULL);
             $table->string('rightable_type', 10)->nullable()->default(NULL);
-            $table->unsignedTinyInteger('proirity');
+            $table->unsignedTinyInteger('proirity', 3);
             $table->unsignedTinyInteger('roles'); // à changer en bit(4) dans la bdd
         });
     }

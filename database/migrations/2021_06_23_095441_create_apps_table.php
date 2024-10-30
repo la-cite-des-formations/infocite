@@ -16,13 +16,13 @@ class CreateAppsTable extends Migration
         Schema::create('apps', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('owner_id')->unsigned()->index();
-            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('owner_id')->references('id')->on('users');
             $table->enum('auth_type', ['N', 'G', 'S']);
             $table->string('name');
             $table->text('description')->nullable()->default(NULL);
             $table->json('features')->nullable()->default(NULL);
             $table->string('favicon')->nullable()->default(NULL);
-            $table->string('icon', 20)->nullable()->default(NULL);
+            $table->string('icon')->nullable()->default(NULL);
             $table->string('url');
             $table->timestamps();
         });

@@ -20,8 +20,9 @@ class CreateUsersTable extends Migration
             $table->string('first_name');
             $table->string('avatar')->nullable()->default(NULL);
             $table->string('google_account')->unique()->nullable()->default(NULL);
-            $table->boolean('is_staff')->default(0);
             $table->boolean('is_frozen')->default(0);
+            $table->boolean('is_staff')->default(0);
+            $table->boolean('notificationSubscribed')->default(1);
             $table->date('account_expires_on')->nullable()->default(NULL);
             $table->date('birthday')->nullable()->default(NULL);
             $table->enum('gender', ['F', 'M'])->nullable()->default(NULL);

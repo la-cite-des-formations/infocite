@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use NotificationChannels\WebPush\HasPushSubscriptions;
+
 
 class User extends Authenticatable
 {
     use WithSearching;
     use Notifiable;
+//    use HasPushSubcriptions;
 
     /**
      * The attributes that are mass assignable.
