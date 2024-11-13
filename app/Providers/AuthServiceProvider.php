@@ -47,9 +47,6 @@ class AuthServiceProvider extends ServiceProvider
                         if ($user->hasStrictRole($otherRight['name'], $otherRight['roles'])) {
                             return TRUE;
                         }
-                        else {
-                            continue;
-                        }
                     }
                 }
 

@@ -51,6 +51,11 @@ class AP // Application Parameters
             'labels' => ['name' => 'org-chart'],
             //'actors' => ['name' => 'org-chart'],
         ],
+        'stats' => [
+            'connections' => ['name' => 'stats'],
+            'viewing' => ['name' => 'stats'],
+            'using' => ['name' => 'stats'],
+        ],
     ];
 
     const RESOURCEABLES = [
@@ -338,14 +343,14 @@ class AP // Application Parameters
                 'gate' => 'manage-rights',
                 'route' => ['name' => 'admin.rights.index', 'parameters' => NULL]
             ],
-            'data' => [
-                'title' => 'Données',
-                'table_title' => 'Gestion des données',
-                'description' => "Gérer les données via différents scripts",
-                'icon_name' => 'perm_data_setting',
+            'stats' => [
+                'title' => 'Statistiques',
+                'table_title' => NULL,
+                'description' => "Consulter les statistiques",
+                'icon_name' => 'poll',
                 'color' => 'danger',
-                'gate' => 'manage-data',
-                'route' => NULL
+                'gate' => ['name' => 'access-dashboard', 'dashboard' => 'stats'],
+                'route' => ['name' => 'dashboard.sub-dashboard', 'parameters' => ['stats']]
             ],
         ],
         'org-chart' => [
@@ -385,6 +390,35 @@ class AP // Application Parameters
             //     'gate' => 'manage-actors',
             //     'route' => ['name' => 'admin.actors.index', 'parameters' => NULL]
             // ],
+        ],
+        'stats' => [
+            'connections' => [
+                'title' => 'Connexions ',
+                'table_title' => "Consultation des connexions",
+                'description' => "Statistiques de connexions",
+                'icon_name' => 'hub',
+                'color' => 'danger',
+                'gate' => 'manage-connections',
+                'route' => ['name' => 'admin.connections.index', 'parameters' => NULL]
+            ],
+            'viewing' => [
+                'title' => 'Articles ',
+                'table_title' => "Consultation des articles",
+                'description' => "Statistiques de consultation des articles",
+                'icon_name' => 'local_library',
+                'color' => 'danger',
+                'gate' => 'manage-viewing',
+                'route' => ['name' => 'admin.viewing.index', 'parameters' => NULL]
+            ],
+            'using' => [
+                'title' => 'Applications ',
+                'table_title' => "Utilisation des applications",
+                'description' => "Statistiques d'utilisation des applications",
+                'icon_name' => 'launch',
+                'color' => 'danger',
+                'gate' => 'manage-using',
+                'route' => ['name' => 'admin.using.index', 'parameters' => NULL]
+            ],
         ],
     ];
 
