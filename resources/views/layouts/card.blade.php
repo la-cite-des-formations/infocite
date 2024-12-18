@@ -4,7 +4,7 @@
             <div class="col-8">
                 <h3 class="card-title">@yield('card-title')</h3>
             </div>
-            @include('includes.search-filter')
+            @includeWhen(isset($filter), 'includes.search-filter')
         </div>
         @yield('add-filter')
     </div>

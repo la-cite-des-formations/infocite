@@ -233,7 +233,7 @@
                @endcan
               @endforeach
             </div>
-            @include('includes.pagination', ['elements' => $favoritesPosts])
+            @include('includes.pagination', ['elements' => $favoritesPosts, 'perPage' => 'perPage'])
         </div>
     </section>
 </div>

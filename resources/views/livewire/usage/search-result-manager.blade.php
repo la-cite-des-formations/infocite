@@ -44,7 +44,7 @@
           @endforeach
 
             </div>
-            @include('includes.pagination', ['elements' => $foundPosts])
+            @include('includes.pagination', ['elements' => $foundPosts, 'perPage' => 'perPage'])
         </div>
       @else
         <p class="text-center">{{$rubric->description}}</p>

@@ -50,9 +50,17 @@ class User extends Authenticatable
             ->orderByRaw('updated_at DESC');
     }
 
+    public function postsRead() {
+        return $this
+            ->belongsToMany('App\Post', 'post_user')
+            ->withPivot(['is_read'])
+            ->where('is_read', TRUE)
+            ->orderBy('created_at', 'DESC');
+    }
+
     public function updatedPosts() {
         return $this
-            ->hasMany('App\Post', 'updated_by')
+            ->hasMany('App\Post', 'corrector_id')
             ->orderByRaw('updated_at DESC');
     }
 
@@ -63,12 +71,6 @@ class User extends Authenticatable
                 ->groupBy('post_id')
                 ->pluck('post_id')
             )
-            ->where('published', TRUE)
-            ->where(function ($query) {
-                $query
-                    ->where('expired_at', '>', today()->format('Y-m-d'))
-                    ->orWhere('expired_at', NULL);
-            })
             ->orderBy('created_at', 'DESC');
     }
 
@@ -166,6 +168,12 @@ class User extends Authenticatable
             ->withPivot(['login', 'password']);
     }
 
+    public function personnalApps() {
+        return $this
+            ->hasMany('App\App', 'owner_id')
+            ->orderByRaw('name ASC');
+    }
+
     public function myApps() {
         $myApps = $this->apps;
 
@@ -180,9 +188,7 @@ class User extends Authenticatable
         return $myApps->isEmpty() ?
             $myApps :
             $myApps
-                ->toQuery()
-                ->orderBy('name', 'ASC')
-                ->get();
+                ->sortBy('name');
     }
 
     public function processes() {
@@ -421,6 +427,30 @@ class User extends Authenticatable
         return is_object($processUser) ? $processUser->name : '';
     }
 
+    public function getTodayConnectionRecordedAttribute() {
+        return Connection::fromToday()
+            ->where('user_id', auth()->user()->id)
+            ->get()
+            ->isNotEmpty();
+    }
+
+    public function getEditedPostsNbAttribute() {
+        return $this->myPosts
+            ->merge($this->updatedPosts)
+            ->count();
+    }
+
+    public function getCommentedPostsNbAttribute() {
+        return $this->commentedPosts()
+            ->get()
+            ->count();
+    }
+
+    public function getPersonalAppsNbAttribute() {
+        return $this->personnalApps
+            ->count();
+    }
+
     public function getInfo($userInfo) {
         extract($userInfo);
 
@@ -581,5 +611,23 @@ class User extends Authenticatable
             default :
                 return static::all();
         }
+    }
+
+    public static function editors() {
+        return self::all()
+            ->where('edited_posts_nb', '>', 0)
+            ->sortByDesc('edited_posts_nb');
+    }
+
+    public static function commentators() {
+        return self::all()
+            ->where('commented_posts_nb', '>', 0)
+            ->sortByDesc('commented_posts_nb');
+    }
+
+    public static function personalAppUsers() {
+        return self::all()
+            ->where('personal_apps_nb', '>', 0)
+            ->sortByDesc('personal_apps_nb');
     }
 }

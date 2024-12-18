@@ -97,19 +97,26 @@ class Chartnode extends Model
         $chartnodes
             ->each(function ($chartnode) use ($orgChartBoxes) {
                 $orgChartBoxes->add([
-                    'data' => [
+                    'c' => [
                         [
                             'v' => (string) $chartnode->id,
                             'f' => $chartnode->boxFormat
                         ],
-                        (string) $chartnode->parent_id,
-                        '',
+                        ['v' => (string) $chartnode->parent_id],
+                        ['v' => ''],
                     ],
-                    'style' => is_object($chartnode->format) ? $chartnode->format->style : '',
+                    'p' => ['style' => is_object($chartnode->format) ? $chartnode->format->style : ''],
                 ]);
             });
 
-        return $orgChartBoxes;
+        return [
+            'cols' => [
+                ['label' => 'NodeId', 'type' => 'string'],
+                ['label' => 'NodeParentId', 'type' => 'string'],
+                ['label' => 'ToolTip', 'type' => 'string'],
+            ],
+            'rows' => $orgChartBoxes
+        ];
     }
 
     public static function saveOrgChartData() {

@@ -51,6 +51,11 @@ class AP // Application Parameters
             'labels' => ['name' => 'org-chart'],
             //'actors' => ['name' => 'org-chart'],
         ],
+        'stats' => [
+            'connections' => ['name' => 'stats'],
+            'viewing' => ['name' => 'stats'],
+            'using' => ['name' => 'stats'],
+        ],
     ];
 
     const RESOURCEABLES = [
@@ -338,14 +343,14 @@ class AP // Application Parameters
                 'gate' => 'manage-rights',
                 'route' => ['name' => 'admin.rights.index', 'parameters' => NULL]
             ],
-            'data' => [
-                'title' => 'Données',
-                'table_title' => 'Gestion des données',
-                'description' => "Gérer les données via différents scripts",
-                'icon_name' => 'perm_data_setting',
+            'stats' => [
+                'title' => 'Statistiques',
+                'table_title' => NULL,
+                'description' => "Consulter les statistiques",
+                'icon_name' => 'poll',
                 'color' => 'danger',
-                'gate' => 'manage-data',
-                'route' => NULL
+                'gate' => ['name' => 'access-dashboard', 'dashboard' => 'stats'],
+                'route' => ['name' => 'dashboard.sub-dashboard', 'parameters' => ['stats']]
             ],
         ],
         'org-chart' => [
@@ -386,6 +391,35 @@ class AP // Application Parameters
             //     'route' => ['name' => 'admin.actors.index', 'parameters' => NULL]
             // ],
         ],
+        'stats' => [
+            'connections' => [
+                'title' => 'Connexions ',
+                'table_title' => "Consultation des connexions",
+                'description' => "Statistiques de connexions",
+                'icon_name' => 'hub',
+                'color' => 'danger',
+                'gate' => 'manage-connections',
+                'route' => ['name' => 'admin.connections.index', 'parameters' => NULL]
+            ],
+            'viewing' => [
+                'title' => 'Articles ',
+                'table_title' => "Statistiques concernant les articles",
+                'description' => "Statistiques concernant les articles",
+                'icon_name' => 'auto_stories',
+                'color' => 'danger',
+                'gate' => 'manage-viewing',
+                'route' => ['name' => 'admin.viewing.index', 'parameters' => NULL]
+            ],
+            'using' => [
+                'title' => 'Usage ',
+                'table_title' => "Statistiques concernant l'utilisation",
+                'description' => "Statistiques concernant l'utilisation",
+                'icon_name' => 'surfing',
+                'color' => 'danger',
+                'gate' => 'manage-using',
+                'route' => ['name' => 'admin.using.index', 'parameters' => NULL]
+            ],
+        ],
     ];
 
     const MEDIAS = [
@@ -425,6 +459,19 @@ class AP // Application Parameters
         'danger' => 0xdc3545,
         'light' => 0xf8f9fa,
         'dark' => 0x212529,
+    ];
+
+    const GC_COLORS = [
+        0x3366cc,
+        0xdc3912,
+        0xff9900,
+        0x109618,
+        0x990099,
+        0x0099c6,
+        0xdd4477,
+        0x66aa00,
+        0xb82e2e,
+        0x316395,
     ];
 
     const NOTIFICATIONS = [
@@ -645,6 +692,12 @@ class AP // Application Parameters
                 'border-color: '.static::gradeColor($color, 0.8).'; '.
                 'color: '.static::gradeColor($color, 0.4);
         }, static::BS_COLORS);
+    }
+
+    public static function getGcColors() {
+        return array_map(function ($color) {
+            return static::toColor($color);
+        }, static::GC_COLORS);
     }
 
     public static function getNotifications($contentType) {

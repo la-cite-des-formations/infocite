@@ -22,9 +22,14 @@ class OrgChartManager extends Component
     }
 
     public function drawOrgChart() {
-        $orgChart = Chartnode::getOrgChart();
+        $options = [
+            'allowCollapse' => TRUE,
+            'allowHtml'=> TRUE,
+            'size'=> 'small',
+            'compactRows' => TRUE,
+        ];
 
-        $this->emit('drawOrgChart', 'small', $orgChart->pluck('data'), $orgChart->pluck('style'));
+        $this->emit('drawOrgChart', 'orgchart', Chartnode::getOrgChart(), $options);
     }
 
     public function render() {
