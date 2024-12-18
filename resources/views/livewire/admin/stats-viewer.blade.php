@@ -1,15 +1,14 @@
 @extends('layouts.card')
 
-@section('card-title', AP::getDashboardFunction($models, isset($dashboard) ? $dashboard : 'main')->table_title)
+@section('card-title', AP::getDashboardFunction($statsPage, isset($dashboard) ? $dashboard : 'main')->table_title)
 
 @section('card-body')
-    {{-- @include("includes.admin.{$models}.table") --}}
+    <div wire:init="drawAllCharts()">
+      @foreach (array_keys($statsCollection) as $statsName)
+        @include("includes.admin.stats.{$statsName}")
+      @endforeach
+    </div>
 @endsection
 
 @section('card-footer')
-  {{-- @if($$elements->count())
-    @include('includes.pagination', ['elements' => $$elements])
-  @else
-    <div class="alert alert-warning">Aucun résultat correspondant à l'état actuel du filtre.</div>
-  @endif --}}
 @endsection

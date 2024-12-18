@@ -2,11 +2,12 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\User;
 use Livewire\Component;
 
 class UsingManager extends Component
 {
-    public $models = 'using';
+    public $statsType = 'using';
 
     public $filter = [
         'searchOnly' => TRUE,
@@ -16,6 +17,9 @@ class UsingManager extends Component
     public function render()
     {
         return view('livewire.admin.stats-viewer', [
+            'editors' => User::editors(),
+            'commentators' => User::commentators(),
+            'personalAppUsers' => User::personalAppUsers(),
             'dashboard' => 'stats',
         ]);
     }

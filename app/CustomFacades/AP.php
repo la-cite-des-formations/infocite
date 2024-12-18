@@ -403,18 +403,18 @@ class AP // Application Parameters
             ],
             'viewing' => [
                 'title' => 'Articles ',
-                'table_title' => "Consultation des articles",
-                'description' => "Statistiques de consultation des articles",
-                'icon_name' => 'local_library',
+                'table_title' => "Statistiques concernant les articles",
+                'description' => "Statistiques concernant les articles",
+                'icon_name' => 'auto_stories',
                 'color' => 'danger',
                 'gate' => 'manage-viewing',
                 'route' => ['name' => 'admin.viewing.index', 'parameters' => NULL]
             ],
             'using' => [
-                'title' => 'Applications ',
-                'table_title' => "Utilisation des applications",
-                'description' => "Statistiques d'utilisation des applications",
-                'icon_name' => 'launch',
+                'title' => 'Usage ',
+                'table_title' => "Statistiques concernant l'utilisation",
+                'description' => "Statistiques concernant l'utilisation",
+                'icon_name' => 'surfing',
                 'color' => 'danger',
                 'gate' => 'manage-using',
                 'route' => ['name' => 'admin.using.index', 'parameters' => NULL]
@@ -459,6 +459,19 @@ class AP // Application Parameters
         'danger' => 0xdc3545,
         'light' => 0xf8f9fa,
         'dark' => 0x212529,
+    ];
+
+    const GC_COLORS = [
+        0x3366cc,
+        0xdc3912,
+        0xff9900,
+        0x109618,
+        0x990099,
+        0x0099c6,
+        0xdd4477,
+        0x66aa00,
+        0xb82e2e,
+        0x316395,
     ];
 
     const NOTIFICATIONS = [
@@ -679,6 +692,12 @@ class AP // Application Parameters
                 'border-color: '.static::gradeColor($color, 0.8).'; '.
                 'color: '.static::gradeColor($color, 0.4);
         }, static::BS_COLORS);
+    }
+
+    public static function getGcColors() {
+        return array_map(function ($color) {
+            return static::toColor($color);
+        }, static::GC_COLORS);
     }
 
     public static function getNotifications($contentType) {

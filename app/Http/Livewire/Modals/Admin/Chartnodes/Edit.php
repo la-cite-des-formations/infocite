@@ -68,9 +68,14 @@ class Edit extends Component
     }
 
     public function drawChartnode() {
-        $nodeOrgchart = Chartnode::getOrgChart($this->chartnode);
+        $options = [
+            'allowCollapse' => TRUE,
+            'allowHtml'=> TRUE,
+            'size'=> 'small',
+            'compactRows' => TRUE,
+        ];
 
-        $this->emit('drawOrgChart', 'small', $nodeOrgchart->pluck('data'), $nodeOrgchart->pluck('style'));
+        $this->emit('drawOrgChart', 'orgchart', Chartnode::getOrgChart($this->chartnode), $options);
     }
 
     public function switchMode($mode) {

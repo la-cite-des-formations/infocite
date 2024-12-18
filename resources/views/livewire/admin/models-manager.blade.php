@@ -16,7 +16,7 @@
 @endsection
 @section('card-footer')
   @if($$elements->count())
-    @include('includes.pagination', ['elements' => $$elements])
+    @include('includes.pagination', ['elements' => $$elements, 'perPage' => 'perPage'])
   @else
     <div class="alert alert-warning">Aucun résultat correspondant à l'état actuel du filtre.</div>
   @endif

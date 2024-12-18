@@ -33,6 +33,6 @@
     @section('addJSFiles')
         <!-- Google org-chart JS Files -->
         <script src="{{ asset('js/charts/loader.js') }}" referrerpolicy="origin"></script>
-        <script src="{{ asset('js/orgChart.js') }}" defer></script>
+        <script src="{{ asset('js/charts.js') }}" defer></script>
     @endsection
 @endif

@@ -88,7 +88,7 @@
                     @endcan
                 @endforeach
             </div>
-            @include('includes.pagination', ['elements' => $posts])
+            @include('includes.pagination', ['elements' => $posts, 'perPage' => 'perPage'])
             @else
                 <p class="fst-italic text-center">Aucun article en favoris</p>
             @endif

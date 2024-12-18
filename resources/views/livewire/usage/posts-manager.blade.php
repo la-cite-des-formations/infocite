@@ -251,7 +251,7 @@
               @endforeach
             </div>
           @endif
-            @include('includes.pagination', ['elements' => $posts])
+            @include('includes.pagination', ['elements' => $posts, 'perPage' => 'perPage'])
         </div>
     </section>
 
