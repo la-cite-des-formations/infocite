@@ -1,11 +1,15 @@
 <div>
     <section id="breadcrumbs" class="breadcrumbs">
     </section>
-    @if (session()->has('error_alert'))
-        <div id="errorAlert" class="alert alert-danger position-fixed start-50 translate-middle-x mt-2 w-50 p-2" style="z-index: 9999;opacity: 0.8;">
-            <p class="text-center pt-1">{{ session('error_alert') }}</p>
-        </div>
-    @endif
+
+    <!--Message flash-->
+  @if (session()->has('error_alert'))
+    <div id="errorAlert" class="alert alert-danger position-fixed start-50 translate-middle-x mt-2 w-50 p-2"
+            style="z-index: 9999; opacity: 0.8;">
+        <p class="text-center pt-1">{{ session('error_alert') }}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
 
     <section id="post" class="services section-bg">
         <div class="container d-flex flex-column">
