@@ -55,6 +55,8 @@ class ViewingManager extends Component
             $this->statsCollection['mostViewedPosts']['charts'],
             $this->statsCollection['mostViewedPosts']['filter']
         );
+
+        $this->resetPage('mostViewedPostsPage');
     }
 
     public function updatedStatsCollectionMostViewedPostsFilterRubricId() {
@@ -65,6 +67,8 @@ class ViewingManager extends Component
             $this->statsCollection['mostViewedPosts']['charts'],
             $this->statsCollection['mostViewedPosts']['filter']
         );
+
+        $this->resetPage('mostViewedPostsPage');
     }
 
     public function updatedStatsCollectionMostCommentedPostsFilterReaderType() {
@@ -72,6 +76,8 @@ class ViewingManager extends Component
             $this->statsCollection['mostCommentedPosts']['charts'],
             $this->statsCollection['mostCommentedPosts']['filter']
         );
+
+        $this->resetPage('mostCommentedPostsPage');
     }
 
     public function updatedStatsCollectionMostCommentedPostsFilterRubricId() {
@@ -82,6 +88,8 @@ class ViewingManager extends Component
             $this->statsCollection['mostCommentedPosts']['charts'],
             $this->statsCollection['mostCommentedPosts']['filter']
         );
+
+        $this->resetPage('mostCommentedPostsPage');
     }
 
     public function render()
@@ -92,10 +100,10 @@ class ViewingManager extends Component
         return view('livewire.admin.stats-viewer', [
             'rubrics' => Rubric::allWithPosts(),
             'gcColors' => AP::getGcColors(),
-            'mostViewedPosts' => $allViewedPosts->paginate($this->statsCollection['mostViewedPosts']['perPage']),
             'viewedPostsTop3' => $allViewedPosts->take(3)->get(),
-            'mostCommentedPosts' => $allCommentedPosts->paginate($this->statsCollection['mostCommentedPosts']['perPage']),
+            'mostViewedPosts' => $allViewedPosts->paginate($this->statsCollection['mostViewedPosts']['perPage'], ['*'], 'mostViewedPostsPage'),
             'commentedPostsTop3' => $allCommentedPosts->take(3)->get(),
+            'mostCommentedPosts' => $allCommentedPosts->paginate($this->statsCollection['mostCommentedPosts']['perPage'], ['*'], 'mostCommentedPostsPage'),
             'dashboard' => 'stats',
         ]);
     }

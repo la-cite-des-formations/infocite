@@ -39,7 +39,7 @@
             <div class='d-flex'>
                 <div class='rounded-circle mt-1 me-2'
                      style='background-color: {{ $gcColors[$i] }}; height: 12px; min-width: 12px; max-width: 12px;'>&nbsp</div>
-                {{ ($i + 1)." - ".$post->title." ({$post->rubric})" }}
+                {{ "Top ".($i + 1)." - {$post->title} ({$post->rubric})" }}
             </div>
           @endforeach
         </div>
