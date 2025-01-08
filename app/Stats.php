@@ -89,6 +89,78 @@ class Stats
         ];
     }
 
+    public static function getActiveEditorsTop10Chart($filter) {
+        return [
+            'cols' => [
+                ['label' => 'Rédacteur', 'type' => 'string'],
+                ['label' => "Nombre d'articles'", 'type' => 'number'],
+                ['role' => 'tooltip', 'type' => 'string', 'p' => ['html' => TRUE]]
+            ],
+            'rows' => User::activeEditors($filter)->take(10)->get()->map(function ($editor, $rank) {
+                return [
+                    'c' => [
+                        ['v' => $rank < 3 ? 'Top '.($rank + 1) : ''],
+                        ['v' => $editor->posts_nb],
+                        ['v' => "<div class='w-100 m-3' style='max-width: 400px;'>
+                            <h6 class='fw-bold'>".($rank + 1)." - {$editor->identity}</h6>
+                            <ul>
+                                <li>{$editor->posts_nb} articles</li>
+                            </ul>
+                        </div>"]
+                    ]
+                ];
+            })
+        ];
+    }
+
+    public static function getActiveCommentatorsTop10Chart($filter) {
+        return [
+            'cols' => [
+                ['label' => 'Commentateur', 'type' => 'string'],
+                ['label' => 'Nombre de commentaires', 'type' => 'number'],
+                ['role' => 'tooltip', 'type' => 'string', 'p' => ['html' => TRUE]]
+            ],
+            'rows' => User::activeCommentators($filter)->take(10)->get()->map(function ($commentator, $rank) {
+                return [
+                    'c' => [
+                        ['v' => $rank < 3 ? 'Top '.($rank + 1) : ''],
+                        ['v' => $commentator->comments_nb],
+                        ['v' => "<div class='w-100 m-3' style='max-width: 400px;'>
+                            <h6 class='fw-bold'>".($rank + 1)." - {$commentator->identity}</h6>
+                            <ul>
+                                <li>{$commentator->comments_nb} commentaires</li>
+                            </ul>
+                        </div>"]
+                    ]
+                ];
+            })
+        ];
+    }
+
+    public static function getPersonalAppsUsersTop10Chart($filter) {
+        return [
+            'cols' => [
+                ['label' => 'Utilisateur', 'type' => 'string'],
+                ['label' => "Nombre d'applications personnelles", 'type' => 'number'],
+                ['role' => 'tooltip', 'type' => 'string', 'p' => ['html' => TRUE]]
+            ],
+            'rows' => User::personalAppsUsers($filter)->take(10)->get()->map(function ($user, $rank) {
+                return [
+                    'c' => [
+                        ['v' => $rank < 3 ? 'Top '.($rank + 1) : ''],
+                        ['v' => $user->apps_nb],
+                        ['v' => "<div class='w-100 m-3' style='max-width: 400px;'>
+                            <h6 class='fw-bold'>".($rank + 1)." - {$user->identity}</h6>
+                            <ul>
+                                <li>{$user->apps_nb} applications personnelles</li>
+                            </ul>
+                        </div>"]
+                    ]
+                ];
+            })
+        ];
+    }
+
     public static function getChartOptions($chartName) {
         switch ($chartName) {
             case 'connections' :
@@ -105,25 +177,10 @@ class Stats
                 ];
 
             case 'topTenViewedPosts' :
-                return [
-                    'pieHole' => 0.4,
-                    'pieSliceText' => 'label',
-                    'tooltip' => [
-                        'text' => 'value',
-                        'isHtml' => TRUE,
-                        'ignoreBounds' => TRUE,
-                        'trigger' => 'selection',
-                    ],
-                    'legend' => [
-                        'position' => 'none',
-                    ],
-                    'backgroundColor' => '#f8fafc',
-                    'chartArea' => [
-                        'backgroundColor' => '#f8fafc',
-                    ],
-                ];
-
             case 'topTenCommentedPosts' :
+            case 'activeEditorsTop10' :
+            case 'activeCommentatorsTop10' :
+            case 'personalAppsUsersTop10' :
                 return [
                     'pieHole' => 0.4,
                     'pieSliceText' => 'label',
@@ -147,13 +204,22 @@ class Stats
     public static function getChart($chartName, $filter) {
         switch ($chartName) {
             case 'connections' :
-                return self::getConnectionsChart();
+                return static::getConnectionsChart();
 
             case 'topTenViewedPosts' :
-                return self::getTopTenViewedPostsChart($filter);
+                return static::getTopTenViewedPostsChart($filter);
 
             case 'topTenCommentedPosts' :
-                return self::getTopTenCommentedPostsChart($filter);
-            }
+                return static::getTopTenCommentedPostsChart($filter);
+
+            case 'activeEditorsTop10' :
+                return static::getActiveEditorsTop10Chart($filter);
+
+            case 'activeCommentatorsTop10' :
+                return static::getActiveCommentatorsTop10Chart($filter);
+
+            case 'personalAppsUsersTop10' :
+                return static::getPersonalAppsUsersTop10Chart($filter);
+        }
     }
 }

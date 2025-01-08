@@ -613,21 +613,73 @@ class User extends Authenticatable
         }
     }
 
-    public static function editors() {
-        return self::all()
-            ->where('edited_posts_nb', '>', 0)
-            ->sortByDesc('edited_posts_nb');
+    /*public static function allViewed($filter = []) {
+        extract($filter);
+        $byStaff = !isset($readerType) || ($readerType == 'all') ? NULL : $readerType == 'staff';
+        $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
+
+            return DB::table('posts')
+            ->join('rubrics', 'posts.rubric_id', '=', 'rubrics.id')
+            ->join('post_user', 'posts.id', '=', 'post_user.post_id')
+            ->join('users', 'users.id', '=', 'post_user.user_id')
+            ->selectRaw('posts.title AS title, rubrics.name AS rubric, COUNT(*) AS views_nb')
+            ->where('post_user.is_read', TRUE)
+            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
+                $query->where('users.is_staff', $byStaff);
+            })
+            ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
+                $query->where('rubrics.id', $rubric_id);
+            })
+            ->groupBy('title', 'rubric')
+            ->orderByRaw('views_nb desc, rubric, title');
+    }*/
+
+    public static function activeEditors($filter = []) {
+        extract($filter);
+        $editorType = isset($editorType) ? $editorType : 'all';
+        $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
+
+        return static::query()
+            ->join('posts', function ($query) use ($editorType) {
+                $query->when($editorType == 'all' || $editorType == 'authors', function ($join) {
+                    $join->on('posts.author_id', '=', 'users.id');
+                })->when($editorType == 'all' || $editorType == 'correctors', function ($join) {
+                    $join->orOn('posts.corrector_id', '=', 'users.id');
+                });
+            })
+            ->selectRaw('users.name, users.first_name, COUNT(*) AS posts_nb')
+            ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
+                $query->where('posts.rubric_id', $rubric_id);
+            })
+            ->groupByRaw('users.name, users.first_name')
+            ->orderByRaw('posts_nb DESC, users.name, users.first_name');
     }
 
-    public static function commentators() {
-        return self::all()
-            ->where('commented_posts_nb', '>', 0)
-            ->sortByDesc('commented_posts_nb');
+    public static function activeCommentators($filter = []) {
+        extract($filter);
+        $byStaff = !isset($commentatorType) || ($commentatorType == 'all') ? NULL : $commentatorType == 'staff';
+
+        return static::query()
+            ->join('comments', 'comments.user_id', '=', 'users.id')
+            ->selectRaw('users.name, users.first_name, COUNT(*) AS comments_nb')
+            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
+                $query->where('users.is_staff', $byStaff);
+            })
+            ->groupByRaw('users.name, users.first_name')
+            ->orderByRaw('comments_nb DESC, users.name, users.first_name');
     }
 
-    public static function personalAppUsers() {
-        return self::all()
-            ->where('personal_apps_nb', '>', 0)
-            ->sortByDesc('personal_apps_nb');
+    public static function personalAppsUsers($filter = []) {
+        extract($filter);
+        $byStaff = !isset($userType) || ($userType == 'all') ? NULL : $userType == 'staff';
+
+        return static::query()
+            ->join('apps', 'apps.owner_id', '=', 'users.id')
+            ->selectRaw('users.name, users.first_name, COUNT(*) AS apps_nb')
+            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
+                $query->where('users.is_staff', $byStaff);
+            })
+            ->groupByRaw('users.name, users.first_name')
+            ->orderByRaw('apps_nb DESC, users.name, users.first_name');
     }
 }

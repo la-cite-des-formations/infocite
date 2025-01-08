@@ -252,7 +252,7 @@ class Post extends Model
     }
 
     public static function allCommentable() {
-        return self::query()
+        return static::query()
             ->whereNotIn('id', function ($query) {
                 $query->select('resource_id')
                     ->from('rightables')
@@ -270,18 +270,19 @@ class Post extends Model
         $byStaff = !isset($readerType) || ($readerType == 'all') ? NULL : $readerType == 'staff';
         $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
 
-            return DB::table('posts')
+        return DB::table('posts')
             ->join('rubrics', 'posts.rubric_id', '=', 'rubrics.id')
             ->join('post_user', 'posts.id', '=', 'post_user.post_id')
-            ->join('users', 'users.id', '=', 'post_user.user_id')
             ->selectRaw('posts.title AS title, rubrics.name AS rubric, COUNT(*) AS views_nb')
-            ->where('post_user.is_read', TRUE)
             ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query->where('users.is_staff', $byStaff);
+                $query
+                    ->join('users', 'users.id', '=', 'post_user.user_id')
+                    ->where('users.is_staff', $byStaff);
             })
             ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
                 $query->where('rubrics.id', $rubric_id);
             })
+            ->where('post_user.is_read', TRUE)
             ->groupBy('title', 'rubric')
             ->orderByRaw('views_nb desc, rubric, title');
     }
@@ -294,10 +295,11 @@ class Post extends Model
         return DB::table('posts')
             ->join('rubrics', 'posts.rubric_id', '=', 'rubrics.id')
             ->join('comments', 'posts.id', '=', 'comments.post_id')
-            ->join('users', 'users.id', '=', 'comments.user_id')
             ->selectRaw('posts.title AS title, rubrics.name AS rubric, COUNT(*) AS comments_nb')
             ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query->where('users.is_staff', $byStaff);
+                $query
+                    ->join('users', 'users.id', '=', 'comments.user_id')
+                    ->where('users.is_staff', $byStaff);
             })
             ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
                 $query->where('rubrics.id', $rubric_id);
