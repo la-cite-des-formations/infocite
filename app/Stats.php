@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 class Stats
 {
-    public static function getConnectionsChart() {
+    public static function getConnectionsChart($filter) {
         $connectionsByDay = new Collection();
         $today = today();
         $date = $today->subDays(6 + $today->dayOfWeek ?: 7);
@@ -14,7 +14,7 @@ class Stats
         for ($i = 0; $i < 14; $i++) {
             $connectionsByDay->push([
                 'dayName' => $date->locale('fr')->dayName,
-                'connectionsNb' => Connection::fromDate($date)->get()->count()
+                'connectionsNb' => Connection::fromDate($date, $filter)->get()->count()
             ]);
             $date->addDays(1);
         }
@@ -165,10 +165,6 @@ class Stats
         switch ($chartName) {
             case 'connections' :
                 return [
-                    'chart' => [
-                        'title' => 'Nombre de connexions par jour',
-                        'subtitle' => '(semaine dernière + semaine actuelle)',
-                    ],
                     'colors' => ['#9ec5fe', '#0d6efd'],
                     'backgroundColor' => '#f8fafc',
                     'chartArea' => [
@@ -204,7 +200,7 @@ class Stats
     public static function getChart($chartName, $filter) {
         switch ($chartName) {
             case 'connections' :
-                return static::getConnectionsChart();
+                return static::getConnectionsChart($filter);
 
             case 'topTenViewedPosts' :
                 return static::getTopTenViewedPostsChart($filter);

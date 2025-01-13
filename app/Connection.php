@@ -39,19 +39,31 @@ class Connection extends Model
             ->where('connected_at', today()->format('Y-m-d'));
     }
 
-    public static function fromDate(Carbon $date) {
-        return self::query()
+    public static function fromDate(Carbon $date, $filter = []) {
+        extract($filter);
+        $isStaff = !isset($userType) || ($userType == 'all') ? NULL : $userType == 'staff';
+
+        return static::query()
+            ->when($isStaff !== NULL, function ($query) use ($isStaff) {
+                $query
+                    ->join('users', 'connections.user_id', '=', 'users.id')
+                    ->where('users.is_staff', $isStaff);
+            })
             ->where('connected_at', $date->format('Y-m-d'));
     }
 
-    public static function allGroupByDate() {
-        return self::query()
+    public static function allGroupByDate($filter = []) {
+        extract($filter);
+        $isStaff = !isset($userType) || ($userType == 'all') ? NULL : $userType == 'staff';
+
+        return static::query()
+            ->when($isStaff !== NULL, function ($query) use ($isStaff) {
+                $query
+                    ->join('users', 'connections.user_id', '=', 'users.id')
+                    ->where('users.is_staff', $isStaff);
+            })
             ->selectRaw('connected_at, count(*) as connections_nb')
             ->orderBy('connected_at', 'desc')
             ->groupBy('connected_at');
-    }
-
-    public static function filter(array $filter) {
-        // TODO;
     }
 }

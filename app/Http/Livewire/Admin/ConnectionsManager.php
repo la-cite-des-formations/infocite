@@ -17,7 +17,9 @@ class ConnectionsManager extends Component
     public $statsPage = 'connections';
     public $statsCollection = [
         'connections' => [
-            'filter' => [],
+            'filter' => [
+                'userType' => 'all',
+            ],
             'charts' => [
                 'connections' => [
                     'target' => 'connectionsChart',
@@ -30,11 +32,20 @@ class ConnectionsManager extends Component
         ],
     ];
 
+    public function updatedStatsCollectionConnectionsFilterUserType() {
+        $this->drawCharts(
+            $this->statsCollection['connections']['charts'],
+            $this->statsCollection['connections']['filter']
+        );
+
+        $this->resetPage('connectionsPage');
+    }
+
     public function render()
     {
         return view('livewire.admin.stats-viewer', [
-            'connections' => Connection::allGroupByDate()
-                ->paginate($this->statsCollection['connections']['perPage']),
+            'connections' => Connection::allGroupByDate($this->statsCollection['connections']['filter'])
+                ->paginate($this->statsCollection['connections']['perPage'], 'connectionsPage'),
             'dashboard' => 'stats',
         ]);
     }
