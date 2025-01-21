@@ -31,7 +31,7 @@ class AppPolicy
      */
     public function view(User $user, App $app)
     {
-        return $user->hasRole('apps', Roles::IS_READR, 'App', $app->id);
+        return auth()->user()->myApps()->contains('id', $app->id) && $user->hasRole('apps', Roles::IS_READR, 'App', $app->id);
     }
 
     /**

@@ -35,8 +35,8 @@ trait WithPinnedHandling
                 ->update(['is_pinned' => FALSE]);
 
         }
-        //Si le nombre de post épinglé est supérieur à 4, on épingle pas le post et on affiche un message
         else {
+            //Si le nombre de post épinglé est supérieur à 4, on épingle pas le post et on affiche un message
             if( $this->countPinnedPosts < 4){
                 Post::query()
                     ->where('id', $post_id)
@@ -46,7 +46,5 @@ trait WithPinnedHandling
             }
 
         }
-        $this->emitSelf('render');
     }
-
 }
