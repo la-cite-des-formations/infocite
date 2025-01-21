@@ -336,12 +336,12 @@ label>.material-icons, label>.material-icons-outlined {
     padding: var(--icon-box-py) var(--icon-box-px);
 }
 
-.services div.icon-box {
+.services .post-box.icon-box {
     width: 520px;
     min-height: 208px;
 }
 
-.services div.icon-box .icon {
+.services .post-box.icon-box .icon {
     margin-bottom: 4px;
 }
 
@@ -354,7 +354,7 @@ label>.material-icons, label>.material-icons-outlined {
     font-size: 20px;
 }
 
-.services div.icon-box h4 {
+.services .post-box.icon-box h4 {
     margin-bottom: 12px;
 }
 
@@ -366,7 +366,7 @@ label>.material-icons, label>.material-icons-outlined {
     color: var(--select-color-1);
 }
 
-.services div.icon-box p {
+.services .post-box.icon-box p {
     margin-bottom: 4px;
 }
 
@@ -742,7 +742,7 @@ a:hover {
 }
 
 .pricing .table>:not(:first-child) {
-    border-top: 2px solid var(--select-color-1);
+    border-top: 3px solid var(--select-color-1) !important;
 }
 
 .faq .faq-list .icon-help {
@@ -1119,7 +1119,8 @@ a:hover {
     height: 100%;
 }
 
-.services .posts-list .icon-box td:first-child > div {
+.services .posts-list .icon-box td:first-child > div,
+.services .post-result.icon-box {
     padding: calc(var(--icon-box-py) * 9 / 25) var(--icon-box-px);
 }
 

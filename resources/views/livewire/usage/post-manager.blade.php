@@ -1,163 +1,168 @@
-<div>
-    <section id="breadcrumbs" class="breadcrumbs">
-    </section>
+<section wire:key='postView' id="post" class="services section-bg">
 
     <!--Message flash-->
   @if (session()->has('error_alert'))
-    <div id="errorAlert" class="alert alert-danger position-fixed start-50 translate-middle-x mt-2 w-50 p-2"
-            style="z-index: 9999; opacity: 0.8;">
-        <p class="text-center pt-1">{{ session('error_alert') }}</p>
+    <div class="alert alert-danger alert-dismissible position-fixed top-0 start-50 translate-middle-x w-50"
+         id="errorAlert" style="z-index: 9999; opacity: 0.8; margin-top: 6rem">
+        <div class="text-center">{{ session('error_alert') }}</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   @endif
 
-    <section id="post" class="services section-bg">
-        <div class="container d-flex flex-column">
-            <div class="align-self-end">
-                <div class="input-group" role="group">
-                    <button class="btn btn-sm @if($notifications->count() == 0) btn-secondary @else btn-danger @endif"
-                            wire:click="showModal('notify')" type="button">
-                        @if ($notifications->count() > 0)
-                            <span class="me-1">{{ $notifications->count() }}</span>
+    <div class="container d-flex flex-column">
+        <div class="align-self-end">
+            <div class="input-group" role="group">
+                <button @class([
+                            "btn btn-sm",
+                            "btn-danger" => $notifications->isNotEmpty(),
+                            "btn-secondary" => $notifications->isEmpty(),
+                        ])
+                        wire:click="showModal('notify')" type="button">
+                  @if ($notifications->isNotEmpty())
+                    <span class="me-1">{{ $notifications->count() }}</span>
+                  @endif
+                    <i class="bi bi-bell"></i>
+                </button>
+               @can('edit', ['App\\Post', $post->rubric_id])
+                <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
+                        title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
+                    <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
+                </button>
+               @endcan
+              @if($post->rubric->name != 'Une')
+                <button @class([
+                            "btn btn-sm",
+                            "btn-warning" => $isFavoriteRubric,
+                            "btn-secondary" => !$isFavoriteRubric,
+                        ])
+                        @if ($isFavoriteRubric) title="Retirer la rubrique {{ $post->rubric->name }} des favoris"
+                        @else title="Ajouter la rubrique {{ $post->rubric->name }} aux favoris"
                         @endif
-                        <i class="bi bi-bell"></i>
-                    </button>
-                    @can('edit', ['App\\Post', $post->rubric_id])
-                        <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
-                                title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
-                            <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
+                        wire:click="switchFavoriteRubric" type="button">
+                    <i class="bx bx-star"></i>
+                </button>
+              @endif
+              @if ($mode == 'edition')
+               @can('create', ['App\\Post', $post->rubric_id])
+                <a href="{{ route('post.create', ['rubric' => $post->rubric->route()]) }}"
+                   title="Commencer un nouvel article"
+                   type="button" class="d-flex input-group-text btn btn-sm btn-success">
+                    <span class="material-icons">add</span>
+                </a>
+               @endcan
+              @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
+        <div class="section-title">
+            <div class="row justify-content-center">
+                <h2 class="col-9 title-icon">
+                    <i class="material-icons md-36 me-2">{{ $post->icon }}</i>{{ $post->title }}
+                </h2>
+            </div>
+            <p>
+                {{ $post->published ? "Publié dans" : "Non publié - " }}
+                <a href="{{ route('rubric.index', ['rubric' => $post->rubric->route()]) }}">{{ $post->rubric->identity() }}</a>
+            </p>
+            <p class="fst-italic">Dernière mise à jours le {{$post->updated_at->format('d/m/Y')}}</p>
+        </div>
+        <div class="card mx-lg-5">
+            <div class="card-header d-flex justify-content-end">
+                <div id="post-actions">
+                    <div class="input-group" role="group" aria-label="Actions">
+                      @if ($mode == 'edition')
+                       @can('update', $post)
+                        <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                           role="button" class="btn btn-sm btn-success" title="Modifier">
+                            <i class="bx bx-pencil"></i>
+                        </a>
+                       @endcan
+                       @can('delete', $post)
+                        <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button"
+                                class="btn btn-sm btn-danger" title="Supprimer">
+                            <i class="bx bx-trash"></i>
                         </button>
-                    @endcan
-                    @if($post->rubric->name != 'Une')
-                        <button class="btn @if ($isFavoriteRubric) btn-warning @else btn-secondary @endif btn-sm"
-                                @if ($isFavoriteRubric) title="Retirer la rubrique {{ $post->rubric->name }} des favoris"
-                                @else title="Ajouter la rubrique {{ $post->rubric->name }} aux favoris"
-                                @endif
-                                wire:click="switchFavoriteRubric" type="button">
+                       @endcan
+                      @endif
+                        <button @class([
+                                    "btn btn-sm",
+                                    "btn-warning" => $isFavoritePost,
+                                    "btn-secondary" => !$isFavoritePost,
+                                ])
+                                title="{{ $isFavoritePost ? "Retirer des favoris" : "Ajouter aux favoris" }}"
+                                wire:click="switchFavoritePost" type="button">
                             <i class="bx bx-star"></i>
                         </button>
-                    @endif
-                    @if ($mode == 'edition')
-                        @can('create', ['App\\Post', $post->rubric_id])
-                            <a href="{{ route('post.create', ['rubric' => $post->rubric->route()]) }}"
-                               title="Commencer un nouvel article"
-                               type="button" class="d-flex input-group-text btn btn-sm btn-success">
-                                <span class="material-icons">add</span>
-                            </a>
-                        @endcan
-                    @endif
+                       @can('pin')
+                        <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
+                        <button @class([
+                                    "btn btn-sm",
+                                    "btn-success" => $post->is_pinned,
+                                    "btn-secondary" => !$post->is_pinned,
+                                ])
+                                wire:click="switchPinnedPost({{ $post->id }})" type="button"
+                                title="@if ($this->post->is_pinned) Désépingler l'article @else épingler l'article @endif">
+                            <i class='bx bx-pin'></i>
+                        </button>
+                       @endcan
+                        <div type="text" class="input-group-text btn-sm btn-primary">
+                            Article vu <span class="badge bg-light text-primary mx-1">{{ $post->readers->count() }}</span> fois
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="container" @if ($firstLoad) data-aos="fade-up" @endif>
-            <div class="section-title">
-                <div class="row justify-content-center">
-                    <h2 class="col-9 title-icon"><i
-                            class="material-icons md-36 me-2">{{ $post->icon }}</i>{{ $post->title }}</h2>
-                </div>
-                <p>@if($post->published)
-                        Publié dans
-                    @else
-                        Non publié -
-                    @endif
-                    <a href="{{ route('rubric.index', ['rubric' => $post->rubric->route()]) }}">{{ $post->rubric->identity() }}</a>
-                </p>
-                <p class="fst-italic">Dernière mise à jours le {{$post->updated_at->format('d/m/Y')}}</p>
-            </div>
-            <div class="card mx-lg-5">
-                <div class="card-header d-flex justify-content-end">
-                    <div id="post-actions">
-                        <div class="input-group" role="group" aria-label="Actions">
-                            @if ($mode == 'edition')
-                                @can('update', $post)
-                                    <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
-                                       role="button" class="btn btn-sm btn-success" title="Modifier">
-                                        <i class="bx bx-pencil"></i>
-                                    </a>
-                                @endcan
-                                @can('delete', $post)
-                                    <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button"
-                                            class="btn btn-sm btn-danger" title="Supprimer">
-                                        <i class="bx bx-trash"></i>
-                                    </button>
-                                @endcan
-                            @endif
-                            <button class="btn btn-sm @if ($isFavoritePost) btn-warning @else btn-secondary @endif"
-                                    title="@if ($isFavoritePost) Retirer des favoris @else Ajouter aux favoris @endif"
-                                    wire:click="switchFavoritePost" type="button">
-                                <i class="bx bx-star"></i>
+            <div class="card-body">{!! $post->content !!}</div>
+              @can('viewAny', ['App\\Comment', $post->id])
+                <div class="card-footer text-muted">
+                    <div class="col-lg-8 why-us mt-3">
+                        <h5>{{ ($post->comments->count() ?: "aucun")." commentaire".($post->comments->count() > 1 ? 's' : '') }}
+                        </h5>
+                       @can('create', ['App\\Comment', $post->id])
+                        <div class="comment-form my-2">
+                            <input wire:model='newComment' wire:keydown.enter="commentPost"
+                                   type="text" placeholder="Ajouter un commentaire">
+                            <button wire:click='commentPost' title="Ajouter">
+                                <i class="icofont-plus"></i>
                             </button>
-                            @can('pin')
-                                <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                                <button
-                                    class="btn @if ($this->post->is_pinned) btn-success @else btn-secondary @endif btn-sm"
-                                    wire:click="switchPinnedPost({{ $post->id }})"
-                                    title="@if ($this->post->is_pinned) Désépingler l'article @else épingler l'article @endif"
-                                    type="button">
-                                    <i class='bx bx-pin'></i>
-                                </button>
-                            @endcan
-                            <div type="text" class="input-group-text btn-sm btn-primary">
-                                Article vu<span
-                                    class="badge bg-light text-primary mx-1">{{ $post->readers->count() }}</span>fois
+                        </div>
+                       @endcan
+                        <div class="container-fluid" @if ($firstLoad) data-aos="fade-up" @endif>
+                            <div class="accordion-list px-0 pb-0">
+                                <ul>
+                                  @foreach ($post->comments as $i => $comment)
+                                   @can('view', $comment)
+                                    <div class="d-flex">
+                                        <li class="mt-1 p-3 flex-fill">
+                                            <a data-bs-toggle="collapse" class="collapse"
+                                               data-bs-target="#accordion-list-{{ $i + 1 }}">
+                                                {{ $comment->author->identity() }} le {{ $comment->created_at->format('d/m/Y') }}
+                                                <i class="bx bx-chevron-down icon-show"></i>
+                                                <i class="bx bx-chevron-up icon-close"></i>
+                                            </a>
+                                            <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
+                                                <p>{{ $comment->content }}</p>
+                                            </div>
+                                        </li>
+                                       @can('delete', $comment)
+                                        <button wire:click="showModal('confirm',  {handling : 'deleteComment', id : {{ $comment->id }}})"
+                                                title="Supprimer ce commentaire"
+                                                class="px-1 pb-0 ms-1 me-1 align-self-center btn btn-sm btn-danger">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                       @endcan
+                                    </div>
+                                   @endcan
+                                  @endforeach
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">{!! $post->content !!}</div>
-                @can('viewAny', ['App\\Comment', $post->id])
-                    <div class="card-footer text-muted">
-                        <div class="col-lg-8 why-us mt-3">
-                            @if ($post->comments->count() > 1)
-                                <h5>{{ $post->comments->count() }} commentaires</h5>
-                            @else
-                                <h5>{{ $post->comments->count() ?: 'aucun' }} commentaire</h5>
-                            @endif
-                            @can('create', ['App\\Comment', $post->id])
-                                <div class="comment-form my-2">
-                                    <input wire:model='newComment' wire:keydown.enter="commentPost" type="text"
-                                           placeholder="Ajouter un commentaire">
-                                    <button wire:click='commentPost' title="Ajouter">
-                                        <i class="icofont-plus"></i>
-                                    </button>
-                                </div>
-                            @endcan
-                            <div class="container-fluid" @if ($firstLoad) data-aos="fade-up" @endif>
-                                <div class="accordion-list px-0 pb-0">
-                                    <ul>
-                                        @foreach ($post->comments as $i => $comment)
-                                            @can('view', $comment)
-                                                <div class="d-flex">
-                                                    <li class="mt-1 p-3 flex-fill">
-                                                        <a data-bs-toggle="collapse" class="collapse"
-                                                           data-bs-target="#accordion-list-{{ $i + 1 }}">
-                                                            {{ $comment->author->identity() }}
-                                                            le {{ $comment->created_at->format('d/m/Y') }}
-                                                            <i class="bx bx-chevron-down icon-show"></i>
-                                                            <i class="bx bx-chevron-up icon-close"></i>
-                                                        </a>
-                                                        <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
-                                                            <p>{{ $comment->content }}</p>
-                                                        </div>
-                                                    </li>
-                                                    @can('delete', $comment)
-                                                        <button
-                                                            wire:click="showModal('confirm',  {handling : 'deleteComment', id : {{ $comment->id }}})"
-                                                            title="Supprimer ce commentaire"
-                                                            class="px-1 pb-0 ms-1 me-1 align-self-center btn btn-sm btn-danger">
-                                                            <i class="bx bx-trash"></i>
-                                                        </button>
-                                                    @endcan
-                                                </div>
-                                            @endcan
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endcan
+              @endcan
             </div>
         </div>
-    </section>
-</div>
+    </div>
+
+</section>
