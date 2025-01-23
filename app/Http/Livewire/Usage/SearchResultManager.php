@@ -8,11 +8,12 @@ use App\Rubric;
 use App\User;
 use Livewire\Component;
 use Livewire\WithPagination;
-
+use App\Http\Livewire\WithModal;
 
 class SearchResultManager extends Component
 {
     use WithPagination;
+    use WithModal;
 
     public $rubric;
     public $rendered = FALSE;

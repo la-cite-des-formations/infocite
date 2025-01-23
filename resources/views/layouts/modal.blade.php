@@ -1,7 +1,7 @@
 <div wire:ignore.self @yield('wire-init') class="modal" tabindex="-1" id="modal">
     <div class="modal-dialog modal-dialog-scrollable @yield('modal-position') @yield('modal-size')">
         <div class="modal-content">
-            <div class="modal-header card-header">
+            <div class="modal-header card-header justify-content-between">
                 <h5 class="modal-title">@yield('modal-title')</h5>
                 <div class="btn-group">
                     @yield('modal-header-options')

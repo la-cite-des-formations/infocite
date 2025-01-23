@@ -567,8 +567,12 @@ a:hover {
     color: var(--select-color-1) !important;
 }
 
-.section-bg {
-    background-color: var(--select-color-10) !important;
+.section-bg, .section-bg .table {
+    --bs-table-bg: transparent !important;
+}
+
+.section-bg .table-secondary {
+    --bs-table-border-color: var(--bs-border-color);
 }
 
 .section-title h2 {
