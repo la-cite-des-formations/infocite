@@ -395,7 +395,7 @@ class AP // Application Parameters
             'connections' => [
                 'title' => 'Connexions ',
                 'table_title' => "Consultation des connexions",
-                'description' => "Statistiques de connexions",
+                'description' => "Statistiques concernant les connexions",
                 'icon_name' => 'hub',
                 'color' => 'danger',
                 'gate' => 'manage-connections',

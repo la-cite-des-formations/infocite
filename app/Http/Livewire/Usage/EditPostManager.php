@@ -7,7 +7,6 @@ use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
-use App\Http\Livewire\WithNotificationListener;
 use App\Http\Livewire\WithPinnedHandling;
 use App\Notification;
 use App\Post;
@@ -23,7 +22,6 @@ class EditPostManager extends Component
     use WithAlert;
     use WithIconpicker;
     use WithPinnedHandling;
-    use WithNotificationListener;
 
     public $backRoute;
     public $currentRubric;
@@ -162,7 +160,7 @@ class EditPostManager extends Component
                 ->users()
                 ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            //Boradcasting notification
+            /*/Boradcasting notification
             //Recupérer tout les utilisateurs qui ont la rubrique de l'article en favoris OU l'article lui même en favori
             $currentPostRubricId = Post::query()->where('id',$this->post->id)->pluck('rubric_id')->first();
             $userIds = User::query()
@@ -178,7 +176,7 @@ class EditPostManager extends Component
                 ->toArray();
 
             //Broadcaster la notification
-            broadcast(new NotificationPusher($postNotification, $userIds))->toOthers();
+            broadcast(new NotificationPusher($postNotification, $userIds))->toOthers();*/
         }
 
         // redirection

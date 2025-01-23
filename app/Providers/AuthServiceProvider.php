@@ -54,7 +54,7 @@ class AuthServiceProvider extends ServiceProvider
             });
         }
 
-        Gate::define('pin',function($user) {
+        Gate::define('pin', function($user) {
             return $user->hasRole('posts', Roles::IS_MODER);
         });
     }
