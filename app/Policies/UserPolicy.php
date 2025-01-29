@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Roles;
-use App\User;
+use App\Models\Roles;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -13,7 +13,7 @@ class UserPolicy
     /**
      * Determine whether the current user can view any managed users or profiles.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  bool  $isProfile
      * @return mixed
      */
@@ -25,8 +25,8 @@ class UserPolicy
     /**
      * Determine whether the current user can view the managed user or the profile.
      *
-     * @param  \App\User  $user
-     * @param  \App\User  $managedUser
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $managedUser
      * @param  bool  $isProfile
      * @return mixed
      */
@@ -38,7 +38,7 @@ class UserPolicy
     /**
      * Determine whether the current user can create any managed users or profiles.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  bool  $isProfile
      * @return mixed
      */
@@ -50,8 +50,8 @@ class UserPolicy
     /**
      * Determine whether the current user can edit the managed user or the profile.
      *
-     * @param  \App\User  $user
-     * @param  \App\User  $managedUser
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $managedUser
      * @param  bool  $isProfile
      * @return mixed
      */
@@ -63,7 +63,7 @@ class UserPolicy
     /**
      * Determine whether the current user can delete any managed users or profiles.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  bool  $isProfile
      * @return mixed
      */
@@ -75,8 +75,8 @@ class UserPolicy
     /**
      * Determine whether the current user can delete the managed user or the profile.
      *
-     * @param  \App\User  $user
-     * @param  \App\User  $managedUser
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $managedUser
      * @param  bool  $isProfile
      * @return mixed
      */
@@ -88,7 +88,7 @@ class UserPolicy
     /**
      * Determine whether the current user can admin rights for any managed users or profiles.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  bool  $isProfile
      * @return mixed
      */

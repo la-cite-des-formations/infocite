@@ -2,8 +2,8 @@
 
 namespace App\CustomFacades;
 
-use App\Right;
-use App\Roles;
+use App\Models\Right;
+use App\Models\Roles;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
 

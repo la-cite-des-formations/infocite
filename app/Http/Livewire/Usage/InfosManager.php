@@ -4,9 +4,9 @@ namespace App\Http\Livewire\Usage;
 
 use App\Http\Livewire\WithFavoritesHandling;
 use Livewire\Component;
-use App\Post;
-use App\Rubric;
-use App\User;
+use App\Models\Post;
+use App\Models\Rubric;
+use App\Models\User;
 use App\Http\Livewire\WithUsageMode;
 use Livewire\WithPagination;
 

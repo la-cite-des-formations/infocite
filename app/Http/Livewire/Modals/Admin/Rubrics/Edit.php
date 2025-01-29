@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Modals\Admin\Rubrics;
 
-use App\Rubric;
-use App\Group;
+use App\Models\Post;
+use App\Models\Rubric;
+use App\Models\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
-use App\Post;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
@@ -296,7 +296,7 @@ class Edit extends Component
             ->orderByRaw('position ASC, rank ASC, title ASC')
             ->get()
             ->filter(function ($rubric) {
-                return auth()->user()->can('edit', ['App\\Post', $rubric->id]);
+                return auth()->user()->can('edit', ['App\\Models\\Post', $rubric->id]);
             });
     }
 

@@ -25,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Relation::morphMap([
-            'Group' => 'App\Group',
-            'User' => 'App\User',
+            'Group' => 'App\Models\Group',
+            'User' => 'App\Models\User',
         ]);
         session([
             'displayPosts'=>'grid',

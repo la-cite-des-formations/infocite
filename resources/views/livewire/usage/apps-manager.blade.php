@@ -1,5 +1,5 @@
 <section wire:key='appsView' id="apps" class="pricing">
-  @can('add', 'App\\App')
+  @can('add', 'App\\Models\\App')
     <div class="container d-flex flex-column">
         <div class="align-self-end">
             <div class="input-group" role="group">

@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Comment;
-use App\Roles;
-use App\User;
+use App\Models\Comment;
+use App\Models\Roles;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CommentPolicy
@@ -14,7 +14,7 @@ class CommentPolicy
     /**
      * Determine whether the user can view any comments.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user, int $postId)
@@ -25,8 +25,8 @@ class CommentPolicy
     /**
      * Determine whether the user can view the comment.
      *
-     * @param  \App\User  $user
-     * @param  \App\Comment  $comment
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
     public function view(User $user, Comment $comment)
@@ -37,7 +37,7 @@ class CommentPolicy
     /**
      * Determine whether the user can create comments.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user, int $postId = NULL)
@@ -50,7 +50,7 @@ class CommentPolicy
     /**
      * Determine whether the user can block comments.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function block(User $user, int $postId = NULL)
@@ -63,7 +63,7 @@ class CommentPolicy
     /**
      * Determine whether the user can delete any comments.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function deleteAny(User $user)
@@ -74,8 +74,8 @@ class CommentPolicy
     /**
      * Determine whether the user can delete the comment.
      *
-     * @param  \App\User  $user
-     * @param  \App\Comment  $comment
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Comment  $comment
      * @return mixed
      */
     public function delete(User $user, Comment $comment)

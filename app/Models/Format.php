@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Casts\NullableField;
 use App\CustomFacades\AP;
@@ -32,7 +32,7 @@ class Format extends Model
 
     public function chartnodes() {
         return $this
-            ->hasMany('App\Chartnode');
+            ->hasMany('App\Models\Chartnode');
     }
 
     public function getStyleAttribute() {

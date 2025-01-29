@@ -6,7 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
-use App\Rubric;
+use App\Models\Rubric;
 
 class RubricsManager extends Component
 {

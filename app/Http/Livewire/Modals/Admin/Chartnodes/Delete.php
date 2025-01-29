@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Chartnodes;
 
-use App\Chartnode;
+use App\Models\Chartnode;
 use Livewire\Component;
 
 class Delete extends Component

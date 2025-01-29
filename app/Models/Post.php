@@ -1,11 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
@@ -28,28 +27,28 @@ class Post extends Model
 
     public function rubric()
     {
-        return $this->belongsTo('App\Rubric');
+        return $this->belongsTo('App\Models\Rubric');
     }
 
     public function corrector()
     {
-        return $this->belongsTo('App\User', 'corrector_id');
+        return $this->belongsTo('App\Models\User', 'corrector_id');
     }
 
     public function author()
     {
-        return $this->belongsTo('App\User', 'author_id');
+        return $this->belongsTo('App\Models\User', 'author_id');
     }
 
     public function comments() {
         return $this
-            ->hasMany('App\Comment')
+            ->hasMany('App\Models\Comment')
             ->orderBy('created_at', 'DESC');
     }
 
     public function readers() {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->withPivot(['is_favorite', 'is_read', 'tags']);
     }
 
@@ -66,7 +65,7 @@ class Post extends Model
     public function notifications()
     {
         return $this
-            ->hasMany('App\Notification')
+            ->hasMany('App\Models\Notification')
             ->orderByRaw('release_at DESC, created_at DESC');
     }
 

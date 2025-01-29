@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\App;
-use App\Post;
-use App\Rubric;
-use App\User;
+use App\Models\App;
+use App\Models\Post;
+use App\Models\Rubric;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;

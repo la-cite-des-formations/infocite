@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Casts\NullableField;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +51,7 @@ class Chartnode extends Model
 
     public function format() {
         return $this
-            ->belongsTo('App\Format');
+            ->belongsTo('App\Models\Format');
     }
 
     public function actors() {
@@ -64,12 +64,12 @@ class Chartnode extends Model
 
     public function parent() {
         return $this
-            ->belongsTo('App\Chartnode', 'parent_id');
+            ->belongsTo('App\Models\Chartnode', 'parent_id');
     }
 
     public function childs() {
         return $this
-            ->hasMany('App\Chartnode', 'parent_id');
+            ->hasMany('App\Models\Chartnode', 'parent_id');
     }
 
     public static function getOrgChart($node = NULL) {

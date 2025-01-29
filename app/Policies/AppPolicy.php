@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\App;
-use App\Roles;
-use App\User;
+use App\Models\App;
+use App\Models\Roles;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AppPolicy
@@ -14,7 +14,7 @@ class AppPolicy
     /**
      * Determine whether the user can view any apps.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -25,8 +25,8 @@ class AppPolicy
     /**
      * Determine whether the user can view the app.
      *
-     * @param  \App\User  $user
-     * @param  \App\App  $app
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\App  $app
      * @return mixed
      */
     public function view(User $user, App $app)
@@ -37,7 +37,7 @@ class AppPolicy
     /**
      * Determine whether the user can filter apps by type.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function filterByType(User $user)
@@ -48,7 +48,7 @@ class AppPolicy
     /**
      * Determine whether the user can create institutional apps.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -59,7 +59,7 @@ class AppPolicy
     /**
      * Determine whether the user can create personal apps for someone.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function createFor(User $user)
@@ -70,8 +70,8 @@ class AppPolicy
     /**
      * Determine whether the user can update the app.
      *
-     * @param  \App\User  $user
-     * @param  \App\App  $app
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\App  $app
      * @return mixed
      */
     public function update(User $user, App $app)
@@ -82,8 +82,8 @@ class AppPolicy
     /**
      * Determine whether the user can update the personal app for someone.
      *
-     * @param  \App\User  $user
-     * @param  \App\App  $app
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\App  $app
      * @return mixed
      */
     public function updateFor(User $user, App $app)
@@ -94,7 +94,7 @@ class AppPolicy
     /**
      * Determine whether the user can delete any apps.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function deleteAny(User $user)
@@ -105,8 +105,8 @@ class AppPolicy
     /**
      * Determine whether the user can delete the app.
      *
-     * @param  \App\User  $user
-     * @param  \App\App  $app
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\App  $app
      * @return mixed
      */
     public function delete(User $user, App $app)
@@ -117,7 +117,7 @@ class AppPolicy
     /**
      * Determine whether the user can add his own apps (usage front).
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function add(User $user)
@@ -128,8 +128,8 @@ class AppPolicy
     /**
      * Determine whether the user can update or delete his app (usage front).
      *
-     * @param  \App\User  $user
-     * @param  \App\App  $app
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\App  $app
      * @return mixed
      */
     public function handle(User $user, App $app)

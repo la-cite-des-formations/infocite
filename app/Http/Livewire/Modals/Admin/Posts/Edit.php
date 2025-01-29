@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Modals\Admin\Posts;
 
-use App\Post;
-use App\Rubric;
+use App\Models\Post;
+use App\Models\Rubric;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use Illuminate\Support\Facades\Auth;

@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Modals\Admin\Apps;
 
-use App\App;
+use App\Models\App;
+use App\Models\Group;
+use App\Models\User;
 use App\CustomFacades\AP;
-use App\Group;
-use App\User;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use Illuminate\Support\Facades\Http;

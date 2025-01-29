@@ -2,18 +2,16 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\Events\NotificationPusher;
-use App\Group;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Notification;
-use App\Post;
-use App\Right;
-use App\Roles;
-use App\Rubric;
-use App\User;
+use App\Models\Notification;
+use App\Models\Post;
+use App\Models\Group;
+use App\Models\Right;
+use App\Models\Roles;
+use App\Models\Rubric;
 use Livewire\Component;
 
 class EditPostManager extends Component

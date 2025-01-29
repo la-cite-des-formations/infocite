@@ -46,7 +46,7 @@
               @endif
                 <span class="bi bi-bell"></span>
             </button>
-           @can('edit', ['App\\Post', $rubric->id])
+           @can('edit', ['App\\Models\\Post', $rubric->id])
             <button class="d-flex align-items-center btn btn-sm btn-primary" wire:click='switchMode' type="button"
                     title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
                 <span @class([
@@ -57,7 +57,7 @@
             </button>
            @endcan
           @if ($mode == 'edition')
-           @can('create', ['App\\Post', $rubric->id])
+           @can('create', ['App\\Models\\Post', $rubric->id])
             <a href="{{ route('post.create', ['rubric' => $rubric->route()]) }}"
                title="Commencer un nouvel article"
                type="button" class="d-flex align-items-center input-group-text btn btn-sm btn-success">
@@ -187,7 +187,7 @@
                             </a>
                            @endcan
                           @endif
-                           @can('viewAny', ['App\\Comment', $post->id])
+                           @can('viewAny', ['App\\Models\\Comment', $post->id])
                             <!-- NB de commentaires déposés sur l'article : class primary si au moins 1 commentaire  -->
                             <button @class([
                                         'list-group-item py-1 px-2',

@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Referents;
 
-use App\User;
+use App\Models\User;
 use Livewire\Component;
 
 class Edit extends Component

@@ -2,9 +2,9 @@
 
 namespace App\Http\Livewire\Modals\Admin\Chartnodes;
 
-use App\Format;
-use App\Group;
-use App\Chartnode;
+use App\Models\Format;
+use App\Models\Group;
+use App\Models\Chartnode;
 use App\Http\Livewire\WithAlert;
 use Livewire\Component;
 

@@ -11,7 +11,7 @@
 
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
-  @can('viewAny', 'App\\App')
+  @can('viewAny', 'App\\Models\\App')
     @livewire('usage.apps-manager', ['viewBag' => $viewBag])
   @endcan
 

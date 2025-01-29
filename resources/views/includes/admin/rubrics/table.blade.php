@@ -2,9 +2,9 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col-4 @cannot('deleteAny', 'App\\Rubric') p-2 @endcannot">
+        <th scope="col" class="col-4 @cannot('deleteAny', 'App\\Models\\Rubric') p-2 @endcannot">
             <div class="d-flex align-items-center">
-              @can('deleteAny', 'App\\Rubric')
+              @can('deleteAny', 'App\\Models\\Rubric')
                 <div class="btn-group dropstart">
                     <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des rubriques">
@@ -45,13 +45,13 @@
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
-              @can('create', 'App\\Rubric')
+              @can('create', 'App\\Models\\Rubric')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
                         class="d-flex btn btn-sm btn-success me-1" title="Ajouter une rubrique">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
-              @can('deleteAny', 'App\\Rubric')
+              @can('deleteAny', 'App\\Models\\Rubric')
                 <button wire:click="showModal('delete', getSelectionIDs('rubric-cbx'))"
                         class="d-flex btn btn-sm btn-danger" title="Supprimer les rubriques selectionnées">
                     <span class="material-icons">delete</span>
@@ -68,7 +68,7 @@
    @canany(['view', 'update', 'delete'], $rubric)
     <tr class="row">
         <td scope="row" class="col-4">
-          @can('deleteAny', 'App\\Rubric')
+          @can('deleteAny', 'App\\Models\\Rubric')
             <div class="form-check">
                 <input type="checkbox" class="form-check-input rubric-cbx" id="{{ $rubric->id }}">
                 <label  class="form-check-label text-primary"

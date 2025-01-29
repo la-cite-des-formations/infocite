@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +23,7 @@ class Connection extends Model
 
     public function user() {
         return $this
-            ->belongsTo('App\User');
+            ->belongsTo('App\Models\User');
     }
 
     public function isMine() {

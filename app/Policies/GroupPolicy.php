@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Roles;
-use App\Group;
-use App\User;
+use App\Models\Roles;
+use App\Models\Group;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class GroupPolicy
@@ -14,7 +14,7 @@ class GroupPolicy
     /**
      * Determine whether the user can view any groups.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -25,8 +25,8 @@ class GroupPolicy
     /**
      * Determine whether the user can view the group.
      *
-     * @param  \App\User  $user
-     * @param  \App\Group  $group
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Group  $group
      * @return mixed
      */
     public function view(User $user, Group $group)
@@ -37,7 +37,7 @@ class GroupPolicy
     /**
      * Determine whether the user can create groups.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -48,8 +48,8 @@ class GroupPolicy
     /**
      * Determine whether the user can update the group.
      *
-     * @param  \App\User  $user
-     * @param  \App\Group  $group
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Group  $group
      * @return mixed
      */
     public function update(User $user, Group $group)
@@ -60,8 +60,8 @@ class GroupPolicy
     /**
      * Determine whether the user can handle the group.
      *
-     * @param  \App\User  $user
-     * @param  \App\Group  $group
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Group  $group
      * @return mixed
      */
     public function handle(User $user, Group $group)
@@ -72,7 +72,7 @@ class GroupPolicy
     /**
      * Determine whether the current user can delete any groups.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function deleteAny(User $user)
@@ -83,8 +83,8 @@ class GroupPolicy
     /**
      * Determine whether the user can delete the group.
      *
-     * @param  \App\User  $user
-     * @param  \App\Group  $group
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Group  $group
      * @return mixed
      */
     public function delete(User $user, Group $group)

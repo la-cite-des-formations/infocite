@@ -3,9 +3,9 @@
 namespace App\Policies;
 
 use App\CustomFacades\AP;
-use App\Roles;
-use App\Rubric;
-use App\User;
+use App\Models\Roles;
+use App\Models\Rubric;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
@@ -16,8 +16,8 @@ class RubricPolicy
     /**
      * Determine whether the user can access the rubric (ui).
      *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Rubric  $rubric
      * @return mixed
      */
     public function access(User $user, Rubric $rubric)
@@ -43,7 +43,7 @@ class RubricPolicy
     /**
      * Determine whether the user can view any rubrics.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -54,8 +54,8 @@ class RubricPolicy
     /**
      * Determine whether the user can view the rubric.
      *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Rubric  $rubric
      * @return mixed
      */
     public function view(User $user, Rubric $rubric)
@@ -66,7 +66,7 @@ class RubricPolicy
     /**
      * Determine whether the user can create rubrics.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -77,8 +77,8 @@ class RubricPolicy
     /**
      * Determine whether the user can update the rubric.
      *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Rubric  $rubric
      * @return mixed
      */
     public function update(User $user, Rubric $rubric)
@@ -89,8 +89,8 @@ class RubricPolicy
     /**
      * Determine whether the user can change the rubric segment.
      *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Rubric  $rubric
      * @return mixed
      */
     public function adminSegment(User $user, Rubric $rubric)
@@ -101,8 +101,8 @@ class RubricPolicy
     /**
      * Determine whether the user can handle the rubric.
      *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Rubric  $rubric
      * @return mixed
      */
     public function handle(User $user, Rubric $rubric)
@@ -113,7 +113,7 @@ class RubricPolicy
     /**
      * Determine whether the user can delete any rubrics.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function deleteAny(User $user)
@@ -124,8 +124,8 @@ class RubricPolicy
     /**
      * Determine whether the user can delete the rubric.
      *
-     * @param  \App\User  $user
-     * @param  \App\Rubric  $rubric
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Rubric  $rubric
      * @return mixed
      */
     public function delete(User $user, Rubric $rubric)

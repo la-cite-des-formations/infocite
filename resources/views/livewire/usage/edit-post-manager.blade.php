@@ -17,7 +17,7 @@
                 <select id="post-rubric-id" wire:model="post.rubric_id" type="input" class="form-select">
                     <option label="Choisir la rubrique..."></option>
                       @foreach($rubrics as $rubric)
-                       @can('create', ['App\\Post', $rubric->id])
+                       @can('create', ['App\\Models\\Post', $rubric->id])
                         <option value='{{ $rubric->id }}'>
                             {{ (is_object($rubric->parent) ? $rubric->parent->name.' / ' : '').$rubric->name }}
                         </option>
@@ -54,7 +54,7 @@
                 </textarea>
             </div>
         </div>
-      @can('block', ['App\\Comment'])
+      @can('block', ['App\\Models\\Comment'])
         <div class="row mb-3">
             <div class="col-2"></div>
             <div class="col-8">
@@ -66,7 +66,7 @@
             </div>
         </div>
       @endcan
-     @can('publish', ['App\\Post', $currentRubric->id])
+     @can('publish', ['App\\Models\\Post', $currentRubric->id])
        @error('post.published')
         @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
        @enderror
@@ -155,7 +155,7 @@
                 </button>
               @endif
               @if ($mode === 'edition')
-               @can('create', ['App\\Post', $currentRubric->id])
+               @can('create', ['App\\Models\\Post', $currentRubric->id])
                 <a href="{{ route('post.create', ['rubric' => $currentRubric->route(), 'backRoute' => $backRoute]) }}"
                     title="Commencer un nouvel article" type="button" class="d-flex btn btn-sm btn-success me-1">
                     <span class="material-icons">add</span>

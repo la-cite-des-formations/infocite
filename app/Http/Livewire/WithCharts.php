@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Stats;
+use App\Models\Stats;
 
 trait WithCharts
 {

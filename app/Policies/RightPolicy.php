@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Right;
-use App\Roles;
-use App\User;
+use App\Models\Right;
+use App\Models\Roles;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RightPolicy
@@ -14,7 +14,7 @@ class RightPolicy
     /**
      * Determine whether the current user can view any rights.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -25,8 +25,8 @@ class RightPolicy
     /**
      * Determine whether the current user can view the right.
      *
-     * @param  \App\User  $user
-     * @param  \App\Right  $right
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Right  $right
      * @return mixed
      */
     public function view(User $user, Right $right)
@@ -37,7 +37,7 @@ class RightPolicy
     /**
      * Determine whether the current user can create any rights.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -48,8 +48,8 @@ class RightPolicy
     /**
      * Determine whether the current user can update the right.
      *
-     * @param  \App\User  $user
-     * @param  \App\Right  $right
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Right  $right
      * @return mixed
      */
     public function update(User $user, Right $right)
@@ -60,7 +60,7 @@ class RightPolicy
     /**
      * Determine whether the current user can delete any managed users or profiles.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function deleteAny(User $user)
@@ -71,8 +71,8 @@ class RightPolicy
     /**
      * Determine whether the current user can delete the managed user or the profile.
      *
-     * @param  \App\User  $user
-     * @param  \App\Right  $right
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Right  $right
      * @return mixed
      */
     public function delete(User $user, Right $right)

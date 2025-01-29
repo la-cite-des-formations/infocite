@@ -6,9 +6,9 @@ use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
-use App\Post;
-use App\Rubric;
-use App\User;
+use App\Models\Post;
+use App\Models\Rubric;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 

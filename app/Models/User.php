@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
@@ -41,18 +41,18 @@ class User extends Authenticatable
 
     public function actor() {
         return $this
-            ->belongsTo('App\Actor', 'id');
+            ->belongsTo('App\Models\Actor', 'id');
     }
 
     public function myPosts() {
         return $this
-            ->hasMany('App\Post', 'author_id')
+            ->hasMany('App\Models\Post', 'author_id')
             ->orderByRaw('updated_at DESC');
     }
 
     public function postsRead() {
         return $this
-            ->belongsToMany('App\Post', 'post_user')
+            ->belongsToMany('App\Models\Post', 'post_user')
             ->withPivot(['is_read'])
             ->where('is_read', TRUE)
             ->orderBy('created_at', 'DESC');
@@ -60,7 +60,7 @@ class User extends Authenticatable
 
     public function updatedPosts() {
         return $this
-            ->hasMany('App\Post', 'corrector_id')
+            ->hasMany('App\Models\Post', 'corrector_id')
             ->orderByRaw('updated_at DESC');
     }
 
@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function myFavoritesPosts() {
         return $this
-            ->belongsToMany('App\Post', 'post_user')
+            ->belongsToMany('App\Models\Post', 'post_user')
             ->orderBy('created_at', 'DESC')
             ->withPivot(['is_favorite'])
             ->where('is_favorite', TRUE)
@@ -90,7 +90,7 @@ class User extends Authenticatable
 
     public function myFavoritesRubrics(){
         return $this
-            ->belongsToMany('App\Rubric', 'rubric_user')
+            ->belongsToMany('App\Models\Rubric', 'rubric_user')
             ->orderBy('created_at', 'DESC')
             ->withPivot(['rubric_id']);
 
@@ -118,18 +118,18 @@ class User extends Authenticatable
 
     public function newNotifications() {
         return $this
-            ->belongsToMany('App\Notification');
+            ->belongsToMany('App\Models\Notification');
     }
 
     public function myComments() {
         return $this
-            ->hasMany('App\Comment')
+            ->hasMany('App\Models\Comment')
             ->orderBy('created_at', 'DESC');
     }
 
     public function rubrics() {
         return $this
-            ->belongsToMany('App\Rubric')
+            ->belongsToMany('App\Models\Rubric')
             ->orderByRaw('position, segment, rank');
     }
 
@@ -149,28 +149,28 @@ class User extends Authenticatable
 
     public function profiles() {
         return $this
-            ->belongsToMany('App\User', 'profile_user', 'user_id', 'profile_id')
+            ->belongsToMany('App\Models\User', 'profile_user', 'user_id', 'profile_id')
             ->orderByRaw('name ASC, first_name ASC')
             ->withTimestamps();
     }
 
     public function users() {
         return $this
-            ->belongsToMany('App\User', 'profile_user', 'profile_id', 'user_id')
+            ->belongsToMany('App\Models\User', 'profile_user', 'profile_id', 'user_id')
             ->orderByRaw('name ASC, first_name ASC')
             ->withTimestamps();
     }
 
     public function apps() {
         return $this
-            ->belongsToMany('App\App')
+            ->belongsToMany('App\Models\App')
             ->orderByRaw('name ASC')
             ->withPivot(['login', 'password']);
     }
 
     public function personnalApps() {
         return $this
-            ->hasMany('App\App', 'owner_id')
+            ->hasMany('App\Models\App', 'owner_id')
             ->orderByRaw('name ASC');
     }
 
@@ -202,19 +202,19 @@ class User extends Authenticatable
 
     public function subordinates() {
         return $this
-            ->hasManyThrough('App\User', 'App\Actor', 'manager_id', 'id', 'id', 'id')
+            ->hasManyThrough('App\Models\User', 'App\Actor', 'manager_id', 'id', 'id', 'id')
             ->orderByRaw('name ASC, first_name ASC');
     }
 
     public function manager() {
         return $this
-            ->hasOneThrough('App\User', 'App\Actor', 'id', 'id', 'id', 'manager_id');
+            ->hasOneThrough('App\Models\User', 'App\Actor', 'id', 'id', 'id', 'manager_id');
     }
 
     public function groups(array $types = NULL)
     {
         return $this
-            ->belongsToMany('App\Group')
+            ->belongsToMany('App\Models\Group')
             ->when($types, function ($groups) use ($types) {
                 $groups->whereIn('type', $types);
             })
@@ -255,7 +255,7 @@ class User extends Authenticatable
 
     public function personalRights() {
         return $this
-            ->morphToMany('App\Right', 'rightable')
+            ->morphToMany('App\Models\Right', 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC');
     }
@@ -305,7 +305,7 @@ class User extends Authenticatable
 
     public function rightsResourceableString() {
         if (!empty($this->pivot->resource_type)) {
-            $class = "\\App\\{$this->pivot->resource_type}";
+            $class = "\\App\\Models\\{$this->pivot->resource_type}";
             $entity = AP::getResourceable($this->pivot->resource_type);
             return " - {$entity} : {$class::find($this->pivot->resource_id)->identity()}";
         }

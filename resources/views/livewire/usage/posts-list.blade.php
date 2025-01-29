@@ -38,7 +38,7 @@
         <td>
             <div class="d-flex align-items-center">
                 <div class="list-group list-group-horizontal" role="group" aria-label="Infos">
-                  @can('viewAny', ['App\\Comment', $post->id])
+                  @can('viewAny', ['App\\Models\\Comment', $post->id])
                     <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
                     <button @class([
                                 'list-group-item py-1 px-2',

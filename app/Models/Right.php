@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
@@ -26,7 +26,7 @@ class Right extends Model
 
     public function groups() {
         return $this
-            ->morphedByMany('App\Group', 'rightable')
+            ->morphedByMany('App\Models\Group', 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC, resource_type ASC, resource_id ASC');
     }
@@ -40,14 +40,14 @@ class Right extends Model
 
     public function users() {
         return $this
-            ->morphedByMany('App\User', 'rightable')
+            ->morphedByMany('App\Models\User', 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
     }
 
     public function realUsers() {
         return $this
-            ->morphedByMany('App\User', 'rightable')
+            ->morphedByMany('App\Models\User', 'rightable')
             ->where('name', '<>', AP::PROFILE)
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
@@ -55,7 +55,7 @@ class Right extends Model
 
     public function profiles() {
         return $this
-            ->morphedByMany('App\User', 'rightable')
+            ->morphedByMany('App\Models\User', 'rightable')
             ->where('name', AP::PROFILE)
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('first_name ASC, resource_type ASC, resource_id ASC');
@@ -74,7 +74,7 @@ class Right extends Model
 
     public function rightsResourceableString() {
         if (!empty($this->pivot->resource_type)) {
-            $class = "\\App\\{$this->pivot->resource_type}";
+            $class = "\\App\\Models\\{$this->pivot->resource_type}";
             $entity = AP::getResourceable($this->pivot->resource_type);
             return " - {$entity} : {$class::find($this->pivot->resource_id)->identity()}";
         }

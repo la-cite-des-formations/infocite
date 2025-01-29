@@ -6,8 +6,8 @@ use App\CustomFacades\AP;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
-use App\Rubric;
-use App\Post;
+use App\Models\Rubric;
+use App\Models\Post;
 
 class ViewingManager extends Component
 {

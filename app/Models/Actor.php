@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +32,7 @@ class Actor extends Model
 
     public function user() {
         return $this
-            ->belongsTo('App\User', 'id');
+            ->belongsTo('App\Models\User', 'id');
     }
 
     public function getIdentityAttribute() {

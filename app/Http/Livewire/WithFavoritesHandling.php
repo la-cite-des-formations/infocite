@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Post;
+use App\Models\Post;
 
 trait WithFavoritesHandling
 {

@@ -2,19 +2,15 @@
 
 namespace App\Http\Livewire\Usage;
 
-
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithFilterPosts;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Post;
+use App\Models\Post;
 use Livewire\Component;
-use Livewire\Livewire;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
-
-//use App\Notification;
 
 class PostsManager extends Component
 {

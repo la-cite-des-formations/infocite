@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
@@ -18,12 +18,12 @@ class Rubric extends Model
     protected $fillable = ['name', 'description', 'icon', 'is_parent', 'parent_id', 'position', 'rank', 'contains_posts', 'segment'];
 
     public function parent() {
-        return $this->belongsTo('App\Rubric', 'parent_id');
+        return $this->belongsTo('App\Models\Rubric', 'parent_id');
     }
 
     public function childs() {
         return $this
-            ->hasMany('App\Rubric', 'parent_id')
+            ->hasMany('App\Models\Rubric', 'parent_id')
             ->orderByRaw('rank ASC');
     }
 
@@ -34,7 +34,7 @@ class Rubric extends Model
     public function posts()
     {
         return $this
-            ->hasMany('App\Post')
+            ->hasMany('App\Models\Post')
             ->orderByRaw('updated_at DESC, title ASC');
     }
 
@@ -44,7 +44,7 @@ class Rubric extends Model
 
     public function groups(array $types = NULL) {
         return $this
-            ->belongsToMany('App\Group')
+            ->belongsToMany('App\Models\Group')
             ->when($types, function ($groups) use ($types) {
                 $groups->whereIn('type', $types);
             })
@@ -54,14 +54,14 @@ class Rubric extends Model
     public function users()
     {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->orderByRaw('name ASC, first_name ASC');
     }
 
     public function realUsers()
     {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->where('name', '<>', AP::PROFILE)
             ->orderByRaw('name ASC, first_name ASC');
     }
@@ -69,7 +69,7 @@ class Rubric extends Model
     public function profiles()
     {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->where('name', AP::PROFILE)
             ->orderByRaw('first_name ASC');
     }
@@ -104,7 +104,7 @@ class Rubric extends Model
     public function notifications()
     {
         return $this
-            ->hasManyThrough('App\Notification', 'App\Post')
+            ->hasManyThrough('App\Models\Notification', 'App\Models\Post')
             ->orderByRaw('release_at DESC, created_at DESC');
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire;
 
-use App\Post;
-use App\User;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 

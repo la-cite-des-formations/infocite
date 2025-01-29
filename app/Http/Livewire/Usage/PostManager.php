@@ -2,14 +2,13 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\Comment;
-use App\Events\NotificationPusher;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Notification;
-use App\Post;
-use App\User;
+use App\Models\Notification;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Comment;
 use Livewire\Component;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
@@ -76,9 +75,6 @@ class PostManager extends Component
                 ->whereHas('myFavoritesPosts',function ($query) {
                 $query->where('post_id','=',$this->post->id);
             })->get()->pluck('id')->toArray();
-
-            //Diffusion de la notification
-            broadcast(new NotificationPusher($newNotification, $userIds))->toOthers();
 
             $this->emitSelf('render');
         }

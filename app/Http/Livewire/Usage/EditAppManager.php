@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\App;
+use App\Models\App;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;

@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Modals\Admin\Rubrics;
 
-use App\Right;
-use App\Rubric;
+use App\Models\Right;
+use App\Models\Rubric;
 use Livewire\Component;
 
 class Delete extends Component

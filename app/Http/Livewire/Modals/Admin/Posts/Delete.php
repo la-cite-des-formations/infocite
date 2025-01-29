@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Modals\Admin\Posts;
 
-use App\Post;
-use App\Right;
+use App\Models\Post;
+use App\Models\Right;
 use Livewire\Component;
 
 class Delete extends Component

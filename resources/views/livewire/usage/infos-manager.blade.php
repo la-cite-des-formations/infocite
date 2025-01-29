@@ -1,5 +1,5 @@
 <section wire:key='infosView' id="infos" class="services section-bg">
-  @can('edit', ['App\\Post', $rubric->id])
+  @can('edit', ['App\\Models\\Post', $rubric->id])
     <div class="container d-flex flex-column">
         <div class="align-self-end">
             <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"

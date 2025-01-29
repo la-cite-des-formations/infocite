@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\CustomFacades\AP;
-use App\Rubric;
-use App\Connection;
+use App\Models\Rubric;
+use App\Models\Connection;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller

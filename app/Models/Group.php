@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
@@ -19,14 +19,14 @@ class Group extends Model
 
     public function apps() {
         return $this
-            ->belongsToMany('App\App')
+            ->belongsToMany('App\Models\App')
             ->orderByRaw('name ASC');
     }
 
     public function users()
     {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->where('name', '<>', AP::PROFILE)
             ->orderByRaw('name ASC, first_name ASC')
             ->withPivot('function');
@@ -35,7 +35,7 @@ class Group extends Model
     public function profiles()
     {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->where('name', AP::PROFILE)
             ->orderBy('first_name')
             ->withPivot('function');
@@ -43,13 +43,13 @@ class Group extends Model
 
     public function rubrics() {
         return $this
-            ->belongsToMany('App\Rubric')
+            ->belongsToMany('App\Models\Rubric')
             ->orderByRaw('position, segment, rank');
     }
 
     public function rights() {
         return $this
-            ->morphToMany('App\Right', 'rightable')
+            ->morphToMany('App\Models\Right', 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC');
     }
@@ -67,7 +67,7 @@ class Group extends Model
 
     public function rightsResourceableString() {
         if (!empty($this->pivot->resource_type)) {
-            $class = "\\App\\{$this->pivot->resource_type}";
+            $class = "\\App\\Models\\{$this->pivot->resource_type}";
             $entity = AP::getResourceable($this->pivot->resource_type);
             return " - {$entity} : {$class::find($this->pivot->resource_id)->identity()}";
         }

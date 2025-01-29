@@ -46,7 +46,7 @@
        @endcan
       @endforeach
         <!-- A laisser en dur à la fin du menu -->
-       @can('viewAny', 'App\\App')
+       @can('viewAny', 'App\\Models\\App')
         <li>
             <a href="#apps" class="nav-link scrollto" title="Mes applications">
                 <div class="myapps">

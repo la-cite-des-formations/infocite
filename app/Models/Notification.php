@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Model;
@@ -41,16 +41,16 @@ class Notification extends Model
 
     public function users() {
         return $this
-            ->belongsToMany('App\User');
+            ->belongsToMany('App\Models\User');
     }
 
     public function post()
     {
-        return $this->belongsTo('App\Post');
+        return $this->belongsTo('App\Models\Post');
     }
 
     public function rubric()
     {
-        return $this->hasOneThrough('App\Rubric', 'App\Post');
+        return $this->hasOneThrough('App\Models\Rubric', 'App\Models\Post');
     }
 }

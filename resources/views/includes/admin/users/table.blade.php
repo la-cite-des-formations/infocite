@@ -2,9 +2,9 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col @cannot('deleteAny', 'App\\User') p-2 @endcannot" >
+        <th scope="col" class="col @cannot('deleteAny', 'App\\Models\\User') p-2 @endcannot" >
             <div class="d-flex align-items-center">
-              @can('deleteAny', 'App\\User')
+              @can('deleteAny', 'App\\Models\\User')
                 <div class="btn-group dropstart">
                     <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des utilisateurs">
@@ -39,13 +39,13 @@
         </th>
         <th scope="col" class="col-3 d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
-              @can('create', 'App\\User')
+              @can('create', 'App\\Models\\User')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
                         class="d-flex btn btn-sm btn-success me-1" title="Ajouter un utilisateur">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
-              @can('deleteAny', 'App\\User')
+              @can('deleteAny', 'App\\Models\\User')
                 <button wire:click="showModal('delete', getSelectionIDs('user-cbx'))"
                         class="d-flex btn btn-sm btn-danger" title="Supprimer les utilisateurs selectionnés">
                     <span class="material-icons">delete</span>
@@ -59,10 +59,10 @@
 @isset($users)
  @section('table-body')
   @foreach ($users as $user)
-   @if(auth()->user()->canany(['view', 'update', 'delete'], $user) || auth()->user()->can('adminRights', 'App\\User'))
+   @if(auth()->user()->canany(['view', 'update', 'delete'], $user) || auth()->user()->can('adminRights', 'App\\Models\\User'))
     <tr class="row @if($user->is_frozen) table-warning @endif">
         <td scope="row" class="col">
-          @can('deleteAny', 'App\\User')
+          @can('deleteAny', 'App\\Models\\User')
             <div class="form-check">
                 <input type="checkbox" class="form-check-input user-cbx" id="{{ $user->id }}">
                 <label  class="form-check-label text-primary"
@@ -74,7 +74,7 @@
         </td>
         <td class="col">{{ $user->getInfo($userInfo) }}</td>
         <td class="col-3 d-flex justify-content-end align-items-center">
-          @if(auth()->user()->can('view', $user) || auth()->user()->can('adminRights', 'App\\User'))
+          @if(auth()->user()->can('view', $user) || auth()->user()->can('adminRights', 'App\\Models\\User'))
             <a wire:click="showModal('edit', {mode : 'view', id : {{ $user->id }}})"
                 class="spot spot-info text-info" role="button" title="Visualiser">
                 <span class="material-icons">preview</span>

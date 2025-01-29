@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
@@ -18,7 +18,7 @@ class App extends Model
 
     public function groups(array $types = NULL) {
         return $this
-            ->belongsToMany('App\Group')
+            ->belongsToMany('App\Models\Group')
             ->when($types, function ($groups) use ($types) {
                 $groups->whereIn('type', $types);
             })
@@ -27,14 +27,14 @@ class App extends Model
 
     public function users() {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->orderByRaw('name ASC, first_name ASC')
             ->withPivot(['login', 'password']);
     }
 
     public function realUsers() {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->where('name', '<>', AP::PROFILE)
             ->orderByRaw('name ASC, first_name ASC')
             ->withPivot(['login', 'password']);
@@ -42,7 +42,7 @@ class App extends Model
 
     public function profiles() {
         return $this
-            ->belongsToMany('App\User')
+            ->belongsToMany('App\Models\User')
             ->where('name', AP::PROFILE)
             ->orderByRaw('name ASC, first_name ASC')
             ->withPivot(['login', 'password']);
