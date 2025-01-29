@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a2113807ce7e92c3e5f0554d1d782e4f",
+    "content-hash": "6ad9da88d26c1c6467aa29e12e3f49e2",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -5969,28 +5969,21 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.8.4",
+            "version": "7.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "4d6a5af329af6992bef810fc73d4bb70b8253a6a"
+                "reference": "f0b12677418f3cbb2aeffc2216bd36b0590dd418"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/4d6a5af329af6992bef810fc73d4bb70b8253a6a",
-                "reference": "4d6a5af329af6992bef810fc73d4bb70b8253a6a",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/f0b12677418f3cbb2aeffc2216bd36b0590dd418",
+                "reference": "f0b12677418f3cbb2aeffc2216bd36b0590dd418",
                 "shasum": ""
             },
             "type": "component",
             "extra": {
                 "component": {
-                    "scripts": [
-                        "tinymce.js",
-                        "plugins/*/plugin.js",
-                        "themes/*/theme.js",
-                        "models/*/model.js",
-                        "icons/*/icons.js"
-                    ],
                     "files": [
                         "tinymce.min.js",
                         "plugins/*/plugin.min.js",
@@ -5998,12 +5991,19 @@
                         "models/*/model.min.js",
                         "skins/**",
                         "icons/*/icons.min.js"
+                    ],
+                    "scripts": [
+                        "tinymce.js",
+                        "plugins/*/plugin.js",
+                        "themes/*/theme.js",
+                        "models/*/model.js",
+                        "icons/*/icons.js"
                     ]
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT-only"
+                "GPL-2.0-or-later"
             ],
             "description": "Web based JavaScript HTML WYSIWYG editor control.",
             "homepage": "https://www.tiny.cloud/",
@@ -6022,9 +6022,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.8.4"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.6.1"
             },
-            "time": "2024-06-19T09:28:48+00:00"
+            "time": "2025-01-22T03:57:00+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
