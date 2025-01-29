@@ -56,12 +56,7 @@
             </thead>
             <tbody>
               @foreach ($foundApps as $i => $app)
-                <tr @can('view', $app)
-                        wire:click="redirectToApp('{{ $app->url }}')" role="button"
-                    @else
-                        class="table-secondary opacity-50"
-                        title="Si besoin, veuillez demander l'accès à votre responsable"
-                    @endif>
+                <tr wire:click="redirectToApp('{{ $app->url }}')" role="button">
                     <td class="p-0">
                         <h3 class="d-flex p-3 m-0">
                           @if (empty($app->favicon))
