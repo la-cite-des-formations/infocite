@@ -30,13 +30,12 @@ trait WithIconpicker
                 AP::getRecentMiCodes()
                     ->merge([$miName => [
                         'code' => AP::getMiCode($miName),
-                        'created_at' => new DateTime()
+                        'created_at' => now()->format('Y-m-d H:i:s'),
                     ]])
                     ->sortByDesc('created_at')
                     ->take(20),
                 AP::COOKIE_LIFETIME
             );
-            // Cookie::queue('recentMiCodes', Cookie::forget('recentMicodes'));
         }
     }
 }

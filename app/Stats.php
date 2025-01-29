@@ -9,7 +9,7 @@ class Stats
     public static function getConnectionsChart($filter) {
         $connectionsByDay = new Collection();
         $today = today();
-        $date = $today->subDays(6 + $today->dayOfWeek ?: 7);
+        $date = $today->subDays(6 + ($today->dayOfWeek ?: 7));
 
         for ($i = 0; $i < 14; $i++) {
             $connectionsByDay->push([

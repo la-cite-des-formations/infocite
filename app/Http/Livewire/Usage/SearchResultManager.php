@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\App;
 use App\Post;
 use App\Rubric;
 use App\User;
@@ -14,27 +15,62 @@ class SearchResultManager extends Component
     use WithPagination;
 
     public $rubric;
+    public $rendered = FALSE;
     public $firstLoad = TRUE;
+    public $blockRedirection = FALSE;
     public $searchedStr;
     protected $paginationTheme = 'bootstrap';
     public $perPageOptions = [8, 10, 25];
-    public $perPage;
+    public $postsPerPage;
+    public $appsPerPage;
 
 
     public function mount($viewBag) {
         session(['appsBackRoute' => request()->getRequestUri()]);
-        $this->perPage = session('searchResultPerPage', 8);
+        $this->postsPerPage = session('searchResultPostsPerPage', 8);
+        $this->appsPerPage = session('searchResultAppsPerPage', 8);
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
-        $this->searchedStr = request()->input('resultat');
+        $this->searchedStr = request()->input('searchedStr');
     }
 
-    public function updatedPerPage() {
-        session(['searchResultPerPage' => $this->perPage]);
+    public function booted()
+    {
+        $this->firstLoad = !$this->rendered;
+    }
 
-        $this->resetPage();
+    public function redirectToPost($postId)
+    {
+        redirect()->route('post.index', ['rubric' => Post::find($postId)->rubric->route(), 'post_id' => $postId]);
+    }
+
+    public function redirectToApp($appUrl) {
+        if (!$this->blockRedirection) {
+            $this->emit('newTabRedirection', $appUrl);
+        }
+        else {
+            $this->blockRedirection = FALSE;
+        }
+    }
+
+    public function blockRedirection() {
+        $this->blockRedirection = TRUE;
+    }
+
+    public function updatedPostsPerPage() {
+        session(['searchResultPostsPerPage' => $this->postsPerPage]);
+
+        $this->resetPage('foundPostsPage');
+    }
+
+    public function updatedAppsPerPage() {
+        session(['searchResultAppsPerPage' => $this->appsPerPage]);
+
+        $this->resetPage('foundAppsPage');
     }
 
     public function render() {
+        $this->rendered = TRUE;
+
         return view('livewire.usage.search-result-manager', [
             'foundPosts' => Post::query()
                 ->whereIn('id', Post::query()
@@ -42,11 +78,31 @@ class SearchResultManager extends Component
                     ->orWhere('content', 'like', "%$this->searchedStr%")
                     ->get()
                     ->filter(function ($post) {
-                        return User::find(auth()->user()->id)->can('read', $post);
+                        return auth()->user()->can('read', $post);
                     })
                     ->pluck('id')
                 )
-                ->paginate($this->perPage),
+                ->paginate($this->postsPerPage, '*', 'foundPostsPage'),
+            'foundApps' => App::query()
+                ->whereIn('id', App::query()
+                    ->where(function ($query) {
+                        $query
+                            ->whereNull('owner_id')
+                            ->orWhere('owner_id', auth()->user()->id);
+                    })
+                    ->where(function ($query) {
+                        $query
+                            ->where('name', 'like', "%$this->searchedStr%")
+                            ->orWhere('description', 'like', "%$this->searchedStr%")
+                            ->orWhere('url', 'like', "%$this->searchedStr%");
+                    })
+                    ->get()
+                    ->filter(function ($app) {
+                        return auth()->user()->can('view', $app);
+                    })
+                    ->pluck('id')
+                )
+                ->paginate($this->appsPerPage, '*', 'foundAppsPage'),
             'replaceStr' => '/'. $this->searchedStr . '/i',
         ]);
     }

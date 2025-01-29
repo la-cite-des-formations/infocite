@@ -6,6 +6,9 @@
         </div>
     </div>
 
+    <section id="breadcrumbs" class="breadcrumbs my-4">
+    </section>
+
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
   @can('viewAny', 'App\\App')
@@ -20,7 +23,7 @@
                     <p>Saisissez vos mots clés pour rechercher un contenu sur l'intranet</p>
                     <form action="/search">
                         @csrf
-                        <input type="text" name="resultat" value="{{ request()->resultat ?? ''}}">
+                        <input type="text" name="searchedStr" required>
                         <input type="submit" value="Rechercher" title="Lancer la recherche">
                     </form>
                 </div>
