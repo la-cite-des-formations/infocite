@@ -104,7 +104,7 @@ class Rubric extends Model
     public function notifications()
     {
         return $this
-            ->hasManyThrough('App\Models\Notification', 'App\Models\Post')
+            ->hasManyThrough('App\Models\PostNotification', 'App\Models\Post')
             ->orderByRaw('release_at DESC, created_at DESC');
     }
 

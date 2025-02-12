@@ -30,10 +30,26 @@ return [
 
     'connections' => [
 
-        'redis' => [
-            'driver' => 'redis',
-            'connection' => 'default',
+        'pusher' => [
+            'driver' => 'pusher',
+            'key' => env('PUSHER_APP_KEY'),
+            'secret' => env('PUSHER_APP_SECRET'),
+            'app_id' => env('PUSHER_APP_ID'),
+            'options' => [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true, // Active TLS pour HTTPS
+                // Pour laravel-websockets :
+                'host' => env('LARAVEL_WEBSOCKETS_HOST', '127.0.0.1'),
+                'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+                'scheme' => env('LARAVEL_WEBSOCKETS_SCHEME', 'https'), // Utilisation de HTTPS
+                'encrypted' => env('LARAVEL_WEBSOCKETS_ENCRYPTED', true), // Assurez-vous que cette option est activée
+            ],
         ],
+
+        // 'redis' => [
+        //     'driver' => 'redis',
+        //     'connection' => 'default',
+        // ],
 
         'log' => [
             'driver' => 'log',

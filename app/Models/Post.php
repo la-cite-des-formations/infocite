@@ -65,7 +65,7 @@ class Post extends Model
     public function notifications()
     {
         return $this
-            ->hasMany('App\Models\Notification')
+            ->hasMany('App\Models\PostNotification')
             ->orderByRaw('release_at DESC, created_at DESC');
     }
 

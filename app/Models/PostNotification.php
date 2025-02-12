@@ -5,7 +5,7 @@ namespace App\Models;
 use App\CustomFacades\AP;
 use Illuminate\Database\Eloquent\Model;
 
-class Notification extends Model
+class PostNotification extends Model
 {
     /**
      * The attributes that are mass assignable.

@@ -6,7 +6,7 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Models\Notification;
+use App\Models\PostNotification;
 use App\Models\Post;
 use App\Models\Group;
 use App\Models\Right;
@@ -136,20 +136,20 @@ class EditPostManager extends Component
 
         // notification associée
         if ($this->post->published) {
-            $newPostNotification = Notification::query()
+            $newPostNotification = PostNotification::query()
                 ->where('content_type', 'NP')
                 ->where('post_id', $this->post->id);
 
             if ($newPostNotification->exists()) {
                 $newPostNotification->update(['release_at' => $this->post->published_at]);
 
-                $postNotification = Notification::updateOrCreate(
+                $postNotification = PostNotification::updateOrCreate(
                     ['content_type' => 'UP', 'post_id' => $this->post->id],
                     ['release_at' => $this->post->published_at]
                 );
             }
             else {
-                $postNotification = Notification::create(
+                $postNotification = PostNotification::create(
                     ['content_type' => 'NP', 'post_id' => $this->post->id, 'release_at' => $this->post->published_at]
                 );
             }

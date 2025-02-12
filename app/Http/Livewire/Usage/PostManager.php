@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Usage;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Models\Notification;
+use App\Models\PostNotification;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -63,7 +63,7 @@ class PostManager extends Component
             $this->post->comments()->save($comment);
 
             // notification associée
-            $newNotification = Notification::updateOrCreate(
+            $newNotification = PostNotification::updateOrCreate(
                 ['content_type' => 'CP', 'post_id' => $this->post->id],
                 ['release_at' => today()->format('Y-m-d')]
             );

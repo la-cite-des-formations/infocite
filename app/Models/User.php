@@ -118,7 +118,7 @@ class User extends Authenticatable
 
     public function newNotifications() {
         return $this
-            ->belongsToMany('App\Models\Notification');
+            ->belongsToMany('App\Models\PostNotification');
     }
 
     public function myComments() {

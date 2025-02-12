@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotificationsTable extends Migration
+class CreatePostNotificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('post_notifications', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('post_id')->index()->nullable()->default(NULL);
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
@@ -24,7 +24,7 @@ class CreateNotificationsTable extends Migration
 
         Schema::create('notification_user', function (Blueprint $table) {
             $table->unsignedInteger('notification_id')->index();
-            $table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade');
+            $table->foreign('notification_id')->references('id')->on('post_notifications')->onDelete('cascade');
             $table->unsignedInteger('user_id')->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->primary(['notification_id', 'user_id']);
@@ -39,6 +39,6 @@ class CreateNotificationsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('notification_user');
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('post_notifications');
     }
 }
