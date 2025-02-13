@@ -4,6 +4,7 @@ use App\CustomFacades\AP;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,8 @@ Route::get('dashboard/{sub_dashboard}', 'DashboardController@index')
 
 Route::post('upload', 'ViewController@upload')->name('upload');
 
+// route de test d'émission d'évènement
+Route::get('/test-event', [TestController::class, 'sendTestEvent']);
 
   //\
  //!\\ l'ordre des routes suivantes est important.

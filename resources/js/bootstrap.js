@@ -42,3 +42,9 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
     disableStats: true
 });
+
+window.Echo.channel('test-channel')
+    .listen('.TestEvent', (e) => {
+        console.log('Événement reçu:', e);
+        alert(e.message); // Affiche le message de l'événement
+    });

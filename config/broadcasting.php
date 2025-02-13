@@ -39,10 +39,16 @@ return [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true, // Active TLS pour HTTPS
                 // Pour laravel-websockets :
-                'host' => env('LARAVEL_WEBSOCKETS_HOST', '127.0.0.1'),
+                'host' => env('LARAVEL_WEBSOCKETS_HOST', 'infocite.test'),
                 'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
                 'scheme' => env('LARAVEL_WEBSOCKETS_SCHEME', 'https'), // Utilisation de HTTPS
                 'encrypted' => env('LARAVEL_WEBSOCKETS_ENCRYPTED', true), // Assurez-vous que cette option est activée
+                'verify' => false,
+                'curl_options' => [
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYHOST => false,
+                    CURLOPT_CAINFO => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', 'C:/laragon/etc/ssl/laragon.crt'),
+                ],
             ],
         ],
 
