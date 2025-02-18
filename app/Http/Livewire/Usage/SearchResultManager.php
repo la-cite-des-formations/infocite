@@ -70,7 +70,6 @@ class SearchResultManager extends Component
     }
 
     public function render() {
-        $userId = auth()->user()->id;
         $this->rendered = TRUE;
 
         return view('livewire.usage.search-result-manager', [
@@ -79,24 +78,31 @@ class SearchResultManager extends Component
                     ->where('title', 'like', "%$this->searchedStr%")
                     ->orWhere('content', 'like', "%$this->searchedStr%")
                     ->get()
-                    ->filter(function ($post) use ($userId) {
-                        return User::find($userId)->can('read', $post);
+                    ->filter(function ($post) {
+                        return auth()->user()->can('read', $post);
                     })
                     ->pluck('id')
                 )
                 ->paginate($this->postsPerPage, '*', 'foundPostsPage'),
             'foundApps' => App::query()
-                ->where(function ($query) use ($userId) {
-                    $query
-                        ->whereNull('owner_id')
-                        ->orWhere('owner_id', $userId);
-                })
-                ->where(function ($query) {
-                    $query
-                        ->where('name', 'like', "%$this->searchedStr%")
-                        ->orWhere('description', 'like', "%$this->searchedStr%")
-                        ->orWhere('url', 'like', "%$this->searchedStr%");
-                })
+                ->whereIn('id', App::query()
+                    ->where(function ($query) {
+                        $query
+                            ->whereNull('owner_id')
+                            ->orWhere('owner_id', auth()->user()->id);
+                    })
+                    ->where(function ($query) {
+                        $query
+                            ->where('name', 'like', "%$this->searchedStr%")
+                            ->orWhere('description', 'like', "%$this->searchedStr%")
+                            ->orWhere('url', 'like', "%$this->searchedStr%");
+                    })
+                    ->get()
+                    ->filter(function ($app) {
+                        return auth()->user()->can('view', $app);
+                    })
+                    ->pluck('id')
+                )
                 ->paginate($this->appsPerPage, '*', 'foundAppsPage'),
             'replaceStr' => '/'. $this->searchedStr . '/i',
         ]);
