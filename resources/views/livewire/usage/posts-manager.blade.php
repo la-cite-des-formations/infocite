@@ -101,7 +101,7 @@
         <div class="section-title">
             <div class="row justify-content-center">
                 <h2 class="col-9">{{ $rubric->title }}</h2>
-              @if (!empty($rubric->descriptiion))
+              @if (!empty($rubric->description))
                 <p>{{ $rubric->description }}</p>
               @endif
             </div>
