@@ -5,6 +5,7 @@ namespace App\Models;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -185,10 +186,18 @@ class User extends Authenticatable
             $myApps = $myApps->merge($profile->myApps());
         });
 
-        return $myApps->isEmpty() ?
+        return $this->myFavoritesApps->merge($myApps->isEmpty() ?
             $myApps :
             $myApps
-                ->sortBy('name');
+                ->sortBy('name')
+        );
+    }
+
+    public function myFavoritesApps() {
+        return $this
+            ->belongsToMany('App\Models\App', 'favorites_apps')
+            ->withPivot(['rank'])
+            ->orderBy('rank');
     }
 
     public function processes() {

@@ -6,7 +6,6 @@ use App\Models\App;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
 use Livewire\WithPagination;
-use mysql_xdevapi\Session;
 
 class AppsManager extends Component
 {
@@ -18,7 +17,7 @@ class AppsManager extends Component
     public $firstLoad = TRUE;
     public $blockRedirection = FALSE;
 
-    protected $listeners = ['deleteApp', 'render','displayUpdated'=>'render'];
+    protected $listeners = ['deleteApp', 'render', 'displayUpdated'=>'render'];
 
     public function mount($viewBag) {
         $this->rubricSegment = $viewBag->rubricSegment;
@@ -26,6 +25,29 @@ class AppsManager extends Component
 
     public function booted() {
         $this->firstLoad = !$this->rendered;
+    }
+
+    public function switchFavoriteApp($appId) {
+        $app = App::find($appId);
+        $user = auth()->user();
+        $updatedFavoritesApps = $user->myFavoritesApps->pluck('pivot.rank', 'id');
+
+        if ($app->isFavorite) {
+            $currentRank = $updatedFavoritesApps->pull($appId);
+            $updatedFavoritesApps = $updatedFavoritesApps->map(function ($rank, $id) use ($currentRank) {
+                return ['rank' => $rank < $currentRank ? $rank : $rank - 1];
+            });
+        }
+        else {
+            $updatedFavoritesApps->put($appId, 0);
+            $updatedFavoritesApps = $updatedFavoritesApps->map(function ($rank, $id) {
+                return ['rank' => $rank + 1];
+            });
+        }
+
+        $user->myFavoritesApps()->sync($updatedFavoritesApps);
+
+        $this->emitSelf('render');
     }
 
     public function deleteApp($appId) {

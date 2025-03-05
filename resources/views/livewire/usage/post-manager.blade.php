@@ -142,7 +142,7 @@
                                                 <i class="bx bx-chevron-up icon-close"></i>
                                             </a>
                                             <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
-                                                <p>{{ $comment->content }}</p>
+                                                <p>{!! $comment->content !!}</p>
                                             </div>
                                         </li>
                                        @can('delete', $comment)

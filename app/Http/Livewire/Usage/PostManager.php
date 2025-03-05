@@ -53,9 +53,9 @@ class PostManager extends Component
     }
 
     public function commentPost() {
-        $newComment = trim($this->newComment);
-        $comment = $newComment ? new Comment([
-            'content' => $newComment,
+        $commentStr = preg_replace("/(http(s?):\/\/)(([[:punct:]]|[[:alnum:]]=?)*)/", "<a href=\"\\0\">\\0</a> ", trim($this->newComment));
+        $comment = $commentStr ? new Comment([
+            'content' => $commentStr,
             'user_id' => auth()->user()->id,
         ]) : NULL;
 
@@ -70,7 +70,7 @@ class PostManager extends Component
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
             //Recuperation des utilisateurs ayant cet article en favori
-            $userIds =User::query()
+            $userIds = User::query()
                 ->where('notificationSubscribed',true)
                 ->whereHas('myFavoritesPosts',function ($query) {
                 $query->where('post_id','=',$this->post->id);

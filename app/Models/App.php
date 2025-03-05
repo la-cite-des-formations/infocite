@@ -40,12 +40,23 @@ class App extends Model
             ->withPivot(['login', 'password']);
     }
 
+    public function fanUsers() {
+        return $this
+            ->belongsToMany('App\Models\User', 'favorites_apps')
+            ->orderByRaw('name ASC, first_name ASC')
+            ->withPivot(['rank']);
+    }
+
     public function profiles() {
         return $this
             ->belongsToMany('App\Models\User')
             ->where('name', AP::PROFILE)
             ->orderByRaw('name ASC, first_name ASC')
             ->withPivot(['login', 'password']);
+    }
+
+    public function getIsFavoriteAttribute() {
+        return $this->fanUsers->contains('id', auth()->user()->id);
     }
 
     public function isMine() {

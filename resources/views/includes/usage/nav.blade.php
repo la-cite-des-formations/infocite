@@ -56,7 +56,7 @@
         </li>
        @endcan
         <li>
-            <a href="#search" class="nav-link scrollto" title="Rechercher...">
+            <a onclick="document.getElementById('searchInput').focus()" href="#search" class="nav-link scrollto" title="Rechercher...">
                 <span class="bx bx-search-alt fs-1"></span>
             </a>
         </li>

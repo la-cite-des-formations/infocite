@@ -83,6 +83,7 @@ class SearchResultManager extends Component
                     })
                     ->pluck('id')
                 )
+                ->orderByRaw('published_at DESC, title')
                 ->paginate($this->postsPerPage, '*', 'foundPostsPage'),
             'foundApps' => App::query()
                 ->whereIn('id', App::query()
@@ -103,6 +104,7 @@ class SearchResultManager extends Component
                     })
                     ->pluck('id')
                 )
+                ->orderBy('name')
                 ->paginate($this->appsPerPage, '*', 'foundAppsPage'),
             'replaceStr' => '/'. $this->searchedStr . '/i',
         ]);
