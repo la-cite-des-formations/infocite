@@ -86,7 +86,7 @@
                         <i class="bx bx-star"></i>
                     </button>
                     <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                  @can('pin')
+                  @can('pin', $post)
                     <button @class([
                         "btn",
                         "btn-success" => $post->is_pinned,

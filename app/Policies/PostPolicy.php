@@ -203,4 +203,15 @@ class PostPolicy
         return FALSE;
     }
 
+    /**
+     * Determine whether the user can pin the post.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Post  $post
+     * @return mixed
+     */
+    public function pin(User $user, Post $post)
+    {
+        return $user->hasRole('posts', Roles::IS_MODER) && $post->released;
+    }
 }

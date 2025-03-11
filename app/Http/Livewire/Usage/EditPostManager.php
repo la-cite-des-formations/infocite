@@ -34,6 +34,7 @@ class EditPostManager extends Component
         'post.content' => 'required|string',
         'post.rubric_id' => 'required',
         'post.published' => '',
+        'post.is_pinned' => '',
         'post.auto_delete' => '',
         'post.published_at' => 'date|nullable',
         'post.expired_at' => 'date|nullable',
@@ -59,9 +60,14 @@ class EditPostManager extends Component
     public function updatedPostPublished() {
         if ($this->post->published) {
             $this->post->published_at = today()->format('Y-m-d');
+            $this->post->is_pinned = $this->post->getOriginal('is_pinned');
         }
         else {
             $this->post->published_at = NULL;
+            $this->post->is_pinned = FALSE;
+            // if ($this->post->is_pinned) {
+            //     $this->switchPinnedPost($this->post->id);
+            // }
         }
         $this->post->expired_at = NULL;
     }
