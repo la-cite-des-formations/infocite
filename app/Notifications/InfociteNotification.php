@@ -3,58 +3,52 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Notifications\Messages\BroadcastMessage;
+use Kreait\Firebase\Messaging\CloudMessage;
 
-class InfociteNotification extends Notification implements ShouldQueue, ShouldBroadcast
+class InfociteNotification extends Notification
 {
-    use Queueable;
-
     protected $data;
 
     /**
-     * Create a new notification instance.
+     * Créez une nouvelle instance de notification.
      *
-     * @return void
+     * @param array $data  Exemple : ['title' => 'Titre', 'body' => 'Contenu', 'icon' => '/path/to/icon.png']
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
 
     /**
-     * Get the notification's delivery channels.
+     * Détermine les canaux par lesquels la notification sera envoyée.
      *
-     * @param  mixed  $notifiable
+     * Ici, on retourne le canal personnalisé 'firebase'.
+     *
+     * @param mixed $notifiable
      * @return array
      */
     public function via($notifiable)
     {
-        return ['broadcast'];
+        return ['firebase'];
     }
 
     /**
-     * Get the broadcast representation of the notification.
+     * Prépare le message pour le canal Firebase.
      *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\BroadcastMessage
+     * @param mixed $notifiable
+     * @return CloudMessage
      */
-    public function toBroadcast($notifiable)
+    public function toFirebase($notifiable)
     {
-        return new BroadcastMessage($this->data);
-    }
+        // On suppose que chaque utilisateur possède un attribut fcm_token (ou via une méthode de routage)
+        $token = $notifiable->routeNotificationFor('firebase');
 
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return $this->data;
+        return CloudMessage::new()
+            ->toToken($token)
+            ->withData([
+                'icon'  => $this->data['icon'] ?? env('APP_FAVICON'),
+                'title' => $this->data['title'] ?? env('APP_NAME'),
+                'body'  => $this->data['body'],
+            ]);
     }
 }

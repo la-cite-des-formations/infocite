@@ -27,7 +27,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = ['remember_token',];
+    protected $hidden = ['remember_token', 'fcm_token'];
 
     /**
      * The attributes that should be cast to native types.
@@ -120,6 +120,11 @@ class User extends Authenticatable
     public function newNotifications() {
         return $this
             ->belongsToMany('App\Models\PostNotification');
+    }
+
+    public function routeNotificationForFirebase()
+    {
+        return $this->fcm_token;
     }
 
     public function myComments() {

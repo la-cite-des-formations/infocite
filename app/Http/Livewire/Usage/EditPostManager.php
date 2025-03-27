@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Usage;
 
+use App\CustomFacades\AP;
+use Livewire\Component;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
@@ -12,7 +14,9 @@ use App\Models\Group;
 use App\Models\Right;
 use App\Models\Roles;
 use App\Models\Rubric;
-use Livewire\Component;
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\InfociteNotification;
 
 class EditPostManager extends Component
 {
@@ -134,14 +138,14 @@ class EditPostManager extends Component
         $this->post->save();
 
         // mise en favoris de l'article pour l'éditeur
-        $this->post->readers()->syncWithoutDetaching([
-            auth()->user()->id => [
-                'is_favorite' => TRUE
-            ]
-        ]);
+        // $this->post->readers()->syncWithoutDetaching([
+        //     auth()->user()->id => [
+        //         'is_favorite' => TRUE
+        //     ]
+        // ]);
 
-        // notification associée
-        if ($this->post->published) {
+        // notification associée si l'article est paru
+        if ($this->post->released) {
             $newPostNotification = PostNotification::query()
                 ->where('content_type', 'NP')
                 ->where('post_id', $this->post->id);
@@ -151,7 +155,7 @@ class EditPostManager extends Component
 
                 $postNotification = PostNotification::updateOrCreate(
                     ['content_type' => 'UP', 'post_id' => $this->post->id],
-                    ['release_at' => $this->post->published_at]
+                    ['release_at' => $this->post->updated_at]
                 );
             }
             else {
@@ -164,23 +168,24 @@ class EditPostManager extends Component
                 ->users()
                 ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            /*/Boradcasting notification
-            //Recupérer tout les utilisateurs qui ont la rubrique de l'article en favoris OU l'article lui même en favori
-            $currentPostRubricId = Post::query()->where('id',$this->post->id)->pluck('rubric_id')->first();
-            $userIds = User::query()
+            // Recupération de tous les utilisateurs ayant la rubrique de l'article ou bien l'article lui même en favoris,
+            // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
+            $users = User::query()
+                ->where('id', '!=', auth()->user()->id)
                 ->where('notificationSubscribed',true)
-                ->whereHas('myFavoritesRubrics', function ($query) use ($currentPostRubricId) {
-                    $query->where('rubric_id', $currentPostRubricId);
+                ->where(function ($query) {
+                    $query
+                        ->whereHas('myFavoritesRubrics', function ($favoritesRubrics) {
+                            $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
+                        })
+                        ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
+                            $favoritesPosts->where('post_id', $this->post->id);
+                        });
                 })
-                ->orWhereHas('myFavoritesPosts',function ($query) {
-                    $query->where('post_id','=',$this->post->id);
-                })
-                ->get()
-                ->pluck('id')
-                ->toArray();
+                ->get();
 
-            //Broadcaster la notification
-            broadcast(new NotificationPusher($postNotification, $userIds))->toOthers();*/
+            // Envoi de la notification aux utilisateurs concernés
+            Notification::send($users, new InfociteNotification(['body' => $postNotification->message.$this->post->title]));
         }
 
         // redirection
