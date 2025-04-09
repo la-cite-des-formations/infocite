@@ -13,6 +13,8 @@ use Livewire\Component;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AppNotification;
 
 class PostManager extends Component
 {
@@ -69,12 +71,27 @@ class PostManager extends Component
             );
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            //Recuperation des utilisateurs ayant cet article en favori
-            $userIds = User::query()
-                ->where('notificationSubscribed',true)
-                ->whereHas('myFavoritesPosts',function ($query) {
-                $query->where('post_id','=',$this->post->id);
-            })->get()->pluck('id')->toArray();
+            // Recupération de tous les utilisateurs ayant la rubrique de l'article ou bien l'article lui même en favoris,
+            // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
+            $users = User::query()
+                ->where('id', '!=', auth()->user()->id)
+                ->where('desktop_notifications_granted',true)
+                ->where(function ($query) {
+                    $query
+                        ->whereHas('myFavoritesRubrics', function ($favoritesRubrics) {
+                            $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
+                        })
+                        ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
+                            $favoritesPosts->where('post_id', $this->post->id);
+                        });
+                })
+                ->get();
+
+            // Envoi de la notification aux utilisateurs concernés
+            Notification::send($users, new AppNotification([
+                'body' => $newNotification->message.$this->post->title,
+                'url' => config('app.url').$this->post->route
+            ]));
 
             $this->emitSelf('render');
         }

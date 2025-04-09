@@ -16,7 +16,7 @@ use App\Models\Roles;
 use App\Models\Rubric;
 use App\Models\User;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\InfociteNotification;
+use App\Notifications\AppNotification;
 
 class EditPostManager extends Component
 {
@@ -138,11 +138,11 @@ class EditPostManager extends Component
         $this->post->save();
 
         // mise en favoris de l'article pour l'éditeur
-        // $this->post->readers()->syncWithoutDetaching([
-        //     auth()->user()->id => [
-        //         'is_favorite' => TRUE
-        //     ]
-        // ]);
+        $this->post->readers()->syncWithoutDetaching([
+            auth()->user()->id => [
+                'is_favorite' => TRUE
+            ]
+        ]);
 
         // notification associée si l'article est paru
         if ($this->post->released) {
@@ -172,7 +172,7 @@ class EditPostManager extends Component
             // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
             $users = User::query()
                 ->where('id', '!=', auth()->user()->id)
-                ->where('notificationSubscribed',true)
+                ->where('desktop_notifications_granted',true)
                 ->where(function ($query) {
                     $query
                         ->whereHas('myFavoritesRubrics', function ($favoritesRubrics) {
@@ -185,7 +185,10 @@ class EditPostManager extends Component
                 ->get();
 
             // Envoi de la notification aux utilisateurs concernés
-            Notification::send($users, new InfociteNotification(['body' => $postNotification->message.$this->post->title]));
+            Notification::send($users, new AppNotification([
+                'body' => $postNotification->message.$this->post->title,
+                'url' => config('app.url').$this->post->route
+            ]));
         }
 
         // redirection

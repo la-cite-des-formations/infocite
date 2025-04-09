@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class Connection extends Model
 {
-    use WithSearching;
-
     /**
      * The attributes that are mass assignable.
      *

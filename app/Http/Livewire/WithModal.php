@@ -19,10 +19,12 @@ trait WithModal
         switch ($action) {
             case 'confirm' :
                 $component = "usage.confirm";
-            break;
+                break;
+
             case 'notify' :
                 $component = "usage.notifications-manager";
-            break;
+                break;
+
             default :
                 $component = "admin.{$this->models}.$action";
         }

@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Notifications\ChannelManager;
-use App\Channels\FCMChannel;
+use App\Channels\FcmChannel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         $this->app->make(ChannelManager::class)->extend('firebase', function () {
-            return new FCMChannel;
+            return new FcmChannel;
         });
     }
 }
