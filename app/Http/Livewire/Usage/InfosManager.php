@@ -6,10 +6,8 @@ use App\Http\Livewire\WithFavoritesHandling;
 use Livewire\Component;
 use App\Models\Post;
 use App\Models\Rubric;
-use App\Models\User;
 use App\Http\Livewire\WithUsageMode;
 use Livewire\WithPagination;
-
 
 class InfosManager extends Component
 {
@@ -18,7 +16,9 @@ class InfosManager extends Component
     use WithFavoritesHandling;
 
     protected $paginationTheme = 'bootstrap';
+    protected $listeners = ['updatePermission', 'refreshPermissionSwitch' => 'loadUser'];
 
+    public $user;
     public $rubric;
     public $rendered = FALSE;
     public $firstLoad = TRUE;
@@ -26,10 +26,20 @@ class InfosManager extends Component
     public $perPage;
     public $blockRedirection = FALSE;
 
+    protected $rules = [
+        'user.desktop_notifications_granted' => 'required',
+        'user.notify_only_favorites' => 'required',
+    ];
+
+    public function loadUser() {
+        $this->user = auth()->user();
+    }
+
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
 
+        $this->loadUser();
         $this->perPage = session('favoritesPostsPerPage', 12);
         $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
@@ -37,25 +47,6 @@ class InfosManager extends Component
 
     public function booted() {
         $this->firstLoad = !$this->rendered;
-    }
-
-
-
-    public function switchFavoriteRubric($rubric_id) {
-        $this->rubric = Rubric::find($rubric_id);
-
-        if ($this->rubric->isFavorite()) {
-            $this->rubric
-                ->users()
-                ->detach(auth()->user()->id);
-        }
-        else {
-            $this->rubric
-                ->users()
-                ->attach(auth()->user()->id);
-        }
-
-        $this->emitSelf('render');
     }
 
     public function updatedPerPage() {
@@ -74,25 +65,34 @@ class InfosManager extends Component
         $this->blockRedirection = TRUE;
     }
 
-    public function switchSubscription(){
+    public function updatedUserNotifyOnlyFavorites() {
+        $this->user->update();
+    }
 
-        $user = auth()->user();
-        User::query()
-            ->where('id', $user->id)
-            ->update(['notificationSubscribed' => !$user->notificationSubscribed]);
+    public function updatePermission($permission) {
+        $this->user->update(['desktop_notifications_granted' => $permission !== 'denied']);
+
+        if ($permission === 'default') {
+            redirect()->to($this->rubric->segment);
+        }
+    }
+
+    public function updatedUserDesktopNotificationsGranted() {
+        if ($this->user->desktop_notifications_granted) {
+            $this->emit('verifyPermission');
+        }
+        else {
+            $this->user->update();
+        }
     }
 
     public function render() {
         $this->rendered = TRUE;
 
-        $user = User::find(auth()->user()->id);
-
         return view('livewire.usage.infos-manager', [
-            'user' => $user,
-            'favoritesPosts' => $user
+            'favoritesPosts' => $this->user
                 ->myFavoritesPosts()
                 ->paginate($this->perPage),
-            'favoritesRubrics' => $user->rubrics,
         ]);
     }
 }

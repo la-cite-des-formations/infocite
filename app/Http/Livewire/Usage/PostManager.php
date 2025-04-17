@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Usage;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Models\PostNotification;
+use App\Models\Notification as PostNotification;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -55,7 +55,7 @@ class PostManager extends Component
     }
 
     public function commentPost() {
-        $commentStr = preg_replace("/(http(s?):\/\/)(([[:punct:]]|[[:alnum:]]=?)*)/", "<a href=\"\\0\">\\0</a> ", trim($this->newComment));
+        $commentStr = trim($this->newComment);
         $comment = $commentStr ? new Comment([
             'content' => $commentStr,
             'user_id' => auth()->user()->id,
@@ -66,7 +66,7 @@ class PostManager extends Component
 
             // notification associée
             $newNotification = PostNotification::updateOrCreate(
-                ['content_type' => 'CP', 'post_id' => $this->post->id],
+                ['content_type' => 'CP', 'object_type' => Post::class, 'object_id' => $this->post->id],
                 ['release_at' => today()->format('Y-m-d')]
             );
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
@@ -78,7 +78,8 @@ class PostManager extends Component
                 ->where('desktop_notifications_granted',true)
                 ->where(function ($query) {
                     $query
-                        ->whereHas('myFavoritesRubrics', function ($favoritesRubrics) {
+                        ->where('notify_only_favorites', FALSE)
+                        ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
                             $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
                         })
                         ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
@@ -89,8 +90,8 @@ class PostManager extends Component
 
             // Envoi de la notification aux utilisateurs concernés
             Notification::send($users, new AppNotification([
-                'body' => $newNotification->message.$this->post->title,
-                'url' => config('app.url').$this->post->route
+                'type' => $newNotification->content_type,
+                'post' => $this->post
             ]));
 
             $this->emitSelf('render');

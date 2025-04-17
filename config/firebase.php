@@ -13,11 +13,4 @@ return [
     */
 
     'credentials' => env('FIREBASE_CREDENTIALS', 'app/firebase_credentials_notifs-ic.json'),
-    'default_notification' => [
-        'title' => env('APP_NAME', 'Info-Cité'),
-        'body' => 'Nouvelle notification',
-        'icon' => env('APP_FAVICON', '/img/favicon.png'),
-        'url' => env('APP_URL', 'https://info.cite-formations-tours.fr'),
-    ]
-
 ];

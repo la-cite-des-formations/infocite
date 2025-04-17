@@ -15,8 +15,8 @@ trait WithModal
         $this->emit('render')->self();
     }
 
-    public function showModal($action, $data = NULL) {
-        switch ($action) {
+    public function showModal($modal, $data = NULL) {
+        switch ($modal) {
             case 'confirm' :
                 $component = "usage.confirm";
                 break;
@@ -25,14 +25,18 @@ trait WithModal
                 $component = "usage.notifications-manager";
                 break;
 
+            case 'guidelines':
+                $component = "usage.guidelines-manager";
+                break;
+
             default :
-                $component = "admin.{$this->models}.$action";
+                $component = "admin.{$this->models}.$modal";
         }
 
         $this->emit('show', [
             'component' => $component,
             'data' => $data,
-            'filter' => isset($this->filter) ? $this->filter : NULL,
+            'filter' => $this->filter ?? NULL,
         ])->to('modal-manager');
     }
 }

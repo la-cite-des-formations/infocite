@@ -2,13 +2,12 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\CustomFacades\AP;
 use Livewire\Component;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Models\PostNotification;
+use App\Models\Notification as PostNotification;
 use App\Models\Post;
 use App\Models\Group;
 use App\Models\Right;
@@ -144,23 +143,24 @@ class EditPostManager extends Component
             ]
         ]);
 
-        // notification associée si l'article est paru
+        // enregistrement en bdd de la notification associée si l'article est paru
         if ($this->post->released) {
             $newPostNotification = PostNotification::query()
                 ->where('content_type', 'NP')
-                ->where('post_id', $this->post->id);
+                ->where('object_type', Post::class)
+                ->where('object_id', $this->post->id);
 
             if ($newPostNotification->exists()) {
                 $newPostNotification->update(['release_at' => $this->post->published_at]);
 
                 $postNotification = PostNotification::updateOrCreate(
-                    ['content_type' => 'UP', 'post_id' => $this->post->id],
+                    ['content_type' => 'UP', 'object_type' => Post::class, 'object_id' => $this->post->id],
                     ['release_at' => $this->post->updated_at]
                 );
             }
             else {
                 $postNotification = PostNotification::create(
-                    ['content_type' => 'NP', 'post_id' => $this->post->id, 'release_at' => $this->post->published_at]
+                    ['content_type' => 'NP', 'object_type' => Post::class, 'object_id' => $this->post->id, 'release_at' => $this->post->published_at]
                 );
             }
 
@@ -172,10 +172,11 @@ class EditPostManager extends Component
             // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
             $users = User::query()
                 ->where('id', '!=', auth()->user()->id)
-                ->where('desktop_notifications_granted',true)
-                ->where(function ($query) {
+                ->where('desktop_notifications_granted', TRUE)
+                ->Where(function ($query) {
                     $query
-                        ->whereHas('myFavoritesRubrics', function ($favoritesRubrics) {
+                        ->where('notify_only_favorites', FALSE)
+                        ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
                             $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
                         })
                         ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
@@ -184,10 +185,10 @@ class EditPostManager extends Component
                 })
                 ->get();
 
-            // Envoi de la notification aux utilisateurs concernés
+            // Envoi de la notification firebase aux utilisateurs concernés
             Notification::send($users, new AppNotification([
-                'body' => $postNotification->message.$this->post->title,
-                'url' => config('app.url').$this->post->route
+                'type' => $postNotification->content_type,
+                'post' => $this->post,
             ]));
         }
 

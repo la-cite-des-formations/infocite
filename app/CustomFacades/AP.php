@@ -474,15 +474,6 @@ class AP // Application Parameters
         0x316395,
     ];
 
-    const NOTIFICATIONS = [
-        'NP' => 'Nouvel article disponible : ',
-        'UP' => 'Article mis à jour le @date : ',
-        'CP' => 'Article commenté : ',
-        'NA' => 'Nouvelle application disponible : ',
-        'UA' => 'Application mise à jour : ',
-        'UO' => 'Organigramme mis à jour : ',
-    ];
-
     const POST_STATUS_MI = [
         'released' => ['icon' => 'check_circle', 'title' => "Actuel"],
         'unpublished' => ['icon' => 'unpublished', 'title' => "Non publié"],
@@ -698,10 +689,6 @@ class AP // Application Parameters
         return array_map(function ($color) {
             return static::toColor($color);
         }, static::GC_COLORS);
-    }
-
-    public static function getNotifications($contentType) {
-        return static::NOTIFICATIONS[$contentType];
     }
 
     public static function betweenBrackets($str, $withSpace = TRUE) {

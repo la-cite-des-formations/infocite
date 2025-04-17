@@ -19,14 +19,21 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['name', 'first_name', 'email', 'password'];
+    protected $fillable = ['name', 'first_name', 'email', 'password', 'desktop_notifications_granted',];
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = ['remember_token', 'fcm_token'];
+    protected $hidden = ['remember_token', ];
 
     /**
      * The attributes that should be cast to native types.
@@ -105,7 +112,9 @@ class User extends Authenticatable
         $myNotifications = new Collection();
 
         $this->rubrics->each(function ($rubric) use (&$myNotifications) {
-            $myNotifications = $myNotifications->merge($rubric->notifications);
+            $rubric->posts->each(function ($post) use (&$myNotifications) {
+                $myNotifications = $myNotifications->merge($post->notifications);
+            });
         });
 
         $this->myFavoritesPosts->each(function ($post) use (&$myNotifications) {
@@ -123,7 +132,7 @@ class User extends Authenticatable
 
     public function newNotifications() {
         return $this
-            ->belongsToMany(PostNotification::class);
+            ->belongsToMany(Notification::class);
     }
 
     public function myComments() {

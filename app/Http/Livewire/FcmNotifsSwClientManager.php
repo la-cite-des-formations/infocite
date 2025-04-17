@@ -5,14 +5,19 @@ namespace App\Http\Livewire;
 use App\Models\FcmToken;
 use Livewire\Component;
 
-class FcmTokenTrait extends Component
+class FcmNotifsSwClientManager extends Component
 {
     use WithModal;
 
-    protected $listeners = ['traitFcmToken'];
+    protected $closedModalCallback = ['guidelinesRead'];
+    protected $listeners = ['showModal', 'modalClosed', 'traitFcmToken', 'registerNotificationPermission'];
 
     public function mount() {
         //
+    }
+
+    public function guidelinesRead() {
+        $this->emit('guidelinesRead', 'desktop-notifications');
     }
 
     public function traitFcmToken($token) {
@@ -34,7 +39,12 @@ class FcmTokenTrait extends Component
         }
     }
 
+    public function registerNotificationPermission($permission) {
+        auth()->user()->update(['desktop_notifications_granted' => $permission === 'granted']);
+        $this->emit('refreshPermissionSwitch');
+    }
+
     public function render() {
-        return view('livewire.fcm-token-trait');
+        return view('livewire.fcm-notifs-sw-client-manager');
     }
 }

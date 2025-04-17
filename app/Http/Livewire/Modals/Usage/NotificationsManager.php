@@ -22,6 +22,7 @@ class NotificationsManager extends Component
 
         $nbMaxOldNotif = $this->nbMaxNotif > $newNotifications->count() ?
             $this->nbMaxNotif - $newNotifications->count() : 0;
+
         return view('livewire.modals.usage.notifications-manager', [
             'newNotifications' => $newNotifications,
             'oldNotifications' => auth()->user()

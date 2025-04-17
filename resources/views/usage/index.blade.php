@@ -35,7 +35,7 @@
 
         @default
           @can('receiveDesktopNotifs')
-            @livewire('fcm-token-trait')
+            @livewire('fcm-notifs-sw-client-manager')
           @endcan
 
     @endswitch

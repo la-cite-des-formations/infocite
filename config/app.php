@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Favicon
+    |--------------------------------------------------------------------------
+    |
+    | This value is the url of your application's favicon. This value is used when the
+    | framework needs to place the application's favicon in a notification or
+    | any other location as required by the application or its packages.
+    |
+    */
+
+    'icon' => env('APP_FAVICON', '/img/favicon.png'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

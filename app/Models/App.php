@@ -75,8 +75,8 @@ class App extends Model
         return User::find($this->owner_id);
     }
 
-    public function identity($userId = NULL) {
-        return isset($userId) && $userId == $this->owner_id ? "{$this->name} (appli personnelle)" : $this->name;
+    public function identity() {
+        return $this->name.($this->owner_id ? ' (appli personnelle)' : '');
     }
 
     public static function sort() {
