@@ -35,7 +35,7 @@
 
         @default
           @can('receiveDesktopNotifs')
-            @livewire('fcm-notifs-sw-client-manager')
+            @livewire('fcm-notifs-sw-client-manager', [$viewBag])
           @endcan
 
     @endswitch

@@ -121,14 +121,12 @@
       @if($user->is_staff)
         <div class="mt-4">
             <div class="form-check form-switch">
-                <input wire:model='user.desktop_notifications_granted'
+                <input wire:model='user.desktop_notifications_granted' @if($browserDesktopNotificationsDenied) disabled @endif
                        class="form-check-input" type="checkbox" role="switch" id="switchDesktopNotificationGranted"/>
                 <label for="switchDesktopNotificationGranted">Accepter les notifications de bureau</label>
             </div>
-            <div @class([
-                        'ms-5',
-                        'invisible' => !$user->desktop_notifications_granted
-                    ])>
+          @if ($user->desktop_notifications_granted)
+            <div class="ms-5">
                 <div class="form-check">
                     <input wire:model='user.notify_only_favorites' value=0
                            class="form-check-input" type="radio" id="radioAllNotifications">
@@ -144,7 +142,21 @@
                     </label>
                 </div>
             </div>
+          @endif
         </div>
+       @if ($browserDesktopNotificationsDenied)
+        <div class="alert alert-danger col-9 mt-2" role="alert">
+            <p>
+                Impossible d'activer les notifications de bureau sur Info-Cité car elles sont bloquées au niveau de votre navigateur !
+                Pour les autoriser, regardez la video.
+            </p>
+            <h6>Guide : Autoriser manuellement les notifications avec Chrome</h6>
+            <video src="{{ asset('img/unblock_notifications_guide.mp4') }}" controls
+                    width="940" type="video/mp4" poster="{{ asset('img/unblock_notifications_poster.png') }}">
+                    Débloquer les notifications sur Chrome
+            </video>
+        </div>
+       @endif
       @endif
     </div>
 

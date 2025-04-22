@@ -9,11 +9,13 @@ class FcmNotifsSwClientManager extends Component
 {
     use WithModal;
 
+    public $currentRoute;
+
     protected $closedModalCallback = ['guidelinesRead'];
     protected $listeners = ['showModal', 'modalClosed', 'traitFcmToken', 'registerNotificationPermission'];
 
-    public function mount() {
-        //
+    public function mount($viewBag) {
+        $this->currentRoute = $viewBag->currentRoute ?? '/une';
     }
 
     public function guidelinesRead() {
@@ -40,8 +42,13 @@ class FcmNotifsSwClientManager extends Component
     }
 
     public function registerNotificationPermission($permission) {
-        auth()->user()->update(['desktop_notifications_granted' => $permission === 'granted']);
-        $this->emit('refreshPermissionSwitch');
+        auth()->user()->update(['desktop_notifications_granted' => $permission !== 'denied']);
+
+        $this->emit('refreshPermissionSwitch', $permission);
+
+        if ($permission === 'default') {
+            redirect()->to($this->currentRoute);
+        }
     }
 
     public function render() {

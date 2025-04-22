@@ -16,7 +16,7 @@ class InfosManager extends Component
     use WithFavoritesHandling;
 
     protected $paginationTheme = 'bootstrap';
-    protected $listeners = ['updatePermission', 'refreshPermissionSwitch' => 'loadUser'];
+    protected $listeners = ['loadPermission', 'updatePermission', 'refreshPermissionSwitch' => 'loadUser'];
 
     public $user;
     public $rubric;
@@ -25,24 +25,30 @@ class InfosManager extends Component
     public $perPageOptions = [12, 24, 36, 48, 60];
     public $perPage;
     public $blockRedirection = FALSE;
+    public $browserDesktopNotificationsDenied = FALSE;
 
     protected $rules = [
         'user.desktop_notifications_granted' => 'required',
         'user.notify_only_favorites' => 'required',
     ];
 
-    public function loadUser() {
+    public function loadUser($permission = NULL) {
         $this->user = auth()->user();
+
+        if ($permission) {
+            $this->loadPermission($permission);
+        }
     }
 
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
 
-        $this->loadUser();
         $this->perPage = session('favoritesPostsPerPage', 12);
-        $this->setMode();
         $this->rubric = Rubric::firstWhere('segment', $viewBag->rubricSegment);
+
+        $this->setMode();
+        $this->loadUser();
     }
 
     public function booted() {
@@ -69,11 +75,15 @@ class InfosManager extends Component
         $this->user->update();
     }
 
+    public function loadPermission($permission) {
+        $this->browserDesktopNotificationsDenied = $permission === 'denied';
+    }
+
     public function updatePermission($permission) {
-        $this->user->update(['desktop_notifications_granted' => $permission !== 'denied']);
+        auth()->user()->update(['desktop_notifications_granted' => $permission !== 'denied']);
 
         if ($permission === 'default') {
-            redirect()->to($this->rubric->segment);
+            redirect()->to($this->rubric->route());
         }
     }
 
