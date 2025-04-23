@@ -22,8 +22,11 @@ return new class extends Migration
         });
 
         Schema::create('fcm_token_user', function (Blueprint $table) {
+            //Champs de la table
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('token_id');
+
+            // Clé primaire
             $table->primary(['user_id', 'token_id']);
 
             // Clés étrangères
@@ -32,7 +35,12 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
+            // Champs de la table supplémentaires
+            $table->boolean('desktop_notifications_granted')->default(1)->after('is_staff');
+            $table->boolean('notify_only_favorites')->default(0);
             $table->unsignedInteger('default_fcm_token_id')->nullable()->after('remember_token');
+
+            // Nouvelle clé étrangère
             $table->foreign('default_fcm_token_id')->references('id')->on('fcm_tokens')->onDelete('set null');
         });
     }

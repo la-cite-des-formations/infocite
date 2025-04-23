@@ -14,12 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('favorites_apps', function (Blueprint $table) {
+            // Champs de la table
             $table->unsignedInteger('app_id');
-            $table->foreign('app_id')->references('id')->on('apps')->onDelete('cascade');
             $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedInteger('rank')->nullable();
+
+            // Clé primaire
             $table->primary(['app_id', 'user_id']);
-            $table->integer('rank');
+
+            // Clés étrangères
+            $table->foreign('app_id')->references('id')->on('apps')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
