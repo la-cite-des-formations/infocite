@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Channels\FcmChannel;
 use Illuminate\Notifications\Notification;
 
 class AppNotification extends Notification implements ShouldQueue
@@ -71,7 +70,7 @@ class AppNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return $notifiable->can('receiveDesktopNotifs') ? [FcmChannel::class] : [];
+        return $notifiable->can('receiveDesktopNotifs') ? ['fcm'] : [];
     }
 
     public function getData() {
