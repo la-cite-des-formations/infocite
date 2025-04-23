@@ -24,14 +24,14 @@ return new class extends Migration
         Schema::create('fcm_token_user', function (Blueprint $table) {
             //Champs de la table
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('token_id');
+            $table->unsignedInteger('fcm_token_id');
 
             // Clé primaire
-            $table->primary(['user_id', 'token_id']);
+            $table->primary(['user_id', 'fcm_token_id']);
 
             // Clés étrangères
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('token_id')->references('id')->on('fcm_tokens')->onDelete('cascade');
+            $table->foreign('fcm_token_id')->references('id')->on('fcm_tokens')->onDelete('cascade');
         });
 
         Schema::table('users', function (Blueprint $table) {
