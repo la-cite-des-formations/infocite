@@ -95,7 +95,7 @@
                                 wire:click="switchFavoritePost" type="button">
                             <i class="bx bx-star"></i>
                         </button>
-                       @can('pin')
+                       @can('pin', $post)
                         <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                         <button @class([
                                     "btn btn-sm",
@@ -142,7 +142,7 @@
                                                 <i class="bx bx-chevron-up icon-close"></i>
                                             </a>
                                             <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
-                                                <p>{{ $comment->content }}</p>
+                                                <p>{!! preg_replace("/(http(s?):\/\/)(([[:punct:]]|[[:alnum:]]=?)*)/", "<a href=\"\\0\">\\0</a> ", trim($comment->content)) !!}</p>
                                             </div>
                                         </li>
                                        @can('delete', $comment)

@@ -3,25 +3,33 @@
 namespace App\Http\Livewire;
 
 use App\Models\Post;
+use App\Models\Rubric;
 
 trait WithFavoritesHandling
 {
     public $isFavoriteRubric;
     public $isFavoritePost;
 
-    public function switchFavoriteRubric() {
-        if ($this->rubric->isFavorite()) {
-            $this->rubric
+    public function switchFavoriteRubric($rubric_id = NULL) {
+        $rubric = $rubric_id ? Rubric::find($rubric_id) : $this->rubric;
+
+        if ($rubric->isFavorite()) {
+            $rubric
                 ->users()
                 ->detach(auth()->user()->id);
         }
         else {
-            $this->rubric
+            $rubric
                 ->users()
                 ->attach(auth()->user()->id);
         }
 
-        $this->isFavoriteRubric = !$this->isFavoriteRubric;
+        if (is_null($rubric_id)) {
+            $this->isFavoriteRubric = !$this->isFavoriteRubric;
+        }
+        else {
+            $this->loadUser();
+        }
     }
 
     public function switchFavoritePost($post_id = NULL) {
@@ -35,6 +43,7 @@ trait WithFavoritesHandling
         else {
             $this->isFavoritePost = TRUE;
         }
+
         if (isset($this->isFavoritePost)) {
             $post->readers()->syncWithoutDetaching([
                 auth()->user()->id => [

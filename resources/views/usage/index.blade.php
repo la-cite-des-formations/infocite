@@ -21,18 +21,22 @@
     @include('includes.usage.footer')
 @endsection
 
-@if ($viewBag->template == 'edit-post')
-    @section('addJSFiles')
-        <!-- tinyMCE JS Files -->
-        <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
-        <script src="{{ asset('js/tiny_editor_SC.js') }}" defer></script>
-    @endsection
-@endif
+@section('addJSFiles')
+    @switch($viewBag->template)
+        @case('edit-post')
+            <!-- tinyMCE JS Files -->
+            <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+            <script src="{{ asset('js/tiny_editor_SC.js') }}" defer></script>
 
-@if ($viewBag->template == 'org-chart')
-    @section('addJSFiles')
-        <!-- Google org-chart JS Files -->
-        <script src="{{ asset('js/charts/loader.js') }}" referrerpolicy="origin"></script>
-        <script src="{{ asset('js/charts.js') }}" defer></script>
-    @endsection
-@endif
+        @case('org-chart')
+            <!-- Google org-chart JS Files -->
+            <script src="{{ asset('js/charts/loader.js') }}" referrerpolicy="origin"></script>
+            <script src="{{ asset('js/charts.js') }}" defer></script>
+
+        @default
+          @can('receiveDesktopNotifs')
+            @livewire('fcm-notifs-sw-client-manager', [$viewBag])
+          @endcan
+
+    @endswitch
+@endsection

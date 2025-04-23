@@ -50,7 +50,7 @@
                             wire:click="switchFavoritePost({{ $post->id }})" type="button">
                         <i class="bx bx-star"></i>
                     </button>
-                  @can('pin')
+                  @can('pin', $post)
                     <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                     <button @class([
                                 "btn",

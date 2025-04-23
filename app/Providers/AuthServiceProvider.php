@@ -40,6 +40,10 @@ class AuthServiceProvider extends ServiceProvider
             return FALSE;
         });
 
+        Gate::define('receiveDesktopNotifs', function ($user) {
+            return $user->is_staff && $user->desktop_notifications_granted;
+        });
+
         foreach(AP::getModels() as $model) {
             $right = AP::getModelRight($model);
 
@@ -55,9 +59,5 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->hasRole($right->name, $right->roles);
             });
         }
-
-        Gate::define('pin', function($user) {
-            return $user->hasRole('posts', Roles::IS_MODER);
-        });
     }
 }

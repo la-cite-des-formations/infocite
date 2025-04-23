@@ -23,7 +23,7 @@
                 <tr>
                     <th class="ps-3">Application</th>
                     <th>Descritpion</th>
-                    <th>Options</th>
+                    <th class="text-end pe-3">Options</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,9 +44,9 @@
                             <span>{{ $app->description }}</span>
                         </h4>
                     </td>
-                    <td>
-                      @can('handle', $app)
-                        <div wire:click.prefetch='blockRedirection' class="input-group" role="group" aria-label="Actions">
+                    <td class="pe-3">
+                        <div wire:click.prefetch='blockRedirection' class="input-group justify-content-end" role="group" aria-label="Actions">
+                          @can('handle', $app)
                             <a href="{{ route('personal-apps.edit', ['app_id' => $app->id]) }}"
                                 role="button" class="btn btn-sm btn-success" title="Modifier">
                                 <i class="bx bx-pencil"></i>
@@ -55,8 +55,17 @@
                                     type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
+                          @endcan
+                            <button @class([
+                                        "btn btn-sm",
+                                        "btn-warning" => $app->isFavorite,
+                                        "btn-secondary" => !$app->isFavorite
+                                    ])
+                                    title="@if ($app->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
+                                    wire:click="switchFavoriteApp({{ $app->id }})" type="button">
+                                <i class="bx bx-star"></i>
+                            </button>
                         </div>
-                      @endcan
                     </td>
                 </tr>
               @endforeach
@@ -84,6 +93,19 @@
                     <h4>
                         <span>{{ $app->description }}</span>
                     </h4>
+                    <div wire:click.prefetch='blockRedirection' class="position-absolute top-0 end-0 mt-3 me-3">
+                        <div class="input-group" role="group" aria-label="Actions">
+                            <button @class([
+                                        "btn btn-sm",
+                                        "btn-warning" => $app->isFavorite,
+                                        "btn-secondary" => !$app->isFavorite
+                                    ])
+                                    title="@if ($app->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
+                                    wire:click="switchFavoriteApp({{ $app->id }})" type="button">
+                                <i class="bx bx-star"></i>
+                            </button>
+                        </div>
+                    </div>
                   @can('handle', $app)
                     <div wire:click.prefetch='blockRedirection' class="position-absolute bottom-0 end-0 mb-3 me-3">
                         <div class="input-group" role="group" aria-label="Actions">

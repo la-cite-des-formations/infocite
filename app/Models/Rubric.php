@@ -42,7 +42,7 @@ class Rubric extends Model
         return $this->posts->count() > 0;
     }
 
-    public function groups(array $types = NULL) {
+    public function groups(? array $types = NULL) {
         return $this
             ->belongsToMany('App\Models\Group')
             ->when($types, function ($groups) use ($types) {
@@ -99,13 +99,6 @@ class Rubric extends Model
             ->profiles()
             ->where('resource_type', 'Rubric')
             ->where('resource_id', $this->id);
-    }
-
-    public function notifications()
-    {
-        return $this
-            ->hasManyThrough('App\Models\PostNotification', 'App\Models\Post')
-            ->orderByRaw('release_at DESC, created_at DESC');
     }
 
     public function isFavorite() {

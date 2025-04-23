@@ -381,6 +381,11 @@ label>.material-icons, label>.material-icons-outlined {
     transition: 0.3s;
 }
 
+.icon-box .small-action-btn {
+    padding: .20rem .4rem;
+    font-size: .7rem;
+}
+
 .why-us .accordion-list button i {
     font-size: medium;
     position: relative;
@@ -983,11 +988,6 @@ a:hover {
     border-radius: 10px;
     border: 2px dashed var(--select-color-1);
     background-image: linear-gradient(to bottom left, var(--select-color-10),var(--select-color-12),var(--select-color-14));
-}
-
-.services .pinned-post .icon-box .btn-group-sm>.btn, .services .pinned-post .icon-box .btn-sm {
-    padding: .25rem .5rem;
-    font-size: .875rem;
 }
 
 .services .pinned-post .icon-box:hover {

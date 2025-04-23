@@ -1,4 +1,4 @@
-@extends('layouts.usage-modal')
+@extends('layouts.modal')
 
 @section('modal-title', "Notifications")
 @section('modal-size', 'modal-lg')
@@ -7,12 +7,12 @@
     <ul>
       @foreach ($newNotifications as $notification)
         <li class="alert alert-danger">{{ $notification->message }}
-            <a wire:click='consumedNotif({{ $notification->id }})' href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
+            <a wire:click='consumedNotif({{ $notification->id }})' href="{{ $notification->h_ref }}">{{ $notification->object->identity() }}</a>
         </li>
       @endforeach
       @foreach ($oldNotifications as $notification)
         <li class="alert alert-info">{{ $notification->message }}
-            <a href="{{ $notification->h_ref }}">{{ "{$notification->post->rubric->name}/{$notification->post->title}" }}</a>
+            <a href="{{ $notification->h_ref }}">{{ $notification->object->identity() }}</a>
         </li>
       @endforeach
     </ul>
