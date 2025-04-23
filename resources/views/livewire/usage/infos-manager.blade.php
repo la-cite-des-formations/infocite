@@ -147,8 +147,8 @@
        @if ($browserDesktopNotificationsDenied)
         <div class="alert alert-danger col-9 mt-2" role="alert">
             <p>
-                Impossible d'activer les notifications de bureau sur Info-Cité car elles sont bloquées au niveau de votre navigateur !
-                Pour les autoriser, regardez la video.
+                Impossible d'activer les notifications de bureau ! Pour ce faire, autorisez-les
+                dans votre navigateur (si besoin, consultez la vidéo).
             </p>
             <h6>Guide : Autoriser manuellement les notifications avec Chrome</h6>
             <video src="{{ asset('img/unblock_notifications_guide.mp4') }}" controls
