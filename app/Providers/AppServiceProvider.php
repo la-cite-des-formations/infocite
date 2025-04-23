@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             'lastFilter'=>'allPosts',
         ]);
 
-        $this->app->make(ChannelManager::class)->extend('firebase', function () {
+        $this->app->make(ChannelManager::class)->extend('fcm', function () {
             return new FcmChannel;
         });
     }
