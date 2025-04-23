@@ -5,7 +5,6 @@ namespace App\Models;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,14 +19,21 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['name', 'first_name', 'email', 'password'];
+    protected $fillable = ['name', 'first_name', 'email', 'password', 'desktop_notifications_granted',];
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = ['remember_token',];
+    protected $hidden = ['remember_token', ];
 
     /**
      * The attributes that should be cast to native types.
@@ -42,18 +48,18 @@ class User extends Authenticatable
 
     public function actor() {
         return $this
-            ->belongsTo('App\Models\Actor', 'id');
+            ->belongsTo(Actor::class, 'id');
     }
 
     public function myPosts() {
         return $this
-            ->hasMany('App\Models\Post', 'author_id')
+            ->hasMany(Post::class, 'author_id')
             ->orderByRaw('updated_at DESC');
     }
 
     public function postsRead() {
         return $this
-            ->belongsToMany('App\Models\Post', 'post_user')
+            ->belongsToMany(Post::class)
             ->withPivot(['is_read'])
             ->where('is_read', TRUE)
             ->orderBy('created_at', 'DESC');
@@ -61,7 +67,7 @@ class User extends Authenticatable
 
     public function updatedPosts() {
         return $this
-            ->hasMany('App\Models\Post', 'corrector_id')
+            ->hasMany(Post::class, 'corrector_id')
             ->orderByRaw('updated_at DESC');
     }
 
@@ -77,7 +83,7 @@ class User extends Authenticatable
 
     public function myFavoritesPosts() {
         return $this
-            ->belongsToMany('App\Models\Post', 'post_user')
+            ->belongsToMany(Post::class)
             ->orderBy('created_at', 'DESC')
             ->withPivot(['is_favorite'])
             ->where('is_favorite', TRUE)
@@ -89,19 +95,26 @@ class User extends Authenticatable
             });
     }
 
-    public function myFavoritesRubrics(){
+    public function myFavoritesRubrics() {
         return $this
-            ->belongsToMany('App\Models\Rubric', 'rubric_user')
+            ->belongsToMany(Rubric::class)
             ->orderBy('created_at', 'DESC')
             ->withPivot(['rubric_id']);
 
+    }
+
+    public function fcmTokens() {
+        return $this
+            ->belongsToMany(FcmToken::class);
     }
 
     public function myNotifications() {
         $myNotifications = new Collection();
 
         $this->rubrics->each(function ($rubric) use (&$myNotifications) {
-            $myNotifications = $myNotifications->merge($rubric->notifications);
+            $rubric->posts->each(function ($post) use (&$myNotifications) {
+                $myNotifications = $myNotifications->merge($post->notifications);
+            });
         });
 
         $this->myFavoritesPosts->each(function ($post) use (&$myNotifications) {
@@ -119,18 +132,18 @@ class User extends Authenticatable
 
     public function newNotifications() {
         return $this
-            ->belongsToMany('App\Models\PostNotification');
+            ->belongsToMany(Notification::class);
     }
 
     public function myComments() {
         return $this
-            ->hasMany('App\Models\Comment')
+            ->hasMany(Comment::class)
             ->orderBy('created_at', 'DESC');
     }
 
     public function rubrics() {
         return $this
-            ->belongsToMany('App\Models\Rubric')
+            ->belongsToMany(Rubric::class)
             ->orderByRaw('position, segment, rank');
     }
 
@@ -150,28 +163,28 @@ class User extends Authenticatable
 
     public function profiles() {
         return $this
-            ->belongsToMany('App\Models\User', 'profile_user', 'user_id', 'profile_id')
+            ->belongsToMany(self::class, 'profile_user', 'user_id', 'profile_id')
             ->orderByRaw('name ASC, first_name ASC')
             ->withTimestamps();
     }
 
     public function users() {
         return $this
-            ->belongsToMany('App\Models\User', 'profile_user', 'profile_id', 'user_id')
+            ->belongsToMany(self::class, 'profile_user', 'profile_id', 'user_id')
             ->orderByRaw('name ASC, first_name ASC')
             ->withTimestamps();
     }
 
     public function apps() {
         return $this
-            ->belongsToMany('App\Models\App')
+            ->belongsToMany(App::class)
             ->orderByRaw('name ASC')
             ->withPivot(['login', 'password']);
     }
 
     public function personnalApps() {
         return $this
-            ->hasMany('App\Models\App', 'owner_id')
+            ->hasMany(App::class, 'owner_id')
             ->orderByRaw('name ASC');
     }
 
@@ -195,7 +208,7 @@ class User extends Authenticatable
 
     public function myFavoritesApps() {
         return $this
-            ->belongsToMany('App\Models\App', 'favorites_apps')
+            ->belongsToMany(App::class, 'favorites_apps')
             ->withPivot(['rank'])
             ->orderBy('rank');
     }
@@ -211,19 +224,19 @@ class User extends Authenticatable
 
     public function subordinates() {
         return $this
-            ->hasManyThrough('App\Models\User', 'App\Actor', 'manager_id', 'id', 'id', 'id')
+            ->hasManyThrough(self::class, Actor::class, 'manager_id', 'id', 'id', 'id')
             ->orderByRaw('name ASC, first_name ASC');
     }
 
     public function manager() {
         return $this
-            ->hasOneThrough('App\Models\User', 'App\Actor', 'id', 'id', 'id', 'manager_id');
+            ->hasOneThrough(self::class, Actor::class, 'id', 'id', 'id', 'manager_id');
     }
 
-    public function groups(array $types = NULL)
+    public function groups(? array $types = NULL)
     {
         return $this
-            ->belongsToMany('App\Models\Group')
+            ->belongsToMany(Group::class)
             ->when($types, function ($groups) use ($types) {
                 $groups->whereIn('type', $types);
             })
@@ -231,7 +244,7 @@ class User extends Authenticatable
             ->withPivot('function');
     }
 
-    public function myGroups(array $types = NULL)
+    public function myGroups(? array $types = NULL)
     {
         $myGroups = $this->groups($types)->get();
 
@@ -242,7 +255,7 @@ class User extends Authenticatable
         return $myGroups;
     }
 
-    public function groupsList(array $types = NULL, string $format = "%%", string $noResult = '')
+    public function groupsList(? array $types = NULL, string $format = "%%", string $noResult = '')
     {
         $result = $this
             ->myGroups($types)
@@ -264,7 +277,7 @@ class User extends Authenticatable
 
     public function personalRights() {
         return $this
-            ->morphToMany('App\Models\Right', 'rightable')
+            ->morphToMany(Right::class, 'rightable')
             ->withPivot(['resource_type', 'resource_id', 'priority', 'roles'])
             ->orderByRaw('name ASC');
     }
@@ -349,7 +362,7 @@ class User extends Authenticatable
         return $result ? str_replace("%%", $result, $format) : $noResult;
     }
 
-    public function getRightable(string $right, string $resource_type = NULL, int $resource_id = NULL) {
+    public function getRightable(string $right, ? string $resource_type = NULL, ? int $resource_id = NULL) {
         return $this
             ->allRights()
             ->where('name', $right)
@@ -360,7 +373,7 @@ class User extends Authenticatable
             ->first();
     }
 
-    public function hasStrictRole(string $right, int $role, string $resource_type = NULL, int $resource_id = NULL, bool $extended = TRUE) {
+    public function hasStrictRole(string $right, int $role, ? string $resource_type = NULL, ? int $resource_id = NULL, bool $extended = TRUE) {
         $rightable = $this->getRightable($right, $resource_type, $resource_id);
 
         if (is_null($rightable)) {
@@ -374,7 +387,7 @@ class User extends Authenticatable
         }
     }
 
-    public function hasRole(string $right, int $role, string $resource_type = NULL, int $resource_id = NULL, bool $extended = TRUE) {
+    public function hasRole(string $right, int $role, ? string $resource_type = NULL, ? int $resource_id = NULL, bool $extended = TRUE) {
         $rightable = $this->getRightable($right, $resource_type, $resource_id);
 
         if (is_null($rightable)) {

@@ -185,7 +185,7 @@
                           @if ($mode == 'edition')
                            @can('update', $post)
                             <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
-                               title="Modifier" role="button" class="btn btn-success d-flex">
+                               title="Modifier" role="button" class="btn btn-success small-action-btn d-flex">
                                 <i class="bx bx-pencil my-auto"></i>
                             </a>
                            @endcan
@@ -193,7 +193,7 @@
                            @can('viewAny', ['App\\Models\\Comment', $post->id])
                             <!-- NB de commentaires déposés sur l'article : class primary si au moins 1 commentaire  -->
                             <button @class([
-                                        'list-group-item py-1 px-2',
+                                        'list-group-item small-action-btn',
                                         'list-group-item-primary' => $post->comments->isNotEmpty(),
                                         'list-group-item-secondary' => $post->comments->isEmpty()
                                     ]) type="text" title="{{ $post->commentsInfo() }}">
@@ -203,7 +203,7 @@
                            @endcan
                             <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
                             <button @class([
-                                        "btn",
+                                        "btn small-action-btn",
                                         "btn-warning" => $post->isFavorite(),
                                         "btn-secondary" => !$post->isFavorite()
                                     ])
@@ -214,7 +214,7 @@
                             <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                            @can('pin', $post)
                             <button @class([
-                                        "btn",
+                                        "btn small-action-btn",
                                         "btn-success" => $post->is_pinned,
                                         "btn-secondary" => !$post->is_pinned
                                     ])
@@ -225,7 +225,7 @@
                            @endcan
                             <!-- Article deja lu ? : class success si deja lu -->
                             <button @class([
-                                        "list-group-item py-1 px-2",
+                                        "list-group-item small-action-btn",
                                         "list-group-item-success" => $post->isRead(),
                                         "list-group-item-danger" => !$post->isRead()
                                     ])
@@ -235,7 +235,7 @@
                           @if ($mode == 'edition')
                            @can('delete', $post)
                             <button wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
-                                    type="button" class="btn btn-danger" title="Supprimer">
+                                    type="button" class="btn btn-danger small-action-btn" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
                            @endcan

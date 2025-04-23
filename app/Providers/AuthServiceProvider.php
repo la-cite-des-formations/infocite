@@ -40,6 +40,10 @@ class AuthServiceProvider extends ServiceProvider
             return FALSE;
         });
 
+        Gate::define('receiveDesktopNotifs', function ($user) {
+            return $user->is_staff && $user->desktop_notifications_granted;
+        });
+
         foreach(AP::getModels() as $model) {
             $right = AP::getModelRight($model);
 

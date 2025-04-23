@@ -6,7 +6,7 @@ trait WithNotifications
 {
     public $notifications;
 
-    protected $closedModalCallback = ['updateNotifications', 'setNotifications'];
+    protected $closedModalCallback = ['detachNotifications', 'setNotifications'];
 
     public function setNotifications() {
         $this->notifications = auth()->user()
@@ -14,7 +14,7 @@ trait WithNotifications
             ->where('release_at', '<=', today());
     }
 
-    public function updateNotifications() {
+    public function detachNotifications() {
         $notificationsIds = $this->notifications->pluck('id');
 
         auth()->user()->newNotifications()->detach($notificationsIds);

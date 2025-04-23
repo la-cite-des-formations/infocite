@@ -1,4 +1,4 @@
-@extends('layouts.usage-modal')
+@extends('layouts.modal')
 
 @section('modal-title', "Confirmation")
 
