@@ -19,7 +19,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['name', 'first_name', 'email', 'password', 'desktop_notifications_granted',];
+    protected $fillable = ['name', 'first_name', 'email', 'password', 'desktop_notifications_granted', 'notify_only_favorites', ];
 
     /**
      * The attributes that aren't mass assignable.
@@ -473,6 +473,19 @@ class User extends Authenticatable
             ->count();
     }
 
+    public function getNotificationStatusAttribute() {
+        switch (TRUE) {
+            case !$this->desktop_notifications_granted:
+                return "Aucune";
+
+            case $this->desktop_notifications_granted && !$this->notify_only_favorites:
+                return "Toutes";
+
+            case $this->desktop_notifications_granted && $this->notify_only_favorites:
+                return "Favoris";
+        }
+    }
+
     public function getInfo($userInfo) {
         extract($userInfo);
 
@@ -551,8 +564,11 @@ class User extends Authenticatable
             ->get()
             ->when($search, function ($users) use ($search, $filter) {
                 return $users->filter(function ($user) use ($search, $filter) {
-                    $columns = [$user->identity];
-                    if (!$filter['profiles']) $columns[] = $user->getInfo(AP::getUserInfo($filter['groupType'], $filter['groupId']));
+                    $columns[] = $user->identity;
+
+                    if (!$filter['profiles']) {
+                        $columns[] = $user->getInfo(AP::getUserInfoParams($filter));
+                    }
 
                     return static::tableContains($columns, $search);
                 });

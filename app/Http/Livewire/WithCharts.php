@@ -8,7 +8,7 @@ trait WithCharts
 {
     public function drawAllCharts() {
         foreach($this->statsCollection as $stats) {
-            $this->drawCharts($stats['charts'], $stats['filter']);
+            $this->drawCharts($stats['charts'], $stats['filter'] ?? NULL);
         }
     }
 
