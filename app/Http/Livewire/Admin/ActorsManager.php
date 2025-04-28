@@ -41,9 +41,7 @@ class ActorsManager extends Component
     }
 
     public function updatedFilter() {
-        $this->actorInfo = AP::getUserInfo($this->filter['groupType'], $this->filter['groupId']);
-        $this->actorInfo['groupType'] = $this->filter['groupType'];
-        $this->actorInfo['groupId'] = $this->filter['groupId'];
+        $this->actorInfo = AP::getUserInfoParams($this->filter);
     }
 
     public function render()

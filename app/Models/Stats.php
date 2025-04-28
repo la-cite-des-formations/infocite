@@ -39,6 +39,46 @@ class Stats
         ];
     }
 
+    public static function getNotificationsUse() {
+        return [
+            'cols' => [
+                ['label' => 'Statut de notification', 'type' => 'string'],
+                ['label' => "Nombre d'utilisateurs", 'type' => 'number'],
+            ],
+            'rows' => [
+                [
+                    'c' => [
+                        ['v' => 'Aucune'],
+                        ['v' => User::
+                            where('is_staff', TRUE)->
+                            where('desktop_notifications_granted', FALSE)->
+                            get()->count()],
+                    ]
+                ],
+                [
+                    'c' => [
+                        ['v' => 'Toutes'],
+                        ['v' => User::
+                            where('is_staff', TRUE)->
+                            where('desktop_notifications_granted', TRUE)->
+                            where('notify_only_favorites', FALSE)->
+                            get()->count()],
+                    ]
+                ],
+                [
+                    'c' => [
+                        ['v' => 'Favoris'],
+                        ['v' => User::
+                            where('is_staff', TRUE)->
+                            where('desktop_notifications_granted', TRUE)->
+                            where('notify_only_favorites', TRUE)->
+                            get()->count()],
+                    ]
+                ],
+            ]
+        ];
+    }
+
     public static function getTopTenViewedPostsChart($filter) {
         return [
             'cols' => [
@@ -172,6 +212,15 @@ class Stats
                     ],
                 ];
 
+            case 'notificationsUse' :
+                return [
+                    'colors' => ['#0d6efd'],
+                    'backgroundColor' => '#f8fafc',
+                    'chartArea' => [
+                        'backgroundColor' => '#f8fafc',
+                    ],
+                ];
+
             case 'topTenViewedPosts' :
             case 'topTenCommentedPosts' :
             case 'activeEditorsTop10' :
@@ -201,6 +250,9 @@ class Stats
         switch ($chartName) {
             case 'connections' :
                 return static::getConnectionsChart($filter);
+
+            case 'notificationsUse' :
+                return static::getNotificationsUse();
 
             case 'topTenViewedPosts' :
                 return static::getTopTenViewedPostsChart($filter);

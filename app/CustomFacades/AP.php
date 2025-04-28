@@ -545,10 +545,13 @@ class AP // Application Parameters
         return static::APP_AUTH_TYPES[$appAuthTypeCode];
     }
 
-    public static function getUserInfo($groupType, $groupId) {
-        return $groupId ?
-            static::USER_INFO[$groupType]['withGroupId'] :
-            static::USER_INFO[$groupType]['withoutGroupId'];
+    public static function getUserInfoParams($filter) {
+        return array_merge(
+            $filter,
+            $filter['groupId'] ?
+                static::USER_INFO[$filter['groupType']]['withGroupId'] :
+                static::USER_INFO[$filter['groupType']]['withoutGroupId']
+        );
     }
 
     public static function getGroupFilter($groupType = '') {

@@ -61,6 +61,14 @@ class UsingManager extends Component
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
+        'notificationsUse' => [
+            'charts' => [
+                'notificationsUse' => [
+                    'target' => 'notificationsUseChart',
+                    'event' => 'drawBarChart',
+                ],
+            ],
+        ],
     ];
 
     public function updatedStatsCollectionMostActiveEditorsFilterEditorType() {

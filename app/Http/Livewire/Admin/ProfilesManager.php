@@ -51,9 +51,7 @@ class ProfilesManager extends Component
 
     public function updatedFilter() {
 
-        $this->userInfo = AP::getUserInfo($this->filter['groupType'], $this->filter['groupId']);
-        $this->userInfo['groupType'] = $this->filter['groupType'];
-        $this->userInfo['groupId'] = $this->filter['groupId'];
+        $this->userInfo = AP::getUserInfoParams($this->filter);
     }
 
     public function render()
