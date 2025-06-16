@@ -6,7 +6,7 @@
 .env
 .idea
 package-lock.json
-.env.backup
+.env.*
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
