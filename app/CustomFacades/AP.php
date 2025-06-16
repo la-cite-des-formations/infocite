@@ -2,8 +2,8 @@
 
 namespace App\CustomFacades;
 
-use App\Right;
-use App\Roles;
+use App\Models\Right;
+use App\Models\Roles;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
 
@@ -395,7 +395,7 @@ class AP // Application Parameters
             'connections' => [
                 'title' => 'Connexions ',
                 'table_title' => "Consultation des connexions",
-                'description' => "Statistiques de connexions",
+                'description' => "Statistiques concernant les connexions",
                 'icon_name' => 'hub',
                 'color' => 'danger',
                 'gate' => 'manage-connections',
@@ -474,15 +474,6 @@ class AP // Application Parameters
         0x316395,
     ];
 
-    const NOTIFICATIONS = [
-        'NP' => 'Nouvel article disponible : ',
-        'UP' => 'Article mis à jour le @date : ',
-        'CP' => 'Article commenté : ',
-        'NA' => 'Nouvelle application disponible : ',
-        'UA' => 'Application mise à jour : ',
-        'UO' => 'Organigramme mis à jour : ',
-    ];
-
     const POST_STATUS_MI = [
         'released' => ['icon' => 'check_circle', 'title' => "Actuel"],
         'unpublished' => ['icon' => 'unpublished', 'title' => "Non publié"],
@@ -554,10 +545,13 @@ class AP // Application Parameters
         return static::APP_AUTH_TYPES[$appAuthTypeCode];
     }
 
-    public static function getUserInfo($groupType, $groupId) {
-        return $groupId ?
-            static::USER_INFO[$groupType]['withGroupId'] :
-            static::USER_INFO[$groupType]['withoutGroupId'];
+    public static function getUserInfoParams($filter) {
+        return array_merge(
+            $filter,
+            $filter['groupId'] ?
+                static::USER_INFO[$filter['groupType']]['withGroupId'] :
+                static::USER_INFO[$filter['groupType']]['withoutGroupId']
+        );
     }
 
     public static function getGroupFilter($groupType = '') {
@@ -698,10 +692,6 @@ class AP // Application Parameters
         return array_map(function ($color) {
             return static::toColor($color);
         }, static::GC_COLORS);
-    }
-
-    public static function getNotifications($contentType) {
-        return static::NOTIFICATIONS[$contentType];
     }
 
     public static function betweenBrackets($str, $withSpace = TRUE) {

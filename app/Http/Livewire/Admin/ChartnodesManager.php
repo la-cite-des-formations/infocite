@@ -6,7 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
-use App\Chartnode;
+use App\Models\Chartnode;
 
 class ChartnodesManager extends Component
 {

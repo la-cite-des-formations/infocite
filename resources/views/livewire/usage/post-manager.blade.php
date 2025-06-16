@@ -23,7 +23,7 @@
                   @endif
                     <i class="bi bi-bell"></i>
                 </button>
-               @can('edit', ['App\\Post', $post->rubric_id])
+               @can('edit', ['App\\Models\\Post', $post->rubric_id])
                 <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
                         title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
                     <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
@@ -43,7 +43,7 @@
                 </button>
               @endif
               @if ($mode == 'edition')
-               @can('create', ['App\\Post', $post->rubric_id])
+               @can('create', ['App\\Models\\Post', $post->rubric_id])
                 <a href="{{ route('post.create', ['rubric' => $post->rubric->route()]) }}"
                    title="Commencer un nouvel article"
                    type="button" class="d-flex input-group-text btn btn-sm btn-success">
@@ -95,7 +95,7 @@
                                 wire:click="switchFavoritePost" type="button">
                             <i class="bx bx-star"></i>
                         </button>
-                       @can('pin')
+                       @can('pin', $post)
                         <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
                         <button @class([
                                     "btn btn-sm",
@@ -114,12 +114,12 @@
                 </div>
             </div>
             <div class="card-body">{!! $post->content !!}</div>
-              @can('viewAny', ['App\\Comment', $post->id])
+              @can('viewAny', ['App\\Models\\Comment', $post->id])
                 <div class="card-footer text-muted">
                     <div class="col-lg-8 why-us mt-3">
                         <h5>{{ ($post->comments->count() ?: "aucun")." commentaire".($post->comments->count() > 1 ? 's' : '') }}
                         </h5>
-                       @can('create', ['App\\Comment', $post->id])
+                       @can('create', ['App\\Models\\Comment', $post->id])
                         <div class="comment-form my-2">
                             <input wire:model='newComment' wire:keydown.enter="commentPost"
                                    type="text" placeholder="Ajouter un commentaire">
@@ -142,7 +142,7 @@
                                                 <i class="bx bx-chevron-up icon-close"></i>
                                             </a>
                                             <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
-                                                <p>{{ $comment->content }}</p>
+                                                <p>{!! preg_replace("/(http(s?):\/\/)(([[:punct:]]|[[:alnum:]]=?)*)/", "<a href=\"\\0\">\\0</a> ", trim($comment->content)) !!}</p>
                                             </div>
                                         </li>
                                        @can('delete', $comment)

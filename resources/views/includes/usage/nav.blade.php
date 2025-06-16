@@ -46,7 +46,7 @@
        @endcan
       @endforeach
         <!-- A laisser en dur à la fin du menu -->
-       @can('viewAny', 'App\\App')
+       @can('viewAny', 'App\\Models\\App')
         <li>
             <a href="#apps" class="nav-link scrollto" title="Mes applications">
                 <div class="myapps">
@@ -56,7 +56,7 @@
         </li>
        @endcan
         <li>
-            <a href="#search" class="nav-link scrollto" title="Rechercher...">
+            <a onclick="document.getElementById('searchInput').focus()" href="#search" class="nav-link scrollto" title="Rechercher...">
                 <span class="bx bx-search-alt fs-1"></span>
             </a>
         </li>

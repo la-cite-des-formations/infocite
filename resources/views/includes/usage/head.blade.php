@@ -2,7 +2,6 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 <!-- CSRF Token -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -20,7 +19,7 @@
 
 <!-- Vendor CSS Files -->
 <link href="{{ asset('vendor/aos/aos.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ mix('css/app.css') }}" rel="stylesheet">
 <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 <link href="{{ asset('vendor/icofont/icofont.min.css') }}" rel="stylesheet">
 <link href="{{ asset('vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">

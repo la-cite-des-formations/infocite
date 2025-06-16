@@ -38,29 +38,29 @@
         <td>
             <div class="d-flex align-items-center">
                 <div class="list-group list-group-horizontal" role="group" aria-label="Infos">
-                  @can('viewAny', ['App\\Comment', $post->id])
+                  @can('viewAny', ['App\\Models\\Comment', $post->id])
                     <!-- NB de commentaires déposés sur l'article : class info si au moins 1 commentaire  -->
-                    <span @class([
-                        'list-group-item',
-                        'bg-primary' => $post->comments->isNotEmpty(),
-                        'bg-secondary' => $post->comments->isEmpty(),
-                      ]) role="label" title="{{ $post->commentsInfo() }}">
+                    <button @class([
+                                'list-group-item py-1 px-2',
+                                'list-group-item-primary' => $post->comments->isNotEmpty(),
+                                'list-group-item-secondary' => $post->comments->isEmpty(),
+                            ]) role="label" title="{{ $post->commentsInfo() }}">
                         {{ $post->comments->count() ?: '' }}
                         <i class="bx bx-comment-detail"></i>
-                    </span>
+                    </button>
                   @endcan
                     <!-- Article deja lu ? : class success si deja lu -->
-                    <span @class([
-                        'list-group-item',
-                        'bg-success' => $post->isRead(),
-                        'bg-danger' => !$post->isRead()
-                      ]) role="label" title="{{ $post->isRead() ? 'Déjà consulté' : 'Non consulté' }}">
+                    <button @class([
+                                'list-group-item py-1 px-2',
+                                'list-group-item-success' => $post->isRead(),
+                                'list-group-item-danger' => !$post->isRead()
+                            ]) role="label" title="{{ $post->isRead() ? 'Déjà consulté' : 'Non consulté' }}">
                         <i class="bx bx-message-alt-check"></i>
-                    </span>
+                    </button>
                 </div>
               @if (!$post->released && is_object($post->status))
                 <i class=" material-icons text-danger m-1"
-                    title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                   title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
               @endif
             </div>
         </td>
@@ -86,7 +86,7 @@
                         <i class="bx bx-star"></i>
                     </button>
                     <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                  @can('pin')
+                  @can('pin', $post)
                     <button @class([
                         "btn",
                         "btn-success" => $post->is_pinned,

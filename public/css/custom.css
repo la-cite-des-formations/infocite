@@ -375,35 +375,15 @@ label>.material-icons, label>.material-icons-outlined {
     font-size: 12px;
 }
 
-.services .posts-list .icon-box .list-group-item {
-    color: #fff;
-}
-
-.services .icon-box .btn-group-sm>.btn,
-.services .posts-list .icon-box .list-group-item,
-.services .icon-box .btn-sm {
-    padding: .20rem .4rem;
-    font-size: .7rem;
-}
-
-.services .icon-box .btn-group-sm>.btn:first-child,
-.services .posts-list .icon-box .list-group-item:first-child,
-.services .icon-box .btn-sm:first-child {
-    border-top-left-radius: .16rem;
-    border-bottom-left-radius: .16rem;
-}
-
-.services .icon-box .btn-group-sm>.btn:last-child,
-.services .posts-list .icon-box .list-group-item:last-child,
-.services .icon-box .btn-sm:last-child {
-    border-top-right-radius: .16rem;
-    border-bottom-right-radius: .16rem;
-}
-
 .title-icon i {
     vertical-align: top;
     color: var(--select-color-1);
     transition: 0.3s;
+}
+
+.icon-box .small-action-btn {
+    padding: .20rem .4rem;
+    font-size: .7rem;
 }
 
 .why-us .accordion-list button i {
@@ -592,8 +572,12 @@ a:hover {
     color: var(--select-color-1) !important;
 }
 
-.section-bg {
-    background-color: var(--select-color-10) !important;
+.section-bg, .section-bg .table {
+    --bs-table-bg: transparent !important;
+}
+
+.section-bg .table-secondary {
+    --bs-table-border-color: var(--bs-border-color);
 }
 
 .section-title h2 {
@@ -1004,12 +988,6 @@ a:hover {
     border-radius: 10px;
     border: 2px dashed var(--select-color-1);
     background-image: linear-gradient(to bottom left, var(--select-color-10),var(--select-color-12),var(--select-color-14));
-}
-
-.services .pinned-post .icon-box .btn-group-sm>.btn, .services .pinned-post .icon-box .btn-sm {
-    padding: .25rem .5rem;
-    font-size: .875rem;
-    border-radius: .2rem;
 }
 
 .services .pinned-post .icon-box:hover {

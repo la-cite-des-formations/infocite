@@ -6,8 +6,8 @@ use App\CustomFacades\AP;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
-use App\Rubric;
-use App\User;
+use App\Models\Rubric;
+use App\Models\User;
 
 class UsingManager extends Component
 {
@@ -60,6 +60,14 @@ class UsingManager extends Component
             'buttonLabel' => 'Voir plus...',
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
+        ],
+        'notificationsUse' => [
+            'charts' => [
+                'notificationsUse' => [
+                    'target' => 'notificationsUseChart',
+                    'event' => 'drawBarChart',
+                ],
+            ],
         ],
     ];
 

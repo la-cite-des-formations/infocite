@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Formats;
 
-use App\Format;
+use App\Models\Format;
 use Livewire\Component;
 
 class Delete extends Component

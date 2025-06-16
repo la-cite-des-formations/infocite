@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithSearching;
-use App\User;
+use App\Models\User;
 
 class LabelsManager extends Component
 {

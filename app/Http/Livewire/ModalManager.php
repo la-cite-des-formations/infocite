@@ -27,11 +27,11 @@ class ModalManager extends Component
     }
 
     public function show($modalBag) {
-        extract($modalBag);
-        $this->client = isset($client) ? $client : NULL;
-        $this->modal = isset($component) ? $component : 'default-modal';
-        $this->data = isset($data) ? $data : NULL;
-        $this->filter = isset($filter) ? $filter : NULL;
+        $this->client = $modalBag['client'] ?? NULL;
+        $this->modal = $modalBag['component'] ?? 'default-modal';
+        $this->data = $modalBag['data'] ?? NULL;
+        $this->filter = $modalBag['filter'] ?? NULL;
+
         $this->dispatchBrowserEvent('showModal');
     }
 

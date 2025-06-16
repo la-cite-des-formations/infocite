@@ -46,7 +46,7 @@
               @endif
                 <span class="bi bi-bell"></span>
             </button>
-           @can('edit', ['App\\Post', $rubric->id])
+           @can('edit', ['App\\Models\\Post', $rubric->id])
             <button class="d-flex align-items-center btn btn-sm btn-primary" wire:click='switchMode' type="button"
                     title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
                 <span @class([
@@ -57,7 +57,7 @@
             </button>
            @endcan
           @if ($mode == 'edition')
-           @can('create', ['App\\Post', $rubric->id])
+           @can('create', ['App\\Models\\Post', $rubric->id])
             <a href="{{ route('post.create', ['rubric' => $rubric->route()]) }}"
                title="Commencer un nouvel article"
                type="button" class="d-flex align-items-center input-group-text btn btn-sm btn-success">
@@ -180,33 +180,30 @@
                     <!-- Boutons d'actions -->
                     <div wire:click.prefetch='blockRedirection'
                          class="position-relative align-self-end mt-auto">
-                        <div class="input-group " role="group" aria-label="Actions">
+                        <div class="list-group list-group-horizontal btn-group btn-group-sm" role="group" aria-label="Actions">
                             <!-- Article publié ou non (pas un bouton d'action) -->
                           @if ($mode == 'edition')
                            @can('update', $post)
                             <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
-                                title="Modifier" role="button" class="btn btn-sm btn-success">
-                                <i class="bx bx-pencil"></i>
+                               title="Modifier" role="button" class="btn btn-success small-action-btn d-flex">
+                                <i class="bx bx-pencil my-auto"></i>
                             </a>
                            @endcan
                           @endif
-                           @can('viewAny', ['App\\Comment', $post->id])
+                           @can('viewAny', ['App\\Models\\Comment', $post->id])
                             <!-- NB de commentaires déposés sur l'article : class primary si au moins 1 commentaire  -->
-                            <div @class([
-                                    'input-group-text btn-sm',
-                                    'btn-primary' => $post->comments->isNotEmpty(),
-                                    'btn-secondary' => $post->comments->isEmpty()
-                                 ]) type="text" title="{{ $post->commentsInfo() }}">
-                                {{ $post->comments->count() ?: '' }}
-                                <i @class([
-                                    "bx bx-comment-detail",
-                                    "ms-1" => $post->comments->isNotEmpty(),
-                                   ])></i>
-                            </div>
+                            <button @class([
+                                        'list-group-item small-action-btn',
+                                        'list-group-item-primary' => $post->comments->isNotEmpty(),
+                                        'list-group-item-secondary' => $post->comments->isEmpty()
+                                    ]) type="text" title="{{ $post->commentsInfo() }}">
+                                {{ $post->comments->count() ? $post->comments->count().' ': '' }}
+                                <i class="bx bx-comment-detail"></i>
+                            </button>
                            @endcan
                             <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
                             <button @class([
-                                        "btn btn-sm",
+                                        "btn small-action-btn",
                                         "btn-warning" => $post->isFavorite(),
                                         "btn-secondary" => !$post->isFavorite()
                                     ])
@@ -215,9 +212,9 @@
                                 <i class="bx bx-star"></i>
                             </button>
                             <!-- Epingler l'article, 4 articles épinglés à la fois maximum-->
-                           @can('pin')
+                           @can('pin', $post)
                             <button @class([
-                                        "btn btn-sm",
+                                        "btn small-action-btn",
                                         "btn-success" => $post->is_pinned,
                                         "btn-secondary" => !$post->is_pinned
                                     ])
@@ -227,18 +224,18 @@
                             </button>
                            @endcan
                             <!-- Article deja lu ? : class success si deja lu -->
-                            <div @class([
-                                        "input-group-text btn-sm",
-                                        "btn-success" => $post->isRead(),
-                                        "btn-danger" => !$post->isRead()
+                            <button @class([
+                                        "list-group-item small-action-btn",
+                                        "list-group-item-success" => $post->isRead(),
+                                        "list-group-item-danger" => !$post->isRead()
                                     ])
                                     type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
                                 <i class="bx bx-message-alt-check"></i>
-                            </div>
+                            </button>
                           @if ($mode == 'edition')
                            @can('delete', $post)
                             <button wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
-                                    type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                                    type="button" class="btn btn-danger small-action-btn" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
                            @endcan

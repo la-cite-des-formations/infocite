@@ -43,13 +43,13 @@
       @endif
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
-              @canany(['create', 'createFor'], 'App\\App')
+              @canany(['create', 'createFor'], 'App\\Models\\App')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
                         class="d-flex btn btn-sm btn-success me-1" title="Ajouter une application">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
-              @can('deleteAny', 'App\\App')
+              @can('deleteAny', 'App\\Models\\App')
                 <button wire:click="showModal('delete', getSelectionIDs('app-cbx'))"
                         class="d-flex btn btn-sm btn-danger" title="Supprimer les applications selectionnées">
                     <span class="material-icons">delete</span>

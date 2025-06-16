@@ -2,9 +2,9 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col-5 @cannot('deleteAny', 'App\\Group') p-2 @endcannot">
+        <th scope="col" class="col-5 @cannot('deleteAny', 'App\\Models\\Group') p-2 @endcannot">
             <div class="d-flex align-items-center">
-              @can('deleteAny', 'App\\Group')
+              @can('deleteAny', 'App\\Models\\Group')
                 <div class="btn-group dropstart">
                     <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des groupes">
@@ -45,13 +45,13 @@
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
-              @can('create', 'App\\Group')
+              @can('create', 'App\\Models\\Group')
                 <button wire:click="showModal('edit', {mode : 'creation'})"
                         class="d-flex btn btn-sm btn-success me-1" title="Ajouter un groupe">
                     <span class="material-icons">add</span>
                 </button>
               @endcan
-              @can('deleteAny', 'App\\Group')
+              @can('deleteAny', 'App\\Models\\Group')
                 <button wire:click="showModal('delete', getSelectionIDs('group-cbx'))"
                         class="d-flex btn btn-sm btn-danger" title="Supprimer les groupes selectionnés">
                     <span class="material-icons">delete</span>
@@ -68,7 +68,7 @@
    @canany(['view', 'update', 'handle', 'delete'], $group)
     <tr class="row">
         <td scope="row" class="col-5">
-          @can('deleteAny', 'App\\Group')
+          @can('deleteAny', 'App\\Models\\Group')
             <div class="form-check">
                 <input type="checkbox" class="form-check-input group-cbx" id="{{ $group->id }}">
                 <label class="form-check-label text-primary" for="{{ $group->id }}">{{ $group->name }}</label>

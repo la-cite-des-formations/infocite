@@ -7,9 +7,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
-use App\Group;
-use App\User;
-use App\Roles;
+use App\Models\Group;
+use App\Models\User;
 
 class ProfilesManager extends Component
 {
@@ -52,9 +51,7 @@ class ProfilesManager extends Component
 
     public function updatedFilter() {
 
-        $this->userInfo = AP::getUserInfo($this->filter['groupType'], $this->filter['groupId']);
-        $this->userInfo['groupType'] = $this->filter['groupType'];
-        $this->userInfo['groupId'] = $this->filter['groupId'];
+        $this->userInfo = AP::getUserInfoParams($this->filter);
     }
 
     public function render()

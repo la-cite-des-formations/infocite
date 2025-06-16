@@ -2,12 +2,12 @@
 
 namespace App\Http\Livewire\Modals\Admin\Rights;
 
+use App\Models\Right;
+use App\Models\Roles;
+use Livewire\Component;
 use App\CustomFacades\AP;
-use App\Right;
-use App\Roles;
 use App\Http\Livewire\WithAlert;
 use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
 
 class Edit extends Component
 {
@@ -85,28 +85,28 @@ class Edit extends Component
                     'icon' => 'list_alt',
                     'title' => "Définir les droits utilisateurs",
                     'hidden' =>
-                        $authUser->cant('create', 'App\\Right') &&
+                        $authUser->cant('create', 'App\\Models\\Right') &&
                         $authUser->cant('update', $this->right),
                 ],
                 'groups' => [
                     'icon' => 'groups',
                     'title' => "Gérer les groupes associés",
                     'hidden' =>
-                        $authUser->cant('adminRights', 'App\\User') ||
+                        $authUser->cant('adminRights', 'App\\Models\\User') ||
                         empty($this->right->id),
                 ],
                 'profiles' => [
                     'icon' => 'portrait',
                     'title' => "Gérer les profils associés",
                     'hidden' =>
-                        $authUser->cant('adminRights', ['App\\User', self::IS_PROFILE]) ||
+                        $authUser->cant('adminRights', ['App\\Models\\User', self::IS_PROFILE]) ||
                         empty($this->right->id),
                 ],
                 'users' => [
                     'icon' => 'person',
                     'title' => "Gérer les utilisateurs associés",
                     'hidden' =>
-                        $authUser->cant('adminRights', 'App\\User') ||
+                        $authUser->cant('adminRights', 'App\\Models\\User') ||
                         empty($this->right->id),
                 ],
             ],
@@ -171,9 +171,9 @@ class Edit extends Component
 
         $this->setCurrentTab(
             'formTabs',
-            $authUser->can('create', 'App\\Right') || $authUser->can('update', $this->right) ?
+            $authUser->can('create', 'App\\Models\\Right') || $authUser->can('update', $this->right) ?
                 'general' :
-                ($authUser->can('adminRights', 'App\\User') ? 'users' : 'profiles')
+                ($authUser->can('adminRights', 'App\\Models\\User') ? 'users' : 'profiles')
         );
     }
 
@@ -222,7 +222,7 @@ class Edit extends Component
                         'name' => 'groups',
                         'search' => 'groupSearch',
                         'models' => 'groups',
-                        'class' => '\\App\\Group',
+                        'class' => '\\App\\Models\\Group',
                         'orderByClause' => 'type ASC, name ASC',
                         'rolesCheckboxes' => 'groupsRolesCbx',
                         'attachedSelection' => 'selectedAttachedGroups',
@@ -238,7 +238,7 @@ class Edit extends Component
                         'name' => 'profiles',
                         'search' => 'profileSearch',
                         'models' => 'users',
-                        'class' => '\\App\\User',
+                        'class' => '\\App\\Models\\User',
                         'orderByClause' => 'first_name ASC',
                         'rolesCheckboxes' => 'profilesRolesCbx',
                         'attachedSelection' => 'selectedAttachedProfiles',
@@ -254,7 +254,7 @@ class Edit extends Component
                         'name' => 'users',
                         'search' => 'userSearch',
                         'models' => 'users',
-                        'class' => '\\App\\User',
+                        'class' => '\\App\\Models\\User',
                         'orderByClause' => 'name ASC, first_name ASC',
                         'rolesCheckboxes' => 'usersRolesCbx',
                         'attachedSelection' => 'selectedAttachedUsers',
@@ -759,7 +759,7 @@ class Edit extends Component
 
     private function getResourceables() {
         if (!empty($this->resourceType)) {
-            $model = "\\App\\{$this->resourceType}";
+            $model = "\\App\\Models\\{$this->resourceType}";
 
             return $model::sort();
         }

@@ -85,7 +85,11 @@
             <dt class="col-3 text-end ps-0">N° Badge</dt>
             <dd class="col-9 ps-0 @if(empty($user->badge)) fst-italic @endif">{{ $user->badge ?: 'non défini' }}</dd>
           @endif
-          @if(!$user->is_staff)
+          @if($user->is_staff)
+            <!-- Notifications _____ -->
+            <dt class="col-3 text-end ps-0">Notifications</dt>
+            <dd class="col-9 ps-0">{{ $user->notification_status }}</dd>
+          @else
             <!-- Email _____@____.__ -->
             <dt class="col-3 text-end ps-0">Email</dt>
            @if(empty($user->email))

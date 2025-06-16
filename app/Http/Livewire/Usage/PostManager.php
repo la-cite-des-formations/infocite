@@ -2,18 +2,19 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\Comment;
-use App\Events\NotificationPusher;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Notification;
-use App\Post;
-use App\User;
+use App\Models\Notification as PostNotification;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Comment;
 use Livewire\Component;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AppNotification;
 
 class PostManager extends Component
 {
@@ -54,9 +55,9 @@ class PostManager extends Component
     }
 
     public function commentPost() {
-        $newComment = trim($this->newComment);
-        $comment = $newComment ? new Comment([
-            'content' => $newComment,
+        $commentStr = trim($this->newComment);
+        $comment = $commentStr ? new Comment([
+            'content' => $commentStr,
             'user_id' => auth()->user()->id,
         ]) : NULL;
 
@@ -64,21 +65,34 @@ class PostManager extends Component
             $this->post->comments()->save($comment);
 
             // notification associée
-            $newNotification = Notification::updateOrCreate(
-                ['content_type' => 'CP', 'post_id' => $this->post->id],
+            $newNotification = PostNotification::updateOrCreate(
+                ['content_type' => 'CP', 'object_type' => Post::class, 'object_id' => $this->post->id],
                 ['release_at' => today()->format('Y-m-d')]
             );
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            //Recuperation des utilisateurs ayant cet article en favori
-            $userIds =User::query()
-                ->where('notificationSubscribed',true)
-                ->whereHas('myFavoritesPosts',function ($query) {
-                $query->where('post_id','=',$this->post->id);
-            })->get()->pluck('id')->toArray();
+            // Recupération de tous les utilisateurs ayant la rubrique de l'article ou bien l'article lui même en favoris,
+            // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
+            $users = User::query()
+                ->where('id', '!=', auth()->user()->id)
+                ->where('desktop_notifications_granted',true)
+                ->where(function ($query) {
+                    $query
+                        ->where('notify_only_favorites', FALSE)
+                        ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
+                            $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
+                        })
+                        ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
+                            $favoritesPosts->where('post_id', $this->post->id);
+                        });
+                })
+                ->get();
 
-            //Diffusion de la notification
-            broadcast(new NotificationPusher($newNotification, $userIds))->toOthers();
+            // Envoi de la notification aux utilisateurs concernés
+            Notification::send($users, new AppNotification([
+                'type' => $newNotification->content_type,
+                'post' => $this->post
+            ]));
 
             $this->emitSelf('render');
         }

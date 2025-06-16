@@ -3,12 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\CustomFacades\AP;
-use App\Rubric;
-use App\Connection;
+use App\Models\Rubric;
+use App\Models\Connection;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
+    /**
+     * records dayly connection if needed
+     */
+    private function verifyConnectionRecord()
+    {
+        // vérification de l'enregistrement de la connexion
+        $currentUser = auth()->user();
+
+        if (!$currentUser->today_connection_recorded) {
+            // enregistrement de la connexion journalière pour l'utilisateur courant
+            Connection::create([
+                'user_id' => $currentUser->id,
+                'connected_at' => today()->format('Y-m-d')
+            ]);
+        }
+    }
+
     /**
      * return the existing rubric of the current route
      *
@@ -35,7 +52,7 @@ class ViewController extends Controller
      * @param  string|null $mode
      * @return object
      */
-    private function getViewBag(Request $request, string $template = 'posts', string $mode = NULL)
+    private function getViewBag(Request $request, string $template = 'posts', ? string $mode = NULL)
     {
         $route = $request->route();
         $rubric = $this->getRubric($request);
@@ -63,25 +80,19 @@ class ViewController extends Controller
      */
      public function index(Request $request)
     {
-        // vérification de l'enregistrement de la connexion
-        $currentUser = auth()->user();
-
-        if (!$currentUser->today_connection_recorded) {
-            // enregistrement de la connexion journalière pour l'utilisateur courant
-            Connection::create([
-                'user_id' => $currentUser->id,
-                'connected_at' => today()->format('Y-m-d')
-            ]);
-        }
+        $this->verifyConnectionRecord();
 
         $rubric = $this->getRubric($request);
+
         if (
-            is_object($rubric) && $rubric->posts->count() == 1 &&
-            $rubric->posts->first()->released &&
-            session('mode', 'view') == 'view'
+            session('mode', 'view') == 'view' &&
+            is_object($rubric) &&
+            $rubric->posts->count() == 1 &&
+            ($post = $rubric->posts->first())->released
         ) {
-                return redirect()->route('post.index', ['rubric' => $rubric->route(), 'post_id' => $rubric->posts->first()->id]);
+            return redirect()->route('post.index', ['rubric' => $rubric->route(), 'post_id' => $post->id]);
         }
+
         return view("usage.index", ['viewBag' => $this->getViewBag($request)]);
     }
 
@@ -93,6 +104,8 @@ class ViewController extends Controller
      */
     public function readPost(Request $request)
     {
+        $this->verifyConnectionRecord();
+
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'post')]);
     }
 
@@ -104,6 +117,8 @@ class ViewController extends Controller
      */
     public function createPost(Request $request)
     {
+        $this->verifyConnectionRecord();
+
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-post', 'creation')]);
     }
 
@@ -115,6 +130,8 @@ class ViewController extends Controller
      */
     public function editPost(Request $request)
     {
+        $this->verifyConnectionRecord();
+
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-post', 'edition')]);
     }
 
@@ -126,6 +143,8 @@ class ViewController extends Controller
      */
     public function createPersonalApp(Request $request)
     {
+        $this->verifyConnectionRecord();
+
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-app', 'creation')]);
     }
 
@@ -137,6 +156,8 @@ class ViewController extends Controller
      */
     public function editPersonalApp(Request $request)
     {
+        $this->verifyConnectionRecord();
+
         return view("usage.index", ['viewBag' => $this->getViewBag($request, 'edit-app', 'edition')]);
     }
 

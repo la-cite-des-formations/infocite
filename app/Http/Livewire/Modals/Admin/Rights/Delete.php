@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Rights;
 
-use App\Right;
+use App\Models\Right;
 use Livewire\Component;
 
 class Delete extends Component

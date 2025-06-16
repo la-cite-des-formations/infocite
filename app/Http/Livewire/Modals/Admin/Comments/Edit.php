@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Comments;
 
-use App\Comment;
+use App\Models\Comment;
 use Livewire\Component;
 
 class Edit extends Component

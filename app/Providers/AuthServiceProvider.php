@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\CustomFacades\AP;
-use App\Roles;
+use App\Models as Models;
+use App\Policies as Policies;
+use App\Models\Roles;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -15,11 +17,11 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        App::class => AppPolicy::class,
-        Comment::class => CommentPolicy::class,
-        Post::class => PostPolicy::class,
-        Rubric::class => RubricPolicy::class,
-        Group::class => GroupPolicy::class,
+        Models\App::class => Policies\AppPolicy::class,
+        Models\Comment::class => Policies\CommentPolicy::class,
+        Models\Post::class => Policies\PostPolicy::class,
+        Models\Rubric::class => Policies\RubricPolicy::class,
+        Models\Group::class => Policies\GroupPolicy::class,
     ];
 
     /**
@@ -38,6 +40,10 @@ class AuthServiceProvider extends ServiceProvider
             return FALSE;
         });
 
+        Gate::define('receiveDesktopNotifs', function ($user) {
+            return $user->is_staff && $user->desktop_notifications_granted;
+        });
+
         foreach(AP::getModels() as $model) {
             $right = AP::getModelRight($model);
 
@@ -53,9 +59,5 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->hasRole($right->name, $right->roles);
             });
         }
-
-        Gate::define('pin',function($user) {
-            return $user->hasRole('posts', Roles::IS_MODER);
-        });
     }
 }

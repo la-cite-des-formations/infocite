@@ -2,20 +2,20 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\Events\NotificationPusher;
-use App\Group;
+use Livewire\Component;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
-use App\Http\Livewire\WithNotificationListener;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Notification;
-use App\Post;
-use App\Right;
-use App\Roles;
-use App\Rubric;
-use App\User;
-use Livewire\Component;
+use App\Models\Notification as PostNotification;
+use App\Models\Post;
+use App\Models\Group;
+use App\Models\Right;
+use App\Models\Roles;
+use App\Models\Rubric;
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AppNotification;
 
 class EditPostManager extends Component
 {
@@ -23,7 +23,6 @@ class EditPostManager extends Component
     use WithAlert;
     use WithIconpicker;
     use WithPinnedHandling;
-    use WithNotificationListener;
 
     public $backRoute;
     public $currentRubric;
@@ -38,6 +37,7 @@ class EditPostManager extends Component
         'post.content' => 'required|string',
         'post.rubric_id' => 'required',
         'post.published' => '',
+        'post.is_pinned' => '',
         'post.auto_delete' => '',
         'post.published_at' => 'date|nullable',
         'post.expired_at' => 'date|nullable',
@@ -63,9 +63,14 @@ class EditPostManager extends Component
     public function updatedPostPublished() {
         if ($this->post->published) {
             $this->post->published_at = today()->format('Y-m-d');
+            $this->post->is_pinned = $this->post->getOriginal('is_pinned');
         }
         else {
             $this->post->published_at = NULL;
+            $this->post->is_pinned = FALSE;
+            // if ($this->post->is_pinned) {
+            //     $this->switchPinnedPost($this->post->id);
+            // }
         }
         $this->post->expired_at = NULL;
     }
@@ -138,23 +143,24 @@ class EditPostManager extends Component
             ]
         ]);
 
-        // notification associée
-        if ($this->post->published) {
-            $newPostNotification = Notification::query()
+        // enregistrement en bdd de la notification associée si l'article est paru
+        if ($this->post->released) {
+            $newPostNotification = PostNotification::query()
                 ->where('content_type', 'NP')
-                ->where('post_id', $this->post->id);
+                ->where('object_type', Post::class)
+                ->where('object_id', $this->post->id);
 
             if ($newPostNotification->exists()) {
                 $newPostNotification->update(['release_at' => $this->post->published_at]);
 
-                $postNotification = Notification::updateOrCreate(
-                    ['content_type' => 'UP', 'post_id' => $this->post->id],
-                    ['release_at' => $this->post->published_at]
+                $postNotification = PostNotification::updateOrCreate(
+                    ['content_type' => 'UP', 'object_type' => Post::class, 'object_id' => $this->post->id],
+                    ['release_at' => $this->post->updated_at]
                 );
             }
             else {
-                $postNotification = Notification::create(
-                    ['content_type' => 'NP', 'post_id' => $this->post->id, 'release_at' => $this->post->published_at]
+                $postNotification = PostNotification::create(
+                    ['content_type' => 'NP', 'object_type' => Post::class, 'object_id' => $this->post->id, 'release_at' => $this->post->published_at]
                 );
             }
 
@@ -162,23 +168,28 @@ class EditPostManager extends Component
                 ->users()
                 ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            //Boradcasting notification
-            //Recupérer tout les utilisateurs qui ont la rubrique de l'article en favoris OU l'article lui même en favori
-            $currentPostRubricId = Post::query()->where('id',$this->post->id)->pluck('rubric_id')->first();
-            $userIds = User::query()
-                ->where('notificationSubscribed',true)
-                ->whereHas('myFavoritesRubrics', function ($query) use ($currentPostRubricId) {
-                    $query->where('rubric_id', $currentPostRubricId);
+            // Recupération de tous les utilisateurs ayant la rubrique de l'article ou bien l'article lui même en favoris,
+            // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
+            $users = User::query()
+                ->where('id', '!=', auth()->user()->id)
+                ->where('desktop_notifications_granted', TRUE)
+                ->Where(function ($query) {
+                    $query
+                        ->where('notify_only_favorites', FALSE)
+                        ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
+                            $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
+                        })
+                        ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
+                            $favoritesPosts->where('post_id', $this->post->id);
+                        });
                 })
-                ->orWhereHas('myFavoritesPosts',function ($query) {
-                    $query->where('post_id','=',$this->post->id);
-                })
-                ->get()
-                ->pluck('id')
-                ->toArray();
+                ->get();
 
-            //Broadcaster la notification
-            broadcast(new NotificationPusher($postNotification, $userIds))->toOthers();
+            // Envoi de la notification firebase aux utilisateurs concernés
+            Notification::send($users, new AppNotification([
+                'type' => $postNotification->content_type,
+                'post' => $this->post,
+            ]));
         }
 
         // redirection

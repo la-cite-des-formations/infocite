@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
-use App\Connection;
+use App\Models\Connection;
 
 class ConnectionsManager extends Component
 {

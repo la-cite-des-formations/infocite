@@ -2,13 +2,13 @@
 
 namespace App\Http\Livewire;
 
-use App\Stats;
+use App\Models\Stats;
 
 trait WithCharts
 {
     public function drawAllCharts() {
         foreach($this->statsCollection as $stats) {
-            $this->drawCharts($stats['charts'], $stats['filter']);
+            $this->drawCharts($stats['charts'], $stats['filter'] ?? NULL);
         }
     }
 

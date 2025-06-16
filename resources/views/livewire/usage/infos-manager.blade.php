@@ -1,5 +1,5 @@
 <section wire:key='infosView' id="infos" class="services section-bg">
-  @can('edit', ['App\\Post', $rubric->id])
+  @can('edit', ['App\\Models\\Post', $rubric->id])
     <div class="container d-flex flex-column">
         <div class="align-self-end">
             <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
@@ -13,7 +13,7 @@
         <h2 class="title-icon"><i class="material-icons fs-1 me-2">{{ $rubric->icon }}</i>{{ $rubric->title }}</h2>
         <p>{{ $rubric->description }}</p>
     </div>
-    <div class="container m-auto">
+    <div class="container d-flex flex-column align-items-center m-auto">
         <div class="card rounded-pill d-flex flex-row flex-wrap text-wrap infos-card py-5 pl-2">
             <div class="col-12 infos-div mb-4">
                 <div class="d-flex justify-content-center my-auto ml-auto">
@@ -118,21 +118,52 @@
               @endif
             </dl>
         </div>
-        <div class="container d-flex flex-row justify-content-center col-12 mt-4">
-            <p class=" d-flex col-4 align-items-center">Activer / désactiver les notifications</p>
-            <div class="subscribeNotification @if(auth()->user()->notificationSubscribed) enabledNotification @else disabledNotification @endif" >
-                <input type="checkbox" value="None" id="subscribe" name="check" @if(auth()->user()->notificationSubscribed) checked @endif  />
-                <label for="subscribe" wire:click='switchSubscription()'></label>
-                <span class="text-off">OFF</span>
-                <span class="text-on">ON</span>
+      @if($user->is_staff)
+        <div class="mt-4">
+            <div class="form-check form-switch">
+                <input wire:model='user.desktop_notifications_granted' @if($browserDesktopNotificationsDenied) disabled @endif
+                       class="form-check-input" type="checkbox" role="switch" id="switchDesktopNotificationGranted"/>
+                <label for="switchDesktopNotificationGranted">Accepter les notifications de bureau</label>
             </div>
+          @if ($user->desktop_notifications_granted)
+            <div class="ms-5">
+                <div class="form-check">
+                    <input wire:model='user.notify_only_favorites' value=0
+                           class="form-check-input" type="radio" id="radioAllNotifications">
+                    <label class="form-check-label" for="radioAllNotifications">
+                        Toutes les notifications
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input wire:model='user.notify_only_favorites' value=1
+                           class="form-check-input" type="radio" id="radioOnlyFavoritesNotifications">
+                    <label class="form-check-label" for="radioOnlyFavoritesNotifications">
+                        Seulement pour les favoris
+                    </label>
+                </div>
+            </div>
+          @endif
         </div>
+       @if ($browserDesktopNotificationsDenied)
+        <div class="alert alert-danger col-9 mt-2" role="alert">
+            <p>
+                Impossible d'activer les notifications de bureau ! Pour ce faire, autorisez-les
+                dans votre navigateur (si besoin, consultez la vidéo).
+            </p>
+            <h6>Guide : Autoriser manuellement les notifications avec Chrome</h6>
+            <video src="{{ asset('img/unblock_notifications_guide.mp4') }}" controls
+                    width="940" type="video/mp4" poster="{{ asset('img/unblock_notifications_poster.png') }}">
+                    Débloquer les notifications sur Chrome
+            </video>
+        </div>
+       @endif
+      @endif
     </div>
 
     <!-- Mes rubriques favoris -->
     <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
         <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">category</i>Mes rubriques favoris</h3>
-      @if ($favoritesRubrics->count() == 0)
+      @if ($user->rubrics->isEmpty())
         <p class="text-center">Aucune rubrique dans les favoris</p>
       @else
        @foreach ($user->rubrics as $i => $rubric)

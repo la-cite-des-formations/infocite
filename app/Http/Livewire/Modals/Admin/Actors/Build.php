@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Modals\Admin\Actors;
 
-use App\Actor;
-use App\User;
+use App\Models\Actor;
+use App\Models\User;
 use Livewire\Component;
 use App\Http\Livewire\WithAlert;
 use Illuminate\Support\Collection;

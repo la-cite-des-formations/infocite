@@ -1,6 +1,6 @@
 <!-- filtre ... -->
 <div>
-  @can('filterByType', 'App\\App')
+  @can('filterByType', 'App\\Models\\App')
     <div class="input-group">
         <span class="input-group-text text-secondary material-icons md-18" title="Type d'applications">category</span>
         <select wire:model='filter.type' class="form-select" id="app-type-filter">

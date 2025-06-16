@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Modals\Admin\Profiles;
 
-use App\Right;
-use App\User;
+use App\Models\Right;
+use App\Models\User;
 use Livewire\Component;
 
 class Delete extends Component

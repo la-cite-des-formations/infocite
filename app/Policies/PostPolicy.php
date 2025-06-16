@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\CustomFacades\AP;
-use App\Post;
-use App\Roles;
-use App\Rubric;
-use App\User;
+use App\Models\Post;
+use App\Models\Roles;
+use App\Models\Rubric;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PostPolicy
@@ -16,8 +16,8 @@ class PostPolicy
     /**
      * Determine whether the user can read the post (ui).
      *
-     * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Post  $post
      * @return mixed
      */
     public function read(User $user, Post $post)
@@ -38,7 +38,7 @@ class PostPolicy
     /**
      * Determine whether the user can create posts in a specific rubric.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  int  $rubricId
      * @return mixed
      */
@@ -67,7 +67,7 @@ class PostPolicy
     /**
      * Determine whether the user can edit any posts in a specific rubric.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  int  $rubricId
      * @return mixed
      */
@@ -96,7 +96,7 @@ class PostPolicy
     /**
      * Determine whether the user can publish any posts in a specific rubric.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  int  $rubricId
      * @return mixed
      */
@@ -125,8 +125,8 @@ class PostPolicy
     /**
      * Determine whether the user can update the post.
      *
-     * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Post  $post
      * @return mixed
      */
     public function update(User $user, Post $post)
@@ -156,7 +156,7 @@ class PostPolicy
     /**
      * Determine whether the user can delete any posts from a specific rubric.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  int  $rubricId
      * @return mixed
      */
@@ -184,8 +184,8 @@ class PostPolicy
     /**
      * Determine whether the user can delete the post.
      *
-     * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Post  $post
      * @return mixed
      */
     public function delete(User $user, Post $post)
@@ -203,4 +203,15 @@ class PostPolicy
         return FALSE;
     }
 
+    /**
+     * Determine whether the user can pin the post.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Post  $post
+     * @return mixed
+     */
+    public function pin(User $user, Post $post)
+    {
+        return $user->hasRole('posts', Roles::IS_MODER) && $post->released;
+    }
 }

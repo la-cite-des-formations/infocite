@@ -6,9 +6,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithFilter;
 use App\Http\Livewire\WithModal;
-use App\Post;
-use App\Rubric;
-use App\User;
+use App\Models\Post;
+use App\Models\Rubric;
+use App\Models\User;
 
 class PostsManager extends Component
 {

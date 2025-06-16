@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -20,8 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('first_name');
             $table->string('avatar')->nullable()->default(NULL);
             $table->string('google_account')->unique()->nullable()->default(NULL);
-            $table->boolean('is_staff')->default(0);
             $table->boolean('is_frozen')->default(0);
+            $table->boolean('is_staff')->default(0);
             $table->date('account_expires_on')->nullable()->default(NULL);
             $table->date('birthday')->nullable()->default(NULL);
             $table->enum('gender', ['F', 'M'])->nullable()->default(NULL);
@@ -50,4 +50,4 @@ class CreateUsersTable extends Migration
     {
         Schema::dropIfExists('users');
     }
-}
+};

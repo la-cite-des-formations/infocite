@@ -11,7 +11,7 @@
 
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
-  @can('viewAny', 'App\\App')
+  @can('viewAny', 'App\\Models\\App')
     @livewire('usage.apps-manager', ['viewBag' => $viewBag])
   @endcan
 
@@ -23,7 +23,7 @@
                     <p>Saisissez vos mots clés pour rechercher un contenu sur l'intranet</p>
                     <form action="/search">
                         @csrf
-                        <input type="text" name="searchedStr" required>
+                        <input id="searchInput" type="text" name="searchedStr" required>
                         <input type="submit" value="Rechercher" title="Lancer la recherche">
                     </form>
                 </div>

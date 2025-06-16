@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Usage;
 
-use App\Chartnode;
+use App\Models\Chartnode;
 use Livewire\Component;
 
 class OrgChartManager extends Component

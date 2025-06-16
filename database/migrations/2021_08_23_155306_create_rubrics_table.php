@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRubricsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -58,4 +58,4 @@ class CreateRubricsTable extends Migration
         Schema::dropIfExists('group_rubric');
         Schema::dropIfExists('rubrics');
     }
-}
+};

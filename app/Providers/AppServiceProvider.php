@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Notifications\ChannelManager;
+use App\Channels\FcmChannel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,12 +27,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Relation::morphMap([
-            'Group' => 'App\Group',
-            'User' => 'App\User',
+            'Group' => 'App\Models\Group',
+            'User' => 'App\Models\User',
         ]);
+
         session([
             'displayPosts'=>'grid',
             'lastFilter'=>'allPosts',
         ]);
+
+        $this->app->make(ChannelManager::class)->extend('fcm', function () {
+            return new FcmChannel;
+        });
     }
 }

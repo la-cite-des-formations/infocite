@@ -2,12 +2,12 @@
 
 namespace App\Http\Livewire\Modals\Admin\Groups;
 
-use App\App;
-use App\CustomFacades\AP;
-use App\Group;
-use App\Http\Livewire\WithAlert;
-use App\User;
+use App\Models\App;
+use App\Models\Group;
+use App\Models\User;
 use Livewire\Component;
+use App\CustomFacades\AP;
+use App\Http\Livewire\WithAlert;
 
 class Edit extends Component
 {

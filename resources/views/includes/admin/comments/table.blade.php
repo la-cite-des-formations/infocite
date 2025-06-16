@@ -2,9 +2,9 @@
 
 @section('table-head')
     <tr class="row">
-        <th scope="col" class="col-5 @cannot('deleteAny', 'App\\Comment') p-2 @endcannot">
+        <th scope="col" class="col-5 @cannot('deleteAny', 'App\\Models\\Comment') p-2 @endcannot">
             <div class="d-flex align-items-center">
-              @can('deleteAny', 'App\\Comment')
+              @can('deleteAny', 'App\\Models\\Comment')
                 <div class="btn-group dropstart">
                     <button type="button" class="d-flex btn btn-sm btn-dark dropdown-toggle px-1" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" title="Gérer la sélection des commentaires">
@@ -45,7 +45,7 @@
         </th>
         <th scope="col" class="col d-flex justify-content-end">
             <div class="btn-toolbar" role="toolbar">
-              @can('deleteAny', 'App\\Comment')
+              @can('deleteAny', 'App\\Models\\Comment')
                 <button wire:click="showModal('delete', getSelectionIDs('comment-cbx'))"
                         class="d-flex btn btn-sm btn-danger" title="Supprimer les commentaires selectionnés">
                     <span class="material-icons">delete</span>
@@ -62,7 +62,7 @@
    @canany(['view', 'delete'], $comment)
     <tr class="row">
         <td scope="row" class="col-5">
-          @can('deleteAny', 'App\\Comment')
+          @can('deleteAny', 'App\\Models\\Comment')
             <div class="form-check">
                 <input type="checkbox" class="form-check-input comment-cbx" id="{{ $comment->id }}">
                 <label  class="form-check-label text-primary"
