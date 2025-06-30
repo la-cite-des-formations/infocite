@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Notifications\ChannelManager;
 use App\Channels\FcmChannel;
+use App\Models\Post;
+use App\Observers\PostObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Post::observe(PostObserver::class);
+
         Relation::morphMap([
             'Group' => 'App\Models\Group',
             'User' => 'App\Models\User',
