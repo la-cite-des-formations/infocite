@@ -78,6 +78,7 @@ class EditPostManager extends Component
     public function save($redirectionRoute = 'post.edit') {
         $this->post->published_at = $this->post->published_at ?: NULL;
         $this->post->expired_at = $this->post->expired_at ?: NULL;
+        $this->post->is_pinned = $this->post->is_pinned ?? FALSE;
 
         $this->validate();
 
