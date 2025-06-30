@@ -8,10 +8,9 @@ class PostObserver
 {
     public function deleting(Post $post)
     {
-        if (method_exists($post, 'isForceDeleting') && $post->isForceDeleting()) {
-            $post->notifications()->forceDelete();
-        } else {
-            $post->notifications()->delete();
+        foreach ($post->notifications as $notification) {
+            $notification->users()->detach();
+            $notification->delete();
         }
     }
 }
