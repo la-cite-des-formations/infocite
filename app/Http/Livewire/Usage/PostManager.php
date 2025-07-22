@@ -71,14 +71,18 @@ class PostManager extends Component
             );
             $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            // Recupération de tous les utilisateurs ayant la rubrique de l'article ou bien l'article lui même en favoris,
-            // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
+            // Recupération de tous les utilisateurs notifiable via Firebase,
+            // sauf l'utilisateur courant à l'origine du commentaire
             $users = User::query()
+                ->whereHas('employee', function ($employee) {
+                    $employee->where('desktop_notifications_granted', TRUE);
+                })
                 ->where('id', '!=', auth()->user()->id)
-                ->where('desktop_notifications_granted',true)
                 ->where(function ($query) {
                     $query
-                        ->where('notify_only_favorites', FALSE)
+                        ->whereHas('employee', function ($employee) {
+                            $employee->where('notify_only_favorites', FALSE);
+                        })
                         ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
                             $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
                         })

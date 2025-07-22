@@ -19,7 +19,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['name', 'first_name', 'email', 'password', 'desktop_notifications_granted', 'notify_only_favorites', ];
+    protected $fillable = ['name', 'first_name', 'email', 'password', ];
 
     /**
      * The attributes that aren't mass assignable.
@@ -42,9 +42,18 @@ class User extends Authenticatable
      */
     protected $casts = [
         'account_expires_on' => 'date:Y-m-d',
-        'birthday' => 'date:Y-m-d',
         'email_verified_at' => 'datetime',
     ];
+
+    public function learner()
+    {
+        return $this->hasOne(Learner::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
 
     public function actor() {
         return $this
@@ -101,11 +110,6 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC')
             ->withPivot(['rubric_id']);
 
-    }
-
-    public function fcmTokens() {
-        return $this
-            ->belongsToMany(FcmToken::class);
     }
 
     public function myNotifications() {
@@ -253,6 +257,14 @@ class User extends Authenticatable
         });
 
         return $myGroups;
+    }
+
+    /**
+     * Tous les numéros de téléphone de l'utilisateur
+     */
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
     }
 
     public function groupsList(? array $types = NULL, string $format = "%%", string $noResult = '')
@@ -475,14 +487,17 @@ class User extends Authenticatable
 
     public function getNotificationStatusAttribute() {
         switch (TRUE) {
-            case !$this->desktop_notifications_granted:
+            case $this->employee && !$this->employee->desktop_notifications_granted:
                 return "Aucune";
 
-            case $this->desktop_notifications_granted && !$this->notify_only_favorites:
+            case $this->employee && $this->employee->desktop_notifications_granted && !$this->employee->notify_only_favorites:
                 return "Toutes";
 
-            case $this->desktop_notifications_granted && $this->notify_only_favorites:
+            case $this->employee && $this->employee->desktop_notifications_granted && $this->employee->notify_only_favorites:
                 return "Favoris";
+
+            default:
+                return "Non disponibles";
         }
     }
 

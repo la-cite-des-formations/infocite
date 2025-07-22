@@ -169,14 +169,18 @@ class EditPostManager extends Component
                 ->users()
                 ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
 
-            // Recupération de tous les utilisateurs ayant la rubrique de l'article ou bien l'article lui même en favoris,
+            // Recupération de tous les utilisateurs notifiables via Firebase,
             // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
             $users = User::query()
                 ->where('id', '!=', auth()->user()->id)
-                ->where('desktop_notifications_granted', TRUE)
-                ->Where(function ($query) {
+                ->whereHas('employee', function ($employee) {
+                    $employee->where('desktop_notifications_granted', TRUE);
+                })
+                ->where(function ($query) {
                     $query
-                        ->where('notify_only_favorites', FALSE)
+                        ->whereHas('employee', function ($employee) {
+                            $employee->where('notify_only_favorites', FALSE);
+                        })
                         ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
                             $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
                         })
