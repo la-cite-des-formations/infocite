@@ -30,22 +30,22 @@
     </div>
     <div class="alert alert-info mb-3">
         <dl class="row m-0">
-          @if(!empty($user->birthday))
+          @if(!empty($user->learner?->birthday))
             <!-- Né(e) le __/__/____ -->
             <dt class="col-3 text-end ps-0">
-                {{ empty($user->gender) ? 'Naissance' : ($user->gender == 'M' ? 'Né le' : 'Née le') }}
+                {{ empty($user->learner?->gender) ? 'Naissance' : ($user->learner?->gender == 'M' ? 'Né le' : 'Née le') }}
             </dt>
-            <dd class="col-9 ps-0">{{ $user->birthday->format('d/m/Y') }}</dd>
+            <dd class="col-9 ps-0">{{ $user->learner?->birthday->format('d/m/Y') }}</dd>
           @endif
           @if(!empty($user->status))
             <!-- Statut __________  ...  -->
             <dt class="col-3 text-end ps-0">Statut</dt>
-            <dd class="col-{{ 2 + 7 * empty($user->quality)}} ps-0">{{ $user->status }}</dd>
+            <dd class="col-{{ 2 + 7 * empty($user->learner?->quality)}} ps-0">{{ $user->learner?->status }}</dd>
           @endif
           @if(!empty($user->quality))
             <!-- ...  Qualité __________  -->
             <dt class="col-3 text-end">Qualité</dt>
-            <dd class="col-{{ 4 + 5 * empty($user->status) }} ps-0">{{ AP::getQuality($user->quality) }}</dd>
+            <dd class="col-{{ 4 + 5 * empty($user->learner?->status) }} ps-0">{{ AP::getQuality($user->learner?->quality) }}</dd>
           @endif
           @if($user->groupsList(['P']))
             <!-- Équipe _________  -->

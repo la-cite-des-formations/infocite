@@ -14,12 +14,11 @@ class FcmToken extends Model
     protected $casts = [];
 
     public function users() {
-        return $this
-            ->belongsToMany(User::class);
+        return $this->belongsToMany(Employee::class);
     }
 
     public function isMine() {
-        return $this->users->contains('id', auth()->user()->id);
+        return $this->users?->contains('user_id', auth()->user()->id);
     }
 
     public function getIsInvalidAttribute()

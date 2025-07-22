@@ -37,7 +37,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Champs de la table supplémentaires
             $table->boolean('desktop_notifications_granted')->default(1)->after('is_staff');
-            $table->boolean('notify_only_favorites')->default(0);
+            $table->boolean('notify_only_favorites')->default(0)->after('desktop_notifications_granted');
             $table->unsignedInteger('default_fcm_token_id')->nullable()->after('remember_token');
 
             // Nouvelle clé étrangère

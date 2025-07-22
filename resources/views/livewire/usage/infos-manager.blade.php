@@ -25,13 +25,13 @@
                       @endif
                     </div>
                     <div class="my-auto">
-                        <h5>{{ "$user->first_name $user->name" }}</h5>
+                        <h5>{{ "$user->identity" }}</h5>
                       @if(!empty($user->google_account))
                         <a class="alert-link" href="mailto:{{ $user->google_account }}" role="button">{{ $user->google_account }}</a>
                       @endif
                     </div>
                     <div class="ml-auto my-auto">
-                        <span class="material-icons-outlined ms-1">@if($user->is_staff) corporate_fare @else school @endif</span>
+                        <span class="material-icons-outlined ms-1">@if($employee) corporate_fare @else school @endif</span>
                     </div>
                 </div>
               @if (empty($user->code_ypareo))
@@ -39,31 +39,29 @@
               @endif
             </div>
             <dl class="row col-12 col-xl">
-                <dt class="col-6 text-end" >{{ $user->gender == 'F' ? 'Mme.' : 'M.' }}</dt>
-                <dd class="col-6 text-start">{{ "$user->first_name $user->name" }}</dd>
-              @if(!empty($user->birthday))
+              @if(!empty($user->learner?->birthday))
                 <!-- Né(e) le __/__/____ -->
                 <dt class="col-6 text-end">
-                    {{ empty($user->gender) ? 'Naissance' : ($user->gender == 'M' ? 'Né le' : 'Née le') }}
+                    {{ empty($user->learner?->gender) ? 'Naissance' : ($user->learner?->gender == 'M' ? 'Né le' : 'Née le') }}
                 </dt>
-                <dd class="col-6 text-start">{{ $user->birthday->format('d/m/Y') }}</dd>
+                <dd class="col-6 text-start">{{ $user->learner?->birthday->format('d/m/Y') }}</dd>
               @endif
               @if(count($user->profiles) > 0)
-                <dt class="col-6 text-end">Status</dt>
+                <dt class="col-6 text-end">Profil</dt>
                 <div class="col-6 text-start">
-                    @foreach($user->profiles as $profile)
-                    <dd value="{{ $profile->id }}" class="col-12">
+                  @foreach($user->profiles as $profile)
+                    <dd class="col-12">
                         {{ $profile->first_name }}
                     </dd>
-                    @endforeach
+                  @endforeach
                 </div>
               @endif
-              @if(!empty($user->language))
+              @if(!empty($user->learner?->language))
                 <!-- Language -->
                 <dt class="col-6 text-end">Langue</dt>
-                <dd class="col-6 text-start">{{ $user->language }}</dd>
+                <dd class="col-6 text-start">{{ $user->learner?->language }}</dd>
               @endif
-              @if(!$user->is_staff)
+              @if(! $employee)
                 <!-- Email _____@____.__ -->
                 <dt class="col-6 text-end">Email</dt>
                @if(empty($user->email))
@@ -72,10 +70,10 @@
                 <a href="mailto:{{ $user->email }}" class="col-6 text-start">{{ $user->email }}</a>
                @endif
               @endif
-              @if(!empty($user->quality))
+              @if(!empty($user->learner?->quality))
                 <!-- ...  Qualité __________  -->
                 <dt class="col-6 col-sm-3 text-end">Qualité</dt>
-                <dd class="col-6 col-sm-9 text-start">{{ AP::getQuality($user->quality) }}</dd>
+                <dd class="col-6 col-sm-9 text-start">{{ AP::getQuality($user->learner?->quality) }}</dd>
               @endif
             </dl>
           @if(!empty($user->code_ypareo))
@@ -99,9 +97,9 @@
             <dl class="row col-12 col-xl text-wrap pe-3">
               @if($user->groupsList(['P']))
                 <!-- Équipe _________  -->
-                <dt class="col-6 col-sm-4 text-end dt-class">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
+                <dt class="col-6 col-sm-4 text-end dt-class">{{ $user->groups(['E'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
                 <dd class="col-6 col-sm-8 text-start">
-                    {{ $user->groupsList(['P']) }}
+                    {{ $user->groupsList(['E']) }}
                 </dd>
               @endif
               @if($user->functionsList(['P']))
@@ -109,33 +107,33 @@
                 <dt class="col-6 col-sm-4 text-end">Fonction</dt>
                 <dd class="col-6 col-sm-8 text-start">{{ $user->functionsList(['P']) }}</dd>
               @endif
-              @if($user->groupsList(['C']) || $user->groupsList(['E']))
+              @if($user->groupsList(['C']) || $user->groupsList(['F']))
                 <!-- Classe(s) ______, ______, ... -->
-                <dt class="col-6 col-sm-4 text-end dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['E']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
+                <dt class="col-6 col-sm-4 text-end dt-class">{{ $user->groups(['C']) -> count() + $user->groups(['F']) -> count() == 1 ? 'Classe' : 'Classes'}}</dt>
                 <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['C']) }}</dd>
                 <dt class="col-6 col-sm-4"></dt>
-                <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['E']) }}</dd>
+                <dd class="col-6 col-sm-8 text-start">{{ $user->groupsList(['F']) }}</dd>
               @endif
             </dl>
         </div>
-      @if($user->is_staff)
+      @if($employee)
         <div class="mt-4">
             <div class="form-check form-switch">
-                <input wire:model='user.desktop_notifications_granted' @if($browserDesktopNotificationsDenied) disabled @endif
+                <input wire:model='employee.desktop_notifications_granted' @if($browserDesktopNotificationsDenied) disabled @endif
                        class="form-check-input" type="checkbox" role="switch" id="switchDesktopNotificationGranted"/>
                 <label for="switchDesktopNotificationGranted">Accepter les notifications de bureau</label>
             </div>
-          @if ($user->desktop_notifications_granted)
+          @if ($employee->desktop_notifications_granted)
             <div class="ms-5">
                 <div class="form-check">
-                    <input wire:model='user.notify_only_favorites' value=0
+                    <input wire:model='employee.notify_only_favorites' value=0
                            class="form-check-input" type="radio" id="radioAllNotifications">
                     <label class="form-check-label" for="radioAllNotifications">
                         Toutes les notifications
                     </label>
                   </div>
                   <div class="form-check">
-                    <input wire:model='user.notify_only_favorites' value=1
+                    <input wire:model='employee.notify_only_favorites' value=1
                            class="form-check-input" type="radio" id="radioOnlyFavoritesNotifications">
                     <label class="form-check-label" for="radioOnlyFavoritesNotifications">
                         Seulement pour les favoris
