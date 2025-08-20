@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('type', ['external', 'internal', 'mobile']);
             $table->string('number');
-            $table->enum('use', ['tous', 'annuaire', 'signature']);
+            $table->enum('target', ['tous', 'annuaire', 'signature']);
             $table->timestamps();
         });
     }

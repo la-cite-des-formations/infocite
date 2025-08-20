@@ -10,7 +10,7 @@ class Phone extends Model
         'user_id',
         'type',
         'number',
-        'use',
+        'target',
     ];
 
     /**
