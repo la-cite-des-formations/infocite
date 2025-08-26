@@ -29,6 +29,15 @@ class Employee extends Model
      */
     public $timestamps = FALSE;
 
+    public function getLocationAttribute() {
+        $items = [];
+
+        if ($this->building) $items[] = $this->building;
+        if ($this->office) $items[] = $this->office;
+
+        return implode(' - ', $items);
+    }
+
     /**
      * Compte utilisateur associé
      */
