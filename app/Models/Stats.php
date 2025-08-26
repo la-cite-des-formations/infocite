@@ -49,8 +49,7 @@ class Stats
                 [
                     'c' => [
                         ['v' => 'Aucune'],
-                        ['v' => User::
-                            where('is_staff', TRUE)->
+                        ['v' => Employee::
                             where('desktop_notifications_granted', FALSE)->
                             get()->count()],
                     ]
@@ -58,8 +57,7 @@ class Stats
                 [
                     'c' => [
                         ['v' => 'Toutes'],
-                        ['v' => User::
-                            where('is_staff', TRUE)->
+                        ['v' => Employee::
                             where('desktop_notifications_granted', TRUE)->
                             where('notify_only_favorites', FALSE)->
                             get()->count()],
@@ -68,8 +66,7 @@ class Stats
                 [
                     'c' => [
                         ['v' => 'Favoris'],
-                        ['v' => User::
-                            where('is_staff', TRUE)->
+                        ['v' => Employee::
                             where('desktop_notifications_granted', TRUE)->
                             where('notify_only_favorites', TRUE)->
                             get()->count()],

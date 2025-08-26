@@ -519,26 +519,21 @@ class User extends Authenticatable
                 return "Apprenant{$this->groupsList(['C'], ' (%%)')}";
 
             case $header === 'Classe' :
-            case $header === 'Service' :
             case $header === 'Groupes' :
                 return $this->groupsList([$groupType], '%%', '-');
 
-            case $header === 'Processus' :
-                return $this->processesList('%%', '-');
+            case $header === 'Service' :
+                return $this->groupsList(['E']);
 
-            case $header === 'Fonction' && !$groupId :
-                return $this->functionsList(['P']) ?: $this->groupsList(['P'], '(%%)');
-
-            case $header === 'Fonction' && $groupId && $groupType !== 'E':
-                return $this->function($groupId, '%%', '-');
+            case $header === 'Fonction' && (!$groupId || ($groupId && $groupType === 'F')):
+                return  $this->groupsList(['E']).($this->functionsList(['E'], " (%%)") ?: $this->groupsList(['P'], ' (%%)'));
 
             case $header === 'Fonction' && $groupId && $groupType === 'E':
-                $groupFunction = $this->function($groupId);
-                return (new Collection([$this->functionsList(['P']) ?: $this->groupsList(['P'], '(%%)')]))
-                    ->when($groupFunction, function ($collection) use ($groupFunction) {
-                        return $collection->push($groupFunction);
-                    })
-                    ->implode(', ');
+                return $this->functionsList(['E']) ?: $this->groupsList(['P']);
+
+            case $header === 'Fonction' && $groupId && $groupType !== 'E':
+                return $this->functionsList(['C'], '%%', '-');
+
         }
     }
 

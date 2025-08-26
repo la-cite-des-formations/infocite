@@ -131,12 +131,12 @@ class AP // Application Parameters
         ],
         'P' => [
             'withoutGroupId' => [
-                'icon' => 'corporate_fare',
-                'header' => 'Service'
-            ],
-            'withGroupId' => [
                 'icon' => 'build',
                 'header' => 'Fonction'
+            ],
+            'withGroupId' => [
+                'icon' => 'corporate_fare',
+                'header' => 'Service'
             ],
         ],
         'P+' => [
@@ -188,11 +188,11 @@ class AP // Application Parameters
         ],
         'E' => [
             'icon' => 'corporate_fare',
-            'choiceLabel' => 'Choisir une équipe pédagogique...',
+            'choiceLabel' => 'Choisir un service...',
             'dtLabel' => 'Equipes pédagogiques'
         ],
         'P' => [
-            'icon' => 'corporate_fare',
+            'icon' => 'build',
             'choiceLabel' => 'Choisir une fonction...',
             'dtLabel' => 'Fonctions'
         ],
