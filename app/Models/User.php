@@ -267,6 +267,13 @@ class User extends Authenticatable
         return $this->hasMany(Phone::class);
     }
 
+    /**
+     * Numéro de téléphone de l'utilisateur d'un type en particulier
+     */
+    public function phone($type) {
+        return $this->phones->firstWhere('type', $type);
+    }
+
     public function groupsList(? array $types = NULL, string $format = "%%", string $noResult = '')
     {
         $result = $this
