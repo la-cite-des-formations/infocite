@@ -31,13 +31,14 @@ const initEditor = function () {
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
             'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media', 'nonbreaking',
-            'save', 'table', 'directionality', 'wordcount', /*'emoticons',*/ 'template',
+            'save', 'table', 'directionality', 'wordcount', 'emoticons', 'template',
         ],
         image_advtab: true,
         contextmenu: false,
         toolbar: [
-            "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media  | charmap | searchreplace preview code fullscreen"
+            "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media  | emoticons charmap | searchreplace preview code fullscreen"
         ],
+        entity_encoding: 'raw',
         video_template_callback: function(data) {
             console.log(data);
                 return  '<div class="embed-responsive embed-responsive-4by3">' +
