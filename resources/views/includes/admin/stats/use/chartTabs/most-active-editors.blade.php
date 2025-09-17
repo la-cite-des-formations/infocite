@@ -89,4 +89,3 @@
     <div class="alert alert-warning">Aucune données statistiques correspondantes.</div>
   @endif
 </div>
-<hr class='m-5'>

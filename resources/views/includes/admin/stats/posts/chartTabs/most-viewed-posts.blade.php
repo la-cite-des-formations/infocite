@@ -2,14 +2,14 @@
     <div class='container'>
         <div class='row'>
             <div class='col'>
-                <h5 class='fw-bold'>Top 10 des articles les plus commentés</h5>
+                <h5 class='fw-bold'>Top 10 des articles les plus lus</h5>
                 <p>(cliquer sur un secteur pour afficher le détail)</p>
             </div>
             <form class='col-5'>
                 <div class='row mb-1'>
-                    <label for='mostCommentedPostsReaderTypeFilter' class='col pe-2 col-form-label text-end'>Lecteurs :</label>
+                    <label for='mostViewedPostsReaderTypeFilter' class='col pe-2 col-form-label text-end'>Lecteurs :</label>
                     <div class='col px-0'>
-                        <select id='mostCommentedPostsReaderTypeFilter' wire:model='statsCollection.mostCommentedPosts.filter.readerType'
+                        <select id='mostViewedPostsReaderTypeFilter' wire:model='statsCollection.mostViewedPosts.filter.readerType'
                                 class='form-select' aria-label='Filtrer les lecteurs'>
                             <option value="all">Tous</option>
                             <option value="staff">Personnel</option>
@@ -18,9 +18,9 @@
                     </div>
                 </div>
                 <div class='row mb-1'>
-                    <label for='mostCommentedPostsRubricIdFilter' class='col pe-2 col-form-label text-end'>Rubrique :</label>
+                    <label for='mostViewedPostsRubricIdFilter' class='col pe-2 col-form-label text-end'>Rubrique :</label>
                     <div class='col px-0'>
-                        <select id='mostCommentedPostsRubricIdFilter' wire:model='statsCollection.mostCommentedPosts.filter.rubric_id'
+                        <select id='mostViewedPostsRubricIdFilter' wire:model='statsCollection.mostViewedPosts.filter.rubric_id'
                                 class='form-select' aria-label='Filtrer les rubriques'>
                             <option label='Choisir une rubrique...'></option>
                               @foreach ($rubrics as $rubric)
@@ -33,9 +33,9 @@
         </div>
     </div>
     <div class='row'>
-        <div wire:ignore id='topTenCommentedPostsChart' class='col' style="height:500px;"></div>
-        <div id='topThreeCommentedPostsList' class='col my-auto'>
-          @foreach($commentedPostsTop3 as $i => $post)
+        <div wire:ignore id='viewedPostsTop10Chart' class='col' style="height:500px;"></div>
+        <div id='viewedPostsTop3' class='col my-auto'>
+          @foreach($viewedPostsTop3 as $i => $post)
             <div class='d-flex'>
                 <div class='rounded-circle mt-1 me-2'
                      style='background-color: {{ $gcColors[$i] }}; height: 12px; min-width: 12px; max-width: 12px;'>&nbsp</div>
@@ -46,13 +46,13 @@
     </div>
 </div>
 <div class='mt-1 mb-3 d-flex justify-content-center'>
-    <button wire:click="toggleButton('mostCommentedPosts')" class='btn btn-success' type="button"
-            data-bs-toggle="collapse" data-bs-target="#mostCommentedPostsTable"
-            aria-expanded="{{ $statsCollection['mostCommentedPosts']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="mostCommentedPostsTable">
-        {{ $statsCollection['mostCommentedPosts']['buttonLabel'] }}
+    <button wire:click="toggleButton('mostViewedPosts')" class='btn btn-success' type="button"
+            data-bs-toggle="collapse" data-bs-target="#mostViewedPostsTable"
+            aria-expanded="{{ $statsCollection['mostViewedPosts']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="mostViewedPostsTable">
+        {{ $statsCollection['mostViewedPosts']['buttonLabel'] }}
     </button>
 </div>
-<div id='mostCommentedPostsTable' class="container collapse {{ $statsCollection['mostCommentedPosts']['buttonLabel'] == 'Voir plus...' ? '' : 'show'}}">
+<div id='mostViewedPostsTable' class="container collapse {{ $statsCollection['mostViewedPosts']['buttonLabel']  == 'Voir plus...' ? '' : 'show'}}">
     <table class="table table-sm table-hover admin-table">
         <thead class="table-dark">
             <tr class="row">
@@ -71,26 +71,26 @@
                 <th scope="col" class="col py-2">
                     <div class="d-flex align-items-center">
                         <span class="material-icons m-0">numbers</span>
-                        <div class="ms-1">Nombre de commentaires</div>
+                        <div class="ms-1">Nombre de vues</div>
                     </div>
                 </th>
             </tr>
         </thead>
         <tbody>
-          @foreach ($mostCommentedPosts as $post)
+          @foreach ($mostViewedPosts as $post)
             <tr class='row'>
                 <td class='col'>{{ $post->title }}</td>
                 <td class='col'>{{ $post->rubric }}</td>
-                <td class='col'>{{ $post->comments_nb }}</td>
+                <td class='col'>{{ $post->views_nb }}</td>
             </tr>
           @endforeach
         </tbody>
     </table>
-  @if($mostCommentedPosts->isNotEmpty())
+  @if($mostViewedPosts->isNotEmpty())
     @include('includes.pagination', [
-        'elements' => $mostCommentedPosts,
-        'perPageOptions' => $statsCollection['mostCommentedPosts']['perPageOptions'],
-        'perPage' => 'statsCollection.mostCommentedPosts.perPage',
+        'elements' => $mostViewedPosts,
+        'perPageOptions' => $statsCollection['mostViewedPosts']['perPageOptions'],
+        'perPage' => 'statsCollection.mostViewedPosts.perPage',
     ])
   @else
     <div class="alert alert-warning">Aucune données statistiques correspondantes.</div>

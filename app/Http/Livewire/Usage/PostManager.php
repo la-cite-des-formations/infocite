@@ -39,8 +39,9 @@ class PostManager extends Component
         session(['appsBackRoute' => request()->getRequestUri()]);
         $this->setMode();
         $this->post = Post::find($viewBag->post_id);
+        $this->post->ensureInteraction('view');
         $this->post->readers()->syncWithoutDetaching([
-            auth()->user()->id => [
+            auth()->id() => [
                 'is_read' => TRUE
             ]
         ]);
@@ -63,6 +64,7 @@ class PostManager extends Component
 
         if ($comment) {
             $this->post->comments()->save($comment);
+            $this->post->ensureInteraction('comment');
 
             // notification associée
             $newNotification = PostNotification::updateOrCreate(

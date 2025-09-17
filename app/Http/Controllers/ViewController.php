@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CustomFacades\AP;
 use App\Models\Rubric;
-use App\Models\Connection;
+use App\Models\Interaction;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller
@@ -17,11 +17,12 @@ class ViewController extends Controller
         // vérification de l'enregistrement de la connexion
         $currentUser = auth()->user();
 
-        if (!$currentUser->today_connection_recorded) {
+        if (!$currentUser->connected_today) {
             // enregistrement de la connexion journalière pour l'utilisateur courant
-            Connection::create([
+            Interaction::create([
                 'user_id' => $currentUser->id,
-                'connected_at' => today()->format('Y-m-d')
+                'type' => 'connection',
+                'interaction_at' => today()->format('Y-m-d')
             ]);
         }
     }

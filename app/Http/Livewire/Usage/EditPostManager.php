@@ -136,6 +136,7 @@ class EditPostManager extends Component
 
         // sauvegarde
         $this->post->save();
+        $this->post->ensureInteraction('edit');
 
         // mise en favoris de l'article pour l'éditeur
         $this->post->readers()->syncWithoutDetaching([

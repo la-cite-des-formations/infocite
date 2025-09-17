@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
 use App\Models\Rubric;
-use App\Models\Post;
+use App\Statistics\Posts;
 
 class ViewingManager extends Component
 {
@@ -19,13 +19,14 @@ class ViewingManager extends Component
     public $statsPage = 'viewing';
     public $statsCollection = [
         'mostViewedPosts' => [
+            'bladeFilePath' => 'posts.most-viewed-posts',
             'filter' => [
                 'readerType' => 'all',
                 'rubric_id' => NULL,
             ],
             'charts' => [
-                'topTenViewedPosts' => [
-                    'target' => 'topTenViewedPostsChart',
+                'viewedPostsTop10' => [
+                    'target' => 'viewedPostsTop10Chart',
                     'event' => 'drawRingChart',
                 ],
             ],
@@ -34,13 +35,14 @@ class ViewingManager extends Component
             'perPage' => 10,
         ],
         'mostCommentedPosts' => [
+            'bladeFilePath' => 'posts.most-commented-posts',
             'filter' => [
                 'readerType' => 'all',
                 'rubric_id' => NULL,
             ],
             'charts' => [
-                'topTenCommentedPosts' => [
-                    'target' => 'topTenCommentedPostsChart',
+                'commentedPostsTop10' => [
+                    'target' => 'commentedPostsTop10Chart',
                     'event' => 'drawRingChart',
                 ],
             ],
@@ -49,6 +51,48 @@ class ViewingManager extends Component
             'perPage' => 10,
         ],
     ];
+    public $chartTabs = [
+        'name' => 'chartTabs',
+        'currentTab' => 'most-viewed-posts',
+        'panesPath' => 'includes.admin.stats.posts',
+        'withMarge' => TRUE,
+        'tabs' => [
+            'most-viewed-posts' => [
+                'icon' => 'local_library',
+                'title' => "Articles lus",
+                'hidden' => FALSE,
+            ],
+            'most-commented-posts' => [
+                'icon' => 'comment_bank',
+                'title' => "Articles commentés",
+                'hidden' => FALSE,
+            ],
+        ],
+    ];
+
+    public function setCurrentTab($tabsSystem, $tab) {
+        if ($this->$tabsSystem['currentTab'] === $tab) return;
+
+        $this->$tabsSystem['currentTab'] = $tab;
+
+        switch ($tab) {
+            case 'most-viewed-posts':
+                $this->drawCharts(
+                    $this->statsCollection['mostViewedPosts']['charts'],
+                    $this->statsCollection['mostViewedPosts']['filter']
+                );
+
+                $this->resetPage('mostViewedPostsPage');
+            break;
+            case 'most-commented-posts':
+                $this->drawCharts(
+                    $this->statsCollection['mostCommentedPosts']['charts'],
+                    $this->statsCollection['mostCommentedPosts']['filter']
+                );
+
+                $this->resetPage('mostCommentedPostsPage');
+        }
+    }
 
     public function updatedStatsCollectionMostViewedPostsFilterReaderType() {
         $this->drawCharts(
@@ -94,8 +138,8 @@ class ViewingManager extends Component
 
     public function render()
     {
-        $allViewedPosts = Post::allViewed($this->statsCollection['mostViewedPosts']['filter']);
-        $allCommentedPosts = Post::allCommented($this->statsCollection['mostCommentedPosts']['filter']);
+        $allViewedPosts = Posts::allViewed($this->statsCollection['mostViewedPosts']['filter']);
+        $allCommentedPosts = Posts::allCommented($this->statsCollection['mostCommentedPosts']['filter']);
 
         return view('livewire.admin.stats-viewer', [
             'rubrics' => Rubric::allWithPosts(),

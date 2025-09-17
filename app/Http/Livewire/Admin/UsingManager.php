@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
 use App\Models\Rubric;
-use App\Models\User;
+use App\Statistics\Users;
 
 class UsingManager extends Component
 {
@@ -62,6 +62,7 @@ class UsingManager extends Component
             'perPage' => 10,
         ],
         'notificationsUse' => [
+            'filter' => [],
             'charts' => [
                 'notificationsUse' => [
                     'target' => 'notificationsUseChart',
@@ -70,6 +71,73 @@ class UsingManager extends Component
             ],
         ],
     ];
+    public $chartTabs = [
+        'name' => 'chartTabs',
+        'currentTab' => 'most-active-editors',
+        'panesPath' => 'includes.admin.stats.use',
+        'withMarge' => TRUE,
+        'tabs' => [
+            'most-active-editors' => [
+                'icon' => 'history_edu',
+                'title' => "Éditeurs",
+                'hidden' => FALSE,
+            ],
+            'most-active-commentators' => [
+                'icon' => '3p',
+                'title' => "Commentateurs",
+                'hidden' => FALSE,
+            ],
+            'personal-apps-users' => [
+                'icon' => 'apps',
+                'title' => "applications personnelles",
+                'hidden' => FALSE,
+            ],
+            'notifications-use' => [
+                'icon' => 'notifications',
+                'title' => "notifications de bureau",
+                'hidden' => FALSE,
+            ],
+        ],
+    ];
+
+    public function setCurrentTab($tabsSystem, $tab) {
+        if ($this->$tabsSystem['currentTab'] === $tab) return;
+
+        $this->$tabsSystem['currentTab'] = $tab;
+
+        switch ($tab) {
+            case 'most-active-editors':
+                $this->drawCharts(
+                    $this->statsCollection['mostActiveEditors']['charts'],
+                    $this->statsCollection['mostActiveEditors']['filter']
+                );
+
+                $this->resetPage('mostActiveEditorsPage');
+            break;
+            case 'most-active-commentators':
+                $this->drawCharts(
+                    $this->statsCollection['mostActiveCommentators']['charts'],
+                    $this->statsCollection['mostActiveCommentators']['filter']
+                );
+
+                $this->resetPage('mostActiveCommentatorsPage');
+            break;
+            case 'personal-apps-users':
+                $this->drawCharts(
+                    $this->statsCollection['personalAppsUsers']['charts'],
+                    $this->statsCollection['personalAppsUsers']['filter']
+                );
+
+                $this->resetPage('personalAppsUsersPage');
+            break;
+            case 'notifications-use':
+                $this->drawCharts(
+                    $this->statsCollection['notificationsUse']['charts'],
+                    $this->statsCollection['notificationsUse']['filter']
+                );
+        }
+    }
+
 
     public function updatedStatsCollectionMostActiveEditorsFilterEditorType() {
         $this->drawCharts(
@@ -112,9 +180,9 @@ class UsingManager extends Component
 
     public function render()
     {
-        $activeEditors = User::activeEditors($this->statsCollection['mostActiveEditors']['filter']);
-        $activeCommentators = User::activeCommentators($this->statsCollection['mostActiveCommentators']['filter']);
-        $personalAppsUsers = User::personalAppsUsers($this->statsCollection['personalAppsUsers']['filter']);
+        $activeEditors = Users::activeEditors($this->statsCollection['mostActiveEditors']['filter']);
+        $activeCommentators = Users::activeCommentators($this->statsCollection['mostActiveCommentators']['filter']);
+        $personalAppsUsers = Users::personalAppsUsers($this->statsCollection['personalAppsUsers']['filter']);
 
         return view('livewire.admin.stats-viewer', [
             'rubrics' => Rubric::allWithPosts(),
