@@ -4,10 +4,13 @@ namespace App\Http\Livewire\Admin;
 
 use App\CustomFacades\AP;
 use Livewire\Component;
+use App\Models\Rubric;
+use App\Models\Post;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
-use App\Models\Rubric;
+use App\Models\Interaction;
 use App\Statistics\Users;
+use Carbon\Carbon;
 
 class UsingManager extends Component
 {
@@ -20,8 +23,10 @@ class UsingManager extends Component
     public $statsCollection = [
         'mostActiveEditors' => [
             'filter' => [
+                'schoolYear' => NULL,
+                'month' => NULL,
                 'editorType' => 'all',
-                'rubric_id' => NULL,
+                'rubricId' => NULL,
             ],
             'charts' => [
                 'activeEditorsTop10' => [
@@ -35,6 +40,8 @@ class UsingManager extends Component
         ],
         'mostActiveCommentators' => [
             'filter' => [
+                'schoolYear' => NULL,
+                'month' => NULL,
                 'commentatorType' => 'all',
             ],
             'charts' => [
@@ -71,6 +78,21 @@ class UsingManager extends Component
             ],
         ],
     ];
+    public $schoolYears = [];
+    public $schoolYearMonths = [
+        'Septembre' => 9,
+        'Octobre'   => 10,
+        'Novembre'  => 11,
+        'Décembre'  => 12,
+        'Janvier'   => 1,
+        'Février'   => 2,
+        'Mars'      => 3,
+        'Avril'     => 4,
+        'Mai'       => 5,
+        'Juin'      => 6,
+        'Juillet'   => 7,
+        'Août'      => 8,
+    ];
     public $chartTabs = [
         'name' => 'chartTabs',
         'currentTab' => 'most-active-editors',
@@ -99,6 +121,34 @@ class UsingManager extends Component
             ],
         ],
     ];
+
+    protected function initSchoolYears() {
+        // Récupérer la plus ancienne interaction
+        $oldestOccurredAt = Interaction::where('target_type', Post::class)
+            ->orderBy('occurred_at')
+            ->value('occurred_at');
+
+        $currentStartYear = now()->month >= 9 ? now()->year : now()->year - 1;
+
+        if ($oldestOccurredAt) {
+            $oldestOccuredAtCarbon = Carbon::parse($oldestOccurredAt);
+            $startYear = $oldestOccuredAtCarbon->month >= 9
+                ? $oldestOccuredAtCarbon->year
+                : $oldestOccuredAtCarbon->year - 1;
+
+            for ($year = $currentStartYear; $year >= $startYear; $year--) {
+                $this->schoolYears[] = $year;
+            }
+        }
+        else {
+            // Au moins l'année en cours si aucune interaction
+            $this->schoolYears[] = $currentStartYear;
+        }
+    }
+
+    public function mount() {
+        $this->initSchoolYears();
+    }
 
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
@@ -138,6 +188,23 @@ class UsingManager extends Component
         }
     }
 
+    public function updatedStatsCollectionMostActiveEditorsFilterSchoolYear() {
+        $this->drawCharts(
+            $this->statsCollection['mostActiveEditors']['charts'],
+            $this->statsCollection['mostActiveEditors']['filter']
+        );
+
+        $this->resetPage('mostActiveEditorsPage');
+    }
+
+    public function updatedStatsCollectionMostActiveEditorsFilterMonth() {
+        $this->drawCharts(
+            $this->statsCollection['mostActiveEditors']['charts'],
+            $this->statsCollection['mostActiveEditors']['filter']
+        );
+
+        $this->resetPage('mostActiveEditorsPage');
+    }
 
     public function updatedStatsCollectionMostActiveEditorsFilterEditorType() {
         $this->drawCharts(
@@ -149,8 +216,8 @@ class UsingManager extends Component
     }
 
     public function updatedStatsCollectionMostActiveEditorsFilterRubricId() {
-        if (empty($this->statsCollection['mostActiveEditors']['filter']['rubric_id'])) {
-            $this->statsCollection['mostActiveEditors']['filter']['rubric_id'] = NULL;
+        if (empty($this->statsCollection['mostActiveEditors']['filter']['rubricId'])) {
+            $this->statsCollection['mostActiveEditors']['filter']['rubricId'] = NULL;
         }
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
@@ -158,6 +225,24 @@ class UsingManager extends Component
         );
 
         $this->resetPage('mostActiveEditorsPage');
+    }
+
+    public function updatedStatsCollectionMostActiveCommentatorsFilterSchoolYear() {
+        $this->drawCharts(
+            $this->statsCollection['mostActiveCommentators']['charts'],
+            $this->statsCollection['mostActiveCommentators']['filter']
+        );
+
+        $this->resetPage('mostActiveCommentatorsPage');
+    }
+
+    public function updatedStatsCollectionMostActiveCommentatorsFilterMonth() {
+        $this->drawCharts(
+            $this->statsCollection['mostActiveCommentators']['charts'],
+            $this->statsCollection['mostActiveCommentators']['filter']
+        );
+
+        $this->resetPage('mostActiveCommentatorsPage');
     }
 
     public function updatedStatsCollectionMostActiveCommentatorsFilterCommentatorType() {
@@ -180,8 +265,8 @@ class UsingManager extends Component
 
     public function render()
     {
-        $activeEditors = Users::activeEditors($this->statsCollection['mostActiveEditors']['filter']);
-        $activeCommentators = Users::activeCommentators($this->statsCollection['mostActiveCommentators']['filter']);
+        $activeEditors = Users::getActiveEditors($this->statsCollection['mostActiveEditors']['filter']);
+        $activeCommentators = Users::getActiveCommentators($this->statsCollection['mostActiveCommentators']['filter']);
         $personalAppsUsers = Users::personalAppsUsers($this->statsCollection['personalAppsUsers']['filter']);
 
         return view('livewire.admin.stats-viewer', [

@@ -61,12 +61,12 @@ class Charts
         $data = Connections::groupBySchoolYearAndMonth($filter);
 
         $today = now();
-        $currentStartYear  = $today->month >= 9 ? $today->year : $today->year - 1;
+        $startSchoolYear  = $today->month >= 9 ? $today->year : $today->year - 1;
 
         $rows = [];
 
         // Année scolaire = septembre → août
-        $start = Carbon::create($currentStartYear, 9, 1)->startOfMonth();
+        $start = Carbon::create($startSchoolYear, 9, 1)->startOfMonth();
 
         for ($i = 0; $i < 12; $i++) {
             $month = $start->copy()->addMonths($i);
@@ -88,8 +88,8 @@ class Charts
         return [
             'cols' => [
                 ['label' => 'Mois', 'type' => 'string'],
-                ['label' => $data['labels']['previous'], 'type' => 'number'],
-                ['label' => $data['labels']['current'],  'type' => 'number'],
+                ['label' => "Année dernière " . ($startSchoolYear - 1) . '-' . substr($startSchoolYear, 2), 'type' => 'number'],
+                ['label' => "Année actuelle " . ($startSchoolYear) . '-' . substr($startSchoolYear + 1, 2),  'type' => 'number'],
             ],
             'rows' => $rows,
         ];
@@ -125,18 +125,18 @@ class Charts
     }
 
     public static function getViewedPostsTop10Chart($filter) {
-        $posts = Posts::allViewed($filter)->get();
+        $posts = Posts::getViewed($filter)->get();
 
         return self::buildTop10Chart(
             $posts,
-            'views_nb',
+            'views_count',
             function ($post, $rank) {
                 return
                     "<div class='w-100 m-3' style='max-width: 400px;'>
                         <h6 class='fw-bold'>" . ($rank + 1) . " - {$post->title}</h6>
                         <ul>
-                            <li>Rubrique - {$post->rubric}</li>
-                            <li>{$post->views_nb} vues</li>
+                            <li>Rubrique - {$post->rubric->name}</li>
+                            <li>{$post->views_count} vues</li>
                         </ul>
                     </div>";
             }
@@ -144,18 +144,18 @@ class Charts
     }
 
     public static function getCommentedPostsTop10Chart($filter) {
-        $posts = Posts::allCommented($filter)->get();
+        $posts = Posts::getCommented($filter)->get();
 
         return self::buildTop10Chart(
             $posts,
-            'comments_nb',
+            'comments_count',
             function ($post, $rank) {
                 return
                     "<div class='w-100 m-3' style='max-width: 400px;'>
                         <h6 class='fw-bold'>" . ($rank + 1) . " - {$post->title}</h6>
                         <ul>
-                            <li>Rubrique - {$post->rubric}</li>
-                            <li>{$post->comments_nb} commentaires</li>
+                            <li>Rubrique - {$post->rubric->name}</li>
+                            <li>{$post->comments_count} commentaires</li>
                         </ul>
                     </div>";
             }
@@ -163,17 +163,17 @@ class Charts
     }
 
     public static function getActiveEditorsTop10Chart($filter) {
-        $editors = Users::activeEditors($filter)->get();
+        $editors = Users::getActiveEditors($filter)->get();
 
         return self::buildTop10Chart(
             $editors,
-            'posts_nb',
+            'posts_count',
             function ($editor, $rank) {
                 return
                     "<div class='w-100 m-3' style='max-width: 400px;'>
                         <h6 class='fw-bold'>".($rank + 1)." - {$editor->identity}</h6>
                         <ul>
-                            <li>{$editor->posts_nb} articles</li>
+                            <li>{$editor->posts_count} articles</li>
                         </ul>
                     </div>";
             }
@@ -181,17 +181,17 @@ class Charts
     }
 
     public static function getActiveCommentatorsTop10Chart($filter) {
-        $commentators = Users::activeCommentators($filter)->get();
+        $commentators = Users::getActiveCommentators($filter)->get();
 
         return self::buildTop10Chart(
             $commentators,
-            'comments_nb',
+            'comments_count',
             function ($commentator, $rank) {
                 return
                     "<div class='w-100 m-3' style='max-width: 400px;'>
                         <h6 class='fw-bold'>".($rank + 1)." - {$commentator->identity}</h6>
                         <ul>
-                            <li>{$commentator->comments_nb} commentaires</li>
+                            <li>{$commentator->comments_count} commentaires</li>
                         </ul>
                     </div>";
             }

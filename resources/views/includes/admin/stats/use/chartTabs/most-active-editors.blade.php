@@ -5,35 +5,66 @@
                 <h5 class='fw-bold'>Top 10 des rédacteurs les plus actifs</h5>
                 <p>(cliquer sur un secteur pour afficher le détail)</p>
             </div>
-            <form class='col-5'>
-                <div class='row mb-1'>
-                    <label for='mostActiveEditorsEditorTypeFilter' class='col pe-2 col-form-label text-end'>Rédacteurs :</label>
-                    <div class='col px-0'>
-                        <select id='mostActiveEditorsEditorTypeFilter' wire:model='statsCollection.mostActiveEditors.filter.editorType'
-                                class='form-select' aria-label='Filtrer les rédacteurs'>
-                            <option value="all">Auteurs / Correcteurs</option>
-                            <option value="authors">Auteurs</option>
-                            <option value="correctors">Correcteurs</option>
-                        </select>
+            <form class='col-7'>
+                <div class="row">
+                    <div class="col-6">
+                        <div class='row mb-1'>
+                            <label for='mostActiveEditorsSchoolYearFilter' class='col-4 pe-2 col-form-label text-end'>Année :</label>
+                            <div class='col px-0'>
+                                <select id='mostActiveEditorsSchoolYearFilter' wire:model='statsCollection.mostActiveEditors.filter.schoolYear'
+                                        class='form-select'>
+                                    <option value="">Choisir une année scolaire...</option>
+                                  @foreach ($schoolYears as $year)
+                                    <option value="{{ $year }}">{{ $year }}-{{ substr($year + 1, 2) }}</option>
+                                  @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class='row mb-1'>
+                            <label for='mostActiveEditorsMonthFilter' class='col-4 pe-2 col-form-label text-end'>Mois :</label>
+                            <div class='col px-0'>
+                                <select id='mostActiveEditorsMonthFilter' wire:model='statsCollection.mostActiveEditors.filter.month'
+                                        class='form-select'
+                                        @if(!$statsCollection['mostActiveEditors']['filter']['schoolYear']) disabled @endif>
+                                    <option value="">Choisir un mois...</option>
+                                  @foreach($schoolYearMonths as $label => $value)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                  @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class='row mb-1'>
-                    <label for='mostActiveEditorsRubricIdFilter' class='col pe-2 col-form-label text-end'>Rubrique :</label>
-                    <div class='col px-0'>
-                        <select id='mostActiveEditorsRubricIdFilter' wire:model='statsCollection.mostActiveEditors.filter.rubric_id'
-                                class='form-select' aria-label='Filtrer les rubriques'>
-                            <option label='Choisir une rubrique...'></option>
-                              @foreach ($rubrics as $rubric)
-                                <option value='{{ $rubric->id }}'>{{ $rubric->identity() }}</option>
-                              @endforeach
-                        </select>
+                    <div class="col-6">
+                        <div class='row mb-1'>
+                            <label for='mostActiveEditorsEditorTypeFilter' class='col-5 pe-2 col-form-label text-end'>Rédacteurs :</label>
+                            <div class='col px-0'>
+                                <select id='mostActiveEditorsEditorTypeFilter' wire:model='statsCollection.mostActiveEditors.filter.editorType'
+                                        class='form-select' aria-label='Filtrer les rédacteurs'>
+                                    <option value="all">Tous</option>
+                                    <option value="authors">Auteurs</option>
+                                    <option value="correctors">Correcteurs</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='row mb-1'>
+                            <label for='mostActiveEditorsRubricIdFilter' class='col-4 pe-2 col-form-label text-end'>Rubrique :</label>
+                            <div class='col px-0'>
+                                <select id='mostActiveEditorsRubricIdFilter' wire:model='statsCollection.mostActiveEditors.filter.rubricId'
+                                        class='form-select' aria-label='Filtrer les rubriques'>
+                                    <option label='Choisir une rubrique...'></option>
+                                    @foreach ($rubrics as $rubric)
+                                        <option value='{{ $rubric->id }}'>{{ $rubric->identity() }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
     <div class='row'>
-        <div wire:ignore id='activeEditorsTop10Chart' class='col' style="height:500px;"></div>
+        <div wire:ignore id='activeEditorsTop10Chart' class='col' style="height:360px;"></div>
         <div id='activeEditorsTop3' class='col my-auto'>
           @foreach($activeEditorsTop3 as $i => $editor)
             <div class='d-flex'>
@@ -74,7 +105,7 @@
           @foreach ($mostActiveEditors as $editor)
             <tr class='row'>
                 <td class='col'>{{ $editor->identity }}</td>
-                <td class='col'>{{ $editor->posts_nb }}</td>
+                <td class='col'>{{ $editor->posts_count }}</td>
             </tr>
           @endforeach
         </tbody>

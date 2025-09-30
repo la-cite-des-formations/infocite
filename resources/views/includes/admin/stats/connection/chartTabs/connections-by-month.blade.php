@@ -20,7 +20,7 @@
             </form>
         </div>
     </div>
-    <div wire:ignore id='connectionsByMonthChart'></div>
+    <div wire:ignore id='connectionsByMonthChart' style="height:360px;"></div>
 </div>
 <div class='mt-4 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('connectionsByMonth')" class='btn btn-success' type="button"

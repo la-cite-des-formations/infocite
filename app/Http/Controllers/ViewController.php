@@ -22,7 +22,7 @@ class ViewController extends Controller
             Interaction::create([
                 'user_id' => $currentUser->id,
                 'type' => 'connection',
-                'interaction_at' => today()->format('Y-m-d')
+                'occurred_at' => today()
             ]);
         }
     }

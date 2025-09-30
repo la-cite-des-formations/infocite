@@ -64,7 +64,7 @@ class PostManager extends Component
 
         if ($comment) {
             $this->post->comments()->save($comment);
-            $this->post->ensureInteraction('comment');
+            $this->post->ensureInteraction('comment', now());
 
             // notification associée
             $newNotification = PostNotification::updateOrCreate(

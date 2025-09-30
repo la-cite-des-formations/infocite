@@ -47,12 +47,14 @@ class User extends Authenticatable
 
     public function learner()
     {
-        return $this->hasOne(Learner::class);
+        return $this
+            ->hasOne(Learner::class);
     }
 
     public function employee()
     {
-        return $this->hasOne(Employee::class);
+        return $this
+            ->hasOne(Employee::class);
     }
 
     public function actor() {
@@ -60,10 +62,44 @@ class User extends Authenticatable
             ->belongsTo(Actor::class, 'id');
     }
 
+    public function interactions() {
+        return $this
+            ->hasMany(Interaction::class)
+            ->orderBy('occurred_at', 'desc');
+    }
+
+    public function postsCreateInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('create')
+            ->withTargetType(Post::class);
+    }
+
+    public function postsUpdateInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('update')
+            ->withTargetType(Post::class);
+    }
+
+    public function postsEditInteractions() {
+        return $this
+            ->interactions()
+            ->ofTypes(['create', 'update'])
+            ->withTargetType(Post::class);
+    }
+
+    public function postsCommentInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('comment')
+            ->withTargetType(Post::class);
+    }
+
     public function myPosts() {
         return $this
             ->hasMany(Post::class, 'author_id')
-            ->orderByRaw('updated_at DESC');
+            ->orderBy('updated_at', 'DESC');
     }
 
     public function postsRead() {
@@ -77,17 +113,13 @@ class User extends Authenticatable
     public function updatedPosts() {
         return $this
             ->hasMany(Post::class, 'corrector_id')
-            ->orderByRaw('updated_at DESC');
+            ->orderBy('updated_at', 'DESC');
     }
 
     public function commentedPosts() {
-        return Post::query()
-            ->whereIn('id', $this
-                ->myComments()
-                ->groupBy('post_id')
-                ->pluck('post_id')
-            )
-            ->orderBy('created_at', 'DESC');
+        return $this->hasManyThrough(Post::class, Comment::class, 'user_id', 'id', 'id', 'post_id')
+            ->distinct()
+            ->orderBy('created_at', 'desc');
     }
 
     public function myFavoritesPosts() {

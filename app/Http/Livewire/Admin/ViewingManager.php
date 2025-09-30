@@ -4,10 +4,13 @@ namespace App\Http\Livewire\Admin;
 
 use App\CustomFacades\AP;
 use Livewire\Component;
+use App\Models\Rubric;
+use App\Models\Post;
 use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
-use App\Models\Rubric;
+use App\Models\Interaction;
 use App\Statistics\Posts;
+use Carbon\Carbon;
 
 class ViewingManager extends Component
 {
@@ -21,8 +24,10 @@ class ViewingManager extends Component
         'mostViewedPosts' => [
             'bladeFilePath' => 'posts.most-viewed-posts',
             'filter' => [
+                'schoolYear' => NULL,
+                'month' => NULL,
                 'readerType' => 'all',
-                'rubric_id' => NULL,
+                'rubricId' => NULL,
             ],
             'charts' => [
                 'viewedPostsTop10' => [
@@ -37,8 +42,10 @@ class ViewingManager extends Component
         'mostCommentedPosts' => [
             'bladeFilePath' => 'posts.most-commented-posts',
             'filter' => [
+                'schoolYear' => NULL,
+                'month' => NULL,
                 'readerType' => 'all',
-                'rubric_id' => NULL,
+                'rubricId' => NULL,
             ],
             'charts' => [
                 'commentedPostsTop10' => [
@@ -50,6 +57,21 @@ class ViewingManager extends Component
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
+    ];
+    public $schoolYears = [];
+    public $schoolYearMonths = [
+        'Septembre' => 9,
+        'Octobre'   => 10,
+        'Novembre'  => 11,
+        'Décembre'  => 12,
+        'Janvier'   => 1,
+        'Février'   => 2,
+        'Mars'      => 3,
+        'Avril'     => 4,
+        'Mai'       => 5,
+        'Juin'      => 6,
+        'Juillet'   => 7,
+        'Août'      => 8,
     ];
     public $chartTabs = [
         'name' => 'chartTabs',
@@ -69,6 +91,34 @@ class ViewingManager extends Component
             ],
         ],
     ];
+
+    protected function initSchoolYears() {
+        // Récupérer la plus ancienne interaction
+        $oldestOccurredAt = Interaction::where('target_type', Post::class)
+            ->orderBy('occurred_at')
+            ->value('occurred_at');
+
+        $currentStartYear = now()->month >= 9 ? now()->year : now()->year - 1;
+
+        if ($oldestOccurredAt) {
+            $oldestOccuredAtCarbon = Carbon::parse($oldestOccurredAt);
+            $startYear = $oldestOccuredAtCarbon->month >= 9
+                ? $oldestOccuredAtCarbon->year
+                : $oldestOccuredAtCarbon->year - 1;
+
+            for ($year = $currentStartYear; $year >= $startYear; $year--) {
+                $this->schoolYears[] = $year;
+            }
+        }
+        else {
+            // Au moins l'année en cours si aucune interaction
+            $this->schoolYears[] = $currentStartYear;
+        }
+    }
+
+    public function mount() {
+        $this->initSchoolYears();
+    }
 
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
@@ -94,6 +144,22 @@ class ViewingManager extends Component
         }
     }
 
+    public function updatedStatsCollectionMostViewedPostsFilterSchoolYear() {
+        $this->drawCharts(
+            $this->statsCollection['mostViewedPosts']['charts'],
+            $this->statsCollection['mostViewedPosts']['filter']
+        );
+        $this->resetPage('mostViewedPostsPage');
+    }
+
+    public function updatedStatsCollectionMostViewedPostsFilterMonth() {
+        $this->drawCharts(
+            $this->statsCollection['mostViewedPosts']['charts'],
+            $this->statsCollection['mostViewedPosts']['filter']
+        );
+        $this->resetPage('mostViewedPostsPage');
+    }
+
     public function updatedStatsCollectionMostViewedPostsFilterReaderType() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -113,6 +179,22 @@ class ViewingManager extends Component
         );
 
         $this->resetPage('mostViewedPostsPage');
+    }
+
+    public function updatedStatsCollectionMostCommentedPostsFilterSchoolYear() {
+        $this->drawCharts(
+            $this->statsCollection['mostCommentedPosts']['charts'],
+            $this->statsCollection['mostCommentedPosts']['filter']
+        );
+        $this->resetPage('mostCommentedPostsPage');
+    }
+
+    public function updatedStatsCollectionMostCommentedPostsFilterMonth() {
+        $this->drawCharts(
+            $this->statsCollection['mostCommentedPosts']['charts'],
+            $this->statsCollection['mostCommentedPosts']['filter']
+        );
+        $this->resetPage('mostCommentedPostsPage');
     }
 
     public function updatedStatsCollectionMostCommentedPostsFilterReaderType() {
@@ -138,16 +220,16 @@ class ViewingManager extends Component
 
     public function render()
     {
-        $allViewedPosts = Posts::allViewed($this->statsCollection['mostViewedPosts']['filter']);
-        $allCommentedPosts = Posts::allCommented($this->statsCollection['mostCommentedPosts']['filter']);
+        $viewedPosts = Posts::getViewed($this->statsCollection['mostViewedPosts']['filter']);
+        $commentedPosts = Posts::getCommented($this->statsCollection['mostCommentedPosts']['filter']);
 
         return view('livewire.admin.stats-viewer', [
             'rubrics' => Rubric::allWithPosts(),
             'gcColors' => AP::getGcColors(),
-            'viewedPostsTop3' => $allViewedPosts->take(3)->get(),
-            'mostViewedPosts' => $allViewedPosts->paginate($this->statsCollection['mostViewedPosts']['perPage'], ['*'], 'mostViewedPostsPage'),
-            'commentedPostsTop3' => $allCommentedPosts->take(3)->get(),
-            'mostCommentedPosts' => $allCommentedPosts->paginate($this->statsCollection['mostCommentedPosts']['perPage'], ['*'], 'mostCommentedPostsPage'),
+            'viewedPostsTop3' => $viewedPosts->take(3)->get(),
+            'mostViewedPosts' => $viewedPosts->paginate($this->statsCollection['mostViewedPosts']['perPage'], ['*'], 'mostViewedPostsPage'),
+            'commentedPostsTop3' => $commentedPosts->take(3)->get(),
+            'mostCommentedPosts' => $commentedPosts->paginate($this->statsCollection['mostCommentedPosts']['perPage'], ['*'], 'mostCommentedPostsPage'),
             'dashboard' => 'stats',
         ]);
     }

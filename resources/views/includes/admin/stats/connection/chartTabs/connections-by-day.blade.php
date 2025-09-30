@@ -20,7 +20,7 @@
             </form>
         </div>
     </div>
-    <div wire:ignore id='connectionsByDayChart'></div>
+    <div wire:ignore id='connectionsByDayChart' style="height:360px;"></div>
 </div>
 <div class='mt-4 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('connectionsByDay')" class='btn btn-success' type="button"
@@ -50,7 +50,7 @@
         <tbody>
           @foreach ($connectionsByDay as $connection)
             <tr class='row'>
-                <td class='col'>{{ $connection->interaction_at->format('d/m/Y') }}</td>
+                <td class='col'>{{ $connection->occurred_at->format('d/m/Y') }}</td>
                 <td class='col'>{{ $connection->connections_nb }}</td>
             </tr>
           @endforeach

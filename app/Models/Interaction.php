@@ -13,7 +13,7 @@ class Interaction extends Model
     protected $table = 'interactions';
 
     protected $casts = [
-        'interaction_at' => 'date:Y-m-d',
+        'occurred_at' => 'datetime',
     ];
 
     // Pas de timestamps automatiques
@@ -25,7 +25,7 @@ class Interaction extends Model
         'target_id',
         'target_type',
         'type',
-        'interaction_at',
+        'occurred_at',
     ];
 
     /**
@@ -60,10 +60,19 @@ class Interaction extends Model
     public function scopeByUserType($query, ?string $userType)
     {
         return match ($userType) {
-            'staff', 'employees' => $query->join('employees', 'employees.user_id', '=', 'interactions.user_id'),
-            'learner', 'learners' => $query->join('learners', 'learners.user_id', '=', 'interactions.user_id'),
+            'staff', 'employees' => $query->whereHas('user.employee'),
+            'learner', 'learners' => $query->whereHas('user.learner'),
             default => $query,
         };
+    }
+
+    /**
+     * Scope pour récupérer les interactions associé à un type de modèle particulier
+     */
+    public function scopeWithTargetType($query, $targetType)
+    {
+        return $query
+            ->where('target_type', $targetType);
     }
 
     /**
@@ -87,7 +96,7 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'un type en particulier
+     * Scope pour récupérer les interactions d'un type spécifique
      */
     public function scopeOfType($query, string $type)
     {
@@ -95,11 +104,27 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'une date en particulier
+     * Scope pour récupérer les interactions de différents types spécifiques
+     */
+    public function scopeOfTypes($query, array $types)
+    {
+        return $query->whereIn('type', $types);
+    }
+
+    /**
+     * Scope pour récupérer les interactions d'une date spécifique
      */
     public function scopeForDate($query, $date)
     {
-        return $query->whereDate('interaction_at', $date);
+        return $query->whereDate('occurred_at', $date);
+    }
+
+    /**
+     * Scope pour récupérer les interactions d'une date et heure spécifique
+     */
+    public function scopeForDatetime($query, $datetime)
+    {
+        return $query->where('occurred_at', Carbon::parse($datetime));
     }
 
     /**
@@ -107,7 +132,7 @@ class Interaction extends Model
      */
     public function scopeBetweenDates($query, $start, $end)
     {
-        return $query->whereBetween('interaction_at', [$start, $end]);
+        return $query->whereBetween('occurred_at', [$start, $end]);
     }
 
     /**
@@ -125,7 +150,7 @@ class Interaction extends Model
      * Vérifie l'existance d'une interaction à une certaine date
      * Procède à son enregistrement si nécessaire
      */
-    public static function ensure(string $type, ?Model $target = null, ?int $userId = null, $date = null): self
+    public static function ensure(string $type, $datetime = null, ?Model $target = null, ?int $userId = null): self
     {
         $userId = $userId ?? auth()->id();
 
@@ -134,7 +159,7 @@ class Interaction extends Model
             'user_id' => $userId,
             'target_type' => $target ? get_class($target) : null,
             'target_id' => $target?->getKey(),
-            'interaction_at' => $date ?? today(),
+            'occurred_at' => $datetime ?? today(),
         ]);
     }
 }

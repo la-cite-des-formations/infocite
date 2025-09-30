@@ -9,9 +9,12 @@ class Connections
     public static function groupByDay($filter = []) {
         return Interaction::ofType('connection')
             ->byUserType($filter['userType'] ?? null)
-            ->selectRaw('interaction_at, count(*) as `connections_nb`')
-            ->groupBy('interaction_at')
-            ->orderBy('interaction_at', 'desc');
+            ->selectRaw('
+                occurred_at,
+                count(DISTINCT interactions.user_id) as `connections_nb`
+            ')
+            ->groupBy('occurred_at')
+            ->orderBy('occurred_at', 'desc');
     }
 
     public static function groupByLastTwoWeeks(array $filter = []) {
@@ -27,7 +30,10 @@ class Connections
 
         $query = fn($start, $end) => Interaction::ofType('connection')
             ->byUserType($filter['userType'] ?? null)
-            ->selectRaw('DATE(interaction_at) as day, COUNT(*) as connections_nb')
+            ->selectRaw('
+                DATE(occurred_at) as day,
+                COUNT(DISTINCT interactions.user_id) as connections_nb
+            ')
             ->betweenDates($start, $end)
             ->groupBy('day')
             ->orderBy('day', 'asc')
@@ -44,23 +50,23 @@ class Connections
         return Interaction::ofType('connection')
             ->byUserType($filter['userType'] ?? null)
             ->selectRaw('
-                DATE_FORMAT(interaction_at, "%Y-%m") as `year_month`,
-                count(DISTINCT interactions.user_id) as `connections_nb`
+                DATE_FORMAT(occurred_at, "%Y-%m") as `year_month`,
+                COUNT(DISTINCT interactions.user_id) as `connections_nb`
             ')
             ->groupBy('year_month')
             ->orderBy('year_month', 'desc');
     }
 
     public static function groupBySchoolYearAndMonth(array $filter = []) {
-        $currentStartYear  = now()->month >= 9 ? now()->year : now()->year - 1;
-        $previousStartYear = $currentStartYear - 1;
+        $today = now();
+        $startSchoolYear  = $today->month >= 9 ? $today->year : $today->year - 1;
 
         $query = function ($startYear) use ($filter) {
             return Interaction::ofType('connection')
                 ->byUserType($filter['userType'] ?? null)
                 ->forSchoolYear($startYear)
                 ->selectRaw('
-                    DATE_FORMAT(interaction_at, "%Y-%m") as `year_month`,
+                    DATE_FORMAT(occurred_at, "%Y-%m") as `year_month`,
                     COUNT(DISTINCT interactions.user_id) as `connections_nb`
                 ')
                 ->groupBy('year_month')
@@ -68,12 +74,8 @@ class Connections
         };
 
         return [
-            'previous' => $query($previousStartYear),
-            'current'  => $query($currentStartYear),
-            'labels'   => [
-                'previous' => "Année précédente ({$previousStartYear}-" . ($previousStartYear + 1) . ")",
-                'current'  => "Année en cours ({$currentStartYear}-" . ($currentStartYear + 1) . ")",
-            ]
+            'previous' => $query($startSchoolYear - 1),
+            'current'  => $query($startSchoolYear),
         ];
     }
 }

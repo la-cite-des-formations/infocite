@@ -84,7 +84,7 @@ class ConnectionsManager extends Component
     }
 
 
-    public function updatedStatsCollectionConnectionsByWeekFilterUserType() {
+    public function updatedStatsCollectionConnectionsByDayFilterUserType() {
         $this->drawCharts(
             $this->statsCollection['connectionsByDay']['charts'],
             $this->statsCollection['connectionsByDay']['filter']
