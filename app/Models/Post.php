@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
+use App\Models\Traits\HasInteractions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Post extends Model
 {
     use WithSearching;
+    use HasInteractions;
 
     /**
      * The attributes that are mass assignable.
@@ -62,12 +64,13 @@ class Post extends Model
             );
     }
 
-    public function notifications()
+    public function notifications(): MorphMany
     {
         return $this
             ->morphMany(Notification::class, 'object')
             ->orderByRaw('release_at DESC, created_at DESC');
     }
+
 
     public function groupsWithPostRight() {
         return Right::query()
@@ -94,6 +97,30 @@ class Post extends Model
             ->profiles()
             ->where('resource_type', 'Post')
             ->where('resource_id', $this->id);
+    }
+
+    /**
+     * Accesseur pour savoir si l'utilisateur courant a vu le post aujourd'hui.
+     */
+    public function getViewTodayAttribute(): bool
+    {
+        return $this->hasInteraction('view');
+    }
+
+    /**
+     * Accesseur pour savoir si l'utilisateur courant a créer/modifier le post aujourd'hui.
+     */
+    public function getEditTodayAttribute(): bool
+    {
+        return $this->hasInteraction('edit');
+    }
+
+    /**
+     * Accesseur pour savoir si l'utilisateur courant a commenter le post aujourd'hui.
+     */
+    public function getCommentTodayAttribute(): bool
+    {
+        return $this->hasInteraction('comment');
     }
 
     public function getRouteAttribute() {
@@ -262,48 +289,5 @@ class Post extends Model
                     ->where('resource_type', 'Post')
                     ->whereRaw('!(rightables.roles & '.Roles::IS_EDITR.')');
             });
-    }
-
-    public static function allViewed($filter = []) {
-        extract($filter);
-        $byStaff = !isset($readerType) || ($readerType == 'all') ? NULL : $readerType == 'staff';
-        $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
-
-        return DB::table('posts')
-            ->join('rubrics', 'posts.rubric_id', '=', 'rubrics.id')
-            ->join('post_user', 'posts.id', '=', 'post_user.post_id')
-            ->selectRaw('posts.title AS title, rubrics.name AS rubric, COUNT(*) AS views_nb')
-            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query
-                    ->join('users', 'users.id', '=', 'post_user.user_id')
-                    ->where('users.is_staff', $byStaff);
-            })
-            ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
-                $query->where('rubrics.id', $rubric_id);
-            })
-            ->where('post_user.is_read', TRUE)
-            ->groupBy('title', 'rubric')
-            ->orderByRaw('views_nb desc, rubric, title');
-    }
-
-    public static function allCommented($filter = []) {
-        extract($filter);
-        $byStaff = !isset($readerType) || ($readerType == 'all') ? NULL : $readerType == 'staff';
-        $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
-
-        return DB::table('posts')
-            ->join('rubrics', 'posts.rubric_id', '=', 'rubrics.id')
-            ->join('comments', 'posts.id', '=', 'comments.post_id')
-            ->selectRaw('posts.title AS title, rubrics.name AS rubric, COUNT(*) AS comments_nb')
-            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query
-                    ->join('users', 'users.id', '=', 'comments.user_id')
-                    ->where('users.is_staff', $byStaff);
-            })
-            ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
-                $query->where('rubrics.id', $rubric_id);
-            })
-            ->groupBy('title', 'rubric')
-            ->orderByRaw('comments_nb desc, rubric, title');
     }
 }

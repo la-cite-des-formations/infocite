@@ -137,12 +137,19 @@ class EditPostManager extends Component
         // sauvegarde
         $this->post->save();
 
-        // mise en favoris de l'article pour l'éditeur
-        $this->post->readers()->syncWithoutDetaching([
-            auth()->user()->id => [
-                'is_favorite' => TRUE
-            ]
-        ]);
+        if ($this->post->hasInteraction('create') || $this->post->hasInteraction('update')) {
+            $this->post->ensureInteraction('update', $this->post->updated_at);
+        }
+        else {
+            $this->post->ensureInteraction('create', $this->post->created_at);
+
+            // mise en favoris de l'article pour l'auteur au moment de la création
+            $this->post->readers()->syncWithoutDetaching([
+                auth()->id() => [
+                    'is_favorite' => TRUE
+                ]
+            ]);
+        }
 
         // enregistrement en bdd de la notification associée si l'article est paru
         if ($this->post->released) {

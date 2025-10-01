@@ -47,12 +47,14 @@ class User extends Authenticatable
 
     public function learner()
     {
-        return $this->hasOne(Learner::class);
+        return $this
+            ->hasOne(Learner::class);
     }
 
     public function employee()
     {
-        return $this->hasOne(Employee::class);
+        return $this
+            ->hasOne(Employee::class);
     }
 
     public function actor() {
@@ -60,10 +62,44 @@ class User extends Authenticatable
             ->belongsTo(Actor::class, 'id');
     }
 
+    public function interactions() {
+        return $this
+            ->hasMany(Interaction::class)
+            ->orderBy('occurred_at', 'desc');
+    }
+
+    public function postsCreateInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('create')
+            ->withTargetType(Post::class);
+    }
+
+    public function postsUpdateInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('update')
+            ->withTargetType(Post::class);
+    }
+
+    public function postsEditInteractions() {
+        return $this
+            ->interactions()
+            ->ofTypes(['create', 'update'])
+            ->withTargetType(Post::class);
+    }
+
+    public function postsCommentInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('comment')
+            ->withTargetType(Post::class);
+    }
+
     public function myPosts() {
         return $this
             ->hasMany(Post::class, 'author_id')
-            ->orderByRaw('updated_at DESC');
+            ->orderBy('updated_at', 'DESC');
     }
 
     public function postsRead() {
@@ -77,17 +113,13 @@ class User extends Authenticatable
     public function updatedPosts() {
         return $this
             ->hasMany(Post::class, 'corrector_id')
-            ->orderByRaw('updated_at DESC');
+            ->orderBy('updated_at', 'DESC');
     }
 
     public function commentedPosts() {
-        return Post::query()
-            ->whereIn('id', $this
-                ->myComments()
-                ->groupBy('post_id')
-                ->pluck('post_id')
-            )
-            ->orderBy('created_at', 'DESC');
+        return $this->hasManyThrough(Post::class, Comment::class, 'user_id', 'id', 'id', 'post_id')
+            ->distinct()
+            ->orderBy('created_at', 'desc');
     }
 
     public function myFavoritesPosts() {
@@ -468,11 +500,11 @@ class User extends Authenticatable
         return is_object($processUser) ? $processUser->name : '';
     }
 
-    public function getTodayConnectionRecordedAttribute() {
-        return Connection::fromToday()
-            ->where('user_id', auth()->user()->id)
-            ->get()
-            ->isNotEmpty();
+    public function getConnectedTodaydAttribute() {
+        return Interaction::ofType('connection')
+            ->byUser(auth()->user())
+            ->forDate(today())
+            ->exists();
     }
 
     public function getEditedPostsNbAttribute() {
@@ -666,54 +698,5 @@ class User extends Authenticatable
             default :
                 return static::all();
         }
-    }
-
-    public static function activeEditors($filter = []) {
-        extract($filter);
-        $editorType = isset($editorType) ? $editorType : 'all';
-        $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
-
-        return static::query()
-            ->join('posts', function ($query) use ($editorType) {
-                $query->when($editorType == 'all' || $editorType == 'authors', function ($join) {
-                    $join->on('posts.author_id', '=', 'users.id');
-                })->when($editorType == 'all' || $editorType == 'correctors', function ($join) {
-                    $join->orOn('posts.corrector_id', '=', 'users.id');
-                });
-            })
-            ->selectRaw('users.name, users.first_name, COUNT(*) AS posts_nb')
-            ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
-                $query->where('posts.rubric_id', $rubric_id);
-            })
-            ->groupByRaw('users.name, users.first_name')
-            ->orderByRaw('posts_nb DESC, users.name, users.first_name');
-    }
-
-    public static function activeCommentators($filter = []) {
-        extract($filter);
-        $byStaff = !isset($commentatorType) || ($commentatorType == 'all') ? NULL : $commentatorType == 'staff';
-
-        return static::query()
-            ->join('comments', 'comments.user_id', '=', 'users.id')
-            ->selectRaw('users.name, users.first_name, COUNT(*) AS comments_nb')
-            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query->where('users.is_staff', $byStaff);
-            })
-            ->groupByRaw('users.name, users.first_name')
-            ->orderByRaw('comments_nb DESC, users.name, users.first_name');
-    }
-
-    public static function personalAppsUsers($filter = []) {
-        extract($filter);
-        $byStaff = !isset($userType) || ($userType == 'all') ? NULL : $userType == 'staff';
-
-        return static::query()
-            ->join('apps', 'apps.owner_id', '=', 'users.id')
-            ->selectRaw('users.name, users.first_name, COUNT(*) AS apps_nb')
-            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query->where('users.is_staff', $byStaff);
-            })
-            ->groupByRaw('users.name, users.first_name')
-            ->orderByRaw('apps_nb DESC, users.name, users.first_name');
     }
 }

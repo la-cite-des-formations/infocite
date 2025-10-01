@@ -3,7 +3,7 @@
     <li wire:click="setCurrentTab('{{ $tabsSystem['name'] }}', '{{ $id }}')"
         class="nav-item admin-nav-hover" role="presentation" title="{{ $tab['title'] }}"
         @if($tab['hidden']) hidden @endif>
-        <a class="d-flex nav-link admin-nav-icons border-0 @if($tabsSystem['currentTab'] === $id) active @endif" id="{{ $id }}Tab"
+        <a class="d-flex nav-link admin-nav-icons @if($tabsSystem['currentTab'] === $id) active @endif" id="{{ $id }}Tab"
             data-toggle="tab" href="#{{ $id }}Pane" role="tab" aria-controls="{{ $id }}"
             aria-selected="@if($tabsSystem['currentTab'] === $id) true @else false @endif">
             <span class="material-icons">{{ $tab['icon'] }}</span>
