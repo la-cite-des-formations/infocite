@@ -30,42 +30,62 @@
     </div>
     <div class="alert alert-info mb-3">
         <dl class="row m-0">
-          @if(!empty($user->birthday))
+          @if(!empty($user->learner?->birthday))
             <!-- Né(e) le __/__/____ -->
             <dt class="col-3 text-end ps-0">
-                {{ empty($user->gender) ? 'Naissance' : ($user->gender == 'M' ? 'Né le' : 'Née le') }}
+                {{ empty($user->learner?->gender) ? 'Naissance' : ($user->learner?->gender == 'M' ? 'Né le' : 'Née le') }}
             </dt>
-            <dd class="col-9 ps-0">{{ $user->birthday->format('d/m/Y') }}</dd>
+            <dd class="col-9 ps-0">{{ $user->learner?->birthday->format('d/m/Y') }}</dd>
           @endif
           @if(!empty($user->status))
             <!-- Statut __________  ...  -->
             <dt class="col-3 text-end ps-0">Statut</dt>
-            <dd class="col-{{ 2 + 7 * empty($user->quality)}} ps-0">{{ $user->status }}</dd>
+            <dd class="col-{{ 2 + 7 * empty($user->learner?->quality)}} ps-0">{{ $user->learner?->status }}</dd>
           @endif
           @if(!empty($user->quality))
             <!-- ...  Qualité __________  -->
             <dt class="col-3 text-end">Qualité</dt>
-            <dd class="col-{{ 4 + 5 * empty($user->status) }} ps-0">{{ AP::getQuality($user->quality) }}</dd>
+            <dd class="col-{{ 4 + 5 * empty($user->learner?->status) }} ps-0">{{ AP::getQuality($user->learner?->quality) }}</dd>
           @endif
-          @if($user->groupsList(['P']))
+          @if($user->groupsList(['E']))
             <!-- Équipe _________  -->
-            <dt class="col-3 text-end ps-0">{{ $user->groups(['P'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
-            <dd class="col-{{ 2 + 7 * empty($user->functionsList(['P']))}} ps-0">
-                {{ $user->groupsList(['P']) }}
+            <dt class="col-3 text-end ps-0">{{ $user->groups(['E'])->count() > 1 ? 'Équipes' : 'Équipe'}}</dt>
+            <dd class="col-{{ 2 + 7 * empty($user->functionsList(['E']))}} ps-0">
+                {{ $user->groupsList(['E']) }}
             </dd>
           @endif
-          @if($user->functionsList(['P']))
+          @if($user->functionsList(['E']))
             <!-- ...  Fonction __________  -->
             <dt class="col-3 text-end">Fonction</dt>
-            <dd class="col-4 ps-0">{{ $user->functionsList(['P']) }}</dd>
+            <dd class="col-4 ps-0">{{ $user->functionsList(['E']) }}</dd>
           @endif
-          @if($user->groupsList(['C']) || $user->groupsList(['E']))
+          @if($user->groupsList(['C']) || $user->groupsList(['F']))
             <!-- Classe(s) ______, ______, ... -->
             <dt class="col-3 text-end ps-0">{{ $userNbClasses > 1 ? 'Classes' : 'Classe' }}</dt>
             <dd class="col-9 ps-0 @if($truncateClassesList) text-truncate @endif"
               @if($userNbClasses > $classesMin)
                 wire:click="switchClasses" role="button"
-              @endif>{{ $user->groupsList(['C']) ?: $user->groupsList(['E']) }}</dd>
+              @endif>{{ $user->groupsList(['C']) ?: $user->groupsList(['F']) }}</dd>
+          @endif
+          @if($user->employee?->location)
+            <!-- Bâtiment _______ -->
+            <dt class="col-3 text-end ps-0">Localisation</dt>
+            <dd class="col-9 ps-0">{{ $user->employee->location }}</dd>
+          @endif
+          @if($phone = $user?->phone('internal'))
+            <!-- Tél. interne _______ -->
+            <dt class="col-3 text-end ps-0">Tél. interne</dt>
+            <dd class="col-9 ps-0 @if(empty($phone->number)) fst-italic @endif">{{ $phone->number ?: 'non renseigné' }}</dd>
+          @endif
+          @if($phone = $user?->phone('mobile'))
+            <!-- Tél. interne _______ -->
+            <dt class="col-3 text-end ps-0">Tél. mobile</dt>
+            <dd class="col-9 ps-0 @if(empty($phone->number)) fst-italic @endif">{{ $phone->number ?: 'non renseigné' }}</dd>
+          @endif
+          @if($phone = $user?->phone('external'))
+            <!-- Tél. interne _______ -->
+            <dt class="col-3 text-end ps-0">Tél. externe</dt>
+            <dd class="col-9 ps-0 @if(empty($phone->number)) fst-italic @endif">{{ $phone->number ?: 'non renseigné' }}</dd>
           @endif
           @if(empty($user->code_ypareo))
             <p class="col-12">Utilisateur externe non répertorié dans YParéo.</p>

@@ -19,6 +19,7 @@ class InfosManager extends Component
     protected $listeners = ['loadPermission', 'updatePermission', 'refreshPermissionSwitch' => 'loadUser'];
 
     public $user;
+    public $employee;
     public $rubric;
     public $rendered = FALSE;
     public $firstLoad = TRUE;
@@ -28,12 +29,13 @@ class InfosManager extends Component
     public $browserDesktopNotificationsDenied = FALSE;
 
     protected $rules = [
-        'user.desktop_notifications_granted' => 'required',
-        'user.notify_only_favorites' => 'required',
+        'employee.desktop_notifications_granted' => 'required',
+        'employee.notify_only_favorites' => 'required',
     ];
 
     public function loadUser($permission = NULL) {
         $this->user = auth()->user();
+        $this->employee = $this->user->employee;
 
         if ($permission) {
             $this->loadPermission($permission);
@@ -71,8 +73,8 @@ class InfosManager extends Component
         $this->blockRedirection = TRUE;
     }
 
-    public function updatedUserNotifyOnlyFavorites() {
-        $this->user->update();
+    public function updatedEmployeeNotifyOnlyFavorites() {
+        $this->employee?->update();
     }
 
     public function loadPermission($permission) {
@@ -80,19 +82,19 @@ class InfosManager extends Component
     }
 
     public function updatePermission($permission) {
-        auth()->user()->update(['desktop_notifications_granted' => $permission !== 'denied']);
+        auth()->user()->employee?->update(['desktop_notifications_granted' => $permission !== 'denied']);
 
         if ($permission === 'default') {
             redirect()->to($this->rubric->route());
         }
     }
 
-    public function updatedUserDesktopNotificationsGranted() {
-        if ($this->user->desktop_notifications_granted) {
+    public function updatedEmployeeDesktopNotificationsGranted() {
+        if ($this->employee?->desktop_notifications_granted) {
             $this->emit('verifyPermission');
         }
         else {
-            $this->user->update();
+            $this->employee?->update();
         }
     }
 

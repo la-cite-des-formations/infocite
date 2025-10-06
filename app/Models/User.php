@@ -19,7 +19,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['name', 'first_name', 'email', 'password', 'desktop_notifications_granted', 'notify_only_favorites', ];
+    protected $fillable = ['name', 'first_name', 'email', 'password', ];
 
     /**
      * The attributes that aren't mass assignable.
@@ -42,19 +42,64 @@ class User extends Authenticatable
      */
     protected $casts = [
         'account_expires_on' => 'date:Y-m-d',
-        'birthday' => 'date:Y-m-d',
         'email_verified_at' => 'datetime',
     ];
+
+    public function learner()
+    {
+        return $this
+            ->hasOne(Learner::class);
+    }
+
+    public function employee()
+    {
+        return $this
+            ->hasOne(Employee::class);
+    }
 
     public function actor() {
         return $this
             ->belongsTo(Actor::class, 'id');
     }
 
+    public function interactions() {
+        return $this
+            ->hasMany(Interaction::class)
+            ->orderBy('occurred_at', 'desc');
+    }
+
+    public function postsCreateInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('create')
+            ->withTargetType(Post::class);
+    }
+
+    public function postsUpdateInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('update')
+            ->withTargetType(Post::class);
+    }
+
+    public function postsEditInteractions() {
+        return $this
+            ->interactions()
+            ->ofTypes(['create', 'update'])
+            ->withTargetType(Post::class);
+    }
+
+    public function postsCommentInteractions() {
+        return $this
+            ->interactions()
+            ->ofType('comment')
+            ->withTargetType(Post::class);
+    }
+
     public function myPosts() {
         return $this
             ->hasMany(Post::class, 'author_id')
-            ->orderByRaw('updated_at DESC');
+            ->orderBy('updated_at', 'DESC');
     }
 
     public function postsRead() {
@@ -68,17 +113,13 @@ class User extends Authenticatable
     public function updatedPosts() {
         return $this
             ->hasMany(Post::class, 'corrector_id')
-            ->orderByRaw('updated_at DESC');
+            ->orderBy('updated_at', 'DESC');
     }
 
     public function commentedPosts() {
-        return Post::query()
-            ->whereIn('id', $this
-                ->myComments()
-                ->groupBy('post_id')
-                ->pluck('post_id')
-            )
-            ->orderBy('created_at', 'DESC');
+        return $this->hasManyThrough(Post::class, Comment::class, 'user_id', 'id', 'id', 'post_id')
+            ->distinct()
+            ->orderBy('created_at', 'desc');
     }
 
     public function myFavoritesPosts() {
@@ -101,11 +142,6 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC')
             ->withPivot(['rubric_id']);
 
-    }
-
-    public function fcmTokens() {
-        return $this
-            ->belongsToMany(FcmToken::class);
     }
 
     public function myNotifications() {
@@ -253,6 +289,21 @@ class User extends Authenticatable
         });
 
         return $myGroups;
+    }
+
+    /**
+     * Tous les numéros de téléphone de l'utilisateur
+     */
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
+    }
+
+    /**
+     * Numéro de téléphone de l'utilisateur d'un type en particulier
+     */
+    public function phone($type) {
+        return $this->phones->firstWhere('type', $type);
     }
 
     public function groupsList(? array $types = NULL, string $format = "%%", string $noResult = '')
@@ -449,11 +500,11 @@ class User extends Authenticatable
         return is_object($processUser) ? $processUser->name : '';
     }
 
-    public function getTodayConnectionRecordedAttribute() {
-        return Connection::fromToday()
-            ->where('user_id', auth()->user()->id)
-            ->get()
-            ->isNotEmpty();
+    public function getConnectedTodaydAttribute() {
+        return Interaction::ofType('connection')
+            ->byUser(auth()->user())
+            ->forDate(today())
+            ->exists();
     }
 
     public function getEditedPostsNbAttribute() {
@@ -475,14 +526,17 @@ class User extends Authenticatable
 
     public function getNotificationStatusAttribute() {
         switch (TRUE) {
-            case !$this->desktop_notifications_granted:
+            case $this->employee && !$this->employee->desktop_notifications_granted:
                 return "Aucune";
 
-            case $this->desktop_notifications_granted && !$this->notify_only_favorites:
+            case $this->employee && $this->employee->desktop_notifications_granted && !$this->employee->notify_only_favorites:
                 return "Toutes";
 
-            case $this->desktop_notifications_granted && $this->notify_only_favorites:
+            case $this->employee && $this->employee->desktop_notifications_granted && $this->employee->notify_only_favorites:
                 return "Favoris";
+
+            default:
+                return "Non disponibles";
         }
     }
 
@@ -497,26 +551,21 @@ class User extends Authenticatable
                 return "Apprenant{$this->groupsList(['C'], ' (%%)')}";
 
             case $header === 'Classe' :
-            case $header === 'Service' :
             case $header === 'Groupes' :
                 return $this->groupsList([$groupType], '%%', '-');
 
-            case $header === 'Processus' :
-                return $this->processesList('%%', '-');
+            case $header === 'Service' :
+                return $this->groupsList(['E']);
 
-            case $header === 'Fonction' && !$groupId :
-                return $this->functionsList(['P']) ?: $this->groupsList(['P'], '(%%)');
-
-            case $header === 'Fonction' && $groupId && $groupType !== 'E':
-                return $this->function($groupId, '%%', '-');
+            case $header === 'Fonction' && (!$groupId || ($groupId && $groupType === 'F')):
+                return  $this->groupsList(['E']).($this->functionsList(['E'], " (%%)") ?: $this->groupsList(['P'], ' (%%)'));
 
             case $header === 'Fonction' && $groupId && $groupType === 'E':
-                $groupFunction = $this->function($groupId);
-                return (new Collection([$this->functionsList(['P']) ?: $this->groupsList(['P'], '(%%)')]))
-                    ->when($groupFunction, function ($collection) use ($groupFunction) {
-                        return $collection->push($groupFunction);
-                    })
-                    ->implode(', ');
+                return $this->functionsList(['E']) ?: $this->groupsList(['P']);
+
+            case $header === 'Fonction' && $groupId && $groupType !== 'E':
+                return $this->functionsList(['C'], '%%', '-');
+
         }
     }
 
@@ -649,54 +698,5 @@ class User extends Authenticatable
             default :
                 return static::all();
         }
-    }
-
-    public static function activeEditors($filter = []) {
-        extract($filter);
-        $editorType = isset($editorType) ? $editorType : 'all';
-        $rubric_id = isset($rubric_id) ? $rubric_id : NULL;
-
-        return static::query()
-            ->join('posts', function ($query) use ($editorType) {
-                $query->when($editorType == 'all' || $editorType == 'authors', function ($join) {
-                    $join->on('posts.author_id', '=', 'users.id');
-                })->when($editorType == 'all' || $editorType == 'correctors', function ($join) {
-                    $join->orOn('posts.corrector_id', '=', 'users.id');
-                });
-            })
-            ->selectRaw('users.name, users.first_name, COUNT(*) AS posts_nb')
-            ->when($rubric_id !== NULL, function ($query) use ($rubric_id) {
-                $query->where('posts.rubric_id', $rubric_id);
-            })
-            ->groupByRaw('users.name, users.first_name')
-            ->orderByRaw('posts_nb DESC, users.name, users.first_name');
-    }
-
-    public static function activeCommentators($filter = []) {
-        extract($filter);
-        $byStaff = !isset($commentatorType) || ($commentatorType == 'all') ? NULL : $commentatorType == 'staff';
-
-        return static::query()
-            ->join('comments', 'comments.user_id', '=', 'users.id')
-            ->selectRaw('users.name, users.first_name, COUNT(*) AS comments_nb')
-            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query->where('users.is_staff', $byStaff);
-            })
-            ->groupByRaw('users.name, users.first_name')
-            ->orderByRaw('comments_nb DESC, users.name, users.first_name');
-    }
-
-    public static function personalAppsUsers($filter = []) {
-        extract($filter);
-        $byStaff = !isset($userType) || ($userType == 'all') ? NULL : $userType == 'staff';
-
-        return static::query()
-            ->join('apps', 'apps.owner_id', '=', 'users.id')
-            ->selectRaw('users.name, users.first_name, COUNT(*) AS apps_nb')
-            ->when($byStaff !== NULL, function ($query) use ($byStaff) {
-                $query->where('users.is_staff', $byStaff);
-            })
-            ->groupByRaw('users.name, users.first_name')
-            ->orderByRaw('apps_nb DESC, users.name, users.first_name');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Stats;
+use App\Charts\Charts;
 
 trait WithCharts
 {
@@ -17,8 +17,8 @@ trait WithCharts
             $this->emit(
                 $chart['event'],
                 $chart['target'],
-                Stats::getChart($chartName, $filter),
-                Stats::getChartOptions($chartName)
+                Charts::getChart($chartName, $filter),
+                Charts::getChartOptions($chartName)
             );
         }
     }

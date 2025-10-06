@@ -30,19 +30,19 @@ class FcmNotifsSwClientManager extends Component
         $currentUser = auth()->user();
         $tokenRecord = FcmToken::firstOrCreate(['token' => $token]);
 
-        if (!$currentUser->fcmTokens()->where('token', $token)->exists()) {
-            $currentUser->fcmTokens()->attach($tokenRecord->id);
+        if ($currentUser->employee && !$currentUser->employee->fcmTokens()->where('token', $token)->exists()) {
+            $currentUser->employee->fcmTokens()->attach($tokenRecord->id);
         }
 
         // si non défini, enregistrement du token comme token par défaut de l'utilisateur courant
-        if (!$currentUser->default_fcm_token_id) {
-            $currentUser->default_fcm_token_id = $tokenRecord->id;
-            $currentUser->save();
+        if ($currentUser->employee && !$currentUser->employee->default_fcm_token_id) {
+            $currentUser->employee->default_fcm_token_id = $tokenRecord->id;
+            $currentUser->employee->save();
         }
     }
 
     public function registerNotificationPermission($permission) {
-        auth()->user()->update(['desktop_notifications_granted' => $permission !== 'denied']);
+        auth()->user()->employee?->update(['desktop_notifications_granted' => $permission !== 'denied']);
 
         $this->emit('refreshPermissionSwitch', $permission);
 

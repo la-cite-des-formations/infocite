@@ -4,9 +4,7 @@
 
 @section('card-body')
     <div wire:init="drawAllCharts()">
-      @foreach (array_keys($statsCollection) as $statsName)
-        @include("includes.admin.stats.{$statsName}")
-      @endforeach
+        @include('includes.tabs', ['tabsSystem' => $chartTabs])
     </div>
 @endsection
 

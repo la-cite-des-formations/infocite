@@ -7,5 +7,5 @@
             </div>
         </div>
     </div>
-    <div wire:ignore id='notificationsUseChart' style='height: 500px; width: 100%'></div>
+    <div wire:ignore id='notificationsUseChart' style='height: 360px; width: 100%'></div>
 </div>
