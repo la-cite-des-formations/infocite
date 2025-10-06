@@ -1,4 +1,3 @@
-// Content
 const initEditor = function () {
     tinymce.init({
         selector: ".tinymce",
@@ -36,23 +35,21 @@ const initEditor = function () {
         image_advtab: true,
         contextmenu: false,
         toolbar: [
-            "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media  | emoticons charmap | searchreplace preview code fullscreen"
+            "undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media | emoticons charmap | searchreplace preview code fullscreen"
         ],
         entity_encoding: 'raw',
         video_template_callback: function(data) {
-            console.log(data);
-                return  '<div class="embed-responsive embed-responsive-4by3">' +
-                            '<video frameborder="0" class="embed-responsive-item" controls="controls">\n' +
-                                '<source src="' + data.source1 + '"' + (data.source1mime ? ' type="' + data.source1mime + '"' : '') + ' />\n' +
-                                (data.source2 ? '<source src="' + data.source2 + '"' + (data.source2mime ? ' type="' + data.source2mime + '"' : '') + ' />\n' : '') +
-                            '</video>' +
-                        '</div>';
+            return  '<div class="embed-responsive embed-responsive-4by3">' +
+                        '<video frameborder="0" class="embed-responsive-item" controls="controls">' +
+                            '<source src="' + data.source1 + '"' + (data.source1mime ? ' type="' + data.source1mime + '"' : '') + ' />' +
+                            (data.source2 ? '<source src="' + data.source2 + '"' + (data.source2mime ? ' type="' + data.source2mime + '"' : '') + ' />' : '') +
+                        '</video>' +
+                    '</div>';
         },
         relative_urls: false,
         image_dimensions: false,
         menubar: false,
         browser_spellcheck: true,
-        image_advtab: true,
         images_upload_url: '/upload',
         automatic_uploads: true,
         file_picker_types: 'image',
@@ -62,7 +59,6 @@ const initEditor = function () {
             input.setAttribute('accept', 'image/*');
             input.onchange = function() {
                 var file = this.files[0];
-
                 var reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function () {
@@ -76,10 +72,46 @@ const initEditor = function () {
             };
             input.click();
         },
+        paste_preprocess: function(plugin, args) {
+            // Nettoyer le contenu collé
+            let div = document.createElement('div');
+            div.innerHTML = args.content;
+
+            const walk = node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Convertir b → strong et i → em
+                    if (node.tagName.toLowerCase() === 'b') node.outerHTML = `<strong>${node.innerHTML}</strong>`;
+                    if (node.tagName.toLowerCase() === 'i') node.outerHTML = `<em>${node.innerHTML}</em>`;
+
+                    // Supprimer spans et liens mais garder le contenu
+                    if (['span', 'a'].includes(node.tagName.toLowerCase())) {
+                        let parent = node.parentNode;
+                        while (node.firstChild) parent.insertBefore(node.firstChild, node);
+                        parent.removeChild(node);
+                    }
+
+                    // Supprimer tous les attributs sauf pour les images
+                    if (node.tagName.toLowerCase() !== 'img') {
+                        [...node.attributes].forEach(attr => node.removeAttribute(attr.name));
+                    } else {
+                        const keep = ['src', 'alt', 'width', 'height'];
+                        [...node.attributes].forEach(attr => {
+                            if (!keep.includes(attr.name)) node.removeAttribute(attr.name);
+                        });
+                    }
+
+                    // Parcourir récursivement les enfants
+                    [...node.childNodes].forEach(walk);
+                }
+            };
+
+            [...div.childNodes].forEach(walk);
+            args.content = div.innerHTML;
+        },
         setup : (editor) => {
             editor.on('change', () => {
                 Livewire.emit('contentChange', editor.getContent());
-            })
+            });
             Livewire.on('deleteContent', () => {
                 editor.setContent('')
             });
@@ -92,4 +124,4 @@ initEditor();
 addEventListener('initTinymce', () => {
     tinymce.remove();
     initEditor();
-})
+});
