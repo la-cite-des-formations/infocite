@@ -4,11 +4,59 @@ if (!function_exists('normalizeUnicodeString')) {
     /**
      * Normalise une chaîne Unicode :
      * - Convertit les caractères alphabétiques "stylisés" (gras, script, etc.) en ASCII.
+     * - Convertit les caractères typographiques (tirets, apostrophes, etc.) en ASCII standard.
      * - Conserve les emojis.
      * - Supprime les autres caractères exotiques.
      */
     function normalizeUnicodeString(string $input): string
     {
+        // =========================================================
+        // Conversion des caractères typographiques en ASCII (apostrophes, guillemets, tirets et ellipse)
+        // =========================================================
+        $search = [
+
+            // 1. Apostrophes et Guillemets Typographiques
+            '’', '‘', // Apostrophes courbes
+            '”', '“', // Guillemets doubles courbes
+            '«', '»', // Guillemets français
+
+            // 2. Tirets et Ellipses
+            '—', // Tiret Cadratin (Em Dash)
+            '–', // Tiret Demi-Cadratin (En Dash)
+            '…', // Ellipse unique Unicode
+
+            // 3. Espaces Spéciaux
+            ' ', // Espace Insécable (NBSP)
+            ' ', // Thin Space
+            ' ', // Hair Space
+            ' ', // Narrow No-Break Space
+        ];
+
+        $replace = [
+
+            // 1. Remplacement des apostrophes et guillemets
+            '\'', '\'',
+            '"', '"',
+            '"', '"',
+
+            // 2. Remplacement des tirets et ellipses
+            '-',
+            '-',
+            '...',
+
+            // 3. Remplacement des espaces par l'espace standard ASCII (U+0020)
+            ' ',
+            ' ',
+            ' ',
+            ' ',
+        ];
+
+        $input = str_replace($search, $replace, $input);
+
+        // =========================================================
+        // Logique de conversion et de conservation (Maths, Emojis, ASCII)
+        // =========================================================
+
         $blocks = [
             ['A' => 0x1D400, 'a' => 0x1D41A], // Mathematical Bold
             ['A' => 0x1D434, 'a' => 0x1D44E], // Mathematical Italic
