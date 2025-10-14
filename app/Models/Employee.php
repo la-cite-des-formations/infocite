@@ -45,8 +45,4 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    public function fcmTokens() {
-        return $this->belongsToMany(FcmToken::class);
-    }
 }
