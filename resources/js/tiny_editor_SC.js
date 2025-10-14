@@ -30,7 +30,7 @@ const initEditor = function () {
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
             'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media', 'nonbreaking',
-            'save', 'table', 'directionality', 'wordcount', 'emoticons', 'template', 'paste'
+            'save', 'table', 'directionality', 'wordcount', 'emoticons'
         ],
         image_advtab: true,
         contextmenu: false,
