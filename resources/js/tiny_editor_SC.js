@@ -30,7 +30,7 @@ const initEditor = function () {
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
             'visualchars', 'code', 'fullscreen', 'insertdatetime', 'media', 'nonbreaking',
-            'save', 'table', 'directionality', 'wordcount', 'emoticons', 'template',
+            'save', 'table', 'directionality', 'wordcount', 'emoticons', 'template', 'paste'
         ],
         image_advtab: true,
         contextmenu: false,
@@ -72,48 +72,23 @@ const initEditor = function () {
             };
             input.click();
         },
+
+        // gestion du collage de contenu externe
+        paste_block_drop: true, // glisser-déposer interdit
         paste_preprocess: function(plugin, args) {
-            // Nettoyer le contenu collé
-            let div = document.createElement('div');
-            div.innerHTML = args.content;
-
-            const walk = node => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    // Convertir b → strong et i → em
-                    if (node.tagName.toLowerCase() === 'b') node.outerHTML = `<strong>${node.innerHTML}</strong>`;
-                    if (node.tagName.toLowerCase() === 'i') node.outerHTML = `<em>${node.innerHTML}</em>`;
-
-                    // Supprimer spans et liens mais garder le contenu
-                    if (['span', 'a'].includes(node.tagName.toLowerCase())) {
-                        let parent = node.parentNode;
-                        while (node.firstChild) parent.insertBefore(node.firstChild, node);
-                        parent.removeChild(node);
-                    }
-
-                    // Supprimer tous les attributs sauf pour les images
-                    if (node.tagName.toLowerCase() !== 'img') {
-                        [...node.attributes].forEach(attr => node.removeAttribute(attr.name));
-                    } else {
-                        const keep = ['src', 'alt', 'width', 'height'];
-                        [...node.attributes].forEach(attr => {
-                            if (!keep.includes(attr.name)) node.removeAttribute(attr.name);
-                        });
-                    }
-
-                    // Parcourir récursivement les enfants
-                    [...node.childNodes].forEach(walk);
-                }
-            };
-
-            [...div.childNodes].forEach(walk);
-            args.content = div.innerHTML;
+            Livewire.emit('contentPaste', args.content);
+            args.preventDefault(); // empêche TinyMCE de coller le HTML brut
         },
+
         setup : (editor) => {
             editor.on('change', () => {
                 Livewire.emit('contentChange', editor.getContent());
             });
             Livewire.on('deleteContent', () => {
                 editor.setContent('')
+            });
+            Livewire.on('insertCleanContent', (cleanHtml) => {
+                editor.insertContent(cleanHtml);
             });
         }
     });

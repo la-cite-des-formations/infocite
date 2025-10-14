@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\CustomFacades\AP;
 use App\Models as Models;
 use App\Policies as Policies;
-use App\Models\Roles;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -32,6 +31,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        if ($this->app->runningInConsole()) {
+            return;
+        }
 
         Gate::define('access-dashboard', function ($user, $dashboard = '') {
             foreach (AP::getModels($dashboard) as $model) {
