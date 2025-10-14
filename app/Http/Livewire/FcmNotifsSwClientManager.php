@@ -30,8 +30,8 @@ class FcmNotifsSwClientManager extends Component
         $currentUser = auth()->user();
         $tokenRecord = FcmToken::firstOrCreate(['token' => $token]);
 
-        if ($currentUser->employee && !$currentUser->employee->fcmTokens()->where('token', $token)->exists()) {
-            $currentUser->employee->fcmTokens()->attach($tokenRecord->id);
+        if ($currentUser->employee && !$currentUser->fcmTokens()->where('token', $token)->exists()) {
+            $currentUser->fcmTokens()->attach($tokenRecord->id);
         }
 
         // si non défini, enregistrement du token comme token par défaut de l'utilisateur courant
