@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Usage;
 
 use Livewire\Component;
+use App\Http\Livewire\HandleTinymceContent;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
@@ -19,6 +20,7 @@ use App\Notifications\AppNotification;
 
 class EditPostManager extends Component
 {
+    use HandleTinymceContent;
     use WithModal;
     use WithAlert;
     use WithIconpicker;
@@ -30,7 +32,7 @@ class EditPostManager extends Component
     public $post;
     public $blockComments;
 
-    protected $listeners = ['modalClosed', 'save', 'contentChange'];
+    protected $listeners = ['modalClosed', 'save', 'contentChange', 'contentPaste'];
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -44,98 +46,6 @@ class EditPostManager extends Component
 
     ];
 
-    protected function sanitizeContent(string $content): string {
-        libxml_use_internal_errors(true);
-
-        $doc = new \DOMDocument();
-        $doc->loadHTML('<?xml encoding="UTF-8">' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        libxml_clear_errors();
-
-        $xpath = new \DOMXPath($doc);
-
-        // Convertir <b> → <strong> et <i> → <em>
-        foreach ($xpath->query('//b') as $b) {
-            $strong = $doc->createElement('strong');
-            while ($b->childNodes->length > 0) {
-                $strong->appendChild($b->childNodes->item(0));
-            }
-            $b->parentNode->replaceChild($strong, $b);
-        }
-
-        foreach ($xpath->query('//i') as $i) {
-            $em = $doc->createElement('em');
-            while ($i->childNodes->length > 0) {
-                $em->appendChild($i->childNodes->item(0));
-            }
-            $i->parentNode->replaceChild($em, $i);
-        }
-
-        // Supprimer tous les liens <a> mais garder le texte
-        foreach ($xpath->query('//a') as $a) {
-            $fragment = $doc->createDocumentFragment();
-            while ($a->childNodes->length > 0) {
-                $fragment->appendChild($a->childNodes->item(0));
-            }
-            $a->parentNode->replaceChild($fragment, $a);
-        }
-
-        // Supprimer tous les <span>
-        foreach ($xpath->query('//span') as $span) {
-            $fragment = $doc->createDocumentFragment();
-            while ($span->childNodes->length > 0) {
-                $fragment->appendChild($span->childNodes->item(0));
-            }
-            $span->parentNode->replaceChild($fragment, $span);
-        }
-
-        // Nettoyer tous les attributs sauf pour les <img>
-        foreach ($xpath->query('//*') as $node) {
-            if ($node instanceof \DOMElement) {
-                if ($node->nodeName !== 'img') {
-                    // supprimer tous les attributs
-                    $attrsToRemove = [];
-                    foreach ($node->attributes as $attr) {
-                        if ($attr instanceof \DOMAttr) {
-                            $attrsToRemove[] = $attr->nodeName;
-                        }
-                    }
-                    foreach ($attrsToRemove as $attrName) {
-                        $node->removeAttribute($attrName);
-                    }
-                } else {
-                    // pour les images, ne garder que src, alt, width, height
-                    $keep = ['src', 'alt', 'width', 'height'];
-                    $attrsToRemove = [];
-                    foreach ($node->attributes as $attr) {
-                        if ($attr instanceof \DOMAttr && !in_array($attr->nodeName, $keep)) {
-                            $attrsToRemove[] = $attr->nodeName;
-                        }
-                    }
-                    foreach ($attrsToRemove as $attrName) {
-                        $node->removeAttribute($attrName);
-                    }
-                }
-            }
-        }
-
-        // Extraire le HTML nettoyé
-        $body = $doc->getElementsByTagName('body')->item(0);
-        $cleanHtml = '';
-
-        if ($body) {
-            foreach ($body->childNodes as $child) {
-                $cleanHtml .= $doc->saveHTML($child);
-            }
-        }
-        else {
-            // Si pas de body, utiliser tout le document
-            $cleanHtml = $doc->saveHTML();
-        }
-
-        // Normaliser l'encodage UTF-8
-        return mb_convert_encoding($cleanHtml, 'UTF-8', 'UTF-8');
-    }
-
     public function mount($viewBag) {
         session(['appsBackRoute' => request()->getRequestUri()]);
         $this->backRoute = session('backRoute');
@@ -146,10 +56,7 @@ class EditPostManager extends Component
             $this->post->rubric_id = $this->currentRubric->id;
         }
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
-    }
-
-    public function contentChange($content) {
-        $this->post->content = $this->sanitizeContent($content);
+        $this->initTinymceContent('post.content');
     }
 
     public function updatedPostPublished() {
