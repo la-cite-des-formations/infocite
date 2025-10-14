@@ -57,6 +57,10 @@ class User extends Authenticatable
             ->hasOne(Employee::class);
     }
 
+    public function fcmTokens() {
+        return $this->belongsToMany(FcmToken::class);
+    }
+
     public function actor() {
         return $this
             ->belongsTo(Actor::class, 'id');
