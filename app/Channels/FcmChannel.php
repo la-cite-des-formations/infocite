@@ -2,19 +2,22 @@
 
 namespace App\Channels;
 
+use App\Models\FcmToken;
 use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging;
+use Kreait\Firebase\Exception\MessagingException;
 
 class FcmChannel
 {
     protected $messaging;
 
-    public function __construct()
+    /**
+     * Injecter le service Messaging via le conteneur de services.
+     */
+    public function __construct(Messaging $messaging)
     {
-        $this->messaging = (new Factory)
-            ->withServiceAccount(storage_path(config('firebase.credentials')))
-            ->createMessaging();
+        $this->messaging = $messaging;
     }
 
     /**
@@ -27,9 +30,9 @@ class FcmChannel
     public function send($notifiable, Notification $notification)
     {
         // Vérifie l'existence d'un token FCM pour l'utilisateur
-        $tokens = $notifiable->fcmTokens()->pluck('token')->filter();
+        $tokens = $notifiable->fcmTokens()->pluck('token')->filter()->all();
 
-        if ($tokens->isEmpty()) {
+        if (empty($tokens)) {
             return;
         }
 
@@ -38,9 +41,19 @@ class FcmChannel
 
         // Envoi du message à tous les tokens
         try {
-            $this->messaging->sendMulticast($message, $tokens->toArray());
+            $report = $this->messaging->sendMulticast($message, $tokens->toArray());
+
+            $invalidTokens = $report->invalidTokens();
+
+            if (!empty($invalidTokens)) {
+                \Log::info('Nettoyage de ' . count($invalidTokens) . ' tokens invalides après envoi.');
+                // Supprimer ces tokens de la base de données en une seule requête
+                FcmToken::whereIn('token', $invalidTokens)->delete();
+            }
+        } catch (MessagingException $e) {
+            \Log::error("Erreur MessagingException lors de l'envoi de la notification FCM : " . $e->getMessage());
         } catch (\Exception $e) {
-            \Log::error("Erreur lors de l'envoi de la notification FCM : " . $e->getMessage());
+            \Log::error("Erreur générale lors de l'envoi de la notification FCM : " . $e->getMessage());
         }
     }
 }

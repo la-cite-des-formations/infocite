@@ -35,13 +35,9 @@ class AppServiceProvider extends ServiceProvider
             'User' => 'App\Models\User',
         ]);
 
-        session([
-            'displayPosts'=>'grid',
-            'lastFilter'=>'allPosts',
-        ]);
-
-        $this->app->make(ChannelManager::class)->extend('fcm', function () {
-            return new FcmChannel;
+        $this->app->make(ChannelManager::class)->extend('fcm', function ($app) {
+            // Demande au conteneur de construire FcmChannel en injectant ses dépendances
+            return $app->make(FcmChannel::class);
         });
     }
 }

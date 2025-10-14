@@ -23,9 +23,6 @@ class FcmNotifsSwClientManager extends Component
     }
 
     public function traitFcmToken($token) {
-        // purge des tokens invalides
-        FcmToken::purgeInvalidTokens();
-
         // si besoin, enregistrement du token et association à l'utilisateur courant
         $currentUser = auth()->user();
         $tokenRecord = FcmToken::firstOrCreate(['token' => $token]);
