@@ -115,7 +115,7 @@ class EditPostManager extends Component
 
         if ($this->mode === 'creation') {
             // création
-            $this->post->author_id = auth()->user()->id;
+            $this->post->author_id = auth()->id();
             $this
                 ->sendAlert([
                     'alertClass' => 'success',
@@ -124,7 +124,7 @@ class EditPostManager extends Component
         }
         else {
             // modification
-            $this->post->corrector_id = auth()->user()->id;
+            $this->post->corrector_id = auth()->id();
 
             $this
                 ->sendAlert([

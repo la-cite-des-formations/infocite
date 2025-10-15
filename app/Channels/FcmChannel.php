@@ -41,7 +41,7 @@ class FcmChannel
 
         // Envoi du message à tous les tokens
         try {
-            $report = $this->messaging->sendMulticast($message, $tokens->toArray());
+            $report = $this->messaging->sendMulticast($message, $tokens);
 
             $invalidTokens = $report->invalidTokens();
 
