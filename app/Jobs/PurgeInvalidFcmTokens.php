@@ -38,9 +38,9 @@ class PurgeInvalidFcmTokens implements ShouldQueue
             }
 
             // Validation en masse (un seul appel API pour le lot)
-            $validationResult = $messaging->validateTokens($tokens);
+            $validationResult = $messaging->validateRegistrationTokens($tokens);
 
-            $invalidTokens = $validationResult->invalidTokens();
+            $invalidTokens = $validationResult['invalid'] ?? [];
 
             if (!empty($invalidTokens)) {
                 Log::info(count($invalidTokens) . ' tokens invalides trouvés. Suppression...');
