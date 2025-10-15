@@ -44,9 +44,13 @@ document.addEventListener('livewire:load', function() {
                     getToken(messaging, { fcmVapidKey })
                         .then((fcmToken) => {
                             if (fcmToken) {
-                                console.log('Token FCM récupéré et transmis au serveur')
-
-                                Livewire.emit('traitFcmToken', fcmToken);
+                                const locallyStoredToken = localStorage.getItem('fcm_token');
+                                if (fcmToken !== locallyStoredToken) {
+                                    console.log('Nouveau token FCM, envoi au serveur...');
+                                    Livewire.emit('traitFcmToken', fcmToken);
+                                } else {
+                                    console.log('Token FCM déjà à jour sur le serveur.');
+                                }
                             } else {
                                 console.warn('Aucun token n’a été généré. Autorisation refusée !')
                             }
@@ -88,6 +92,12 @@ document.addEventListener('livewire:load', function() {
             askNotificationPermission()
         }
     })
+
+    // Le token a bien été enregistré. On le stocke localement pour ne pas le renvoyer.
+    Livewire.on('fcmTokenSaved', token => {
+        console.log('Token bien enregistré. Mise à jour du localStorage.');
+        localStorage.setItem('fcm_token', token);
+    });
 
     // message reçu quand l'application est active en premier plan
     onMessage(messaging, (payload) => {

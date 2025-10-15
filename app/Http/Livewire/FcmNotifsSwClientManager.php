@@ -36,6 +36,10 @@ class FcmNotifsSwClientManager extends Component
             $currentUser->employee->default_fcm_token_id = $tokenRecord->id;
             $currentUser->employee->save();
         }
+
+        // On informe le client que l'enregistrement est un succès
+        // pour qu'il puisse le stocker dans son localStorage.
+        $this->dispatchBrowserEvent('fcmTokenSaved', $token);
     }
 
     public function registerNotificationPermission($permission) {
