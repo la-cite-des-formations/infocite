@@ -39,7 +39,7 @@ class FcmNotifsSwClientManager extends Component
 
         // On informe le client que l'enregistrement est un succès
         // pour qu'il puisse le stocker dans son localStorage.
-        $this->dispatchBrowserEvent('fcmTokenSaved', $token);
+        $this->emit('fcmTokenSaved', $token);
     }
 
     public function registerNotificationPermission($permission) {
