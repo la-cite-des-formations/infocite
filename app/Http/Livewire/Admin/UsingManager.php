@@ -34,7 +34,7 @@ class UsingManager extends Component
                     'event' => 'drawRingChart',
                 ],
             ],
-            'buttonLabel' => 'Voir plus...',
+            'buttonLabel' => 'Détailler...',
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
@@ -50,7 +50,7 @@ class UsingManager extends Component
                     'event' => 'drawRingChart',
                 ],
             ],
-            'buttonLabel' => 'Voir plus...',
+            'buttonLabel' => 'Détailler...',
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
@@ -64,7 +64,7 @@ class UsingManager extends Component
                     'event' => 'drawRingChart',
                 ],
             ],
-            'buttonLabel' => 'Voir plus...',
+            'buttonLabel' => 'Détailler...',
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
@@ -92,6 +92,11 @@ class UsingManager extends Component
         'Juin'      => 6,
         'Juillet'   => 7,
         'Août'      => 8,
+    ];
+    public $editorLabel = [
+        'all' => 'rédacteurs',
+        'authors' => 'auteurs',
+        'correctors' => 'correcteurs',
     ];
     public $chartTabs = [
         'name' => 'chartTabs',
@@ -272,10 +277,13 @@ class UsingManager extends Component
         return view('livewire.admin.stats-viewer', [
             'rubrics' => Rubric::allWithPosts(),
             'gcColors' => AP::getGcColors(),
+            'activeEditors' => $activeEditors->get(),
             'activeEditorsTop3' => $activeEditors->take(3)->get(),
             'mostActiveEditors' => $activeEditors->paginate($this->statsCollection['mostActiveEditors']['perPage'], ['*'], 'mostActiveEditorsPage'),
+            'activeCommentators' => $activeCommentators->get(),
             'activeCommentatorsTop3' => $activeCommentators->take(3)->get(),
             'mostActiveCommentators' => $activeCommentators->paginate($this->statsCollection['mostActiveCommentators']['perPage'], ['*'], 'mostActiveCommentatorsPage'),
+            'allPersonnalAppsUsers' => $personalAppsUsers->get(),
             'personalAppsUsersTop3' => $personalAppsUsers->take(3)->get(),
             'personalAppsUsers' => $personalAppsUsers->paginate($this->statsCollection['personalAppsUsers']['perPage'], ['*'], 'personalAppsUsersPage'),
             'dashboard' => 'stats',

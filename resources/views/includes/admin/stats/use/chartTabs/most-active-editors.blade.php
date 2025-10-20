@@ -75,15 +75,19 @@
           @endforeach
         </div>
     </div>
+    <div class="d-flex justify-content-center">
+        <h5>Soit {{ $activeEditors->count() }} {{ $editorLabel[$statsCollection['mostActiveEditors']['filter']['editorType']] }}
+            pour un total de {{ $activeEditors->sum('posts_count') }} articles.</h5>
+    </div>
 </div>
 <div class='mt-1 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('mostActiveEditors')" class='btn btn-success' type="button"
             data-bs-toggle="collapse" data-bs-target="#mostActiveEditorsTable"
-            aria-expanded="{{ $statsCollection['mostActiveEditors']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="mostActiveEditorsTable">
+            aria-expanded="{{ $statsCollection['mostActiveEditors']['buttonLabel'] == 'Détailler...' ? 'false' : 'true'}}" aria-controls="mostActiveEditorsTable">
         {{ $statsCollection['mostActiveEditors']['buttonLabel'] }}
     </button>
 </div>
-<div id='mostActiveEditorsTable' class="container collapse {{ $statsCollection['mostActiveEditors']['buttonLabel']  == 'Voir plus...' ? '' : 'show'}}">
+<div id='mostActiveEditorsTable' class="container collapse {{ $statsCollection['mostActiveEditors']['buttonLabel']  == 'Détailler...' ? '' : 'show'}}">
     <table class="table table-sm table-hover admin-table">
         <thead class="table-dark">
             <tr class="row">

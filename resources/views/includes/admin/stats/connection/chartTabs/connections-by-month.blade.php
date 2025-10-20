@@ -25,11 +25,11 @@
 <div class='mt-4 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('connectionsByMonth')" class='btn btn-success' type="button"
             data-bs-toggle="collapse" data-bs-target="#connectionsByMonthTable"
-            aria-expanded="{{ $statsCollection['connectionsByMonth']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="connectionsByMonthTable">
+            aria-expanded="{{ $statsCollection['connectionsByMonth']['buttonLabel'] == 'Détailler...' ? 'false' : 'true'}}" aria-controls="connectionsByMonthTable">
         {{ $statsCollection['connectionsByMonth']['buttonLabel'] }}
     </button>
 </div>
-<div id='connectionsByMonthTable' class="container collapse {{ $statsCollection['connectionsByMonth']['buttonLabel'] == 'Voir plus...' ? '' : 'show'}}">
+<div id='connectionsByMonthTable' class="container collapse {{ $statsCollection['connectionsByMonth']['buttonLabel'] == 'Détailler...' ? '' : 'show'}}">
     <table class="table table-sm table-hover admin-table">
         <thead class="table-dark">
             <tr class="row">

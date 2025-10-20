@@ -32,15 +32,18 @@
           @endforeach
         </div>
     </div>
+    <div class="d-flex justify-content-center">
+        <h5>Soit {{ $allPersonnalAppsUsers->count() }} utilisateurs se servant de {{ $allPersonnalAppsUsers->sum('apps_nb') }} applications personnelles.</h5>
+    </div>
 </div>
 <div class='mt-1 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('personalAppsUsers')" class='btn btn-success' type="button"
             data-bs-toggle="collapse" data-bs-target="#personalAppsUsersTable"
-            aria-expanded="{{ $statsCollection['personalAppsUsers']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="personalAppsUsersTable">
+            aria-expanded="{{ $statsCollection['personalAppsUsers']['buttonLabel'] == 'Détailler...' ? 'false' : 'true'}}" aria-controls="personalAppsUsersTable">
         {{ $statsCollection['personalAppsUsers']['buttonLabel'] }}
     </button>
 </div>
-<div id='personalAppsUsersTable' class="container collapse {{ $statsCollection['personalAppsUsers']['buttonLabel']  == 'Voir plus...' ? '' : 'show'}}">
+<div id='personalAppsUsersTable' class="container collapse {{ $statsCollection['personalAppsUsers']['buttonLabel']  == 'Détailler...' ? '' : 'show'}}">
     <table class="table table-sm table-hover admin-table">
         <thead class="table-dark">
             <tr class="row">
