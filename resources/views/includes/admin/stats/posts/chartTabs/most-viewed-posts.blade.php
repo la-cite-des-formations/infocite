@@ -75,15 +75,18 @@
           @endforeach
         </div>
     </div>
+    <div class="d-flex justify-content-center">
+        <h5>Soit {{ $viewedPosts->count() }} articles lus pour un total de {{ $viewedPosts->sum('views_count') }} vues.</h5>
+    </div>
 </div>
 <div class='mt-1 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('mostViewedPosts')" class='btn btn-success' type="button"
             data-bs-toggle="collapse" data-bs-target="#mostViewedPostsTable"
-            aria-expanded="{{ $statsCollection['mostViewedPosts']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="mostViewedPostsTable">
+            aria-expanded="{{ $statsCollection['mostViewedPosts']['buttonLabel'] == 'Détailler...' ? 'false' : 'true'}}" aria-controls="mostViewedPostsTable">
         {{ $statsCollection['mostViewedPosts']['buttonLabel'] }}
     </button>
 </div>
-<div id='mostViewedPostsTable' class="container collapse {{ $statsCollection['mostViewedPosts']['buttonLabel']  == 'Voir plus...' ? '' : 'show'}}">
+<div id='mostViewedPostsTable' class="container collapse {{ $statsCollection['mostViewedPosts']['buttonLabel']  == 'Détailler...' ? '' : 'show'}}">
     <table class="table table-sm table-hover admin-table">
         <thead class="table-dark">
             <tr class="row">
