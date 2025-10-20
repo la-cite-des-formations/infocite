@@ -75,15 +75,18 @@
           @endforeach
         </div>
     </div>
+    <div class="d-flex justify-content-center">
+        <h5>Soit {{ $commentedPosts->count() }} articles commentés pour un total de {{ $commentedPosts->sum('comments_count') }} commentaires.</h5>
+    </div>
 </div>
 <div class='mt-1 mb-3 d-flex justify-content-center'>
     <button wire:click="toggleButton('mostCommentedPosts')" class='btn btn-success' type="button"
             data-bs-toggle="collapse" data-bs-target="#mostCommentedPostsTable"
-            aria-expanded="{{ $statsCollection['mostCommentedPosts']['buttonLabel'] == 'Voir plus...' ? 'false' : 'true'}}" aria-controls="mostCommentedPostsTable">
+            aria-expanded="{{ $statsCollection['mostCommentedPosts']['buttonLabel'] == 'Détailler...' ? 'false' : 'true'}}" aria-controls="mostCommentedPostsTable">
         {{ $statsCollection['mostCommentedPosts']['buttonLabel'] }}
     </button>
 </div>
-<div id='mostCommentedPostsTable' class="container collapse {{ $statsCollection['mostCommentedPosts']['buttonLabel'] == 'Voir plus...' ? '' : 'show'}}">
+<div id='mostCommentedPostsTable' class="container collapse {{ $statsCollection['mostCommentedPosts']['buttonLabel'] == 'Détailler...' ? '' : 'show'}}">
     <table class="table table-sm table-hover admin-table">
         <thead class="table-dark">
             <tr class="row">

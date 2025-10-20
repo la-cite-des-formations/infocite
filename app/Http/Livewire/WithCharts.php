@@ -25,8 +25,8 @@ trait WithCharts
 
     public function toggleButton($statsName) {
         $this->statsCollection[$statsName]['buttonLabel'] =
-            $this->statsCollection[$statsName]['buttonLabel'] == 'Voir plus...' ?
-                'Voir moins...' :
-                'Voir plus...';
+            $this->statsCollection[$statsName]['buttonLabel'] == 'Détailler...' ?
+                'Masquer...' :
+                'Détailler...';
     }
 }
