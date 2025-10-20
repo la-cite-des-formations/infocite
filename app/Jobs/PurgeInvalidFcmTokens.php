@@ -34,6 +34,7 @@ class PurgeInvalidFcmTokens implements ShouldQueue
             $tokens = $fcmTokens->pluck('token')->all();
 
             if (empty($tokens)) {
+                Log::info('Aucun token invalide trouvé.');
                 return;
             }
 

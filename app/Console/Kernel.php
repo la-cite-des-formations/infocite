@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->job(new PurgeInvalidFcmTokens())->daily();
-        $schedule->command('fcm:retain-latest-tokens --keep=5')->daily();
+        $schedule->job(new PurgeInvalidFcmTokens())->daily()->withoutOverlapping();
+        $schedule->command('fcm:retain-latest-tokens --keep=5')->daily()->withoutOverlapping();
     }
 
     /**
