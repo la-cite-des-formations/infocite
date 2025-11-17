@@ -104,7 +104,7 @@
                 <dt class="col-6 col-sm-4 text-end">Fonction</dt>
               @if($user->functionsList(['E']))
                 <dd class="col-6 col-sm-8 text-start">{{ $user->functionsList(['E']) }}</dd>
-              @else
+              @elseif($employee?->position)
                 <dd class="col-6 col-sm-8 text-start">{{ $employee->position }}</dd>
               @endif
               @if($user->groupsList(['C']) || $user->groupsList(['F']))
