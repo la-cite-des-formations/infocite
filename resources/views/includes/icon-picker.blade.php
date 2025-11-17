@@ -18,9 +18,9 @@
         <div id="{{$model}}-icon" wire:model="{{$model}}.icon" type="input" style="max-width: 400px; max-height: 202px;"
              class="form-control d-flex flex-wrap overflow-auto justify-content-start p-0 border-0">
          @if (AP::getRecentMiCodes()->isNotEmpty())
-          @foreach (AP::getRecentMiCodes() as $recentMiName => $recentMi)
-            <button wire:click="choiceIcon('{{$recentMiName}}', '{{$model}}')" type="button" value='{{ $recentMiName }}' title='{{ $recentMiName }}'
-                    class='btn btn-sm {{ $$model->icon === $recentMiName ? 'text-light choice-icon-div' : 'btn-outline-secondary' }} m-1 p-1 border-0'>
+          @foreach (AP::getRecentMiCodes() as $recentMi)
+            <button wire:click="choiceIcon('{{$recentMi['name']}}', '{{$model}}')" type="button" value='{{ $recentMi['name'] }}' title='{{ $recentMi['name'] }}'
+                    class='btn btn-sm {{ $$model->icon === $recentMi['name'] ? 'text-light choice-icon-div' : 'btn-outline-secondary' }} m-1 p-1 border-0'>
                 <span class='material-icons align-top'>{!! "&#x{$recentMi['code']};" !!}</span>
             </button>
           @endforeach

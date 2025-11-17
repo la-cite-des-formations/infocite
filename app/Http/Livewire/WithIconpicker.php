@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\CustomFacades\AP;
-use DateTime;
 use Illuminate\Support\Facades\Cookie;
 
 trait WithIconpicker
@@ -22,18 +21,21 @@ trait WithIconpicker
             });
     }
 
-    public function choiceIcon($miName, string $model) {
+    public function choiceIcon(string $miName, string $model) {
         if(isset($this->$model)) {
             $this->$model->icon = $miName;
             Cookie::queue(
                 'recentMiCodes',
                 AP::getRecentMiCodes()
-                    ->merge([$miName => [
+                    ->where('name', '!=', $miName)
+                    ->prepend([
+                        'name' => $miName,
                         'code' => AP::getMiCode($miName),
-                        'created_at' => now()->format('Y-m-d H:i:s'),
-                    ]])
-                    ->sortByDesc('created_at')
-                    ->take(20),
+                        'last_used_at' => now()->toDateTimeString(),
+                    ])
+                    ->sortByDesc('last_used_at')
+                    ->take(20)
+                    ->values(),
                 AP::COOKIE_LIFETIME
             );
         }
