@@ -5,6 +5,10 @@ namespace App\Models\Traits;
 use App\Models\Interaction;
 use Carbon\Carbon;
 
+/**
+ * Trait permettant à un modèle de gérer des interactions utilisateur (vues, commentaires, éditions, etc.).
+ * Fournit des relations polymorphiques et des méthodes de vérification/enregistrement d'interactions.
+ */
 trait HasInteractions
 {
     /**

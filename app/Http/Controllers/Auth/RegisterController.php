@@ -9,6 +9,10 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Contrôleur gérant l'enregistrement (inscription) des nouveaux utilisateurs.
+ * Gère la validation des données entrantes et la création du modèle User.
+ */
 class RegisterController extends Controller
 {
     /*
@@ -25,14 +29,14 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
+     * URL de redirection après inscription.
      *
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
-     * Create a new controller instance.
+     * Crée une nouvelle instance du contrôleur.
      *
      * @return void
      */
@@ -42,9 +46,9 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Définit le validateur pour les requêtes d'inscription entrantes.
      *
-     * @param  array  $data
+     * @param  array  $data Données envoyées par le formulaire.
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -57,9 +61,9 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Crée une nouvelle instance d'utilisateur après une inscription valide.
      *
-     * @param  array  $data
+     * @param  array  $data Données validées.
      * @return \App\Models\User
      */
     protected function create(array $data)

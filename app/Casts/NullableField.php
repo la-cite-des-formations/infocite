@@ -4,16 +4,21 @@ namespace App\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
+/**
+ * Cast Eloquent pour transformer les chaînes vides en NULL lors de la sauvegarde.
+ * Utile pour les colonnes de base de données avec contrainte d'unicité ou clé étrangère optionnelle.
+ */
 class NullableField implements CastsAttributes
 {
     /**
-     * Cast the given value.
+     * Transforme la valeur récupérée de la base de données.
+     * Aucun changement appliqué en lecture.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $key
-     * @param  mixed  $value
-     * @param  array  $attributes
-     * @return array
+     * @param  string  $key Nom de la colonne.
+     * @param  mixed  $value Valeur brute.
+     * @param  array  $attributes Attributs complets du modèle.
+     * @return mixed
      */
     public function get($model, $key, $value, $attributes)
     {
@@ -21,13 +26,14 @@ class NullableField implements CastsAttributes
     }
 
     /**
-     * Prepare the given value for storage.
+     * Prépare la valeur pour le stockage en base de données.
+     * Convertit les valeurs "falsy" (chaîne vide) en NULL.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $key
-     * @param  array  $value
-     * @param  array  $attributes
-     * @return string
+     * @param  string  $key Nom de la colonne.
+     * @param  mixed  $value Valeur à transformer.
+     * @param  array  $attributes Attributs complets du modèle.
+     * @return mixed
      */
     public function set($model, $key, $value, $attributes)
     {

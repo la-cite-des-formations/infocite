@@ -4,13 +4,23 @@ namespace App\Models;
 
 use Illuminate\Support\Collection;
 
+/**
+ * Classe utilitaire définissant les rôles (flags binaires) au sein du portail.
+ * Gère la conversion entre flags et libellés humains.
+ */
 class Roles
 {
+    /** @var int Aucun droit (0). */
     const NONE =     0b0000;
+    /** @var int Droit d'administration (1). */
     const IS_ADMIN = 0b0001;
+    /** @var int Droit de modération (2). */
     const IS_MODER = 0b0010;
+    /** @var int Droit d'édition (4). */
     const IS_EDITR = 0b0100;
+    /** @var int Droit de lecture simple (8). */
     const IS_READR = 0b1000;
+    /** @var int Tous les droits combinés (15). */
     const ALL =      0b1111;
 
     const ATLEAST_FILTER = 'atleast';
@@ -18,6 +28,7 @@ class Roles
 
     const NONE_STRING = 'Aucun droit';
 
+    /** @var array Liste exhaustive des rôles avec leurs métadonnées. */
     private static $roles = [
         [
             'id' => 'reader',
@@ -53,6 +64,11 @@ class Roles
         ],
     ];
 
+    /**
+     * Retourne la collection complète des rôles sous forme d'objets.
+     *
+     * @return object
+     */
     public static function all()
     {
         return (object)[
@@ -61,6 +77,12 @@ class Roles
         ];
     }
 
+    /**
+     * Filtre les rôles en fonction d'un masque binaire.
+     *
+     * @param int $rolesFlag Masque binaire des rôles désirés.
+     * @return \Illuminate\Support\Collection
+     */
     public static function filter($rolesFlag) {
         return static::all()
             ->collection

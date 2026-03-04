@@ -16,6 +16,10 @@ use App\Http\Livewire\WithUsageMode;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\AppNotification;
 
+/**
+ * Composant Livewire pour la consultation et la gestion d'un article spécifique (côté usage).
+ * Gère l'affichage, les interactions (vues, favoris), les commentaires et les notifications associées.
+ */
 class PostManager extends Component
 {
     use WithModal;
@@ -25,15 +29,50 @@ class PostManager extends Component
     use WithFavoritesHandling;
     use WithPinnedHandling;
 
+    /**
+     * Rubrique de l'article.
+     *
+     * @var \App\Models\Rubric
+     */
     public $rubric;
+
+    /**
+     * Article affiché.
+     *
+     * @var \App\Models\Post
+     */
     public $post;
+
+    /**
+     * Contenu du nouveau commentaire.
+     *
+     * @var string
+     */
     public $newComment = '';
+
+    /**
+     * Indique si le composant a été rendu.
+     *
+     * @var bool
+     */
     public $rendered = FALSE;
+
+    /**
+     * Indique si c'est le premier chargement.
+     *
+     * @var bool
+     */
     public $firstLoad = TRUE;
 
     protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
 
 
+    /**
+     * Initialisation du composant.
+     * Enregistre l'interaction de vue et met à jour l'état de lecture de l'article.
+     *
+     * @param object $viewBag Sac de données contenant l'ID de l'article.
+     */
     public function mount($viewBag) {
         session(['backRoute' => request()->getRequestUri()]);
         session(['appsBackRoute' => request()->getRequestUri()]);
@@ -51,10 +90,16 @@ class PostManager extends Component
         $this->setNotifications();
     }
 
+    /**
+     * Fonction appelée après le rendu du composant.
+     */
     public function booted() {
         $this->firstLoad = !$this->rendered;
     }
 
+    /**
+     * Ajoute un commentaire à l'article.
+     */
     public function commentPost() {
         $commentStr = trim($this->newComment);
         $comment = $commentStr ? new Comment([
@@ -106,6 +151,11 @@ class PostManager extends Component
         $this->newComment = '';
     }
 
+    /**
+     * Supprime un commentaire.
+     *
+     * @param int $commentId Identifiant du commentaire.
+     */
     public function deleteComment($commentId) {
         $this->post
             ->comments()
@@ -115,12 +165,20 @@ class PostManager extends Component
         $this->emitSelf('render');
     }
 
+    /**
+     * Supprime l'article en cours.
+     */
     public function deletePost() {
         $this->post->delete();
 
         redirect($this->post->rubric->route());
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render() {
         $this->rendered = TRUE;
         return view('livewire.usage.post-manager');

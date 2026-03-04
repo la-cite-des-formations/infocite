@@ -9,17 +9,53 @@ use App\Http\Livewire\WithIconpicker;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
+/**
+ * Composant Livewire pour la modale d'édition d'un article.
+ */
 class Edit extends Component
 {
     use WithAlert;
     use WithIconpicker;
 
+    /**
+     * Modèle de l'article.
+     *
+     * @var \App\Models\Post
+     */
     public $post;
+
+    /**
+     * Mode d'affichage ou d'édition.
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Indique si l'ajout est autorisé.
+     *
+     * @var bool
+     */
     public $canAdd = TRUE;
+
+    /**
+     * Configuration des onglets du formulaire.
+     *
+     * @var array
+     */
     public $formTabs;
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['render', 'contentChange'];
+    /**
+     * Règles de validation pour l'article.
+     *
+     * @var array
+     */
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -28,10 +64,20 @@ class Edit extends Component
         'post.published' => 'required|boolean',
     ];
 
+    /**
+     * Met à jour le contenu de l'article lors d'un changement dans l'éditeur.
+     *
+     * @param string $content Nouveau contenu.
+     */
     public function contentChange($content) {
         $this->post->content = $content;
     }
 
+    /**
+     * Définit l'article et initialise l'éditeur et les onglets.
+     *
+     * @param int|null $id Identifiant de l'article.
+     */
     public function setPost($id = NULL) {
         if (is_null($id)) {
             $this->emit('deleteContent');
@@ -65,10 +111,16 @@ class Edit extends Component
         $this->setPost($id ?? NULL);
     }
 
+    /**
+     * Déclenche l'événement navigateur d'initialisation de TinyMCE.
+     */
     public function initTinymce(){
         $this->dispatchBrowserEvent('initTinymce');
     }
 
+    /**
+     * Réinitialise les modifications (recharge l'original).
+     */
     public function refresh() {
         $this
             ->emit('render', [
@@ -78,12 +130,23 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Définit l'onglet courant.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
         $this->$tabsSystem['currentTab'] = $tab;
     }
 
+    /**
+     * Bascule entre les modes (vue, édition, création).
+     *
+     * @param string $mode Nouveau mode.
+     */
     public function switchMode($mode) {
         $this->mode = $mode;
 
@@ -96,6 +159,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Enregistre l'article (création ou modification).
+     */
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -126,6 +192,12 @@ class Edit extends Component
             ->save();
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @param array|null $messageBag Sac de messages d'alerte (optionnel).
+     * @return \Illuminate\View\View
+     */
     public function render($messageBag = NULL){
         if ($messageBag) {
             extract($messageBag);

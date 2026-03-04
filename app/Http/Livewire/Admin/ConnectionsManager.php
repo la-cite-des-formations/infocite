@@ -7,14 +7,32 @@ use Livewire\WithPagination;
 use App\Http\Livewire\WithCharts;
 use App\Statistics\Connections;
 
+/**
+ * Composant Livewire pour la visualisation des statistiques de connexion dans l'interface d'administration.
+ */
 class ConnectionsManager extends Component
 {
     use WithPagination;
     use WithCharts;
 
+    /**
+     * Thème de pagination utilisé (Bootstrap).
+     *
+     * @var string
+     */
     protected $paginationTheme = 'bootstrap';
 
+    /**
+     * Page de statistiques actuelle.
+     *
+     * @var string
+     */
     public $statsPage = 'connections';
+    /**
+     * Configuration des collections de statistiques (par jour, par mois).
+     *
+     * @var array
+     */
     public $statsCollection = [
         'connectionsByDay' => [
             'filter' => [
@@ -45,6 +63,11 @@ class ConnectionsManager extends Component
             'perPage' => 10,
         ],
     ];
+    /**
+     * Configuration des onglets de graphiques.
+     *
+     * @var array
+     */
     public $chartTabs = [
         'name' => 'chartTabs',
         'currentTab' => 'connections-by-day',
@@ -64,6 +87,12 @@ class ConnectionsManager extends Component
         ],
     ];
 
+    /**
+     * Définit l'onglet courant et affiche les graphiques associés.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
@@ -84,6 +113,9 @@ class ConnectionsManager extends Component
     }
 
 
+    /**
+     * Met à jour les graphiques de connexions par jour lors du changement de filtre.
+     */
     public function updatedStatsCollectionConnectionsByDayFilterUserType() {
         $this->drawCharts(
             $this->statsCollection['connectionsByDay']['charts'],
@@ -93,6 +125,9 @@ class ConnectionsManager extends Component
         $this->resetPage('connectionsByDayPage');
     }
 
+    /**
+     * Met à jour les graphiques de connexions par mois lors du changement de filtre.
+     */
     public function updatedStatsCollectionConnectionsByMonthFilterUserType() {
         $this->drawCharts(
             $this->statsCollection['connectionsByMonth']['charts'],
@@ -102,6 +137,11 @@ class ConnectionsManager extends Component
         $this->resetPage('connectionsByMonthPage');
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.admin.stats-viewer', [

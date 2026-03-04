@@ -8,52 +8,93 @@ use App\Models\Traits\HasInteractions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * Représente un article (Post) publié dans une rubrique.
+ * Gère le cycle de vie des contenus : rédaction, publication, expiration, archivage.
+ */
 class Post extends Model
 {
     use WithSearching;
     use HasInteractions;
 
     /**
-     * The attributes that are mass assignable.
+     * Les attributs qui peuvent être assignés en masse.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at'];
+
+    /** @var array<string, bool> Valeurs par défaut pour les attributs. */
     protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
+
+    /**
+     * Les attributs qui doivent être castés.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'published_at' => 'date:Y-m-d',
         'expired_at' => 'date:Y-m-d',
     ];
 
-
-
+    /**
+     * Relation vers la rubrique parente.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function rubric()
     {
         return $this->belongsTo('App\Models\Rubric');
     }
 
+    /**
+     * Relation vers l'utilisateur ayant corrigé/mis à jour l'article.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function corrector()
     {
         return $this->belongsTo('App\Models\User', 'corrector_id');
     }
 
+    /**
+     * Relation vers l'auteur original de l'article.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function author()
     {
         return $this->belongsTo('App\Models\User', 'author_id');
     }
 
+    /**
+     * Relation vers les commentaires associés à l'article.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function comments() {
         return $this
             ->hasMany('App\Models\Comment')
             ->orderBy('created_at', 'DESC');
     }
 
+    /**
+     * Relation vers les utilisateurs ayant lu ou mis en favori l'article.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function readers() {
         return $this
             ->belongsToMany('App\Models\User')
             ->withPivot(['is_favorite', 'is_read', 'tags']);
     }
 
+    /**
+     * Récupère la liste des utilisateurs à notifier pour cet article.
+     * Combine les membres de la rubrique et les lecteurs ayant mis l'article en favori.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function notificableReaders() {
         return $this->rubric
             ->users
@@ -64,6 +105,11 @@ class Post extends Model
             );
     }
 
+    /**
+     * Relation vers les notifications générées par cet article.
+     *
+     * @return MorphMany
+     */
     public function notifications(): MorphMany
     {
         return $this
@@ -71,7 +117,11 @@ class Post extends Model
             ->orderByRaw('release_at DESC, created_at DESC');
     }
 
-
+    /**
+     * Récupère les groupes ayant des droits spécifiques sur cet article.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function groupsWithPostRight() {
         return Right::query()
             ->where('name', 'posts')
@@ -81,6 +131,11 @@ class Post extends Model
             ->where('resource_id', $this->id);
     }
 
+    /**
+     * Récupère les utilisateurs réels ayant des droits spécifiques sur cet article.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function usersWithPostRight() {
         return Right::query()
             ->where('name', 'posts')
@@ -90,6 +145,11 @@ class Post extends Model
             ->where('resource_id', $this->id);
     }
 
+    /**
+     * Récupère les profils ayant des droits spécifiques sur cet article.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function profilesWithPostRight() {
         return Right::query()
             ->where('name', 'posts')
@@ -101,6 +161,8 @@ class Post extends Model
 
     /**
      * Accesseur pour savoir si l'utilisateur courant a vu le post aujourd'hui.
+     *
+     * @return bool
      */
     public function getViewTodayAttribute(): bool
     {
@@ -109,6 +171,8 @@ class Post extends Model
 
     /**
      * Accesseur pour savoir si l'utilisateur courant a créer/modifier le post aujourd'hui.
+     *
+     * @return bool
      */
     public function getEditTodayAttribute(): bool
     {
@@ -117,21 +181,38 @@ class Post extends Model
 
     /**
      * Accesseur pour savoir si l'utilisateur courant a commenter le post aujourd'hui.
+     *
+     * @return bool
      */
     public function getCommentTodayAttribute(): bool
     {
         return $this->hasInteraction('comment');
     }
 
+    /**
+     * Accesseur retournant le chemin relatif vers la vue de l'article.
+     *
+     * @return string
+     */
     public function getRouteAttribute() {
         return $this->rubric->route()."/{$this->id}";
     }
 
+    /**
+     * Vérifie si l'utilisateur courant peut commenter cet article.
+     *
+     * @return bool
+     */
     public function isCommentable() {
         return auth()->user()
             ->hasRole('comments', Roles::IS_EDITR, 'Post', $this->id);
     }
 
+    /**
+     * Retourne une chaîne descriptive du nombre de commentaires.
+     *
+     * @return string
+     */
     public function commentsInfo() {
         $commentsNb = $this->comments->count();
         $commentsNbLabel = $commentsNb ?: 'Aucun';
@@ -139,40 +220,80 @@ class Post extends Model
         return "{$commentsNbLabel} ".($commentsNb > 1 ? 'commentaires' : 'commentaire');
     }
 
+    /**
+     * Vérifie si l'article est en favori pour l'utilisateur courant.
+     *
+     * @return bool
+     */
     public function isFavorite() {
         $postUser = $this->readers->find(auth()->user()->id);
 
         return $postUser ? $postUser->pivot->is_favorite : FALSE;
     }
 
+    /**
+     * Vérifie si l'article a été lu par l'utilisateur courant.
+     *
+     * @return bool
+     */
     public function isRead() {
         $postUser = $this->readers->find(auth()->user()->id);
 
         return $postUser ? $postUser->pivot->is_read : FALSE;
     }
 
+    /**
+     * Récupère les tags personnels de l'utilisateur sur cet article.
+     *
+     * @return string|null
+     */
     public function tags() {
         $postUser = $this->readers->find(auth()->user()->id);
 
         return $postUser ? $postUser->pivot->tags : NULL;
     }
 
+    /**
+     * Accesseur vérifiant si l'article est programmé pour le futur.
+     *
+     * @return bool
+     */
     public function getForthcomingAttribute() {
         return isset($this->published_at) && $this->published_at->format('Y-m-d') > today()->format('Y-m-d');
     }
 
+    /**
+     * Accesseur vérifiant si l'article a expiré.
+     *
+     * @return bool
+     */
     public function getExpiredAttribute() {
         return isset($this->expired_at) && $this->expired_at->format('Y-m-d') <= today()->format('Y-m-d');
     }
 
+    /**
+     * Accesseur vérifiant si l'article est actuellement diffusé.
+     *
+     * @return bool
+     */
     public function getReleasedAttribute() {
         return $this->published && !$this->forthcoming && !$this->expired;
     }
 
+    /**
+     * Accesseur vérifiant si l'article est archivé (publié et expiré mais non supprimé).
+     *
+     * @return bool
+     */
     public function getArchivedAttribute() {
         return $this->published && $this->expired && !$this->auto_delete;
     }
 
+    /**
+     * Accesseur retournant le statut actuel de l'article sous forme d'objet (icon, title, color).
+     *
+     * @return object|null
+     */
     public function getStatusAttribute() {
         switch (TRUE) {
             case !$this->published : return AP::getPostStatusMI('unpublished');
@@ -183,6 +304,11 @@ class Post extends Model
         }
     }
 
+    /**
+     * Accesseur retournant le nombre de lecteurs uniques l'ayant lu.
+     *
+     * @return int
+     */
     public function getViewsNbAttribute() {
         return $this->readers()
             ->where('is_read', TRUE)
@@ -190,29 +316,60 @@ class Post extends Model
             ->count();
     }
 
+    /**
+     * Accesseur retournant le nombre de commentaires.
+     *
+     * @return int
+     */
     public function getCommentsNbAttribute() {
         return $this->comments
             ->count();
     }
 
+    /**
+     * Génère un aperçu textuel du contenu (sans tags HTML).
+     *
+     * @return string
+     */
     public function preview() {
         return AP::strLimiter(strip_tags($this->content));
     }
 
+    /**
+     * Génère un aperçu du titre limité en longueur.
+     *
+     * @return string
+     */
     public function previewTitle() {
         return AP::strLimiter(strip_tags($this->title),60);
     }
 
+    /**
+     * Retourne l'identité complète de l'article (Titre + Rubrique).
+     *
+     * @return string
+     */
     public function identity() {
         return "{$this->title} ({$this->rubric->name})";
     }
 
+    /**
+     * Retourne tous les articles triés par rubrique puis titre.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function sort() {
         return self::query()
             ->orderByRaw('rubric_id ASC, title ASC')
             ->get();
     }
 
+    /**
+     * Filtre les articles selon des critères complexes (rubrique, auteur, phase, recherche).
+     *
+     * @param array $filter Critères de filtrage.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function filter(array $filter) {
         extract($filter);
 
@@ -277,6 +434,12 @@ class Post extends Model
         return $posts->isEmpty() ? static::whereNull('id') : $posts->toQuery();
     }
 
+    /**
+     * Récupère tous les articles qui peuvent être commentés globalement.
+     * Exclut ceux qui ont une restriction de droit spécifique pour le groupe 'GLOBAL'.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function allCommentable() {
         return static::query()
             ->whereNotIn('id', function ($query) {

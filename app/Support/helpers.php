@@ -1,4 +1,7 @@
 <?php
+/**
+ * Fonctions d'aide (helpers) globales pour l'application.
+ */
 
 if (!function_exists('normalizeUnicodeString')) {
     /**

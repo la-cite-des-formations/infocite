@@ -9,23 +9,43 @@ use Illuminate\Support\Facades\Cookie;
 
 //use Illuminate\Support\Facades\DB;
 
+/**
+ * Classe centrale (Application Parameters) contenant les constantes, paramètres de configuration
+ * et méthodes utilitaires statiques pour l'ensemble du portail.
+ * Utilisée via la façade 'AP'.
+ */
 class AP // Application Parameters
 {
+    /** @var \Illuminate\Support\Collection|null Cache pour les codes d'icônes Material Design. */
     static private $miCodes = NULL;
 
+    /** @var int Durée de vie par défaut des cookies (60 jours). */
     const COOKIE_LIFETIME = 60 * 24 * 60; // 60 jours * 24 heures * 60 minutes
+    /** @var bool Définit si les contrôles de rôles doivent être stricts par défaut. */
     const STRICTLY = FALSE;
+    /** @var string Marqueur pour identifier les profils utilisateurs dans la base. */
     const PROFILE = '@PROFILE';
+    /** @var string Regex pour valider un ID numérique. */
     const ID_REGEX = '[0-9]+';
+    /** @var string Séparateur utilisé dans les chemins de rubriques. */
     const RUBRIC_SEPARATOR = '.';
+    /** @var string Regex pour valider un segment de rubrique. */
     const RUBRIC_REGEX = '[-\w'.self::RUBRIC_SEPARATOR.']+';
+    /** @var string Regex pour valider un segment de sous-tableau de bord. */
     const SUBDASHBOARD_REGEX = '[-\w]+';
+    /** @var array<string, string> Libellés des positions possibles pour les rubriques. */
     const RUBRIC_POSITIONS = [
         'N' => 'Barre de navigation',
         'F' => 'Pied de page',
         'U' => 'Position indéfinie',
     ];
 
+    /**
+     * Configuration des droits par défaut pour les différents modèles gérés dans les tableaux de bord.
+     * Associe chaque modèle à un 'droit' (Right) et définit éventuellement des droits additionnels.
+     *
+     * @var array
+     */
     const DASHBOARD_MODELS_RIGHTS = [
         'main' => [
             'apps' => ['name' => 'apps'],
@@ -58,6 +78,7 @@ class AP // Application Parameters
         ],
     ];
 
+    /** @var array<string, string> Liste des types de ressources pouvant avoir des droits associés. */
     const RESOURCEABLES = [
         'App' => 'Application',
         'Group' => 'Groupe',
@@ -66,23 +87,27 @@ class AP // Application Parameters
         'User' => 'Utilisateur',
     ];
 
+    /** @var array<string, string> Types d'authentification supportés pour les applications. */
     const APP_AUTH_TYPES = [
         'N' => 'Sans authentification',
         'G' => 'Authentification via Google',
         'S' => 'Authentification spécifique',
     ];
 
+    /** @var array<string, string> Catégories d'applications (Personnelles vs Institutionnelles). */
     const APP_TYPES = [
         'P' => 'Applications personnelles',
         'I' => 'Applications institutionnelles',
     ];
 
+    /** @var array<string, string> Qualités/Statuts des employés ou usagers. */
     const QUALITIES = [
         'E' => 'Externe',
         'I' => 'Interne',
         'D' => 'Demi-pensionnaire',
     ];
 
+    /** @var array<string, string> Types de groupes d'utilisateurs. */
     const GROUP_TYPES = [
         'C' => 'Classe apprenants',
         'F' => 'Classe formateurs',
@@ -92,6 +117,12 @@ class AP // Application Parameters
         'A' => 'Autre',
     ];
 
+    /**
+     * Configuration de l'affichage des informations utilisateur selon le type de groupe.
+     * Définit l'icône et le libellé de l'en-tête.
+     *
+     * @var array
+     */
     const USER_INFO = [
         '' => [
             'withoutGroupId' => [
@@ -171,6 +202,11 @@ class AP // Application Parameters
         ],
     ];
 
+    /**
+     * Configuration des filtres de groupes pour l'interface utilisateur.
+     *
+     * @var array
+     */
     const GROUP_FILTER = [
         '' => [
             'icon' => 'attribution',
@@ -212,6 +248,11 @@ class AP // Application Parameters
         ],
     ];
 
+    /**
+     * Filtres disponibles pour la page "À la Une".
+     *
+     * @var array
+     */
     const UNE_FILTER = [
         'allPosts'=>
             [
@@ -239,6 +280,11 @@ class AP // Application Parameters
             ],
     ];
 
+    /**
+     * Options de tri pour la page "À la Une".
+     *
+     * @var array
+     */
     const UNE_SORTER = [
         'mostConsultedPosts' =>
             [
@@ -260,6 +306,12 @@ class AP // Application Parameters
             ],
     ];
 
+    /**
+     * Définition exhaustive des fonctions disponibles dans les différents tableaux de bord.
+     * Contient les titres, descriptions, icônes, droits d'accès et routes cibles.
+     *
+     * @var array
+     */
     const DASHBOARD_FUNCTIONS = [
         'main' => [
             'users' => [
@@ -422,6 +474,7 @@ class AP // Application Parameters
         ],
     ];
 
+    /** @var array<string, array> Réseaux sociaux et liens externes institutionnels. */
     const MEDIAS = [
         'facebook' => [
             'title' => "Suivez-nous sur Facebook",
@@ -493,22 +546,50 @@ class AP // Application Parameters
         );
     }*/
 
+    /**
+     * Retourne la liste des types de ressources configurables.
+     *
+     * @return array<string, string>
+     */
     public static function getResourceables() {
         return static::RESOURCEABLES;
     }
 
+    /**
+     * Retourne le libellé d'un type de ressource spécifique.
+     *
+     * @param string $resourceType Le code de la ressource.
+     * @return string
+     */
     public static function getResourceable($resourceType) {
         return static::RESOURCEABLES[$resourceType];
     }
 
+    /**
+     * Retourne les positions possibles pour les rubriques.
+     *
+     * @return array<string, string>
+     */
     public static function getRubricPositions() {
         return static::RUBRIC_POSITIONS;
     }
 
+    /**
+     * Retourne le libellé d'une position de rubrique.
+     *
+     * @param string $position Le code de la position.
+     * @return string
+     */
     public static function getRubricPosition($position) {
         return static::RUBRIC_POSITIONS[$position];
     }
 
+    /**
+     * Retourne les droits configurés pour les modèles, soit globalement, soit pour un tableau de bord spécifique.
+     *
+     * @param string $dashboard Le nom du tableau de bord (ex: 'main', 'org-chart', 'stats').
+     * @return array
+     */
     public static function getModelsRights($dashboard = '') {
         if (empty($dashboard)) {
             $modelsRights = [];
@@ -521,10 +602,23 @@ class AP // Application Parameters
         return static::DASHBOARD_MODELS_RIGHTS[$dashboard];
     }
 
+    /**
+     * Retourne la liste des noms de modèles gérés pour un tableau de bord.
+     *
+     * @param string $dashboard Le nom du tableau de bord.
+     * @return string[]
+     */
     public static function getModels($dashboard = '') {
         return array_keys(static::getModelsRights($dashboard));
     }
 
+    /**
+     * Récupère l'objet de configuration des droits pour un modèle donné.
+     * Fusionne la configuration statique avec les rôles stockés en base de données.
+     *
+     * @param string $model Le nom du modèle.
+     * @return object
+     */
     public static function getModelRight($model) {
         $modelRight = (object) static::getModelsRights()[$model];
         $right = Right::where('name', $modelRight->name)->first();
@@ -533,18 +627,42 @@ class AP // Application Parameters
         return $modelRight;
     }
 
+    /**
+     * Retourne le libellé associé à un code de qualité.
+     *
+     * @param string $qualityCode
+     * @return string
+     */
     public static function getQuality($qualityCode) {
         return static::QUALITIES[$qualityCode];
     }
 
+    /**
+     * Retourne le libellé associé à un code de type de groupe.
+     *
+     * @param string $groupTypeCode
+     * @return string
+     */
     public static function getGroupType($groupTypeCode) {
         return static::GROUP_TYPES[$groupTypeCode];
     }
 
+    /**
+     * Retourne le libellé associé à un code de type d'authentification d'application.
+     *
+     * @param string $appAuthTypeCode
+     * @return string
+     */
     public static function getAppAuthType($appAuthTypeCode) {
         return static::APP_AUTH_TYPES[$appAuthTypeCode];
     }
 
+    /**
+     * Prépare les paramètres d'icône et d'en-tête pour l'affichage des infos utilisateur.
+     *
+     * @param array $filter Tableau contenant 'groupType' et 'groupId'.
+     * @return array
+     */
     public static function getUserInfoParams($filter) {
         return array_merge(
             $filter,
@@ -554,26 +672,59 @@ class AP // Application Parameters
         );
     }
 
+    /**
+     * Retourne la configuration du filtre pour un type de groupe.
+     *
+     * @param string $groupType
+     * @return array
+     */
     public static function getGroupFilter($groupType = '') {
         return static::GROUP_FILTER[$groupType];
     }
 
+    /**
+     * Retourne tous les types de groupes définis.
+     *
+     * @return array<string, string>
+     */
     public static function getGroupTypes() {
         return static::GROUP_TYPES;
     }
 
+    /**
+     * Retourne tous les types d'authentification d'applications.
+     *
+     * @return array<string, string>
+     */
     public static function getAppAuthTypes() {
         return static::APP_AUTH_TYPES;
     }
 
+    /**
+     * Retourne tous les types d'applications.
+     *
+     * @return array<string, string>
+     */
     public static function getAppTypes() {
         return static::APP_TYPES;
     }
 
+    /**
+     * Retourne les fonctions d'un tableau de bord sous forme de Collection d'objets.
+     *
+     * @param string $dashboard Nom du tableau de bord.
+     * @return \Illuminate\Support\Collection
+     */
     public static function getDashboardFunctions($dashboard = 'main') {
         return new Collection(array_map(function ($function) { return (object) $function; }, static::DASHBOARD_FUNCTIONS[$dashboard]));
     }
 
+    /**
+     * Retourne toutes les fonctions de tous les tableaux de bord.
+     * Utile pour la recherche globale ou la construction de menus complexes.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getAllDashboardsFunctions() {
         $allDashboardsfunctions = new Collection();
 
@@ -590,19 +741,45 @@ class AP // Application Parameters
         return $allDashboardsfunctions;
     }
 
+    /**
+     * Retourne une fonction spécifique d'un tableau de bord.
+     *
+     * @param string $function Nom de la fonction.
+     * @param string $dashboard Nom du tableau de bord.
+     * @return object|null
+     */
     public static function getDashboardFunction($function, $dashboard = 'main') {
         return static::getDashboardFunctions($dashboard)
             ->get($function);
     }
 
+    /**
+     * Retourne la configuration d'un média social spécifique.
+     *
+     * @param string $media Nom du média.
+     * @return object
+     */
     public static function getMedia($media) {
         return (object) static::MEDIAS[$media];
     }
 
+    /**
+     * Retourne tous les médias sociaux configurés.
+     *
+     * @return object[]
+     */
     public static function getMedias() {
         return array_map(function ($media) { return (object) $media; }, static::MEDIAS);
     }
 
+    /**
+     * Limite la longueur d'une chaîne de caractères sans couper les mots.
+     *
+     * @param string $str La chaîne à traiter.
+     * @param int $limit Limite de caractères.
+     * @param string $addChars Caractères supplémentaires à considérer comme faisant partie des mots.
+     * @return string
+     */
     public static function strLimiter($str, $limit = 50, $addChars = '0..9') {
         if (strlen($str) > $limit) {
             $words = str_word_count($str, 2, $addChars);
@@ -616,18 +793,39 @@ class AP // Application Parameters
         return $str;
     }
 
+    /**
+     * Récupère la collection des codes de points (SVG/Icons) Material Design depuis le fichier JSON.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getMiCodes() {
         return static::$miCodes ?? static::$miCodes = new Collection(json_decode(file_get_contents('../resources/mi_codepoints.json'), TRUE));
     }
 
+    /**
+     * Retourne le code d'une icône spécifique.
+     *
+     * @param string $miName Nom de l'icône.
+     * @return string|null
+     */
     public static function getMiCode($miName) {
         return isset(static::$miCodes) ? static::$miCodes[$miName] : static::getMiCodes()[$miName];
     }
 
+    /**
+     * Récupère les codes d'icônes récemment utilisés depuis les cookies.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getRecentMiCodes() {
         return new Collection(json_decode(Cookie::get('recentMiCodes'), TRUE));
     }
 
+    /**
+     * Retourne tous les statuts possibles pour les articles.
+     *
+     * @return object[]
+     */
     public static function getPostStatus() {
         return array_map(
             function ($postStatus) {
@@ -637,24 +835,54 @@ class AP // Application Parameters
         );
     }
 
+    /**
+     * Retourne la configuration d'un statut d'article spécifique.
+     *
+     * @param string $status Le code du statut.
+     * @return object
+     */
     public static function getPostStatusMI($status) {
         return (object) static::POST_STATUS_MI[$status];
     }
 
+    /**
+     * Retourne les styles de bordure disponibles.
+     *
+     * @return array<string, string>
+     */
     public static function getBorderStyles() {
         return static::BORDER_STYLES;
     }
 
+    /**
+     * Convertit un nombre entier en code couleur hexadécimal.
+     *
+     * @param int $n
+     * @return string
+     */
     private static function toColor($n)
     {
         return "#".substr("000000".dechex($n), -6);
     }
 
+    /**
+     * Convertit une valeur d'opacité en composante hexadécimale alpha.
+     *
+     * @param float $n
+     * @return string
+     */
     private static function toAlpha($n)
     {
         return substr("00".dechex(round((1 + $n) * 0xff)), -2);
     }
 
+    /**
+     * Applique une variation de teinte (plus clair ou plus foncé) à une couleur.
+     *
+     * @param int $color La couleur de base.
+     * @param float $n Facteur de variation (-1 à 1).
+     * @return string
+     */
     private static function gradeColor($color, $n) {
         $r = 0xff0000;
         $g = 0x00ff00;
@@ -679,6 +907,11 @@ class AP // Application Parameters
         return $color;
     }
 
+    /**
+     * Génère les styles CSS de background et bordure basés sur les couleurs Bootstrap.
+     *
+     * @return array<string, string>
+     */
     public static function getFormatBgColors() {
         return array_map(function ($color) {
             return
@@ -688,29 +921,63 @@ class AP // Application Parameters
         }, static::BS_COLORS);
     }
 
+    /**
+     * Retourne les couleurs de graphiques au format hexadécimal.
+     *
+     * @return string[]
+     */
     public static function getGcColors() {
         return array_map(function ($color) {
             return static::toColor($color);
         }, static::GC_COLORS);
     }
 
+    /**
+     * Entoure une chaîne de caractères de parenthèses si elle n'est pas vide.
+     *
+     * @param string $str La chaîne.
+     * @param bool $withSpace Ajouter une espace avant.
+     * @return string
+     */
     public static function betweenBrackets($str, $withSpace = TRUE) {
         return !empty($str) ? ($withSpace ? ' ' : '')."({$str})" : '';
     }
 
+    /**
+     * Retourne tous les filtres disponibles pour "À la Une".
+     *
+     * @return array
+     */
     public static function getUneFiltered()
     {
         return static::UNE_FILTER;
     }
+    /**
+     * Retourne un filtre "À la Une" spécifique par son nom.
+     *
+     * @param string $filterName
+     * @return array
+     */
     public static function getUneFilteredByName($filterName)
     {
         return static::UNE_FILTER[$filterName];
     }
 
+    /**
+     * Retourne toutes les options de tri disponibles pour "À la Une".
+     *
+     * @return array
+     */
     public static function getUneSorted()
     {
         return static::UNE_SORTER;
     }
+    /**
+     * Retourne une option de tri "À la Une" spécifique par son nom.
+     *
+     * @param string $sorterName
+     * @return array
+     */
     public static function getUneSortedByName($sorterName)
     {
         return static::UNE_SORTER[$sorterName];

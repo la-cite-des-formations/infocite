@@ -7,19 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Représente une interaction utilisateur au sein du système.
+ * Utilisé pour le suivi d'activité (log de connexions, vues, actions).
+ */
 class Interaction extends Model
 {
-    // Table explicitement définie
+    /** @var string Nom de la table associée. */
     protected $table = 'interactions';
 
+    /**
+     * Les attributs qui doivent être castés.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'occurred_at' => 'datetime',
     ];
 
-    // Pas de timestamps automatiques
+    /** @var bool Désactive les timestamps automatiques (created_at, updated_at). */
     public $timestamps = false;
 
-    // Mass assignable
+    /**
+     * Les attributs qui peuvent être assignés en masse.
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'user_id',
         'target_id',
@@ -29,7 +42,9 @@ class Interaction extends Model
     ];
 
     /**
-     * L'utilisateur qui a effectué l'interaction
+     * Relation vers l'utilisateur ayant effectué l'interaction.
+     *
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -37,7 +52,9 @@ class Interaction extends Model
     }
 
     /**
-     * Le modèle cible associé à l'interaction (polymorphique)
+     * Relation polymorphique vers le modèle cible de l'interaction.
+     *
+     * @return MorphTo
      */
     public function target(): MorphTo
     {
@@ -45,7 +62,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'un utilisateur (objet ou id)
+     * Scope pour filtrer les interactions par utilisateur.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param User|int $user Instance d'utilisateur ou ID.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByUser($query, $user)
     {
@@ -55,7 +76,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions des utilisateurs d'un certain type
+     * Scope pour filtrer les interactions par type d'utilisateur (employé ou apprenant).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $userType Type d'utilisateur ('staff', 'employees', 'learner', 'learners').
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByUserType($query, ?string $userType)
     {
@@ -67,7 +92,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions associé à un type de modèle particulier
+     * Scope pour filtrer par type de modèle cible (nom de classe).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $targetType Nom complet de la classe cible.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithTargetType($query, $targetType)
     {
@@ -76,7 +105,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions avec modèle cible associé
+     * Scope pour filtrer par une instance spécifique de modèle cible.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Model $target Instance du modèle cible.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithTarget($query, Model $target)
     {
@@ -86,7 +119,10 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions sans modèle cible associé
+     * Scope pour filtrer les interactions sans cible spécifique.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithoutTarget($query)
     {
@@ -96,7 +132,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'un type spécifique
+     * Scope pour filtrer par type d'interaction.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type Type d'interaction.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOfType($query, string $type)
     {
@@ -104,7 +144,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions de différents types spécifiques
+     * Scope pour filtrer par une liste de types d'interactions.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array<string> $types Liste de types.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOfTypes($query, array $types)
     {
@@ -112,7 +156,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'une date spécifique
+     * Scope pour filtrer par date d'occurrence (ignore l'heure).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed $date Date.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForDate($query, $date)
     {
@@ -120,7 +168,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'une date et heure spécifique
+     * Scope pour filtrer par date et heure précises.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed $datetime Date et heure.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForDatetime($query, $datetime)
     {
@@ -128,7 +180,12 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'une période (entre 2 dates)
+     * Scope pour filtrer sur une période donnée.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed $start Date de début.
+     * @param mixed $end Date de fin.
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeBetweenDates($query, $start, $end)
     {
@@ -136,7 +193,11 @@ class Interaction extends Model
     }
 
     /**
-     * Scope pour récupérer les interactions d'une année scolaire donnée
+     * Scope pour filtrer sur une année scolaire (du 1er sept au 31 août).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $startYear Année de début (ex: 2023 pour 2023-2024).
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForSchoolYear($query, $startYear)
     {
@@ -147,8 +208,14 @@ class Interaction extends Model
     }
 
     /**
-     * Vérifie l'existance d'une interaction à une certaine date
-     * Procède à son enregistrement si nécessaire
+     * Assure l'enregistrement d'une interaction.
+     * Utilise firstOrCreate pour éviter les doublons sur les mêmes critères.
+     *
+     * @param string $type Type d'interaction.
+     * @param mixed|null $datetime Moment de l'interaction (default: now).
+     * @param Model|null $target Modèle cible éventuel.
+     * @param int|null $userId ID de l'utilisateur (default: utilisateur authentifié).
+     * @return self
      */
     public static function ensure(string $type, $datetime = null, ?Model $target = null, ?int $userId = null): self
     {

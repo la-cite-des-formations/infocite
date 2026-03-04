@@ -6,10 +6,15 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
+/**
+ * Notification système personnalisée pour le portail (Push FCM).
+ * Gère la construction des messages dynamiques selon le type (Article, Application, Organigramme).
+ */
 class AppNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /** @var array<string, string> Libellés de base des messages par type de notification. */
     const MESSAGES = [
         'NP' => 'Nouvel article disponible : ',
         'UP' => 'Article mis à jour le @date : ',
@@ -20,12 +25,14 @@ class AppNotification extends Notification implements ShouldQueue
         'DF' => 'Information : ',
     ];
 
+    /** @var array Stockage des données de la notification (url, titre, corps, icône). */
     protected $data;
 
     /**
-     * Créez une nouvelle instance de notification.
+     * Crée une nouvelle instance de notification.
+     * Initialise les données dynamiques et construit le message final.
      *
-     * @param array $data  Exemple : ['title' => 'Titre', 'body' => 'Contenu', 'icon' => '/path/to/icon.png']
+     * @param array $data Données sources (type, post, body, title, url, icon).
      */
     public function __construct(array $data)
     {
@@ -64,8 +71,9 @@ class AppNotification extends Notification implements ShouldQueue
 
     /**
      * Détermine les canaux par lesquels la notification sera envoyée.
+     * Envoie via FCM si l'utilisateur a autorisé les notifications de bureau.
      *
-     * @param mixed $notifiable
+     * @param mixed $notifiable L'entité notifiée (User).
      * @return array
      */
     public function via($notifiable)
@@ -73,6 +81,11 @@ class AppNotification extends Notification implements ShouldQueue
         return $notifiable->can('receiveDesktopNotifs') ? ['fcm'] : [];
     }
 
+    /**
+     * Retourne les données construites de la notification.
+     *
+     * @return array
+     */
     public function getData() {
         return $this->data;
     }

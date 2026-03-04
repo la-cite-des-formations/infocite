@@ -7,21 +7,25 @@ use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Représente un format visuel applicable aux nœuds de l'organigramme ou aux acteurs.
+ * Définit les couleurs de fond, de bordure et de texte.
+ */
 class Format extends Model
 {
     use WithSearching;
 
     /**
-     * The attributes that are mass assignable.
+     * Les attributs qui peuvent être assignés en masse.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = ['name', 'bg_color', 'border_style', 'title_color', 'subtitle_color'];
 
     /**
-     * The attributes that should be cast.
+     * Les attributs qui doivent être castés.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'bg_color' => NullableField::class,
@@ -30,11 +34,21 @@ class Format extends Model
         'subtitle_color' => NullableField::class,
     ];
 
+    /**
+     * Relation vers les nœuds de l'organigramme utilisant ce format.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function chartnodes() {
         return $this
             ->hasMany('App\Models\Chartnode');
     }
 
+    /**
+     * Accesseur générant une chaîne de styles CSS basée sur les attributs du format.
+     *
+     * @return string Style CSS inline.
+     */
     public function getStyleAttribute() {
         return
             'border-radius : 0.375rem; '.
@@ -42,6 +56,12 @@ class Format extends Model
             ($this->bg_color ? AP::getFormatBgColors()[$this->bg_color] : '');
     }
 
+    /**
+     * Filtre les formats selon un critère de recherche.
+     *
+     * @param array $filter Critères de filtrage.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function filter(array $filter) {
         extract($filter);
 

@@ -9,36 +9,186 @@ use Livewire\Component;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithAlert;
 
+/**
+ * Composant Livewire pour la modale d'édition d'un utilisateur.
+ */
 class Edit extends Component
 {
     use WithAlert;
 
+    /**
+     * Modèle de l'utilisateur.
+     *
+     * @var \App\Models\User
+     */
     public $user;
+
+    /**
+     * Mode d'affichage ou d'édition.
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Indique si l'ajout est autorisé.
+     *
+     * @var bool
+     */
     public $canAdd;
+
+    /**
+     * Type de groupe pour le filtrage ('C', 'P', etc.).
+     *
+     * @var string
+     */
     public $groupType = 'C';
+
+    /**
+     * Mot-clé de recherche pour les groupes.
+     *
+     * @var string
+     */
     public $groupSearch = '';
+
+    /**
+     * Liste des identifiants des groupes de l'utilisateur.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $groupsIDs;
+
+    /**
+     * Groupes de l'utilisateur sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedUserGroups = [];
+
+    /**
+     * Groupes disponibles sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableGroups = [];
+
+    /**
+     * Mot-clé de recherche pour les applications.
+     *
+     * @var string
+     */
     public $appSearch = '';
+
+    /**
+     * Liste des identifiants des applications de l'utilisateur.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $appsIDs;
+
+    /**
+     * Applications liées sélectionnées dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedApps = [];
+
+    /**
+     * Applications disponibles sélectionnées dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableApps = [];
+
+    /**
+     * Mot-clé de recherche pour les profils.
+     *
+     * @var string
+     */
     public $profileSearch = '';
+
+    /**
+     * Liste des identifiants des profils associés à l'utilisateur.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $profilesIDs;
+
+    /**
+     * Profils sélectionnés dans l'interface (pour application).
+     *
+     * @var array
+     */
     public $selectedProfiles = [];
+
+    /**
+     * Profils liés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedProfiles = [];
+
+    /**
+     * Profils disponibles sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableProfiles = [];
+
+    /**
+     * Fonction à attribuer (onglet fonction).
+     *
+     * @var string
+     */
     public $function = '';
+
+    /**
+     * Nombre minimum de classes à afficher avant troncature.
+     *
+     * @var int
+     */
     public $classesMin = 5;
+
+    /**
+     * Nombre total de classes de l'utilisateur.
+     *
+     * @var int
+     */
     public $userNbClasses;
+
+    /**
+     * Indique si la liste des classes doit être tronquée.
+     *
+     * @var bool
+     */
     public $truncateClassesList;
+
+    /**
+     * Configuration des onglets du formulaire.
+     *
+     * @var array
+     */
     public $formTabs;
+
+    /**
+     * Configuration des sous-onglets pour la gestion des groupes.
+     *
+     * @var array
+     */
     public $groupsTabs;
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['render'];
 
+    /**
+     * Règles de validation pour l'utilisateur.
+     *
+     * @var array
+     */
     protected $rules = [
         'user.name' => 'required|string|max:255',
         'user.first_name' => 'required|string|max:255',
@@ -46,6 +196,11 @@ class Edit extends Component
         'user.password' => 'nullable|string|min:8|max:255',
     ];
 
+    /**
+     * Définit l'utilisateur et initialise les onglets du formulaire.
+     *
+     * @param int|null $id Identifiant de l'utilisateur.
+     */
     public function setUser($id = NULL) {
         $this->user = $this->user ?? User::findOrNew($id);
 
@@ -98,6 +253,11 @@ class Edit extends Component
         ];
     }
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param array $data Données contenant l'ID de l'utilisateur et éventuellement le mode.
+     */
     public function mount($data) {
         extract($data);
 
@@ -115,6 +275,9 @@ class Edit extends Component
         $this->truncateClassesList = $this->userNbClasses > $this->classesMin;
     }
 
+    /**
+     * Réinitialise les modifications en rechargeant les données.
+     */
     public function refresh() {
         $this->user->groups()->sync($this->groupsIDs);
         $this->selectedUserGroups = [];
@@ -136,6 +299,12 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Définit l'onglet courant et réinitialise les sélections.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
@@ -145,6 +314,11 @@ class Edit extends Component
         $this->selectedUserGroups = [];
     }
 
+    /**
+     * Bascule entre les modes (vue, édition, création).
+     *
+     * @param string $mode Nouveau mode.
+     */
     public function switchMode($mode) {
         $this->mode = $mode;
 
@@ -155,10 +329,18 @@ class Edit extends Component
         $this->selectedUserGroups = [];
     }
 
+    /**
+     * Bascule l'affichage complet ou tronqué de la liste des classes.
+     */
     public function switchClasses() {
         $this->truncateClassesList = !$this->truncateClassesList;
     }
 
+    /**
+     * Ajoute des éléments (profils, applications, groupes, fonction) selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'profiles' : $this->addSelectedAvailableProfiles();
@@ -175,6 +357,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Applique la configuration des profils sélectionnés (groupes et applications) à l'utilisateur.
+     */
     public function applyProfiles() {
         $this->selectedProfiles = array_merge($this->selectedAvailableProfiles, $this->selectedLinkedProfiles);
 
@@ -212,6 +397,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Associe les profils sélectionnés à l'utilisateur.
+     */
     private function addSelectedAvailableProfiles() {
         if ($this->isEmpty('selectedAvailableProfiles', "Aucun profil sélectionné")) return;
 
@@ -230,6 +418,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Associe les applications sélectionnées à l'utilisateur.
+     */
     private function addSelectedAvailableApps() {
         if ($this->isEmpty('selectedAvailableApps', "Aucune application sélectionnée")) return;
 
@@ -247,6 +438,12 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Associe des groupes disponibles à l'utilisateur.
+     */
+    /**
+     * Associe les groupes sélectionnés à l'utilisateur.
+     */
     public function addSelectedAvailableGroups() {
         if ($this->isEmpty('selectedAvailableGroups', "Aucun groupe sélectionné")) return;
 
@@ -267,6 +464,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Attribue une fonction aux groupes sélectionnés pour l'utilisateur.
+     */
     private function addFunction() {
         if ($this->IsEmpty('selectedUserGroups', "Aucun groupe sélectionné") ||
             $this->IsEmpty('function', "Fonction non définie")) return;
@@ -290,6 +490,11 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire des éléments (profils, applications, groupes, fonction) selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'profiles' : $this->removeSelectedLinkedProfiles();
@@ -306,6 +511,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Retire les profils sélectionnés de l'utilisateur.
+     */
     private function removeSelectedLinkedProfiles() {
         if ($this->isEmpty('selectedLinkedProfiles', "Aucun profil sélectionné")) return;
 
@@ -323,6 +531,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire les applications sélectionnées de l'utilisateur.
+     */
     private function removeSelectedLinkedApps() {
         if ($this->isEmpty('selectedLinkedApps', "Aucune application sélectionnée")) return;
 
@@ -340,6 +551,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire les groupes sélectionnés de l'utilisateur.
+     */
     private function removeSelectedUserGroups() {
         if ($this->isEmpty('selectedUserGroups', "Aucun groupe sélectionné")) return;
 
@@ -357,6 +571,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire la fonction attribuée aux groupes sélectionnés.
+     */
     private function removeFunction() {
         if ($this->isEmpty('selectedUserGroups', "Aucun groupe sélectionné")) return;
 
@@ -374,6 +591,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Enregistre l'utilisateur ou les modifications.
+     */
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -408,6 +628,11 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Récupère la liste des groupes disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableGroups() {
         $search = $this->groupSearch;
         return Group::query()
@@ -420,6 +645,11 @@ class Edit extends Component
             ->get();
     }
 
+    /**
+     * Récupère la liste des applications disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableApps() {
         $search = $this->appSearch;
         return App::query()
@@ -431,6 +661,11 @@ class Edit extends Component
             ->get();
     }
 
+    /**
+     * Récupère la liste des profils disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableProfiles() {
         $search = $this->profileSearch;
         return User::query()
@@ -443,6 +678,12 @@ class Edit extends Component
                 ->get();
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @param array|null $messageBag Sac de messages d'alerte (optionnel).
+     * @return \Illuminate\View\View
+     */
     public function render($messageBag = NULL)
     {
         if ($messageBag) {

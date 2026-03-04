@@ -9,69 +9,111 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Représente un utilisateur du système.
+ *
+ * Cette classe gère les différentes facettes d'un utilisateur :
+ * - Ses rôles et permissions (droits personnels, par profil ou par groupe).
+ * - Ses relations avec les autres entités (Apprenant, Employé, Rubriques, etc.).
+ * - Ses applications personnelles et favorites.
+ * - Ses interactions et notifications au sein de la plateforme.
+ */
 class User extends Authenticatable
 {
     use WithSearching;
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Les attributs qui peuvent être assignés en masse.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = ['name', 'first_name', 'email', 'password', ];
 
     /**
-     * The attributes that aren't mass assignable.
+     * Les attributs qui ne sont pas assignables en masse.
      *
      * @var array
      */
     protected $guarded = [];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * Les attributs qui doivent être cachés pour les tableaux/JSON.
      *
-     * @var array
+     * @var array<string>
      */
     protected $hidden = ['remember_token', ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Les attributs qui doivent être castés dans des types natifs.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'account_expires_on' => 'date:Y-m-d',
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Relation vers le profil Apprenant de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function learner()
     {
         return $this
             ->hasOne(Learner::class);
     }
 
+    /**
+     * Relation vers le profil Employé de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function employee()
     {
         return $this
             ->hasOne(Employee::class);
     }
 
+    /**
+     * Relation vers les jetons FCM (Firebase Cloud Messaging) de l'utilisateur.
+     * Utilisé pour les notifications push.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function fcmTokens() {
         return $this->belongsToMany(FcmToken::class);
     }
 
+    /**
+     * Relation vers l'entité Actor correspondante.
+     * L'ID de l'acteur est identique à l'ID de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function actor() {
         return $this
             ->belongsTo(Actor::class, 'id');
     }
 
+    /**
+     * Relation vers toutes les interactions effectuées par l'utilisateur.
+     * Triées par date d'occurrence décroissante.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function interactions() {
         return $this
             ->hasMany(Interaction::class)
             ->orderBy('occurred_at', 'desc');
     }
 
+    /**
+     * Filtre les interactions de création d'articles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function postsCreateInteractions() {
         return $this
             ->interactions()
@@ -79,6 +121,11 @@ class User extends Authenticatable
             ->withTargetType(Post::class);
     }
 
+    /**
+     * Filtre les interactions de mise à jour d'articles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function postsUpdateInteractions() {
         return $this
             ->interactions()
@@ -86,6 +133,11 @@ class User extends Authenticatable
             ->withTargetType(Post::class);
     }
 
+    /**
+     * Filtre les interactions d'édition (création ou mise à jour) d'articles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function postsEditInteractions() {
         return $this
             ->interactions()
@@ -93,6 +145,11 @@ class User extends Authenticatable
             ->withTargetType(Post::class);
     }
 
+    /**
+     * Filtre les interactions de commentaire sur des articles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function postsCommentInteractions() {
         return $this
             ->interactions()
@@ -100,12 +157,23 @@ class User extends Authenticatable
             ->withTargetType(Post::class);
     }
 
+    /**
+     * Relation vers les articles créés par l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function myPosts() {
         return $this
             ->hasMany(Post::class, 'author_id')
             ->orderBy('updated_at', 'DESC');
     }
 
+    /**
+     * Relation vers les articles lus par l'utilisateur.
+     * Inclut les informations de pivot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function postsRead() {
         return $this
             ->belongsToMany(Post::class)
@@ -114,18 +182,35 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC');
     }
 
+    /**
+     * Relation vers les articles mis à jour par l'utilisateur (en tant que correcteur).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function updatedPosts() {
         return $this
             ->hasMany(Post::class, 'corrector_id')
             ->orderBy('updated_at', 'DESC');
     }
 
+    /**
+     * Relation vers les articles commentés par l'utilisateur.
+     * Utilise une relation traversante via le modèle Comment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
     public function commentedPosts() {
         return $this->hasManyThrough(Post::class, Comment::class, 'user_id', 'id', 'id', 'post_id')
             ->distinct()
             ->orderBy('created_at', 'desc');
     }
 
+    /**
+     * Relation vers les articles mis en favoris par l'utilisateur.
+     * Ne retourne que les articles publiés et non expirés.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function myFavoritesPosts() {
         return $this
             ->belongsToMany(Post::class)
@@ -140,6 +225,11 @@ class User extends Authenticatable
             });
     }
 
+    /**
+     * Relation vers les rubriques mises en favoris par l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function myFavoritesRubrics() {
         return $this
             ->belongsToMany(Rubric::class)
@@ -148,6 +238,11 @@ class User extends Authenticatable
 
     }
 
+    /**
+     * Récupère toutes les notifications liées aux rubriques et articles favoris de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function myNotifications() {
         $myNotifications = new Collection();
 
@@ -164,29 +259,55 @@ class User extends Authenticatable
         return $myNotifications;
     }
 
+    /**
+     * Récupère les notifications déjà consultées (rejetées de la liste des nouvelles).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function oldNotifications() {
         return $this->myNotifications()->reject(function ($notification) {
             return $this->newNotifications->contains('id', $notification->id);
         });
     }
 
+    /**
+     * Relation vers les nouvelles notifications non lues de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function newNotifications() {
         return $this
             ->belongsToMany(Notification::class);
     }
 
+    /**
+     * Relation vers les commentaires rédigés par l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function myComments() {
         return $this
             ->hasMany(Comment::class)
             ->orderBy('created_at', 'DESC');
     }
 
+    /**
+     * Relation vers les rubriques directement associées à l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function rubrics() {
         return $this
             ->belongsToMany(Rubric::class)
             ->orderByRaw('position, segment, rank');
     }
 
+    /**
+     * Récupère l'ensemble des rubriques accessibles par l'utilisateur.
+     * Inclut ses propres rubriques, celles de ses groupes et de ses profils.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function myRubrics() {
         $myRubrics = $this->rubrics;
 
@@ -201,6 +322,12 @@ class User extends Authenticatable
         return $myRubrics;
     }
 
+    /**
+     * Relation vers les profils associés à l'utilisateur.
+     * Un utilisateur peut hériter des droits de plusieurs profils.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function profiles() {
         return $this
             ->belongsToMany(self::class, 'profile_user', 'user_id', 'profile_id')
@@ -208,6 +335,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * Relation inverse : utilisateurs appartenant à ce profil.
+     * (Pertinent si l'instance actuelle est un profil).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users() {
         return $this
             ->belongsToMany(self::class, 'profile_user', 'profile_id', 'user_id')
@@ -215,6 +348,11 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * Relation vers les applications accessibles par l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function apps() {
         return $this
             ->belongsToMany(App::class)
@@ -222,12 +360,22 @@ class User extends Authenticatable
             ->withPivot(['login', 'password']);
     }
 
+    /**
+     * Relation vers les applications personnelles créées par l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function personnalApps() {
         return $this
             ->hasMany(App::class, 'owner_id')
             ->orderByRaw('name ASC');
     }
 
+    /**
+     * Récupère toutes les applications disponibles (directes, groupes, profils, favorites).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function myApps() {
         $myApps = $this->apps;
 
@@ -246,6 +394,11 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * Relation vers les applications mises en favoris par l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function myFavoritesApps() {
         return $this
             ->belongsToMany(App::class, 'favorites_apps')
@@ -253,6 +406,11 @@ class User extends Authenticatable
             ->orderBy('rank');
     }
 
+    /**
+     * Récupère les processus métiers associés à l'utilisateur via ses groupes de type 'P'.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function processes() {
         return $this
             ->groups(['P'])->get()
@@ -262,17 +420,33 @@ class User extends Authenticatable
             ->pluck('process');
     }
 
+    /**
+     * Relation vers les subordonnés (si l'utilisateur est un manager).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
     public function subordinates() {
         return $this
             ->hasManyThrough(self::class, Actor::class, 'manager_id', 'id', 'id', 'id')
             ->orderByRaw('name ASC, first_name ASC');
     }
 
+    /**
+     * Relation vers le manager de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
     public function manager() {
         return $this
             ->hasOneThrough(self::class, Actor::class, 'id', 'id', 'id', 'manager_id');
     }
 
+    /**
+     * Relation vers les groupes auxquels appartient l'utilisateur.
+     *
+     * @param array|null $types Filtrer par types de groupe (ex: ['P', 'E', 'C']).
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function groups(? array $types = NULL)
     {
         return $this
@@ -284,6 +458,12 @@ class User extends Authenticatable
             ->withPivot('function');
     }
 
+    /**
+     * Récupère tous les groupes (directs et via profils).
+     *
+     * @param array|null $types Filtrer par types de groupe.
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function myGroups(? array $types = NULL)
     {
         $myGroups = $this->groups($types)->get();
@@ -296,7 +476,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Tous les numéros de téléphone de l'utilisateur
+     * Relation vers tous les numéros de téléphone de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function phones()
     {
@@ -304,12 +486,23 @@ class User extends Authenticatable
     }
 
     /**
-     * Numéro de téléphone de l'utilisateur d'un type en particulier
+     * Récupère un numéro de téléphone d'un type spécifique.
+     *
+     * @param string $type Type de téléphone (ex: 'Portable').
+     * @return Phone|null
      */
     public function phone($type) {
         return $this->phones->firstWhere('type', $type);
     }
 
+    /**
+     * Retourne une liste formatée (chaîne de caractères) des noms de groupes.
+     *
+     * @param array|null $types Types de groupes à inclure.
+     * @param string $format Format de chaîne (utilise %% comme placeholder).
+     * @param string $noResult Valeur si aucun groupe n'est trouvé.
+     * @return string
+     */
     public function groupsList(? array $types = NULL, string $format = "%%", string $noResult = '')
     {
         $result = $this
@@ -320,6 +513,13 @@ class User extends Authenticatable
         return $result ? str_replace("%%", $result, $format) : $noResult;
     }
 
+    /**
+     * Retourne une liste formatée des processus associés.
+     *
+     * @param string $format Format de chaîne.
+     * @param string $noResult Valeur si aucun processus n'est trouvé.
+     * @return string
+     */
     public function processesList(string $format = "%%", string $noResult = '')
     {
         $result = $this
@@ -330,6 +530,11 @@ class User extends Authenticatable
         return $result ? str_replace("%%", $result, $format) : $noResult;
     }
 
+    /**
+     * Relation polymorphique vers les droits personnels de l'utilisateur.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
     public function personalRights() {
         return $this
             ->morphToMany(Right::class, 'rightable')
@@ -337,6 +542,11 @@ class User extends Authenticatable
             ->orderByRaw('name ASC');
     }
 
+    /**
+     * Récupère les droits hérités de ses profils.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function profilesRights() {
         $profilesRights = new Collection();
 
@@ -349,6 +559,11 @@ class User extends Authenticatable
         return $profilesRights;
     }
 
+    /**
+     * Récupère les droits hérités de ses groupes.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function groupsRights() {
         $groupsRights = new Collection();
 
@@ -359,6 +574,11 @@ class User extends Authenticatable
         return $groupsRights;
     }
 
+    /**
+     * Récupère l'intégralité des droits de l'utilisateur (personnels, groupes, profils).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function allRights() {
         $allRights = $this->personalRights->concat($this->groupsRights());
 
@@ -369,6 +589,11 @@ class User extends Authenticatable
         return $allRights;
     }
 
+    /**
+     * Retourne les noms des rôles associés au droit courant (via pivot).
+     *
+     * @return string|null
+     */
     public function getRightableRoles() {
         if (isset($this->pivot)) {
             $roles = NULL;
@@ -380,6 +605,11 @@ class User extends Authenticatable
         return;
     }
 
+    /**
+     * Retourne une description textuelle de la ressource associée au droit.
+     *
+     * @return string
+     */
     public function rightsResourceableString() {
         if (!empty($this->pivot->resource_type)) {
             $class = "\\App\\Models\\{$this->pivot->resource_type}";
@@ -389,6 +619,11 @@ class User extends Authenticatable
         return "";
     }
 
+    /**
+     * Retourne une chaîne formatée Type|ID de la ressource.
+     *
+     * @return string
+     */
     public function rightsResourceable() {
         $rightsResourceable[] = '';
         if (!empty($this->pivot->resource_type)) {
@@ -398,6 +633,14 @@ class User extends Authenticatable
         return implode('|', $rightsResourceable);
     }
 
+    /**
+     * Retourne la fonction de l'utilisateur dans un groupe spécifique.
+     *
+     * @param int $groupId ID du groupe.
+     * @param string $format Format de sortie.
+     * @param string $noResult Valeur par défaut.
+     * @return string
+     */
     public function function(int $groupId, string $format = "%%", string $noResult = '') {
         $result = $this
             ->groups
@@ -407,6 +650,14 @@ class User extends Authenticatable
         return isset($result) ? str_replace("%%", $result, $format) : $noResult;
     }
 
+    /**
+     * Retourne une liste formatée des fonctions au sein de certains types de groupes.
+     *
+     * @param array $types Types de groupes.
+     * @param string $format Format de sortie.
+     * @param string $noResult Valeur par défaut.
+     * @return string
+     */
     public function functionsList(array $types, string $format = "%%", string $noResult = '') {
         $result = $this
             ->groups($types)
@@ -417,6 +668,14 @@ class User extends Authenticatable
         return $result ? str_replace("%%", $result, $format) : $noResult;
     }
 
+    /**
+     * Récupère l'objet pivot de droit correspondant à un droit et une ressource.
+     *
+     * @param string $right Nom du droit.
+     * @param string|null $resource_type Type de ressource.
+     * @param int|null $resource_id ID de ressource.
+     * @return mixed
+     */
     public function getRightable(string $right, ? string $resource_type = NULL, ? int $resource_id = NULL) {
         return $this
             ->allRights()
@@ -428,6 +687,16 @@ class User extends Authenticatable
             ->first();
     }
 
+    /**
+     * Vérifie si l'utilisateur possède EXACTEMENT un rôle pour un droit donné.
+     *
+     * @param string $right Nom du droit.
+     * @param int $role Valeur binaire du rôle.
+     * @param string|null $resource_type Type de ressource.
+     * @param int|null $resource_id ID de ressource.
+     * @param bool $extended Si vrai, vérifie aussi au niveau global si non trouvé sur la ressource.
+     * @return bool|null
+     */
     public function hasStrictRole(string $right, int $role, ? string $resource_type = NULL, ? int $resource_id = NULL, bool $extended = TRUE) {
         $rightable = $this->getRightable($right, $resource_type, $resource_id);
 
@@ -442,6 +711,16 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * Vérifie si l'utilisateur possède un rôle (bitmask) pour un droit donné.
+     *
+     * @param string $right Nom du droit.
+     * @param int $role Valeur binaire du rôle.
+     * @param string|null $resource_type Type de ressource.
+     * @param int|null $resource_id ID de ressource.
+     * @param bool $extended Si vrai, vérifie aussi au niveau global.
+     * @return int|null
+     */
     public function hasRole(string $right, int $role, ? string $resource_type = NULL, ? int $resource_id = NULL, bool $extended = TRUE) {
         $rightable = $this->getRightable($right, $resource_type, $resource_id);
 
@@ -456,6 +735,11 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * Vérifie si l'utilisateur est présent dans l'organigramme en tant que manager.
+     *
+     * @return bool
+     */
     public function isManager() {
         $isManager = FALSE;
 
@@ -468,22 +752,42 @@ class User extends Authenticatable
         return $isManager;
     }
 
+    /**
+     * Vérifie si l'utilisateur est un simple "profil" (modèle de droits).
+     *
+     * @return bool
+     */
     public function isProfile() {
         return $this->name == AP::PROFILE;
     }
 
+    /**
+     * Retourne l'identité complète (Prénom Nom ou Nom du profil).
+     *
+     * @return string
+     */
     public function identity() {
         return $this->isProfile() ?
             "{$this->first_name} (profil)" :
             "{$this->first_name} {$this->name}";
     }
 
+    /**
+     * Accesseur pour l'attribut identity.
+     *
+     * @return string
+     */
     public function getIdentityAttribute() {
         return $this->isProfile() ?
             "{$this->first_name} (profil)" :
             "{$this->first_name} {$this->name}";
     }
 
+    /**
+     * Accesseur pour récupérer le label référent associé.
+     *
+     * @return string
+     */
     public function getLabelAttribute() {
         $referent = DB::table('referents')
             ->where('id', $this->id)
@@ -492,10 +796,20 @@ class User extends Authenticatable
         return is_object($referent) ? $referent->label : '';
     }
 
+    /**
+     * Accesseur pour l'identité affichée dans l'organigramme.
+     *
+     * @return string
+     */
     public function getChartnodeIdentityAttribute() {
         return $this->identity.AP::betweenBrackets($this->label ?: '');
     }
 
+    /**
+     * Accesseur pour récupérer le nom du processus associé via le code fonction Ypareo.
+     *
+     * @return string
+     */
     public function getProcessAttribute() {
         $processUser = Chartnode::query()
             ->where('code_fonction', $this->groups(['P'])->first()->code_ypareo)
@@ -504,6 +818,11 @@ class User extends Authenticatable
         return is_object($processUser) ? $processUser->name : '';
     }
 
+    /**
+     * Vérifie si l'utilisateur s'est connecté aujourd'hui.
+     *
+     * @return bool
+     */
     public function getConnectedTodaydAttribute() {
         return Interaction::ofType('connection')
             ->byUser(auth()->user())
@@ -511,23 +830,43 @@ class User extends Authenticatable
             ->exists();
     }
 
+    /**
+     * Accesseur retournant le nombre total de messages édités (créés + corrigés).
+     *
+     * @return int
+     */
     public function getEditedPostsNbAttribute() {
         return $this->myPosts
             ->merge($this->updatedPosts)
             ->count();
     }
 
+    /**
+     * Accesseur retournant le nombre total de messages commentés.
+     *
+     * @return int
+     */
     public function getCommentedPostsNbAttribute() {
         return $this->commentedPosts()
             ->get()
             ->count();
     }
 
+    /**
+     * Accesseur retournant le nombre d'applications personnelles.
+     *
+     * @return int
+     */
     public function getPersonalAppsNbAttribute() {
         return $this->personnalApps
             ->count();
     }
 
+    /**
+     * Accesseur retournant le statut des notifications de bureau.
+     *
+     * @return string Libellé explicite de l'état (Aucune, Toutes, Favoris, Non disponibles).
+     */
     public function getNotificationStatusAttribute() {
         switch (TRUE) {
             case $this->employee && !$this->employee->desktop_notifications_granted:
@@ -544,6 +883,12 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * Récupère une information textuelle spécifique basée sur un en-tête (Statut, Classe, Service, Fonction).
+     *
+     * @param array $userInfo Contient notamment 'header', 'groupType', 'groupId'.
+     * @return string|null
+     */
     public function getInfo($userInfo) {
         extract($userInfo);
 
@@ -573,12 +918,23 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * Retourne tous les utilisateurs triés par Nom puis Prénom.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function sort() {
         return self::query()
             ->orderByRaw('name ASC, first_name ASC')
             ->get();
     }
 
+    /**
+     * Filtre les utilisateurs selon un ensemble de critères (recherche, types de groupes, état gelé).
+     *
+     * @param array $filter Critères de filtrage.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function filter(array $filter) {
         extract($filter);
 
@@ -630,6 +986,14 @@ class User extends Authenticatable
         return $users->isEmpty() ? static::whereNull('id') : $users->toQuery();
     }
 
+    /**
+     * Récupère tous les utilisateurs réels (hors profils) possédant un certain rôle sur un droit donné.
+     * Recherche dans les droits directs, les profils et les groupes.
+     *
+     * @param string $rightName Nom du droit.
+     * @param int $roles Comparaison de bitmask de rôles.
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function haveOn(string $rightName, int $roles) {
         return static::query()
             ->join('rightables', 'rightables.rightable_id', '=', 'users.id')
@@ -675,6 +1039,12 @@ class User extends Authenticatable
             ->get();
     }
 
+    /**
+     * Sélectionne un ensemble d'utilisateurs selon des actions prédéfinies.
+     *
+     * @param string $action Nom de l'action prédéfinie.
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function allWho(string $action) {
         switch ($action) {
             case 'can-comment-posts' :

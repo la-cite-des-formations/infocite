@@ -18,6 +18,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\AppNotification;
 
+/**
+ * Composant Livewire pour l'édition d'un article existant ou la création d'un nouveau.
+ */
 class EditPostManager extends Component
 {
     use HandleTinymceContent;
@@ -26,13 +29,53 @@ class EditPostManager extends Component
     use WithIconpicker;
     use WithPinnedHandling;
 
+    /**
+     * Route de retour après enregistrement.
+     *
+     * @var string
+     */
     public $backRoute;
+
+    /**
+     * Rubrique parente de l'article.
+     *
+     * @var \App\Models\Rubric
+     */
     public $currentRubric;
+
+    /**
+     * Mode d'édition ('creation' ou 'edition').
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Instance de l'article en cours d'édition.
+     *
+     * @var \App\Models\Post
+     */
     public $post;
+
+    /**
+     * Indique si les commentaires sont bloqués pour cet article.
+     *
+     * @var bool
+     */
     public $blockComments;
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['modalClosed', 'save', 'contentChange', 'contentPaste'];
+
+    /**
+     * Règles de validation pour l'article.
+     *
+     * @var array
+     */
     protected $rules = [
         'post.title' => 'required|string|max:255',
         'post.icon' => 'required|string|max:255',
@@ -46,6 +89,11 @@ class EditPostManager extends Component
 
     ];
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param object $viewBag Sac de données contenant la rubrique, le mode et l'ID de l'article.
+     */
     public function mount($viewBag) {
         session(['appsBackRoute' => request()->getRequestUri()]);
         $this->backRoute = session('backRoute');
@@ -59,6 +107,9 @@ class EditPostManager extends Component
         $this->initTinymceContent('post.content');
     }
 
+    /**
+     * Gère les dates de publication lors de l'activation/désactivation de la publication.
+     */
     public function updatedPostPublished() {
         if ($this->post->published) {
             $this->post->published_at = today()->format('Y-m-d');
@@ -74,6 +125,12 @@ class EditPostManager extends Component
         $this->post->expired_at = NULL;
     }
 
+    /**
+     * Enregistre l'article (création ou modification).
+     * Gère les notifications (Firebase et internes) et la mise au propre du contenu TinyMCE.
+     *
+     * @param string $redirectionRoute Route de redirection après succès.
+     */
     public function save($redirectionRoute = 'post.edit') {
         $this->post->published_at = $this->post->published_at ?: NULL;
         $this->post->expired_at = $this->post->expired_at ?: NULL;
@@ -210,6 +267,11 @@ class EditPostManager extends Component
         ]);
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render() {
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()

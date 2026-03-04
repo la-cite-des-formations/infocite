@@ -7,8 +7,21 @@ use App\Statistics\Posts;
 use App\Statistics\Users;
 use Carbon\Carbon;
 
+/**
+ * Gestionnaire de génération de graphiques pour les statistiques du portail.
+ * Utilise les classes du namespace App\Statistics pour agréger les données
+ * au format attendu par Google Charts.
+ */
 class Charts
 {
+    /**
+     * Méthode générique pour construire la structure d'un graphique "Top 10".
+     *
+     * @param \Illuminate\Support\Collection $items Liste des éléments.
+     * @param string $valueKey Clé de la valeur numérique à afficher.
+     * @param callable $tooltipBuilder Callback pour construire le contenu HTML du tooltip.
+     * @return array Structure JSON pour Google Charts.
+     */
     private static function buildTop10Chart($items, $valueKey, $tooltipBuilder) {
         return [
             'cols' => [
@@ -28,6 +41,12 @@ class Charts
         ];
     }
 
+    /**
+     * Génère les données pour le graphique des connexions par jour (comparaison de deux semaines).
+     *
+     * @param array $filter Filtres optionnels (dates, etc.).
+     * @return array
+     */
     public static function getConnectionsByDayChart($filter) {
         $data = Connections::groupByLastTwoWeeks($filter);
 
@@ -57,6 +76,12 @@ class Charts
         ];
     }
 
+    /**
+     * Génère les données pour le graphique des connexions par mois (comparaison sur deux années scolaires).
+     *
+     * @param array $filter Filtres optionnels.
+     * @return array
+     */
     public static function getConnectionsByMonthChart(array $filter = []) {
         $data = Connections::groupBySchoolYearAndMonth($filter);
 
@@ -95,6 +120,11 @@ class Charts
         ];
     }
 
+    /**
+     * Génère les données pour le graphique de l'utilisation des notifications (Aucune, Toutes, Favoris).
+     *
+     * @return array
+     */
     public static function getNotificationsUseChart() {
         return [
             'cols' => [
@@ -124,6 +154,12 @@ class Charts
         ];
     }
 
+    /**
+     * Top 10 des articles les plus vus.
+     *
+     * @param array $filter
+     * @return array
+     */
     public static function getViewedPostsTop10Chart($filter) {
         $posts = Posts::getViewed($filter)->get();
 
@@ -143,6 +179,12 @@ class Charts
         );
     }
 
+    /**
+     * Top 10 des articles les plus commentés.
+     *
+     * @param array $filter
+     * @return array
+     */
     public static function getCommentedPostsTop10Chart($filter) {
         $posts = Posts::getCommented($filter)->get();
 
@@ -162,6 +204,12 @@ class Charts
         );
     }
 
+    /**
+     * Top 10 des rédacteurs les plus actifs (nombre d'articles postés).
+     *
+     * @param array $filter
+     * @return array
+     */
     public static function getActiveEditorsTop10Chart($filter) {
         $editors = Users::getActiveEditors($filter)->get();
 
@@ -180,6 +228,12 @@ class Charts
         );
     }
 
+    /**
+     * Top 10 des commentateurs les plus actifs.
+     *
+     * @param array $filter
+     * @return array
+     */
     public static function getActiveCommentatorsTop10Chart($filter) {
         $commentators = Users::getActiveCommentators($filter)->get();
 
@@ -198,6 +252,12 @@ class Charts
         );
     }
 
+    /**
+     * Top 10 des utilisateurs ayant créé le plus d'applications personnelles.
+     *
+     * @param array $filter
+     * @return array
+     */
     public static function getPersonalAppsUsersTop10Chart($filter) {
         $users = Users::personalAppsUsers($filter)->get();
 
@@ -216,6 +276,12 @@ class Charts
         );
     }
 
+    /**
+     * Retourne les options de configuration visuelle pour un graphique donné.
+     *
+     * @param string $chartName Identifiant du graphique.
+     * @return array Options Google Charts (couleurs, zone de graphique, etc.).
+     */
     public static function getChartOptions($chartName) {
         switch ($chartName) {
             case 'connectionsByDay' :
@@ -262,6 +328,13 @@ class Charts
         }
     }
 
+    /**
+     * Point d'entrée dynamique pour récupérer les données d'un graphique par son nom.
+     *
+     * @param string $chartName Identifiant du graphique (camelCase).
+     * @param array $filter Filtres à appliquer aux données.
+     * @return array
+     */
     public static function getChart($chartName, $filter) {
         $functionName = "get" . ucfirst($chartName) . "Chart";
 

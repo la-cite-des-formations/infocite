@@ -12,6 +12,9 @@ use App\Models\Interaction;
 use App\Statistics\Users;
 use Carbon\Carbon;
 
+/**
+ * Composant Livewire pour la visualisation des statistiques d'usage (éditeurs, commentateurs, applications personnelles) dans l'interface d'administration.
+ */
 class UsingManager extends Component
 {
     use WithPagination;
@@ -19,7 +22,17 @@ class UsingManager extends Component
 
     protected $paginationTheme = 'bootstrap';
 
+    /**
+     * Identifiant de la page de statistiques.
+     *
+     * @var string
+     */
     public $statsPage = 'using';
+    /**
+     * Configuration des collections de statistiques d'usage.
+     *
+     * @var array
+     */
     public $statsCollection = [
         'mostActiveEditors' => [
             'filter' => [
@@ -78,7 +91,18 @@ class UsingManager extends Component
             ],
         ],
     ];
+    /**
+     * Liste des années scolaires.
+     *
+     * @var array
+     */
     public $schoolYears = [];
+
+    /**
+     * Correspondance des noms de mois en français et leurs numéros.
+     *
+     * @var array
+     */
     public $schoolYearMonths = [
         'Septembre' => 9,
         'Octobre'   => 10,
@@ -93,11 +117,22 @@ class UsingManager extends Component
         'Juillet'   => 7,
         'Août'      => 8,
     ];
+
+    /**
+     * Libellés pour les types d'éditeurs.
+     *
+     * @var array
+     */
     public $editorLabel = [
         'all' => 'rédacteurs',
         'authors' => 'auteurs',
         'correctors' => 'correcteurs',
     ];
+    /**
+     * Configuration des onglets de graphiques.
+     *
+     * @var array
+     */
     public $chartTabs = [
         'name' => 'chartTabs',
         'currentTab' => 'most-active-editors',
@@ -127,6 +162,10 @@ class UsingManager extends Component
         ],
     ];
 
+    /**
+     * Initialise la liste des années scolaires disponibles pour les statistiques.
+     * Se base sur la date de la plus ancienne interaction enregistrée.
+     */
     protected function initSchoolYears() {
         // Récupérer la plus ancienne interaction
         $oldestOccurredAt = Interaction::where('target_type', Post::class)
@@ -151,10 +190,22 @@ class UsingManager extends Component
         }
     }
 
+    /**
+     * Initialisation du composant.
+     */
+    /**
+     * Initialisation du composant.
+     */
     public function mount() {
         $this->initSchoolYears();
     }
 
+    /**
+     * Change l'onglet actif et déclenche le rafraîchissement des graphiques correspondants.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet à activer.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
@@ -193,6 +244,9 @@ class UsingManager extends Component
         }
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de l'année scolaire du filtre éditeurs.
+     */
     public function updatedStatsCollectionMostActiveEditorsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
@@ -202,6 +256,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveEditorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du mois du filtre éditeurs.
+     */
     public function updatedStatsCollectionMostActiveEditorsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
@@ -211,6 +268,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveEditorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du type d'éditeur.
+     */
     public function updatedStatsCollectionMostActiveEditorsFilterEditorType() {
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
@@ -220,6 +280,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveEditorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de la rubrique du filtre éditeurs.
+     */
     public function updatedStatsCollectionMostActiveEditorsFilterRubricId() {
         if (empty($this->statsCollection['mostActiveEditors']['filter']['rubricId'])) {
             $this->statsCollection['mostActiveEditors']['filter']['rubricId'] = NULL;
@@ -232,6 +295,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveEditorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de l'année scolaire du filtre commentateurs.
+     */
     public function updatedStatsCollectionMostActiveCommentatorsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostActiveCommentators']['charts'],
@@ -241,6 +307,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveCommentatorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du mois du filtre commentateurs.
+     */
     public function updatedStatsCollectionMostActiveCommentatorsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostActiveCommentators']['charts'],
@@ -250,6 +319,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveCommentatorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du type de commentateur.
+     */
     public function updatedStatsCollectionMostActiveCommentatorsFilterCommentatorType() {
         $this->drawCharts(
             $this->statsCollection['mostActiveCommentators']['charts'],
@@ -259,6 +331,9 @@ class UsingManager extends Component
         $this->resetPage('mostActiveCommentatorsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du type d'utilisateur pour les applications personnelles.
+     */
     public function updatedStatsCollectionPersonalAppsUsersFilterUserType() {
         $this->drawCharts(
             $this->statsCollection['personalAppsUsers']['charts'],
@@ -268,6 +343,12 @@ class UsingManager extends Component
         $this->resetPage('personalAppsUsersPage');
     }
 
+    /**
+     * Rendu du composant.
+     * Calcule les statistiques d'éditeurs, commentateurs et utilisateurs d'apps pour la vue.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $activeEditors = Users::getActiveEditors($this->statsCollection['mostActiveEditors']['filter']);

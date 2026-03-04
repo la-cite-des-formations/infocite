@@ -5,11 +5,24 @@ namespace App\Http\Livewire;
 use App\CustomFacades\AP;
 use Illuminate\Support\Facades\Cookie;
 
+/**
+ * Trait pour la recherche et la sélection d'icônes Material Icons dans les composants Livewire.
+ */
 trait WithIconpicker
 
 {
+    /**
+     * Mot-clé de recherche pour les icônes.
+     *
+     * @var string
+     */
     public $searchIcons = '';
 
+    /**
+     * Récupère les codes Material Icons filtrés par la recherche.
+     *
+     * @return \Illuminate\Support\Collection Collection des codes Material Icons.
+     */
     public function getMiCodes() {
         $searchIcons = $this->searchIcons;
 
@@ -21,6 +34,12 @@ trait WithIconpicker
             });
     }
 
+    /**
+     * Sélectionne une icône et la stocke dans le modèle spécifié, puis met à jour les icônes récentes.
+     *
+     * @param string $miName Le nom de l'icône Material.
+     * @param string $model Le nom de la propriété du modèle Livewire à mettre à jour.
+     */
     public function choiceIcon(string $miName, string $model) {
         if(isset($this->$model)) {
             $this->$model->icon = $miName;

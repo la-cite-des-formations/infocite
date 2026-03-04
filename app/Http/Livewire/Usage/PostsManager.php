@@ -12,6 +12,9 @@ use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
 
+/**
+ * Composant Livewire pour la navigation et l'affichage des articles d'une rubrique.
+ */
 class PostsManager extends Component
 {
     use WithPagination;
@@ -22,31 +25,93 @@ class PostsManager extends Component
     use WithPinnedHandling;
     use WithFilterPosts;
 
+    /**
+     * Thème de pagination.
+     *
+     * @var string
+     */
     protected $paginationTheme = 'bootstrap';
+
+    /**
+     * Options de nombre d'éléments par page.
+     *
+     * @var array
+     */
     public $perPageOptions = [12, 24, 36, 48, 60];
+
+    /**
+     * Nombre d'éléments par page courant.
+     *
+     * @var int
+     */
     public $perPage = 12;
 
+    /**
+     * Rubrique courante.
+     *
+     * @var \App\Models\Rubric
+     */
     public $rubric;
+
+    /**
+     * Liste des articles (chargée dynamiquement).
+     *
+     * @var \Illuminate\Pagination\LengthAwarePaginator
+     */
     protected $posts;
+
+    /**
+     * Indique si le composant a été rendu.
+     *
+     * @var bool
+     */
     public $rendered = FALSE;
+
+    /**
+     * Indique si c'est le premier chargement.
+     *
+     * @var bool
+     */
     public $firstLoad = TRUE;
+
+    /**
+     * Indique si la redirection est bloquée.
+     *
+     * @var bool
+     */
     public $blockRedirection = FALSE;
 
 
     protected $listeners = ['modalClosed', 'deletePost'];
 
+    /**
+     * Filtres actifs pour la liste d'articles.
+     *
+     * @var array
+     */
     public $filter = [
         'favoritePosts' => '',
         'notViewPosts' => '',
         'postsInFavoritesRubrics' => '',
         'allPosts' => '',
     ];
+    /**
+     * Tris actifs pour la liste d'articles.
+     *
+     * @var array
+     */
     public $sorter = [
         'mostConsultedPosts' => '',
         'mostRecentlyPosts' => '',
         'mostCommentedPosts' => '',
     ];
 
+    /**
+     * Initialisation du composant.
+     * Configure la pagination, le mode d'usage, la rubrique et les notifications.
+     *
+     * @param object $viewBag Sac de données contenant la rubrique.
+     */
     public function mount($viewBag)
     {
         session([
@@ -63,22 +128,38 @@ class PostsManager extends Component
         $this->lastSorterActive();
     }
 
+    /**
+     * Fonction appelée après le rendu du composant.
+     */
     public function booted()
     {
         $this->firstLoad = !$this->rendered;
     }
 
+    /**
+     * Met à jour le nombre d'articles par page dans la session.
+     */
     public function updatedPerPage()
     {
         session(['postsPerPage' => $this->perPage]);
         $this->resetPage();
     }
 
+    /**
+     * Supprime un article.
+     *
+     * @param int $postId Identifiant de l'article.
+     */
     public function deletePost($postId)
     {
         Post::find($postId)->delete();
     }
 
+    /**
+     * Redirige vers la page de l'article sélectionné.
+     *
+     * @param int $postId Identifiant de l'article.
+     */
     public function redirectToPost($postId)
     {
         if (!$this->blockRedirection) {
@@ -87,11 +168,17 @@ class PostsManager extends Component
         $this->blockRedirection = FALSE;
     }
 
+    /**
+     * Bloque la redirection automatique.
+     */
     public function blockRedirection()
     {
         $this->blockRedirection = TRUE;
     }
 
+    /**
+     * Bascule l'affichage des articles en mode liste.
+     */
     public function displayListPosts()
     {
         session(['displayPosts'=>'list']);
@@ -99,6 +186,10 @@ class PostsManager extends Component
         //Modification de l'affichage des applications
         $this->emit('displayUpdated');
     }
+
+    /**
+     * Bascule l'affichage des articles en mode grille.
+     */
     public function displayGridPosts()
     {
         session(['displayPosts'=>'grid']);
@@ -107,6 +198,12 @@ class PostsManager extends Component
         $this->emit('displayUpdated');
     }
 
+    /**
+     * Récupère la liste de tous les articles de la rubrique courante (ou global selon le mode).
+     * Gère les filtres de parution, d'archivage et de permissions.
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
     public function allPosts()
     {
         $user = auth()->user();
@@ -146,6 +243,11 @@ class PostsManager extends Component
             ->paginate($this->perPage);
     }
 
+    /**
+     * Retourne les articles filtrés ou triés en fonction de la session ou de la rubrique "Une".
+     *
+     * @return mixed
+     */
     protected function getFilteredOrSortedPosts(){
 
         if (session()->has('lastFilter') && $this->rubric->name === 'Une'){
@@ -157,6 +259,11 @@ class PostsManager extends Component
         }
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $this->rendered = TRUE;

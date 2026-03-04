@@ -12,6 +12,9 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * Composant Livewire pour la gestion des favoris (articles et rubriques) côté usage.
+ */
 class FavorisManager extends Component
 {
     use WithPagination;
@@ -20,16 +23,53 @@ class FavorisManager extends Component
     use WithUsageMode;
     use WithFavoritesHandling;
 
+    /**
+     * Rubrique actuelle.
+     *
+     * @var \App\Models\Rubric
+     */
     public $rubric;
 
     protected $paginationTheme = 'bootstrap';
+    /**
+     * Options de nombre d'éléments par page.
+     *
+     * @var array
+     */
     public $perPageOptions = [12, 24, 36, 48, 60];
+    /**
+     * Nombre d'éléments par page sélectionné.
+     *
+     * @var int
+     */
     public $perPage;
 
+    /**
+     * Indique si le composant a été rendu.
+     *
+     * @var bool
+     */
     public $rendered = FALSE;
+
+    /**
+     * Indique si c'est le premier chargement.
+     *
+     * @var bool
+     */
     public $firstLoad = TRUE;
+
+    /**
+     * Indique si la redirection est bloquée.
+     *
+     * @var bool
+     */
     public $blockRedirection = FALSE;
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param object $viewBag Sac de données contenant la rubrique.
+     */
     public function mount($viewBag) {
         session([
             'backRoute' => request()->getRequestUri(),
@@ -42,11 +82,19 @@ class FavorisManager extends Component
 
     }
 
+    /**
+     * Détermine si c'est le premier chargement du composant.
+     */
     public function booted()
     {
         $this->firstLoad = !$this->rendered;
     }
 
+    /**
+     * Redirige vers la page de l'article sélectionné.
+     *
+     * @param int $postId Identifiant de l'article.
+     */
     public function redirectToPost($postId) {
         if (!$this->blockRedirection) {
             redirect()->route('post.index', ['rubric' => Post::find($postId)->rubric->route(), 'post_id' => $postId]);
@@ -54,6 +102,11 @@ class FavorisManager extends Component
         $this->blockRedirection = FALSE;
     }
 
+    /**
+     * Retire une rubrique des favoris.
+     *
+     * @param int $rubric_id Identifiant de la rubrique.
+     */
     public function removeFavoriteRubric($rubric_id) {
         $this->rubric = Rubric::find($rubric_id);
 
@@ -66,10 +119,18 @@ class FavorisManager extends Component
         $this->emitSelf('render');
     }
 
+    /**
+     * Bloque la redirection automatique.
+     */
     public function blockRedirection() {
         $this->blockRedirection = TRUE;
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $this->rendered = TRUE;

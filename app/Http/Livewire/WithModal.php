@@ -2,10 +2,21 @@
 
 namespace App\Http\Livewire;
 
+/**
+ * Trait pour la gestion et l'affichage des fenêtres modales via un ModalManager centralisé.
+ */
 trait WithModal
 {
+    /**
+     * Indique si l'ajout est autorisé.
+     *
+     * @var bool
+     */
     public $canAdd = TRUE;
 
+    /**
+     * Callback appelé lors de la fermeture d'une modale.
+     */
     public function modalClosed() {
         if (isset($this->closedModalCallback)) {
             foreach($this->closedModalCallback as $function) {
@@ -15,6 +26,12 @@ trait WithModal
         $this->emit('render')->self();
     }
 
+    /**
+     * Affiche une modale spécifique avec des données.
+     *
+     * @param string $modal Type de modale (confirm, notify, guidelines, etc.).
+     * @param mixed $data Données à passer à la modale.
+     */
     public function showModal($modal, $data = NULL) {
         switch ($modal) {
             case 'confirm' :

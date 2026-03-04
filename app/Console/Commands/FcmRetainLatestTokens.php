@@ -6,24 +6,30 @@ use App\Models\FcmToken;
 use App\Models\User;
 use Illuminate\Console\Command;
 
+/**
+ * Commande de maintenance pour le nettoyage des tokens FCM.
+ * Permet de ne conserver que les N derniers tokens par utilisateur pour éviter l'accumulation.
+ */
 class FcmRetainLatestTokens extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Le nom et la signature de la commande.
+     * --keep : Nombre de tokens à conserver (par défaut 5).
      *
      * @var string
      */
     protected $signature = 'fcm:retain-latest-tokens {--keep=5 : Le nombre de tokens les plus récents à conserver par utilisateur.}';
 
     /**
-     * The console command description.
+     * La description de la commande console.
      *
      * @var string
      */
     protected $description = 'Pour les utilisateurs avec trop de tokens FCM, ne conserve que les plus récents.';
 
     /**
-     * Execute the console command.
+     * Exécute la commande de nettoyage.
+     * Identifie les utilisateurs dépassant le quota, détache les anciens tokens et supprime les tokens orphelins.
      *
      * @return int
      */

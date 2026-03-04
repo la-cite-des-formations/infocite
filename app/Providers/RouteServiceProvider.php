@@ -5,6 +5,10 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Fournisseur de services gérant le routage de l'application.
+ * Configure les namespaces des contrôleurs et définit les groupes de routes (web, api).
+ */
 class RouteServiceProvider extends ServiceProvider
 {
     /**

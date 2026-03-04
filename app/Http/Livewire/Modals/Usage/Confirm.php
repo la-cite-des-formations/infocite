@@ -6,20 +6,70 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithModal;
 use Livewire\Component;
 
+/**
+ * Composant Livewire pour la modale de confirmation d'actions (suppression, création, etc.).
+ */
 class Confirm extends Component
 {
     use WithModal;
     use WithAlert;
 
+    /**
+     * Action à confirmer (ex: 'deletePost', 'deleteComment', etc.).
+     *
+     * @var string
+     */
     public $handling;
+
+    /**
+     * Identifiant de l'article concerné.
+     *
+     * @var int|null
+     */
     public $postId;
+
+    /**
+     * Identifiant du commentaire concerné.
+     *
+     * @var int|null
+     */
     public $commentId;
+
+    /**
+     * Identifiant de l'application concernée.
+     *
+     * @var int|null
+     */
     public $appId;
+
+    /**
+     * Route de redirection après confirmation.
+     *
+     * @var string|null
+     */
     public $redirectionRoute;
+
+    /**
+     * Message de confirmation à afficher.
+     *
+     * @var string
+     */
     public $message;
+
+    /**
+     * Nombre d'éléments par page.
+     *
+     * @var int
+     */
     public $perPage = 8;
 
 
+    /**
+     * Initialisation du composant.
+     * Configure le message de confirmation en fonction de l'action à valider.
+     *
+     * @param array $data Données contenant l'action ('handling') et les IDs nécessaires.
+     */
     public function mount($data) {
         extract($data);
 
@@ -49,6 +99,9 @@ class Confirm extends Component
         }
     }
 
+    /**
+     * Confirme l'action demandée en émettant l'événement approprié vers le manager concerné.
+     */
     public function confirm() {
         switch($this->handling){
             case('deletePost'):
@@ -75,6 +128,12 @@ class Confirm extends Component
         }
     }
 
+    /**
+     * Rendu du composant.
+     * Récupère les nouvelles et les anciennes notifications de l'utilisateur.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.modals.usage.confirm');

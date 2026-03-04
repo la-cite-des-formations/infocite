@@ -8,10 +8,14 @@ use App\Policies as Policies;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * Fournisseur de services gérant l'authentification et l'autorisation.
+ * Déclare les Gate et fait le lien entre modèles et politiques (Policies) de sécurité.
+ */
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
+     * Les correspondances entre modèles et politiques (Policies) de l'application.
      *
      * @var array
      */
@@ -24,7 +28,8 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any authentication / authorization services.
+     * Enregistre les services d'authentification et d'autorisation (Gates & Policies).
+     * Définit les accès au tableau de bord et les droits de gestion des modèles.
      *
      * @return void
      */
