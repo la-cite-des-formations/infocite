@@ -1,78 +1,218 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# Infocite — Portail Intranet de La Cité des Formations
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Portail intranet interactif construit avec **Laravel 9** et **Livewire 2**, destiné à la communication interne, à la gestion documentaire et à l'administration des utilisateurs de [La Cité des Formations](https://www.lacitedesformations.com/) (Tours, France).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Sommaire
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [Fonctionnalités](#fonctionnalités)
+- [Stack technique](#stack-technique)
+- [Prérequis](#prérequis)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Compilation des assets](#compilation-des-assets)
+- [Architecture du projet](#architecture-du-projet)
+- [Modèles de données](#modèles-de-données)
+- [Système de droits (RBAC)](#système-de-droits-rbac)
+- [Tableaux de bord d'administration](#tableaux-de-bord-dadministration)
+- [Documentation technique](#documentation-technique)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Fonctionnalités
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Côté Usage (Front-office)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Gestion de contenus** : Rédaction, publication, archivage et suppression automatique d'articles organisés par rubriques, avec éditeur WYSIWYG (TinyMCE) et nettoyage sémantique avancé du contenu collé.
+- **Page « À la Une »** : Agrégation d'articles avec filtres (favoris, non lus, par rubrique) et tris (les plus consultés, récents, commentés). Possibilité d'épingler jusqu'à 4 articles.
+- **Applications** : Catalogue d'applications institutionnelles et personnelles avec gestion des favoris et récupération automatique des favicons.
+- **Commentaires** : Système de commentaires modérables sur les articles, avec possibilité de blocage par article.
+- **Favoris** : Mise en favoris des articles et des rubriques pour un accès rapide.
+- **Organigramme** : Affichage dynamique de l'organigramme de l'établissement via Google Charts.
+- **Recherche globale** : Recherche transversale sur les articles et les applications.
+- **Notifications push** : Notifications en temps réel via Firebase Cloud Messaging (FCM) lors de la publication ou la modification d'un article ou d'un commentaire.
+- **Profil utilisateur** : Gestion des préférences de notification (bureau, favoris uniquement).
 
-## Laravel Sponsors
+### Côté Administration (Back-office)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- **Tableau de bord principal** : Accès centralisé à la gestion des utilisateurs, profils, groupes, applications, rubriques, contenus, commentaires et droits.
+- **Organigramme** : Gestion des nœuds graphiques, des mises en forme et des libellés référents.
+- **Statistiques** : Visualisation des connexions, des consultations d'articles et de l'usage global (éditeurs, commentateurs, applications personnelles) par année scolaire.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+---
 
-## Contributing
+## Stack technique
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Couche        | Technologie                                                               |
+|---------------|---------------------------------------------------------------------------|
+| **Backend**   | PHP 8.1+, Laravel 9, Livewire 2                                          |
+| **Frontend**  | Bootstrap 5, jQuery, Material Icons, SCSS                                 |
+| **Éditeur**   | TinyMCE 7                                                                |
+| **Auth**      | Laravel UI + Google OAuth 2.0 (Socialite)                                 |
+| **Notifs**    | Firebase Cloud Messaging (kreait/firebase-php)                            |
+| **BDD**       | MySQL                                                                     |
+| **Build**     | Laravel Mix 6 (Webpack)                                                   |
+| **Sécurité**  | Content Security Policy (spatie/laravel-csp), CORS (fruitcake/laravel-cors) |
+| **Serveur**   | Hébergé sur Plesk                                                         |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Prérequis
 
-## Security Vulnerabilities
+- **PHP** ≥ 8.1 avec les extensions `intl`, `mbstring`, `xml`, `mysql`
+- **Composer** ≥ 2.x
+- **Node.js** ≥ 16.x et **npm**
+- **MySQL** ≥ 5.7
+- Un projet **Firebase** configuré (pour les notifications push)
+- Des identifiants **Google OAuth** (pour l'authentification via Google)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Installation
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+# 1. Cloner le dépôt
+git clone <url-du-depot> infocite
+cd infocite
+
+# 2. Installer les dépendances PHP
+composer install
+
+# 3. Installer les dépendances Node.js
+npm install
+
+# 4. Copier et configurer l'environnement
+cp .env.example .env
+php artisan key:generate
+
+# 5. Configurer la base de données dans .env, puis :
+php artisan migrate --seed
+
+# 6. Créer le lien symbolique pour le stockage public
+php artisan storage:link
+```
+
+---
+
+## Configuration
+
+Variables d'environnement essentielles à configurer dans le fichier `.env` :
+
+| Variable                | Description                                    |
+|-------------------------|------------------------------------------------|
+| `APP_NAME`              | Nom de l'application (ex: `Infocite`)          |
+| `APP_URL`               | URL de base du portail                         |
+| `DB_*`                  | Paramètres de connexion MySQL                  |
+| `GOOGLE_CLIENT_ID`      | ID client Google OAuth                         |
+| `GOOGLE_CLIENT_SECRET`  | Secret client Google OAuth                     |
+| `GOOGLE_REDIRECT_URI`   | URL de callback Google (`/login/google/callback`) |
+| `FIREBASE_*`            | Configuration du projet Firebase (clés serveur) |
+
+---
+
+## Compilation des assets
+
+```bash
+# Développement (avec source maps)
+npm run dev
+
+# Développement avec rechargement automatique
+npm run watch
+
+# Production (minifié)
+npm run prod
+```
+
+Les fichiers compilés sont générés dans `public/js/` et `public/css/`. Le Service Worker Firebase est compilé directement à la racine de `public/`.
+
+---
+
+## Architecture du projet
+
+```
+app/
+├── Casts/                  # Casts Eloquent personnalisés
+├── Channels/               # Canal FCM pour les notifications push
+├── Charts/                 # Logique de génération de graphiques (statistiques)
+├── Console/Commands/       # Commandes Artisan (purge des tokens FCM)
+├── CustomFacades/          # Façade AP (Application Parameters) — paramétrage central
+├── Http/
+│   ├── Controllers/        # Contrôleurs (Vue, Admin, Dashboard, Auth)
+│   └── Livewire/
+│       ├── Admin/          # Composants Livewire d'administration (15 managers)
+│       ├── Modals/         # Modales (Admin + Usage)
+│       ├── Usage/          # Composants Livewire côté usage (10 managers)
+│       └── With*.php       # Traits partagés (filtres, favoris, notifications, etc.)
+├── Jobs/                   # Jobs asynchrones (purge des tokens FCM invalides)
+├── Models/                 # 17 modèles Eloquent
+├── Notifications/          # Notification Firebase (AppNotification)
+├── Observers/              # Observer sur le modèle Post
+├── Policies/               # 7 politiques d'autorisation
+├── Providers/              # Service Providers (Auth, Firebase, Custom, etc.)
+├── Statistics/             # Classes de calcul de statistiques
+└── Support/                # Helpers globaux (normalisation Unicode, etc.)
+```
+
+---
+
+## Modèles de données
+
+| Modèle          | Description                                              |
+|-----------------|----------------------------------------------------------|
+| `User`          | Utilisateur du portail (rôles, groupes, préférences)     |
+| `Employee`      | Profil employé associé à un utilisateur                  |
+| `Learner`       | Profil apprenant associé à un utilisateur                |
+| `Post`          | Article de contenu (publication, archivage, épinglé)     |
+| `Rubric`        | Rubrique de navigation (arborescence parent/enfant)      |
+| `Comment`       | Commentaire sur un article                               |
+| `App`            | Application (institutionnelle ou personnelle)            |
+| `Group`         | Groupe d'utilisateurs (classe, équipe, fonction, système)|
+| `Right`         | Paramétrage d'un droit d'accès                           |
+| `Roles`         | Constantes de niveaux de rôles (Lecteur → Administrateur)|
+| `Chartnode`     | Nœud de l'organigramme dynamique                         |
+| `Actor`         | Lien hiérarchique dans l'organigramme                    |
+| `Format`        | Mise en forme visuelle d'un nœud d'organigramme          |
+| `Interaction`   | Suivi des interactions (connexion, vue, commentaire)     |
+| `Notification`  | Notification interne (nouvel article, commentaire)       |
+| `FcmToken`      | Token Firebase Cloud Messaging d'un utilisateur          |
+| `Phone`         | Numéro de téléphone associé à un utilisateur             |
+
+---
+
+## Système de droits (RBAC)
+
+Le portail implémente un système de contrôle d'accès basé sur les rôles (RBAC) à granularité fine :
+
+- **4 niveaux de rôles** : Lecteur (`IS_READR`), Éditeur (`IS_EDITR`), Modérateur (`IS_MODER`), Administrateur (`IS_ADMIN`).
+- **Attribution contextuelle** : Les droits peuvent être attribués globalement, par groupe, par profil ou individuellement, et peuvent cibler une ressource spécifique (un article, une rubrique, etc.).
+- **7 politiques (Policies)** : `AppPolicy`, `CommentPolicy`, `GroupPolicy`, `PostPolicy`, `RightPolicy`, `RubricPolicy`, `UserPolicy`.
+- **Gates dynamiques** : Les accès aux tableaux de bord et aux gestionnaires d'administration sont définis dynamiquement via la façade `AP`.
+
+---
+
+## Tableaux de bord d'administration
+
+| Dashboard         | Fonctions                                                |
+|-------------------|----------------------------------------------------------|
+| **Principal**     | Utilisateurs, Profils, Groupes, Applications, Rubriques, Contenus, Commentaires, Droits |
+| **Organigramme**  | Mise en forme, Nœuds graphiques, Libellés référents      |
+| **Statistiques**  | Connexions, Consultations d'articles, Usage global       |
+
+---
+
+## Documentation technique
+
+La documentation PHPDoc est générée via **phpDocumentor** et accessible dans le dossier `public/docs/`.
+
+Pour la régénérer :
+
+```bash
+php phpDocumentor.phar -d app -t public/docs
+```
+
+---
+
+## Licence
+
+Projet propriétaire — © La Cité des Formations. Tous droits réservés.
