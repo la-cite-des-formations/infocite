@@ -127,7 +127,7 @@ class Rubric extends Model
     /**
      * Récupère les groupes ayant des droits spécifiques sur les messages de cette rubrique.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function groupsWithRubricPostsRight() {
         return Right::query()
@@ -141,7 +141,7 @@ class Rubric extends Model
     /**
      * Récupère les utilisateurs réels ayant des droits spécifiques sur les messages de cette rubrique.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function usersWithRubricPostsRight() {
         return Right::query()
@@ -155,7 +155,7 @@ class Rubric extends Model
     /**
      * Récupère les profils ayant des droits spécifiques sur les messages de cette rubrique.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function profilesWithRubricPostsRight() {
         return Right::query()
@@ -245,6 +245,7 @@ class Rubric extends Model
         extract($filter);
 
         $rubrics = static::query()
+            ->with('parent')
             ->get()
             ->when($search, function ($rubrics) use ($search) {
                 return $rubrics->filter(function ($rubric) use ($search) {

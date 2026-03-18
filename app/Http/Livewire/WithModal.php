@@ -46,6 +46,10 @@ trait WithModal
                 $component = "usage.guidelines-manager";
                 break;
 
+            case 'rubric-info':
+                $component = "usage.rubric-info";
+                break;
+
             default :
                 $component = "admin.{$this->models}.$modal";
         }

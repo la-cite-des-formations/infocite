@@ -65,6 +65,7 @@
             </a>
            @endcan
           @endif
+
           @if($rubric->name != 'Une')
             <button @class([
                         "d-flex align-items-center",
@@ -75,6 +76,11 @@
                     title="@if ($isFavoriteRubric) Retirer des favoris @else Ajouter aux favoris @endif"
                     wire:click="switchFavoriteRubric" type="button">
                 <span class="bx bx-star"></span>
+            </button>
+            <button class="d-flex align-items-center btn btn-sm btn-primary"
+                    wire:click="showModal('rubric-info', {id : {{ $rubric->id }}})"
+                    type="button" title="Voir les droits de la rubrique">
+                <span class="material-icons fs-5">info</span>
             </button>
           @else
             <!--Bouton filtre-->
