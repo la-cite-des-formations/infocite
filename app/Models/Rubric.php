@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class Rubric extends Model
 {
     use WithSearching;
+    use \App\Models\Traits\HasFavorites;
 
     /**
      * Les attributs qui peuvent être assignés en masse.
@@ -87,42 +88,8 @@ class Rubric extends Model
     }
 
     /**
-     * Relation vers tous les utilisateurs ayant accès à la rubrique (incluant les profils).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Relation vers les rubriques parents (navigation).
      */
-    public function users()
-    {
-        return $this
-            ->belongsToMany('App\Models\User')
-            ->orderByRaw('name ASC, first_name ASC');
-    }
-
-    /**
-     * Relation vers les utilisateurs réels (hors profils) ayant accès à la rubrique.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function realUsers()
-    {
-        return $this
-            ->belongsToMany('App\Models\User')
-            ->where('name', '<>', AP::PROFILE)
-            ->orderByRaw('name ASC, first_name ASC');
-    }
-
-    /**
-     * Relation vers les profils ayant accès à la rubrique.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function profiles()
-    {
-        return $this
-            ->belongsToMany('App\Models\User')
-            ->where('name', AP::PROFILE)
-            ->orderByRaw('first_name ASC');
-    }
 
     /**
      * Récupère les groupes ayant des droits spécifiques sur les messages de cette rubrique.
@@ -166,14 +133,6 @@ class Rubric extends Model
             ->where('resource_id', $this->id);
     }
 
-    /**
-     * Vérifie si la rubrique est en favori pour l'utilisateur courant.
-     *
-     * @return bool
-     */
-    public function isFavorite() {
-        return $this->users->find(auth()->user()->id) ? TRUE : FALSE;
-    }
 
     /**
      * Retourne le chemin relatif (URL) vers la rubrique.

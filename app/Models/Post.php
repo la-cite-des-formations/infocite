@@ -16,6 +16,7 @@ class Post extends Model
 {
     use WithSearching;
     use HasInteractions;
+    use \App\Models\Traits\HasFavorites;
 
     /**
      * Les attributs qui peuvent être assignés en masse.
@@ -86,7 +87,7 @@ class Post extends Model
     public function readers() {
         return $this
             ->belongsToMany('App\Models\User')
-            ->withPivot(['is_favorite', 'is_read', 'tags']);
+            ->withPivot(['is_read', 'tags']);
     }
 
     /**
@@ -98,11 +99,7 @@ class Post extends Model
     public function notificableReaders() {
         return $this->rubric
             ->users
-            ->merge($this
-                ->readers()
-                ->where('is_favorite', TRUE)
-                ->get(['users.*'])
-            );
+            ->merge($this->favoritedBy);
     }
 
     /**
@@ -220,16 +217,6 @@ class Post extends Model
         return "{$commentsNbLabel} ".($commentsNb > 1 ? 'commentaires' : 'commentaire');
     }
 
-    /**
-     * Vérifie si l'article est en favori pour l'utilisateur courant.
-     *
-     * @return bool
-     */
-    public function isFavorite() {
-        $postUser = $this->readers->find(auth()->user()->id);
-
-        return $postUser ? $postUser->pivot->is_favorite : FALSE;
-    }
 
     /**
      * Vérifie si l'article a été lu par l'utilisateur courant.

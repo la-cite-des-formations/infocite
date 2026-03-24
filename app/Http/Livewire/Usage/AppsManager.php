@@ -75,22 +75,22 @@ class AppsManager extends Component
     public function switchFavoriteApp($appId) {
         $app = App::find($appId);
         $user = auth()->user();
-        $updatedFavoritesApps = $user->myFavoritesApps->pluck('pivot.rank', 'id');
+        $updatedFavoriteApps = $user->favoriteApps->pluck('pivot.rank', 'id');
 
         if ($app->isFavorite) {
-            $currentRank = $updatedFavoritesApps->pull($appId);
-            $updatedFavoritesApps = $updatedFavoritesApps->map(function ($rank, $id) use ($currentRank) {
+            $currentRank = $updatedFavoriteApps->pull($appId);
+            $updatedFavoriteApps = $updatedFavoriteApps->map(function ($rank, $id) use ($currentRank) {
                 return ['rank' => $rank < $currentRank ? $rank : $rank - 1];
             });
         }
         else {
-            $updatedFavoritesApps->put($appId, 0);
-            $updatedFavoritesApps = $updatedFavoritesApps->map(function ($rank, $id) {
+            $updatedFavoriteApps->put($appId, 0);
+            $updatedFavoriteApps = $updatedFavoriteApps->map(function ($rank, $id) {
                 return ['rank' => $rank + 1];
             });
         }
 
-        $user->myFavoritesApps()->sync($updatedFavoritesApps);
+        $user->favoriteApps()->sync($updatedFavoriteApps);
 
         $this->emitSelf('render');
     }

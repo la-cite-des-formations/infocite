@@ -210,10 +210,10 @@
                             <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
                             <button @class([
                                         "btn small-action-btn",
-                                        "btn-warning" => $post->isFavorite(),
-                                        "btn-secondary" => !$post->isFavorite()
+                                        "btn-warning" => $post->isFavorite,
+                                        "btn-secondary" => !$post->isFavorite
                                     ])
-                                    title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                                    title="@if ($post->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
                                     wire:click="switchFavoritePost({{ $post->id }})" type="button">
                                 <i class="bx bx-star"></i>
                             </button>

@@ -110,11 +110,7 @@ class FavorisManager extends Component
     public function removeFavoriteRubric($rubric_id) {
         $this->rubric = Rubric::find($rubric_id);
 
-        if ($this->rubric->isFavorite()) {
-            $this->rubric
-                ->users()
-                ->detach(auth()->user()->id);
-        }
+        $this->rubric->toggleFavorite();
 
         $this->emitSelf('render');
     }
@@ -135,8 +131,8 @@ class FavorisManager extends Component
     {
         $this->rendered = TRUE;
         $user = User::find(auth()->user()->id);
-        $favoritesPosts = $user->myFavoritesPosts()->paginate($this->perPage);
-        $favoritesRubrics = $user->myFavoritesRubrics;
+        $favoritesPosts = $user->favoritePosts()->paginate($this->perPage);
+        $favoritesRubrics = $user->favoriteRubrics;
 
         return view('livewire.usage.favoris-manager',[
             'posts' => $favoritesPosts,

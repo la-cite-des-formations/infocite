@@ -85,8 +85,8 @@ class PostManager extends Component
             ]
         ]);
         $this->rubric = $this->post->rubric;
-        $this->isFavoriteRubric = $this->rubric->isFavorite();
-        $this->isFavoritePost = $this->post->isFavorite();
+        $this->isFavoriteRubric = $this->rubric->isFavorite;
+        $this->isFavoritePost = $this->post->isFavorite;
         $this->setNotifications();
     }
 
@@ -130,11 +130,11 @@ class PostManager extends Component
                         ->whereHas('employee', function ($employee) {
                             $employee->where('notify_only_favorites', FALSE);
                         })
-                        ->orWhereHas('myFavoritesRubrics', function ($favoritesRubrics) {
-                            $favoritesRubrics->where('rubric_id', $this->post->rubric_id);
+                        ->orWhereHas('favoriteRubrics', function ($favoritesRubrics) {
+                            $favoritesRubrics->where('favoriteable_id', $this->post->rubric_id);
                         })
-                        ->orWhereHas('myFavoritesPosts',function ($favoritesPosts) {
-                            $favoritesPosts->where('post_id', $this->post->id);
+                        ->orWhereHas('favoritePosts',function ($favoritesPosts) {
+                            $favoritesPosts->where('favoriteable_id', $this->post->id);
                         });
                 })
                 ->get();

@@ -27,7 +27,7 @@ trait WithFilterPosts
     public function favoritePosts()
     {
         return User::find(auth()->user()->id)
-            ->myFavoritesPosts()
+            ->favoritePosts()
             ->when($this->mode == 'view', function ($query) {
                 $query
                     ->where('published', TRUE)
@@ -52,8 +52,8 @@ trait WithFilterPosts
     public function postsInFavoritesRubrics(){
         return Post::query()
             ->whereIn('rubric_id', auth()->user()
-                ->myFavoritesRubrics()
-                ->pluck('id')
+                ->favoriteRubrics()
+                ->pluck('favoriteable_id')
             )
             ->orderBy('rubric_id','DESC')
             ->orderBy('created_at', 'DESC')

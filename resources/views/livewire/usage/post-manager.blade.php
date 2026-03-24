@@ -88,10 +88,10 @@
                       @endif
                         <button @class([
                                     "btn btn-sm",
-                                    "btn-warning" => $isFavoritePost,
-                                    "btn-secondary" => !$isFavoritePost,
+                                    "btn-warning" => $post->isFavorite,
+                                    "btn-secondary" => !$post->isFavorite,
                                 ])
-                                title="{{ $isFavoritePost ? "Retirer des favoris" : "Ajouter aux favoris" }}"
+                                title="{{ $post->isFavorite ? "Retirer des favoris" : "Ajouter aux favoris" }}"
                                 wire:click="switchFavoritePost" type="button">
                             <i class="bx bx-star"></i>
                         </button>

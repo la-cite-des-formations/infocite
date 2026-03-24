@@ -122,7 +122,7 @@ class PostsManager extends Component
         $this->perPage = session('postsPerPage', 12);
         $this->setMode();
         $this->rubric = $viewBag->rubric;
-        $this->isFavoriteRubric = $this->rubric->isFavorite();
+        $this->isFavoriteRubric = $this->rubric->isFavorite;
         $this->setNotifications();
         $this->lastFilterActive();
         $this->lastSorterActive();

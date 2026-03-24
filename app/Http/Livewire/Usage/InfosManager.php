@@ -204,7 +204,7 @@ class InfosManager extends Component
 
         return view('livewire.usage.infos-manager', [
             'favoritesPosts' => $this->user
-                ->myFavoritesPosts()
+                ->favoritePosts()
                 ->paginate($this->perPage),
         ]);
     }

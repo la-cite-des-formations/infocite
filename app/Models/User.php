@@ -207,37 +207,33 @@ class User extends Authenticatable
             ->orderBy('created_at', 'desc');
     }
 
-    /**
-     * Relation vers les articles mis en favoris par l'utilisateur.
-     * Ne retourne que les articles publiés et non expirés.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function myFavoritesPosts() {
-        return $this
-            ->belongsToMany(Post::class)
-            ->orderBy('created_at', 'DESC')
-            ->withPivot(['is_favorite'])
-            ->where('is_favorite', TRUE)
-            ->where('published', TRUE)
-            ->where(function ($query) {
-                $query
-                    ->where('expired_at', '>', today()->format('Y-m-d'))
-                    ->orWhere('expired_at', NULL);
-            });
-    }
 
     /**
      * Relation vers les rubriques mises en favoris par l'utilisateur.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Table 'favorites' (polymorphique).
      */
-    public function myFavoritesRubrics() {
-        return $this
-            ->belongsToMany(Rubric::class)
-            ->orderBy('created_at', 'DESC')
-            ->withPivot(['rubric_id']);
+    public function favoriteRubrics() {
+        return $this->morphedByMany(Rubric::class, 'favoriteable', 'favorites')
+                    ->withPivot('rank');
+    }
 
+    /**
+     * Relation vers les articles mis en favoris par l'utilisateur.
+     * Table 'favorites' (polymorphique).
+     */
+    public function favoritePosts() {
+        return $this->morphedByMany(Post::class, 'favoriteable', 'favorites')
+                    ->withPivot('rank');
+    }
+
+    /**
+     * Relation vers les applications mises en favoris par l'utilisateur.
+     * Table 'favorites' (polymorphique).
+     */
+    public function favoriteApps() {
+        return $this->morphedByMany(App::class, 'favoriteable', 'favorites')
+                    ->withPivot('rank')
+                    ->orderByRaw('rank ASC');
     }
 
     /**
@@ -248,13 +244,13 @@ class User extends Authenticatable
     public function myNotifications() {
         $myNotifications = new Collection();
 
-        $this->rubrics->each(function ($rubric) use (&$myNotifications) {
+        $this->favoriteRubrics->each(function ($rubric) use (&$myNotifications) {
             $rubric->posts->each(function ($post) use (&$myNotifications) {
                 $myNotifications = $myNotifications->merge($post->notifications);
             });
         });
 
-        $this->myFavoritesPosts->each(function ($post) use (&$myNotifications) {
+        $this->favoritePosts->each(function ($post) use (&$myNotifications) {
             $myNotifications = $myNotifications->merge($post->notifications);
         });
 
@@ -293,16 +289,6 @@ class User extends Authenticatable
             ->orderBy('created_at', 'DESC');
     }
 
-    /**
-     * Relation vers les rubriques directement associées à l'utilisateur.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function rubrics() {
-        return $this
-            ->belongsToMany(Rubric::class)
-            ->orderByRaw('position, segment, rank');
-    }
 
     /**
      * Récupère l'ensemble des rubriques accessibles par l'utilisateur.
@@ -311,7 +297,7 @@ class User extends Authenticatable
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function myRubrics() {
-        $myRubrics = $this->rubrics;
+        $myRubrics = new Collection();
 
         $this->groups->each(function ($group) use (&$myRubrics) {
             $myRubrics = $myRubrics->merge($group->rubrics);
@@ -321,7 +307,7 @@ class User extends Authenticatable
             $myRubrics = $myRubrics->merge($profile->myRubrics());
         });
 
-        return $myRubrics;
+        return $myRubrics->unique();
     }
 
     /**
@@ -389,24 +375,13 @@ class User extends Authenticatable
             $myApps = $myApps->merge($profile->myApps());
         });
 
-        return $this->myFavoritesApps->merge($myApps->isEmpty() ?
+        return $this->favoriteApps->merge($myApps->isEmpty() ?
             $myApps :
             $myApps
                 ->sortBy('name')
         );
     }
 
-    /**
-     * Relation vers les applications mises en favoris par l'utilisateur.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function myFavoritesApps() {
-        return $this
-            ->belongsToMany(App::class, 'favorites_apps')
-            ->withPivot(['rank'])
-            ->orderBy('rank');
-    }
 
     /**
      * Récupère les processus métiers associés à l'utilisateur via ses groupes de type 'P'.

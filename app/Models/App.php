@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class App extends Model
 {
     use WithSearching;
+    use \App\Models\Traits\HasFavorites;
 
     /**
      * Les attributs qui peuvent être assignés en masse.
@@ -65,17 +66,6 @@ class App extends Model
             ->withPivot(['login', 'password']);
     }
 
-    /**
-     * Relation vers les utilisateurs ayant mis cette application en favoris.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function fanUsers() {
-        return $this
-            ->belongsToMany('App\Models\User', 'favorites_apps')
-            ->orderByRaw('name ASC, first_name ASC')
-            ->withPivot(['rank']);
-    }
 
     /**
      * Relation vers les profils (modèles de droits) ayant accès à l'application.
@@ -90,14 +80,6 @@ class App extends Model
             ->withPivot(['login', 'password']);
     }
 
-    /**
-     * Accesseur vérifiant si l'application est en favoris pour l'utilisateur authentifié.
-     *
-     * @return bool
-     */
-    public function getIsFavoriteAttribute() {
-        return $this->fanUsers->contains('id', auth()->user()->id);
-    }
 
     /**
      * Vérifie si l'application appartient à l'utilisateur authentifié.

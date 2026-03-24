@@ -29,22 +29,18 @@ trait WithFavoritesHandling
      *
      * @param int|null $rubric_id ID de la rubrique (si null, utilise la rubrique chargée dans le composant).
      */
+    /**
+     * Alterne l'état de favori pour une rubrique.
+     *
+     * @param int|null $rubric_id ID de la rubrique (si null, utilise la rubrique chargée dans le composant).
+     */
     public function switchFavoriteRubric($rubric_id = NULL) {
         $rubric = $rubric_id ? Rubric::find($rubric_id) : $this->rubric;
 
-        if ($rubric->isFavorite()) {
-            $rubric
-                ->users()
-                ->detach(auth()->user()->id);
-        }
-        else {
-            $rubric
-                ->users()
-                ->attach(auth()->user()->id);
-        }
+        $newState = $rubric->toggleFavorite();
 
         if (is_null($rubric_id)) {
-            $this->isFavoriteRubric = !$this->isFavoriteRubric;
+            $this->isFavoriteRubric = $newState;
         }
         else {
             $this->loadUser();
@@ -59,24 +55,6 @@ trait WithFavoritesHandling
     public function switchFavoritePost($post_id = NULL) {
         $post = $this->post ?? Post::find($post_id);
 
-        if ($post->isFavorite()) {
-            if ($post->isRead() || $post->tags()) {
-                $this->isFavoritePost = FALSE;
-            }
-        }
-        else {
-            $this->isFavoritePost = TRUE;
-        }
-
-        if (isset($this->isFavoritePost)) {
-            $post->readers()->syncWithoutDetaching([
-                auth()->user()->id => [
-                    'is_favorite' => $this->isFavoritePost
-                ]
-            ]);
-        }
-        else {
-            $post->readers()->detach(auth()->user()->id);
-        }
+        $this->isFavoritePost = $post->toggleFavorite();
     }
 }
