@@ -2,173 +2,116 @@
 
 @section('modal-size', 'modal-lg')
 @section('modal-title')
-    <span class="material-icons me-2">info</span> Droits sur la rubrique « {{ $rubric->name }} »
+    <span class="material-icons me-2">info</span> Rubrique « {{ $rubric->parent->name . ' > ' . $rubric->name }} »
 @endsection
 
 @section('modal-body')
-<div class="row">
+    <div class="row g-3">
 
-    {{-- ============  COLONNE GAUCHE : CONSULTATION  ============ --}}
-    <div class="col-md-5 border-end">
-        <h6 class="text-primary fw-bold mb-3 d-flex align-items-center">
-            <span class="material-icons fs-5 me-2">visibility</span>
-            Consultat° (groupes & pers.)
-        </h6>
+        {{-- ============  COLONNE GAUCHE : CONSULTATION  ============ --}}
+        <div class="col-md-6">
+            <div class="alert alert-primary h-100 mb-0">
+                <h6 class="fw-bold mb-3">Consultation</h6>
 
-        {{-- Groupes --}}
-        <p class="text-muted small mb-2 fw-bold text-uppercase border-bottom pb-1">Groupes</p>
-        @if($readGroups->isNotEmpty())
-            <div class="list-group list-group-flush mb-3 small">
-                @foreach($readGroups as $group)
-                    <div class="list-group-item px-0 py-2 bg-transparent border-0">
-                        <div class="d-flex align-items-start">
-                            <span class="material-icons text-muted fs-6 me-2 mt-1">groups</span>
-                            <div>
-                                <div class="fw-bold text-dark">{{ $group->name }}</div>
-                                @if(isset($group->pivot) && is_null($group->pivot->resource_id))
-                                    <div class="text-info extra-small"><i class="bx bx-world"></i> Droit générique</div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            <p class="text-muted small fst-italic mb-3 font-italic">Aucun groupe rattaché.</p>
-        @endif
+                {{-- Groupes --}}
+                @if ($readGroups->isNotEmpty())
+                    <ul class="mb-0 small">
+                        @foreach ($readGroups as $group)
+                            <li class="fw-bold mb-1">{{ $group->public ?? $group->name }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="small fst-italic mb-0">Aucun groupe rattaché.</p>
+                @endif
 
-        {{-- Profils (si droits spécifiques) --}}
-        @if($readProfiles->isNotEmpty())
-            <p class="text-muted small mb-2 fw-bold text-uppercase border-bottom pb-1">Profils</p>
-            <div class="list-group list-group-flush mb-3 small">
-                @foreach($readProfiles as $profile)
-                    <div class="list-group-item px-0 py-2 bg-transparent border-0">
-                        <div class="d-flex align-items-start">
-                            <span class="material-icons text-muted fs-6 me-2 mt-1">portrait</span>
-                            <div class="fw-bold">{{ $profile->first_name }}</div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
-
-        {{-- Utilisateurs (si droits spécifiques) --}}
-        @if($readUsers->isNotEmpty())
-            <p class="text-muted small mb-2 fw-bold text-uppercase border-bottom pb-1">Utilisateurs</p>
-            <div class="list-group list-group-flush small">
-                @foreach($readUsers as $user)
-                    <div class="list-group-item px-0 py-2 bg-transparent border-0">
-                        <div class="d-flex align-items-start">
-                            <span class="material-icons text-muted fs-6 me-2 mt-1">person</span>
-                            <div class="fw-bold">{{ $user->identity }}</div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
-    </div>
-
-    {{-- ============  COLONNE DROITE : ÉDITION  ============ --}}
-    <div class="col-md-7 ps-4 text-break">
-        <h6 class="text-success fw-bold mb-3 d-flex align-items-center">
-            <span class="material-icons fs-5 me-2">edit</span>
-            Édition (groupes & pers.)
-        </h6>
-
-        {{-- Groupes --}}
-        <p class="text-muted small mb-2 fw-bold text-uppercase border-bottom pb-1">Groupes</p>
-        @if($editGroups->isNotEmpty())
-            <div class="list-group list-group-flush mb-4 small">
-                @foreach($editGroups as $group)
-                    <div class="list-group-item px-0 py-2 bg-transparent border-0">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-muted fs-6 me-2 mt-1">groups</span>
-                                <div>
-                                    <div class="fw-bold">{{ $group->name }}</div>
-                                    <div class="text-muted mt-1">
-                                        Rôles : <span class="badge bg-light text-dark border">{{ $group->getRightableRoles() }}</span>
-                                    </div>
-                                    @if(is_null($group->pivot->resource_id))
-                                        <div class="text-info extra-small mt-1"><i class="bx bx-world"></i> Droit générique (global)</div>
-                                    @elseif($group->pivot->resource_id == $rubric->parent_id)
-                                        <div class="text-muted extra-small mt-1"><i class="bx bx-subdirectory-right"></i> Hérité du parent : {{ $rubric->parent->name }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                            <span class="badge rounded-pill bg-secondary opacity-75" title="Priorité">P{{ $group->pivot->priority }}</span>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            <p class="text-muted small fst-italic mb-4">Aucun groupe éditeur.</p>
-        @endif
-
-        {{-- Profils --}}
-        <p class="text-muted small mb-2 fw-bold text-uppercase border-bottom pb-1">Profils/Métiers</p>
-        @if($editProfiles->isNotEmpty())
-            <div class="list-group list-group-flush mb-4 small">
-                @foreach($editProfiles as $profile)
-                    <div class="list-group-item px-0 py-2 bg-transparent border-0">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-muted fs-6 me-2 mt-1">portrait</span>
-                                <div>
+                {{-- Profils --}}
+                @if ($readProfiles->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Profils</p>
+                    <div class="list-group list-group-flush mb-3 small">
+                        @foreach ($readProfiles as $profile)
+                            <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                                <div class="d-flex align-items-start">
+                                    <span class="material-icons fs-6 me-2 mt-1">portrait</span>
                                     <div class="fw-bold">{{ $profile->first_name }}</div>
-                                    <div class="text-muted mt-1">
-                                        Rôles : <span class="badge bg-light text-dark border text-wrap">{{ $profile->getRightableRoles() }}</span>
-                                    </div>
-                                    @if(is_null($profile->pivot->resource_id))
-                                        <div class="text-info extra-small mt-1"><i class="bx bx-world"></i> Droit générique (global)</div>
-                                    @elseif($profile->pivot->resource_id == $rubric->parent_id)
-                                        <div class="text-muted extra-small mt-1"><i class="bx bx-subdirectory-right"></i> Hérité du parent : {{ $rubric->parent->name }}</div>
-                                    @endif
                                 </div>
                             </div>
-                            <span class="badge rounded-pill bg-secondary opacity-75" title="Priorité">P{{ $profile->pivot->priority }}</span>
-                        </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
-        @else
-            <p class="text-muted small fst-italic mb-4">Aucun profil éditeur.</p>
-        @endif
+                @endif
 
-        {{-- Utilisateurs --}}
-        <p class="text-muted small mb-2 fw-bold text-uppercase border-bottom pb-1">Individus</p>
-        @if($editUsers->isNotEmpty())
-            <div class="list-group list-group-flush small">
-                @foreach($editUsers as $user)
-                    <div class="list-group-item px-0 py-2 bg-transparent border-0">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-muted fs-6 me-2 mt-1">person</span>
-                                <div>
+                {{-- Utilisateurs --}}
+                @if ($readUsers->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Utilisateurs particuliers</p>
+                    <div class="list-group list-group-flush small">
+                        @foreach ($readUsers as $user)
+                            <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                                <div class="d-flex align-items-start">
+                                    <span class="material-icons fs-6 me-2 mt-1">person</span>
                                     <div class="fw-bold">{{ $user->identity }}</div>
-                                    <div class="text-muted mt-1">
-                                        Rôles : <span class="badge bg-light text-dark border">{{ $user->getRightableRoles() }}</span>
-                                    </div>
-                                    @if(is_null($user->pivot->resource_id))
-                                        <div class="text-info extra-small mt-1"><i class="bx bx-world"></i> Droit générique (global)</div>
-                                    @elseif($user->pivot->resource_id == $rubric->parent_id)
-                                        <div class="text-muted extra-small mt-1"><i class="bx bx-subdirectory-right"></i> Hérité du parent : {{ $rubric->parent->name }}</div>
-                                    @endif
                                 </div>
                             </div>
-                            <span class="badge rounded-pill bg-secondary opacity-75" title="Priorité">P{{ $user->pivot->priority }}</span>
-                        </div>
+                        @endforeach
                     </div>
-                @endforeach
+                @endif
             </div>
-        @else
-            <p class="text-muted small fst-italic">Aucun utilisateur éditeur direct.</p>
-        @endif
-    </div>
-</div>
+        </div>
 
-<style>
-    .extra-small { font-size: 0.75rem; }
-    .list-group-item:not(:last-child) { border-bottom: 1px dashed #eee !important; }
-</style>
+        {{-- ============  COLONNE DROITE : ÉDITION  ============ --}}
+        <div class="col-md-6 text-break">
+            <div class="alert alert-success h-100 mb-0">
+                <h6 class="fw-bold mb-3">Édition</h6>
+
+                {{-- Utilisateurs --}}
+                @if ($editUsers->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Utilisateurs mandatés</p>
+                    <ul class="mb-4 small">
+                        @foreach ($editUsers as $user)
+                            <li class="fw-bold mb-1">{{ $user->identity }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                {{-- Groupes --}}
+                @if ($editGroups->isNotEmpty())
+                    <div class="mb-4">
+                        @foreach ($editGroups as $group)
+                            <p class="small mb-1 fw-bold text-uppercase border-bottom pb-1">
+                                {{ $group->public ?? $group->name }}</p>
+                            @if ($group->users->isNotEmpty())
+                                <ul class="small mb-3">
+                                    @foreach ($group->users as $user)
+                                        <li>{{ $user->identity }}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="small fst-italic mb-3">Aucun utilisateur.</p>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Profils --}}
+                @if ($editProfiles->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Autres profils concernés</p>
+                    <ul class="mb-0 small">
+                        @foreach ($editProfiles as $profile)
+                            <li class="mb-1">
+                                <span class="fw-bold">{{ $profile->first_name }}</span>
+                                @if ($profile->users->isNotEmpty())
+                                    <span
+                                        class="fst-italic">({{ $profile->users->pluck('identity')->implode(', ') }})</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .extra-small {
+            font-size: 0.75rem;
+        }
+    </style>
 @endsection

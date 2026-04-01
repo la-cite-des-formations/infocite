@@ -19,7 +19,7 @@ class Group extends Model
      *
      * @var array<string>
      */
-    protected $fillable = ['code_ypareo', 'type', 'name', ];
+    protected $fillable = ['code_ypareo', 'type', 'name', 'public'];
 
     /**
      * Relation vers les applications accessibles à ce groupe.

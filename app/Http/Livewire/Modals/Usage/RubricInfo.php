@@ -33,29 +33,27 @@ class RubricInfo extends Component
     public function render()
     {
         $postsRight = Right::where('name', 'posts')->first();
-        $rubricsRight = Right::where('name', 'rubrics')->first();
 
-        // IDs à vérifier (héritage parent-enfant)
-        $ids = [$this->rubric->id];
+        // IDs pour les droits (hérités : rubrique courante + parent)
+        $rightsIds = [$this->rubric->id];
         if ($this->rubric->parent_id) {
-            $ids[] = $this->rubric->parent_id;
+            $rightsIds[] = $this->rubric->parent_id;
         }
 
         // Masques binaires
         $editorRolesMask = Roles::IS_EDITR | Roles::IS_MODER | Roles::IS_ADMIN;
-        $readerRolesMask = Roles::IS_READR;
 
         /**
          * Fonction de récupération des entités autorisées via le système de droits.
          */
-        $getEntities = function($right, $relation, $mask) use ($ids) {
+        $getEntities = function($right, $relation, $mask) use ($rightsIds) {
             if (!$right) return collect();
             return $relation
-                ->where(function ($query) use ($ids) {
+                ->where(function ($query) use ($rightsIds) {
                     // 1. Droit spécifique à la rubrique ou sa parente
-                    $query->where(function ($q) use ($ids) {
+                    $query->where(function ($q) use ($rightsIds) {
                         $q->where('resource_type', 'Rubric')
-                          ->whereIn('resource_id', $ids);
+                          ->whereIn('resource_id', $rightsIds);
                     })
                     // 2. Droit générique (Global ou spécifique à toutes les rubriques)
                     ->orWhere(function ($q) {
@@ -72,17 +70,15 @@ class RubricInfo extends Component
         };
 
         return view('livewire.modals.usage.rubric-info', [
-            // Consultation : Groupes rattachés (group_rubric) + Entités ayant le droit 'rubrics' (Lecteur)
-            'readGroups' => $this->rubric->groups()->get()
-                ->merge($getEntities($rubricsRight, $rubricsRight->groups(), $readerRolesMask))
-                ->unique('id'),
-            'readProfiles' => $getEntities($rubricsRight, $rubricsRight->profiles(), $readerRolesMask),
-            'readUsers'    => $getEntities($rubricsRight, $rubricsRight->realUsers(), $readerRolesMask),
+            // Consultation : Uniquement les groupes rattachés directement en administration
+            'readGroups' => $this->rubric->groups->unique('id'),
+            'readProfiles' => collect(), // Pas de profils en consultation
+            'readUsers'    => collect(), // Pas d'utilisateurs en consultation
 
-            // Édition : Entités ayant le droit 'posts' (Éditeur/Moder/Admin)
-            'editGroups'   => $getEntities($postsRight, $postsRight->groups(), $editorRolesMask),
-            'editProfiles' => $getEntities($postsRight, $postsRight->profiles(), $editorRolesMask),
-            'editUsers'    => $getEntities($postsRight, $postsRight->realUsers(), $editorRolesMask),
+            // Édition : Droits hérités sans filtre de visibilité stricte
+            'editGroups'   => $getEntities($postsRight, $postsRight->groups(), $editorRolesMask)->unique('id'),
+            'editProfiles' => $getEntities($postsRight, $postsRight->profiles(), $editorRolesMask)->unique('id'),
+            'editUsers'    => $getEntities($postsRight, $postsRight->realUsers(), $editorRolesMask)->unique('id'),
         ]);
     }
 }

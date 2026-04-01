@@ -25,6 +25,10 @@
             <dt class="col-3 text-end ps-0">Code YParéo</dt>
             <dd class="col-9 ps-0">{{ $group->code_ypareo }}</dd>
           @endif
+          @if ($group->public)
+            <dt class="col-3 text-end ps-0">Libellé public</dt>
+            <dd class="col-9 ps-0 fst-italic">{{ $group->public }}</dd>
+          @endif
             <dt class="col-12 ps-0">Membres du groupe</dt>
             <ul class="ms-2">
               @if ($group->users->isNotEmpty())
