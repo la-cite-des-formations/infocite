@@ -68,6 +68,15 @@
             </p>
             <p class="fst-italic">Dernière mise à jours le {{$post->updated_at->format('d/m/Y')}}</p>
         </div>
+
+        @if ($post->is_acknowledgment_required && !$post->isAcknowledged())
+            <div class="alert alert-warning alert-dismissible fade show mx-lg-5" role="alert">
+                <i class="bx bx-error me-2"></i>
+                <strong>Attention :</strong> Cet article nécessite un accusé de réception pour confirmer votre lecture.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="card mx-lg-5">
             <div class="card-header d-flex justify-content-end">
                 <div id="post-actions">
@@ -114,6 +123,33 @@
                 </div>
             </div>
             <div class="card-body">{!! $post->content !!}</div>
+
+            @if ($post->is_acknowledgment_required)
+            <div class="card-footer d-flex justify-content-end align-items-center border-top-0 pt-0">
+                @if ($post->isAcknowledged())
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="bx bx-check-circle me-1"></i>
+                        Lu et approuvé le {{ $post->getAcknowledgment()->occurred_at->format('d/m/Y') }}
+                    </span>
+                @else
+                    <button wire:click="acknowledgeRead"
+                            wire:loading.attr="disabled"
+                            id="btn-acknowledge-read"
+                            class="btn btn-outline-success px-4"
+                            title="Confirmer la lecture de cet article">
+                        <span wire:loading.remove wire:target="acknowledgeRead">
+                            <i class="bx bx-check-shield me-1"></i>
+                            J'ai pris connaissance de ce document
+                        </span>
+                        <span wire:loading wire:target="acknowledgeRead">
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Enregistrement...
+                        </span>
+                    </button>
+                @endif
+            </div>
+            @endif
+
               @can('viewAny', ['App\\Models\\Comment', $post->id])
                 <div class="card-footer text-muted">
                     <div class="col-lg-8 why-us mt-3">

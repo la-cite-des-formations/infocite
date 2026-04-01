@@ -53,4 +53,11 @@
                     type="checkbox" class="form-check-input">
         </div>
     </div>
+    <div class="row g-2 align-items-center mb-2">
+        <div class="col-1 form-check-label text-end" for="post-acknowledgment">Accusé de réception</div>
+        <div class="form-check col ms-1">
+            <input  id="post-acknowledgment" wire:model="post.is_acknowledgment_required"
+                    type="checkbox" class="form-check-input">
+        </div>
+    </div>
 </div>

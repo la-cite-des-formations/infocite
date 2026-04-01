@@ -152,6 +152,18 @@ class PostManager extends Component
     }
 
     /**
+     * Enregistre l'acquittement de lecture de l'article par l'utilisateur courant.
+     * Stocké dans la table interactions avec le type 'acknowledge'.
+     */
+    public function acknowledgeRead() {
+        if (! $this->post->is_acknowledgment_required) return;
+        if ($this->post->isAcknowledged()) return;
+
+        $this->post->ensureInteraction('acknowledge', now());
+        $this->emitSelf('render');
+    }
+
+    /**
      * Supprime un commentaire.
      *
      * @param int $commentId Identifiant du commentaire.

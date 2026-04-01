@@ -57,11 +57,12 @@ class Edit extends Component
      * @var array
      */
     protected $rules = [
-        'post.title' => 'required|string|max:255',
-        'post.icon' => 'required|string|max:255',
-        'post.content' => 'required|string',
-        'post.rubric_id' => 'required',
-        'post.published' => 'required|boolean',
+        'post.title'                      => 'required|string|max:255',
+        'post.icon'                       => 'required|string|max:255',
+        'post.content'                    => 'required|string',
+        'post.rubric_id'                  => 'required',
+        'post.published'                  => 'required|boolean',
+        'post.is_acknowledgment_required' => 'boolean',
     ];
 
     /**
@@ -85,7 +86,10 @@ class Edit extends Component
 
         $this->post = $this->post ?? Post::findOrNew($id);
 
-        if ($this->mode === 'creation') $this->post->published = FALSE;
+        if ($this->mode === 'creation') {
+            $this->post->published = FALSE;
+            $this->post->is_acknowledgment_required = FALSE;
+        }
 
         $this->initTinymce();
 
