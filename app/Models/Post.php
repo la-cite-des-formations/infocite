@@ -23,7 +23,7 @@ class Post extends Model
      *
      * @var array<string>
      */
-    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at'];
+    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required'];
 
     /** @var array<string, bool> Valeurs par défaut pour les attributs. */
     protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
@@ -34,8 +34,9 @@ class Post extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'published_at' => 'date:Y-m-d',
-        'expired_at' => 'date:Y-m-d',
+        'published_at'               => 'date:Y-m-d',
+        'expired_at'                 => 'date:Y-m-d',
+        'is_acknowledgment_required' => 'boolean',
     ];
 
     /**
@@ -91,15 +92,30 @@ class Post extends Model
     }
 
     /**
+     * Relation vers les utilisateurs ayant acquitté la lecture de cet article.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function acknowledgers() {
+        return $this->morphToMany(User::class, 'target', 'interactions')
+            ->wherePivot('type', 'acknowledge')
+            ->withPivot('occurred_at');
+    }
+
+    /**
      * Récupère la liste des utilisateurs à notifier pour cet article.
-     * Combine les membres de la rubrique et les lecteurs ayant mis l'article en favori.
+     * Combine les utilisateurs ayant mis la rubrique en favori et ceux ayant mis l'article lui-même en favori.
      *
      * @return \Illuminate\Support\Collection
      */
     public function notificableReaders() {
-        return $this->rubric
-            ->users
-            ->merge($this->favoritedBy);
+        $notificableUsers = collect();
+
+        if ($this->rubric) {
+            $notificableUsers = $notificableUsers->merge($this->rubric->favoritedBy);
+        }
+
+        return $notificableUsers->merge($this->favoritedBy)->unique('id');
     }
 
     /**
@@ -238,6 +254,33 @@ class Post extends Model
         $postUser = $this->readers->find(auth()->user()->id);
 
         return $postUser ? $postUser->pivot->tags : NULL;
+    }
+
+    /**
+     * Récupère l'interaction d'acquittement de l'utilisateur courant pour cet article.
+     *
+     * @return \App\Models\Interaction|null
+     */
+    public function getAcknowledgment(): ?\App\Models\Interaction
+    {
+        $user = auth()->user();
+        if (! $user) return NULL;
+
+        return $this->interactions()
+            ->byUser($user)
+            ->ofType('acknowledge')
+            ->latest('occurred_at')
+            ->first();
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant a acquitté la lecture de cet article.
+     *
+     * @return bool
+     */
+    public function isAcknowledged(): bool
+    {
+        return $this->getAcknowledgment() !== NULL;
     }
 
     /**

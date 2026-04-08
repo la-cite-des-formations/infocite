@@ -77,16 +77,16 @@ class EditPostManager extends Component
      * @var array
      */
     protected $rules = [
-        'post.title' => 'required|string|max:255',
-        'post.icon' => 'required|string|max:255',
-        'post.content' => 'required|string',
-        'post.rubric_id' => 'required',
-        'post.published' => '',
-        'post.is_pinned' => '',
-        'post.auto_delete' => '',
-        'post.published_at' => 'date|nullable',
-        'post.expired_at' => 'date|nullable',
-
+        'post.title'                      => 'required|string|max:255',
+        'post.icon'                       => 'required|string|max:255',
+        'post.content'                    => 'required|string',
+        'post.rubric_id'                  => 'required',
+        'post.published'                  => '',
+        'post.is_pinned'                  => '',
+        'post.auto_delete'                => '',
+        'post.published_at'               => 'date|nullable',
+        'post.expired_at'                 => 'date|nullable',
+        'post.is_acknowledgment_required' => 'boolean',
     ];
 
     /**
@@ -200,11 +200,9 @@ class EditPostManager extends Component
             $this->post->ensureInteraction('create', $this->post->created_at);
 
             // mise en favoris de l'article pour l'auteur au moment de la création
-            $this->post->readers()->syncWithoutDetaching([
-                auth()->id() => [
-                    'is_favorite' => TRUE
-                ]
-            ]);
+            if (! $this->post->favoritedBy()->where('user_id', auth()->id())->exists()) {
+                $this->post->favoritedBy()->attach(auth()->id());
+            }
         }
 
         // enregistrement en bdd de la notification associée si l'article est paru

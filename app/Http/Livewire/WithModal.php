@@ -50,6 +50,10 @@ trait WithModal
                 $component = "usage.rubric-info";
                 break;
 
+            case 'post-acknowledgers':
+                $component = "usage.post-acknowledgers";
+                break;
+
             default :
                 $component = "admin.{$this->models}.$modal";
         }

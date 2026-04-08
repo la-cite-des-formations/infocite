@@ -126,6 +126,16 @@
             </div>
         </div>
       @endif
+        <div class="row mb-3">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="form-check">
+                    <input id="post-acknowledgment" wire:model="post.is_acknowledgment_required"
+                            type="checkbox" class="form-check-input">
+                    <label class="my-auto" for="post-acknowledgment">Lecture avec accusé de réception</label>
+                </div>
+            </div>
+        </div>
      @endcan
         <div class="row">
             <div class="col-10 d-flex justify-content-end">
