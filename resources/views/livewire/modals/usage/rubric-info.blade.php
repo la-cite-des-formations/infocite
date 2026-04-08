@@ -2,82 +2,116 @@
 
 @section('modal-size', 'modal-lg')
 @section('modal-title')
-    <span class="material-icons me-2">info</span> Droits sur la rubrique « {{ $rubric->name }} »
+    <span class="material-icons me-2">info</span> Rubrique « {{ $rubric->parent->name . ' > ' . $rubric->name }} »
 @endsection
 
 @section('modal-body')
-<div class="row">
+    <div class="row g-3">
 
-    {{-- ============  COLONNE GAUCHE : CONSULTATION  ============ --}}
-    <div class="col-md-6 border-end">
-        <h6 class="text-primary fw-bold mb-3">
-            <span class="material-icons align-middle fs-5 me-1">visibility</span>
-            Consultation
-        </h6>
+        {{-- ============  COLONNE GAUCHE : CONSULTATION  ============ --}}
+        <div class="col-md-6">
+            <div class="alert alert-primary h-100 mb-0">
+                <h6 class="fw-bold mb-3">Consultation</h6>
 
-        {{-- Groupes --}}
-        <p class="text-muted small mb-1 fw-semibold">Groupes</p>
-        @if($readGroups->isNotEmpty())
-            <ul class="list-group list-group-flush mb-3">
-                @foreach($readGroups as $group)
-                    <li class="list-group-item px-0 py-1 bg-transparent border-0">
-                        &bull; {{ $group->name }}
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p class="text-muted small fst-italic mb-3">Aucun groupe.</p>
-        @endif
+                {{-- Groupes --}}
+                @if ($readGroups->isNotEmpty())
+                    <ul class="mb-0 small">
+                        @foreach ($readGroups as $group)
+                            <li class="fw-bold mb-1">{{ $group->public ?? $group->name }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="small fst-italic mb-0">Aucun groupe rattaché.</p>
+                @endif
 
-        {{-- Profils --}}
-        <p class="text-muted small mb-1 fw-semibold">Profils</p>
-        @if($readProfiles->isNotEmpty())
-            <ul class="list-group list-group-flush mb-3">
-                @foreach($readProfiles as $profile)
-                    <li class="list-group-item px-0 py-1 bg-transparent border-0">
-                        &bull; {{ $profile->first_name }}
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p class="text-muted small fst-italic mb-3">Aucun profil.</p>
-        @endif
+                {{-- Profils --}}
+                @if ($readProfiles->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Profils</p>
+                    <div class="list-group list-group-flush mb-3 small">
+                        @foreach ($readProfiles as $profile)
+                            <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                                <div class="d-flex align-items-start">
+                                    <span class="material-icons fs-6 me-2 mt-1">portrait</span>
+                                    <div class="fw-bold">{{ $profile->first_name }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Utilisateurs --}}
+                @if ($readUsers->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Utilisateurs particuliers</p>
+                    <div class="list-group list-group-flush small">
+                        @foreach ($readUsers as $user)
+                            <div class="list-group-item px-0 py-2 bg-transparent border-0">
+                                <div class="d-flex align-items-start">
+                                    <span class="material-icons fs-6 me-2 mt-1">person</span>
+                                    <div class="fw-bold">{{ $user->identity }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- ============  COLONNE DROITE : ÉDITION  ============ --}}
+        <div class="col-md-6 text-break">
+            <div class="alert alert-success h-100 mb-0">
+                <h6 class="fw-bold mb-3">Édition</h6>
+
+                {{-- Utilisateurs --}}
+                @if ($editUsers->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Utilisateurs mandatés</p>
+                    <ul class="mb-4 small">
+                        @foreach ($editUsers as $user)
+                            <li class="fw-bold mb-1">{{ $user->identity }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                {{-- Groupes --}}
+                @if ($editGroups->isNotEmpty())
+                    <div class="mb-4">
+                        @foreach ($editGroups as $group)
+                            <p class="small mb-1 fw-bold text-uppercase border-bottom pb-1">
+                                {{ $group->public ?? $group->name }}</p>
+                            @if ($group->users->isNotEmpty())
+                                <ul class="small mb-3">
+                                    @foreach ($group->users as $user)
+                                        <li>{{ $user->identity }}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="small fst-italic mb-3">Aucun utilisateur.</p>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Profils --}}
+                @if ($editProfiles->isNotEmpty())
+                    <p class="small mb-2 fw-bold text-uppercase border-bottom pb-1">Autres profils concernés</p>
+                    <ul class="mb-0 small">
+                        @foreach ($editProfiles as $profile)
+                            <li class="mb-1">
+                                <span class="fw-bold">{{ $profile->first_name }}</span>
+                                @if ($profile->users->isNotEmpty())
+                                    <span
+                                        class="fst-italic">({{ $profile->users->pluck('identity')->implode(', ') }})</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        </div>
     </div>
 
-    {{-- ============  COLONNE DROITE : ÉDITION  ============ --}}
-    <div class="col-md-6">
-        <h6 class="text-success fw-bold mb-3">
-            <span class="material-icons align-middle fs-5 me-1">edit</span>
-            Édition (articles)
-        </h6>
-
-        {{-- Groupes éditeurs --}}
-        <p class="text-muted small mb-1 fw-semibold">Groupes</p>
-        @if($editGroups->isNotEmpty())
-            <ul class="list-group list-group-flush mb-3">
-                @foreach($editGroups as $group)
-                    <li class="list-group-item px-0 py-1 bg-transparent border-0">
-                        &bull; {{ $group->name }}
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p class="text-muted small fst-italic mb-3">Aucun groupe éditeur.</p>
-        @endif
-
-        {{-- Profils éditeurs --}}
-        <p class="text-muted small mb-1 fw-semibold">Profils</p>
-        @if($editProfiles->isNotEmpty())
-            <ul class="list-group list-group-flush mb-3">
-                @foreach($editProfiles as $profile)
-                    <li class="list-group-item px-0 py-1 bg-transparent border-0">
-                        &bull; {{ $profile->first_name }}
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p class="text-muted small fst-italic mb-3">Aucun profil éditeur.</p>
-        @endif
-    </div>
-</div>
+    <style>
+        .extra-small {
+            font-size: 0.75rem;
+        }
+    </style>
 @endsection

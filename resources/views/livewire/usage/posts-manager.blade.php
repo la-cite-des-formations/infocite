@@ -66,7 +66,7 @@
            @endcan
           @endif
 
-          @if($rubric->name != 'Une')
+          @if(!in_array($rubric->name, ['Une', 'Archives']))
             <button @class([
                         "d-flex align-items-center",
                         "btn btn-sm",
@@ -82,7 +82,7 @@
                     type="button" title="Voir les droits de la rubrique">
                 <span class="material-icons fs-5">info</span>
             </button>
-          @else
+          @elseif($rubric->name == 'Une')
             <!--Bouton filtre-->
             <button wire:click='toggleFilter()'
                     @class([

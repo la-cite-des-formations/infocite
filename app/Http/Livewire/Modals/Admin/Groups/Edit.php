@@ -163,6 +163,7 @@ class Edit extends Component
      */
     protected $rules = [
         'group.name' => 'required|string|max:255',
+        'group.public' => 'nullable|string|max:255',
         'group.type' => 'required',
         'function' => 'string|max:255',
     ];
