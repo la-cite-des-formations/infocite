@@ -160,62 +160,65 @@
                     </div>
                 @endif
             </div>
-
-            @can('viewAny', ['App\\Models\\Comment', $post->id])
-                <div class="card-footer text-muted">
-                    <div class="col-lg-8 why-us mt-3">
-                        <h5>{{ ($post->comments->count() ?: 'aucun') . ' commentaire' . ($post->comments->count() > 1 ? 's' : '') }}
-                        </h5>
-                        @can('create', ['App\\Models\\Comment', $post->id])
-                            <div class="comment-form my-2">
-                                <input wire:model='newComment' wire:keydown.enter="commentPost" type="text"
-                                    placeholder="Ajouter un commentaire">
-                                <button wire:click='commentPost' title="Ajouter">
-                                    <i class="icofont-plus"></i>
-                                </button>
-                            </div>
-                        @endcan
-                        <div class="container-fluid" @if ($firstLoad) data-aos="fade-up" @endif>
-                            <div class="accordion-list px-0 pb-0">
-                                <ul>
-                                    @foreach ($post->comments as $i => $comment)
-                                        @can('view', $comment)
-                                            <div class="d-flex">
-                                                <li class="mt-1 p-3 flex-fill">
-                                                    <a data-bs-toggle="collapse" class="collapse"
-                                                        data-bs-target="#accordion-list-{{ $i + 1 }}">
-                                                        {{ $comment->author->identity() }} le
-                                                        {{ $comment->created_at->format('d/m/Y') }}
-                                                        <i class="bx bx-chevron-down icon-show"></i>
-                                                        <i class="bx bx-chevron-up icon-close"></i>
-                                                    </a>
-                                                    <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
-                                                        <p>{!! preg_replace(
-                                                            '/(http(s?):\/\/)(([[:punct:]]|[[:alnum:]]=?)*)/',
-                                                            "<a href=\"\\0\">\\0</a> ",
-                                                            trim($comment->content),
-                                                        ) !!}</p>
-                                                    </div>
-                                                </li>
-                                                @can('delete', $comment)
-                                                    <button
-                                                        wire:click="showModal('confirm',  {handling : 'deleteComment', id : {{ $comment->id }}})"
-                                                        title="Supprimer ce commentaire"
-                                                        class="px-1 pb-0 ms-1 me-1 align-self-center btn btn-sm btn-danger">
-                                                        <i class="bx bx-trash"></i>
-                                                    </button>
-                                                @endcan
-                                            </div>
-                                        @endcan
-                                    @endforeach
-                                </ul>
+            <div class="card-footer">
+                @if ($post->is_rating_enabled)
+                    <livewire:usage.post-rating :post="$post" :wire:key="'rating-' . $post->id" />
+                @endif
+                @can('viewAny', ['App\\Models\\Comment', $post->id])
+                    <div class="text-muted">
+                        <div class="col-lg-8 why-us mt-3">
+                            <h5>{{ ($post->comments->count() ?: 'aucun') . ' commentaire' . ($post->comments->count() > 1 ? 's' : '') }}
+                            </h5>
+                            @can('create', ['App\\Models\\Comment', $post->id])
+                                <div class="comment-form my-2">
+                                    <input wire:model='newComment' wire:keydown.enter="commentPost" type="text"
+                                        placeholder="Ajouter un commentaire">
+                                    <button wire:click='commentPost' title="Ajouter">
+                                        <i class="icofont-plus"></i>
+                                    </button>
+                                </div>
+                            @endcan
+                            <div class="container-fluid" @if ($firstLoad) data-aos="fade-up" @endif>
+                                <div class="accordion-list px-0 pb-0">
+                                    <ul>
+                                        @foreach ($post->comments as $i => $comment)
+                                            @can('view', $comment)
+                                                <div class="d-flex">
+                                                    <li class="mt-1 p-3 flex-fill">
+                                                        <a data-bs-toggle="collapse" class="collapse"
+                                                            data-bs-target="#accordion-list-{{ $i + 1 }}">
+                                                            {{ $comment->author->identity() }} le
+                                                            {{ $comment->created_at->format('d/m/Y') }}
+                                                            <i class="bx bx-chevron-down icon-show"></i>
+                                                            <i class="bx bx-chevron-up icon-close"></i>
+                                                        </a>
+                                                        <div id="accordion-list-{{ $i + 1 }}" class="collapse show">
+                                                            <p>{!! preg_replace(
+                                                                '/(http(s?):\/\/)(([[:punct:]]|[[:alnum:]]=?)*)/',
+                                                                "<a href=\"\\0\">\\0</a> ",
+                                                                trim($comment->content),
+                                                            ) !!}</p>
+                                                        </div>
+                                                    </li>
+                                                    @can('delete', $comment)
+                                                        <button
+                                                            wire:click="showModal('confirm',  {handling : 'deleteComment', id : {{ $comment->id }}})"
+                                                            title="Supprimer ce commentaire"
+                                                            class="px-1 pb-0 ms-1 me-1 align-self-center btn btn-sm btn-danger">
+                                                            <i class="bx bx-trash"></i>
+                                                        </button>
+                                                    @endcan
+                                                </div>
+                                            @endcan
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endcan
+                @endcan
+            </div>
         </div>
-    </div>
     </div>
 
 </section>
