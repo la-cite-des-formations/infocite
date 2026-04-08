@@ -136,6 +136,16 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-3">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="form-check">
+                    <input id="post-rating" wire:model="post.is_rating_enabled"
+                            type="checkbox" class="form-check-input">
+                    <label class="my-auto" for="post-rating">Activer la notation (système d'étoiles)</label>
+                </div>
+            </div>
+        </div>
      @endcan
         <div class="row">
             <div class="col-10 d-flex justify-content-end">

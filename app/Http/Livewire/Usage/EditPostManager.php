@@ -87,6 +87,7 @@ class EditPostManager extends Component
         'post.published_at'               => 'date|nullable',
         'post.expired_at'                 => 'date|nullable',
         'post.is_acknowledgment_required' => 'boolean',
+        'post.is_rating_enabled'          => 'boolean',
     ];
 
     /**

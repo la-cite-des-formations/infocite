@@ -23,7 +23,7 @@ class Post extends Model
      *
      * @var array<string>
      */
-    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required'];
+    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required', 'is_rating_enabled'];
 
     /** @var array<string, bool> Valeurs par défaut pour les attributs. */
     protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
@@ -37,6 +37,7 @@ class Post extends Model
         'published_at'               => 'date:Y-m-d',
         'expired_at'                 => 'date:Y-m-d',
         'is_acknowledgment_required' => 'boolean',
+        'is_rating_enabled'          => 'boolean',
     ];
 
     /**
@@ -88,7 +89,7 @@ class Post extends Model
     public function readers() {
         return $this
             ->belongsToMany('App\Models\User')
-            ->withPivot(['is_read', 'tags']);
+            ->withPivot(['is_read', 'tags', 'rating']);
     }
 
     /**
@@ -254,6 +255,28 @@ class Post extends Model
         $postUser = $this->readers->find(auth()->user()->id);
 
         return $postUser ? $postUser->pivot->tags : NULL;
+    }
+
+    /**
+     * Calcule la moyenne des notes attribuées à cet article (ignore les 0).
+     *
+     * @return float
+     */
+    public function averageRating() {
+        return (float) $this->readers()
+            ->wherePivot('rating', '>', 0)
+            ->avg('rating');
+    }
+
+    /**
+     * Récupère la note attribuée par l'utilisateur courant.
+     *
+     * @return int
+     */
+    public function userRating() {
+        $reader = $this->readers->find(auth()->id());
+
+        return $reader ? $reader->pivot->rating : 0;
     }
 
     /**
