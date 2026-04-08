@@ -92,6 +92,17 @@ class Post extends Model
     }
 
     /**
+     * Relation vers les utilisateurs ayant acquitté la lecture de cet article.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function acknowledgers() {
+        return $this->morphToMany(User::class, 'target', 'interactions')
+            ->wherePivot('type', 'acknowledge')
+            ->withPivot('occurred_at');
+    }
+
+    /**
      * Récupère la liste des utilisateurs à notifier pour cet article.
      * Combine les utilisateurs ayant mis la rubrique en favori et ceux ayant mis l'article lui-même en favori.
      *
