@@ -104,6 +104,16 @@ class Post extends Model
     }
 
     /**
+     * Relation vers la galerie de photos de l'article (0 ou 1).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function gallery()
+    {
+        return $this->hasOne(Gallery::class);
+    }
+
+    /**
      * Récupère la liste des utilisateurs à notifier pour cet article.
      * Combine les utilisateurs ayant mis la rubrique en favori et ceux ayant mis l'article lui-même en favori.
      *

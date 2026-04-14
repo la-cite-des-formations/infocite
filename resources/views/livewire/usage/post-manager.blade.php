@@ -136,6 +136,13 @@
             <div class="card-body">
                 <div class="container">{!! $post->content !!}</div>
 
+                {{-- Galerie Photos --}}
+                @if ($post->gallery)
+                    <div class="container">
+                        @include('includes.gallery-grid', ['gallery' => $post->gallery])
+                    </div>
+                @endif
+
                 @if ($post->is_acknowledgment_required)
                     <div class="d-flex justify-content-end align-items-center border-top-0 pt-0">
                         @if ($post->isAcknowledged())
