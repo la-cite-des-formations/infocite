@@ -136,9 +136,38 @@ class EditPostManager extends Component
         $this->post->published_at = $this->post->published_at ?: NULL;
         $this->post->expired_at = $this->post->expired_at ?: NULL;
         $this->post->is_pinned = $this->post->is_pinned ?? FALSE;
+        $this->post->is_acknowledgment_required = $this->post->is_acknowledgment_required ?? FALSE;
+        $this->post->is_rating_enabled = $this->post->is_rating_enabled ?? FALSE;
 
         $this->validate();
 
+        if ($this->mode === 'creation') {
+            // création
+            $this->post->author_id = auth()->id();
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Création de la mise en forme effectuée avec succès."
+                ]);
+        }
+        else {
+            // modification
+            $this->post->corrector_id = auth()->id();
+
+            $this
+                ->sendAlert([
+                    'alertClass' => 'success',
+                    'message' => "Modification de la mise en forme effectuée avec succès."
+                ]);
+        }
+
+        // sauvegarde
+        $this->post->save();
+        
+        // Traitement de la galerie photos (bascule du cache vers BDD)
+        \App\Http\Livewire\Usage\PostGallery::processTempGallery($this->post->id, session('post_gallery_token'));
+
+        // Gestion des droits (Après la sauvegarde pour avoir l'ID en mode création)
         $globalGroup = Group::query()
             ->where('type', 'S')
             ->where('name', 'GLOBAL')
@@ -170,29 +199,6 @@ class EditPostManager extends Component
                 ->where('resource_id', $this->post->id)
                 ->delete();
         }
-
-        if ($this->mode === 'creation') {
-            // création
-            $this->post->author_id = auth()->id();
-            $this
-                ->sendAlert([
-                    'alertClass' => 'success',
-                    'message' => "Création de la mise en forme effectuée avec succès."
-                ]);
-        }
-        else {
-            // modification
-            $this->post->corrector_id = auth()->id();
-
-            $this
-                ->sendAlert([
-                    'alertClass' => 'success',
-                    'message' => "Modification de la mise en forme effectuée avec succès."
-                ]);
-        }
-
-        // sauvegarde
-        $this->post->save();
 
         if ($this->post->hasInteraction('create') || $this->post->hasInteraction('update')) {
             $this->post->ensureInteraction('update', $this->post->updated_at);

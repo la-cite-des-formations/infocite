@@ -12,6 +12,7 @@
         "doctrine/dbal": "^3.7",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "intervention/image": "*",
         "kreait/firebase-php": "^7.18",
         "laravel-lang/lang": "~6.1",
         "laravel/framework": "^9.0",

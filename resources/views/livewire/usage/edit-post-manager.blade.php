@@ -66,6 +66,13 @@
             </div>
         </div>
       @endcan
+        {{-- Galerie Photos --}}
+        <div class="row mb-3">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <livewire:usage.post-gallery :postId="$post->id" :wire:key="'gallery-' . ($post->id ?? 'new')" />
+            </div>
+        </div>
      @can('publish', ['App\\Models\\Post', $currentRubric->id])
        @error('post.published')
         @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
@@ -151,7 +158,7 @@
             <div class="col-10 d-flex justify-content-end">
                 <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1"
                     title="Revenir à la page précédente sans enregistrer">
-                    {{ $mode === 'edition' ? 'Fermer' : 'Annuler' }}
+                    Annuler
                 </a>
               @if ($mode === 'edition')
                 <button wire:click="showModal('confirm', {handling : 'update', redirectionRoute : 'post.index'})"
