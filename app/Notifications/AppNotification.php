@@ -78,8 +78,8 @@ class AppNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        // Désactive l'envoi FCM en environnement local pour éviter les notifications intempestives en production
-        if (app()->isLocal()) {
+        // On vérifie si l'envoi des notifications FCM est activé dans la configuration
+        if (!config('firebase.enabled')) {
             return [];
         }
 
