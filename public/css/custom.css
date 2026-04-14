@@ -1395,16 +1395,4 @@ a:hover {
     .gallery-layout-1, .gallery-layout-2, .gallery-layout-3, .gallery-layout-4 {
         height: 300px;
     }
-    .gallery-layout-3 {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-    }
-    .gallery-layout-3 .gallery-item-main {
-        grid-row: auto;
-        max-height: 250px;
-    }
-    .gallery-layout-3 .gallery-item-side {
-        grid-template-rows: 1fr;
-        grid-template-columns: 1fr 1fr;
-    }
 }
