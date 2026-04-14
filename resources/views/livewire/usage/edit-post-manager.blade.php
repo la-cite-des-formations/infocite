@@ -70,6 +70,11 @@
         <div class="row mb-3">
             <div class="col-2"></div>
             <div class="col-8">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="bx bx-info-circle me-1"></i>
+                    <strong>Note :</strong> Les modifications de la galerie (envoi, suppression, ordre) ne seront définitivement enregistrées que lorsque vous <strong>sauvegarderez l'article</strong> (boutons en bas de page).
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
                 <livewire:usage.post-gallery :postId="$post->id" :wire:key="'gallery-' . ($post->id ?? 'new')" />
             </div>
         </div>
