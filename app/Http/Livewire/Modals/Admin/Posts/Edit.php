@@ -63,6 +63,7 @@ class Edit extends Component
         'post.rubric_id'                  => 'required',
         'post.published'                  => 'required|boolean',
         'post.is_acknowledgment_required' => 'boolean',
+        'post.is_rating_enabled'          => 'boolean',
     ];
 
     /**
@@ -89,6 +90,7 @@ class Edit extends Component
         if ($this->mode === 'creation') {
             $this->post->published = FALSE;
             $this->post->is_acknowledgment_required = FALSE;
+            $this->post->is_rating_enabled = FALSE;
         }
 
         $this->initTinymce();
@@ -194,6 +196,8 @@ class Edit extends Component
 
         $this->post
             ->save();
+
+        $this->emit('saveGallery');
     }
 
     /**

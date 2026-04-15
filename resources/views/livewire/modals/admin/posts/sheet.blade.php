@@ -35,6 +35,10 @@
             <dt class="col-3 text-end ps-0">Expire le</dt>
             <dd class="col-9 ps-0">{{ $post->expired_at->format('d/m/Y') }}</dd>
           @endif
+          @if ($post->gallery && count($post->gallery->images) > 0)
+            <dt class="col-3 text-end ps-0 mt-3">Galerie Photos</dt>
+            <dd class="col-9 ps-0 mt-3">{{ count($post->gallery->images) }} photo(s)</dd>
+          @endif
             <dt class="col-3 text-end ps-0 mt-3">Créé le</dt>
             <dd class="col-9 ps-0 mt-3">{{ "{$post->created_at->format('d/m/Y')} ({$post->author->identity})" }}</dd>
           @if ($post->corrector_id)

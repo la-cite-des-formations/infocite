@@ -32,15 +32,17 @@
   @error('post.rubric_id')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
-    <div class="row g-2 align-items-center mb-2">
-        <label class="col-1 col-form-label text-end" for="post-rubric-id">Rubrique</label>
-        <div class="col-5">
-            <select id="post-rubric-id" wire:model="post.rubric_id" type="input" class="form-select">
-                <option label="Choisir la rubrique..."></option>
-              @foreach($rubrics as $rubric)
-                <option value='{{ $rubric->id }}'>{{ (is_object($rubric->parent) ? $rubric->parent->name.' / ' : '').$rubric->name }}</option>
-              @endforeach
-            </select>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center mb-3">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="alert alert-warning alert-dismissible fade show mb-2" role="alert">
+                <i class="bx bx-error-circle me-1"></i>
+                <strong>Note :</strong> Les modifications de la galerie (envoi, suppression, ordre) ne seront définitivement enregistrées que lorsque vous <strong>sauvegarderez l'article</strong> (bouton en bas de page).
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <livewire:usage.post-gallery :postId="$post->id" :wire:key="'gallery-admin-' . ($post->id ?? 'new')" />
         </div>
     </div>
   @error('post.published')
@@ -57,6 +59,13 @@
         <div class="col-1 form-check-label text-end" for="post-acknowledgment">Accusé de réception</div>
         <div class="form-check col ms-1">
             <input  id="post-acknowledgment" wire:model="post.is_acknowledgment_required"
+                    type="checkbox" class="form-check-input">
+        </div>
+    </div>
+    <div class="row g-2 align-items-center mb-2">
+        <div class="col-1 form-check-label text-end" for="post-rating">Système de notation</div>
+        <div class="form-check col ms-1">
+            <input  id="post-rating" wire:model="post.is_rating_enabled"
                     type="checkbox" class="form-check-input">
         </div>
     </div>
