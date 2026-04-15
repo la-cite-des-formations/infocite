@@ -32,6 +32,15 @@
   @error('post.rubric_id')
     @include('includes.rules-error-message', ['labelsColLg' => 'col-1'])
   @enderror
+    <div class="row g-2 align-items-center mb-2">
+        <label class="col-1 col-form-label text-end" for="post-rubric-id">Rubrique</label>
+        <div class="col-5">
+            <select id="post-rubric-id" wire:model="post.rubric_id" type="input" class="form-select">
+                <option label="Choisir la rubrique..."></option>
+              @foreach($rubrics as $rubric)
+                <option value='{{ $rubric->id }}'>{{ (is_object($rubric->parent) ? $rubric->parent->name.' / ' : '').$rubric->name }}</option>
+              @endforeach
+            </select>
         </div>
     </div>
     <div class="row g-2 align-items-center mb-3">
