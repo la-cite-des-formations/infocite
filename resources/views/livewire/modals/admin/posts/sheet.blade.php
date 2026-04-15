@@ -35,6 +35,47 @@
             <dt class="col-3 text-end ps-0">Expire le</dt>
             <dd class="col-9 ps-0">{{ $post->expired_at->format('d/m/Y') }}</dd>
           @endif
+            <dt class="col-3 text-end ps-0 mt-3">Système de notation</dt>
+            <dd class="col-9 ps-0 mt-3">
+                @if ($post->is_rating_enabled)
+                    <span class="text-success fw-bold">Activé</span>
+                    @php $avg = $post->averageRating(); @endphp
+                    @if ($avg > 0)
+                        <span class="ms-2">(Note moyenne : <strong>{{ number_format($avg, 1) }}</strong> / 5)</span>
+                    @else
+                        <span class="ms-2 fst-italic text-muted">(Aucun avis pour le moment)</span>
+                    @endif
+                @else
+                    <span class="text-danger fw-bold">Désactivé</span>
+                @endif
+            </dd>
+            <dt class="col-3 text-end ps-0 mt-3">Acquittement de lecture</dt>
+            <dd class="col-9 ps-0 mt-3">
+                @if ($post->is_acknowledgment_required)
+                    <span class="text-success fw-bold text-uppercase">Exigé</span>
+                    @php $acknowledgers = $post->acknowledgers()->orderByPivot('occurred_at', 'desc')->get(); @endphp
+                    @if ($acknowledgers->isNotEmpty())
+                        <div class="mt-2 card bg-light border-0 shadow-sm p-2" style="max-height: 200px; overflow-y: auto;">
+                             <h6 class="small fw-bold text-primary mb-2"><span class="material-icons-outlined align-middle md-18 me-1">how_to_reg</span> Utilisateurs ayant acquitté ({{ $acknowledgers->count() }}) :</h6>
+                             <ul class="list-unstyled mb-0 ms-1">
+                                @foreach ($acknowledgers as $user)
+                                    <li class="small mb-1 pb-1 border-bottom border-white">
+                                        <span class="material-icons-outlined align-middle md-14 text-secondary me-1">{{ $user->is_staff ? 'badge' : 'school' }}</span>
+                                        <strong>{{ $user->identity }}</strong>
+                                        <span class="text-muted italic"> - le {{ \Carbon\Carbon::parse($user->pivot->occurred_at)->format('d/m/Y à H:i') }}</span>
+                                    </li>
+                                @endforeach
+                             </ul>
+                        </div>
+                    @else
+                        <div class="mt-1 small fst-italic text-muted">
+                            <span class="material-icons-outlined align-middle md-18 me-1">info</span> Aucun acquittement enregistré pour le moment.
+                        </div>
+                    @endif
+                @else
+                    <span class="text-secondary fw-bold italic">Pas d'accusé de réception demandé</span>
+                @endif
+            </dd>
           @if ($post->gallery && count($post->gallery->images) > 0)
             <dt class="col-3 text-end ps-0 mt-3">Galerie Photos</dt>
             <dd class="col-9 ps-0 mt-3">{{ count($post->gallery->images) }} photo(s)</dd>
