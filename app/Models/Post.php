@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\NullableField;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
 use App\Models\Traits\HasInteractions;
@@ -23,7 +24,7 @@ class Post extends Model
      *
      * @var array<string>
      */
-    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required', 'is_rating_enabled'];
+    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required', 'is_rating_enabled', 'is_template'];
 
     /** @var array<string, bool> Valeurs par défaut pour les attributs. */
     protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
@@ -34,10 +35,12 @@ class Post extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'rubric_id'                  => NullableField::class,
         'published_at'               => 'date:Y-m-d',
         'expired_at'                 => 'date:Y-m-d',
         'is_acknowledgment_required' => 'boolean',
         'is_rating_enabled'          => 'boolean',
+        'is_template'                => 'boolean',
     ];
 
     /**
@@ -139,6 +142,28 @@ class Post extends Model
         return $this
             ->morphMany(Notification::class, 'object')
             ->orderByRaw('release_at DESC, created_at DESC');
+    }
+
+    /**
+     * Scope pour ne récupérer que les modèles d'articles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeTemplates($query)
+    {
+        return $query->where('is_template', true);
+    }
+
+    /**
+     * Scope pour ne récupérer que les articles réels (pas les modèles).
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNotTemplates($query)
+    {
+        return $query->where('is_template', false);
     }
 
     /**

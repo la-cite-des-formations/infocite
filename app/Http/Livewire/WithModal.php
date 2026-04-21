@@ -54,6 +54,18 @@ trait WithModal
                 $component = "usage.post-acknowledgers";
                 break;
 
+            case 'post-templates-manager':
+                $component = "usage.post-templates-manager";
+                break;
+
+            case 'apply-template':
+                $component = "usage.apply-template-manager";
+                break;
+
+            case 'extract-template':
+                $component = "usage.extract-template-manager";
+                break;
+
             default :
                 $component = "admin.{$this->models}.$modal";
         }

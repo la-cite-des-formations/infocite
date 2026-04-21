@@ -69,26 +69,28 @@ class EditPostManager extends Component
      *
      * @var array
      */
-    protected $listeners = ['modalClosed', 'save', 'contentChange', 'contentPaste'];
+    protected $listeners = ['modalClosed', 'save', 'contentChange', 'contentPaste', 'applyTemplateConfirmed', 'extractTemplateConfirmed'];
 
     /**
      * Règles de validation pour l'article.
      *
      * @var array
      */
-    protected $rules = [
-        'post.title'                      => 'required|string|max:255',
-        'post.icon'                       => 'required|string|max:255',
-        'post.content'                    => 'required|string',
-        'post.rubric_id'                  => 'required',
-        'post.published'                  => '',
-        'post.is_pinned'                  => '',
-        'post.auto_delete'                => '',
-        'post.published_at'               => 'date|nullable',
-        'post.expired_at'                 => 'date|nullable',
-        'post.is_acknowledgment_required' => 'boolean',
-        'post.is_rating_enabled'          => 'boolean',
-    ];
+    protected function rules() {
+        return [
+            'post.title'                      => 'required|string|max:255',
+            'post.icon'                       => 'required|string|max:255',
+            'post.content'                    => 'required|string',
+            'post.rubric_id'                  => $this->post->is_template ? 'nullable' : 'required',
+            'post.published'                  => '',
+            'post.is_pinned'                  => '',
+            'post.auto_delete'                => '',
+            'post.published_at'               => 'date|nullable',
+            'post.expired_at'                 => 'date|nullable',
+            'post.is_acknowledgment_required' => 'boolean',
+            'post.is_rating_enabled'          => 'boolean',
+        ];
+    }
 
     /**
      * Initialisation du composant.
@@ -101,9 +103,24 @@ class EditPostManager extends Component
         $this->currentRubric = $viewBag->rubric;
         $this->mode = $viewBag->mode;
         $this->post = Post::findOrNew($viewBag->post_id);
-        if ($this->currentRubric->name != 'Une' && !$this->post->rubric_id) {
+        if ($this->mode === 'creation' && $this->currentRubric->name != 'Une' && !$this->post->rubric_id) {
             $this->post->rubric_id = $this->currentRubric->id;
         }
+        // Détection du mode modèle via paramètre URL
+        if (request()->query('template') && $this->mode === 'creation') {
+            $this->post->is_template = true;
+        }
+
+        // Pré-remplissage à partir d'un modèle (Création d'un article basé sur un modèle)
+        if ($this->mode === 'creation' && $templateId = request()->query('from_template')) {
+            $sourceTemplate = Post::templates()->find($templateId);
+            if ($sourceTemplate) {
+                $this->post->title = $sourceTemplate->title;
+                $this->post->icon = $sourceTemplate->icon;
+                $this->post->content = $sourceTemplate->content;
+            }
+        }
+
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
         $this->initTinymceContent('post.content');
     }
@@ -163,6 +180,15 @@ class EditPostManager extends Component
 
         // sauvegarde
         $this->post->save();
+
+        // Pour les modèles : pas de galerie, droits, interactions ni notifications
+        if ($this->post->is_template) {
+            redirect()->route('post.edit', [
+                'rubric' => optional($this->post->rubric)->route() ?? 'une',
+                'post_id' => $this->post->id,
+            ]);
+            return;
+        }
         
         // Traitement de la galerie photos (bascule du cache vers BDD)
         \App\Http\Livewire\Usage\PostGallery::processTempGallery($this->post->id, session('post_gallery_token'));
@@ -273,6 +299,106 @@ class EditPostManager extends Component
     }
 
     /**
+     * Enregistre l'article actuel en tant que modèle.
+     */
+    /**
+     * Ouvre la modale pour l'extraction d'un modèle.
+     */
+    public function openExtractTemplateModal($currentContent = null) {
+        if ($currentContent !== null) {
+            $this->post->content = $currentContent;
+        }
+
+        $this->showModal('extract-template', [
+            'currentContent' => $this->post->content,
+            'isDirty' => $this->post->isDirty() || !$this->post->exists,
+        ]);
+    }
+
+    /**
+     * Extrait le contenu actuel comme modèle, avec gestion optionnelle de la redirection
+     * et de la sauvegarde de l'article source.
+     */
+    public function extractTemplateConfirmed($redirect, $saveSourcePost) {
+        $templateRubricId = $this->post->rubric_id ?: NULL;
+
+        if ($saveSourcePost && !$this->post->is_template) {
+            if (empty($this->post->rubric_id) && $this->post->exists) {
+                $this->post->rubric_id = $this->post->getOriginal('rubric_id');
+            }
+            $this->validate(); // Validation stricte de l'article source
+            $this->post->save();
+        } else {
+            $this->validate([
+                'post.title' => 'required|string|max:255',
+                'post.icon' => 'required|string|max:255',
+                'post.content' => 'required|string',
+            ]);
+        }
+
+        $template = new Post();
+        $template->title = $this->post->title;
+        $template->content = $this->post->content;
+        $template->icon = $this->post->icon;
+        $template->rubric_id = $templateRubricId;
+        $template->is_template = true;
+        $template->author_id = auth()->id();
+        $template->corrector_id = null;
+        $template->published = false;
+        $template->published_at = null;
+        $template->expired_at = null;
+        $template->is_pinned = false;
+        $template->auto_delete = false;
+        $template->is_acknowledgment_required = false;
+        $template->is_rating_enabled = false;
+        $template->save();
+
+        if ($redirect) {
+            return redirect()->route('post.edit', ['rubric' => optional($template->rubric)->route() ?? 'une', 'post_id' => $template->id]);
+        }
+
+        $this->sendAlert([
+            'alertClass' => 'success',
+            'message' => "Une copie de cet article a été extraite comme modèle avec succès."
+        ]);
+    }
+
+    /**
+     * Ouvre la modale pour l'application d'un modèle.
+     */
+    public function openApplyTemplateModal($currentContent = null) {
+        if ($currentContent !== null) {
+            $this->post->content = $currentContent;
+        }
+
+        // Enlève l'erreur d'échappement pour de longs contenus HTML
+        $this->showModal('apply-template', [
+            'currentContent' => $this->post->content,
+            'rubricId' => $this->currentRubric->id ?? null
+        ]);
+    }
+
+    /**
+     * Applique un modèle au contenu actuel (ajout par concaténation) via la modale.
+     *
+     * @param int $templateId ID du modèle à appliquer.
+     */
+    public function applyTemplateConfirmed($templateId) {
+        if (!$templateId) return;
+
+        $template = Post::templates()->findOrFail($templateId);
+        $this->post->content .= $template->content;
+
+        // On émet vers JS pour injecter dans TinyMCE
+        $this->emit('insertCleanContent', $template->content);
+
+        $this->sendAlert([
+            'alertClass' => 'success',
+            'message' => "Le modèle a été appliqué au contenu."
+        ]);
+    }
+
+    /**
      * Rendu du composant.
      *
      * @return \Illuminate\View\View
@@ -285,6 +411,12 @@ class EditPostManager extends Component
                 ->orderByRaw('position ASC, rank ASC')
                 ->get(),
             'icons' => $this->getMiCodes(),
+            'templates' => Post::templates()
+                ->where(function($query) {
+                    $query->whereNull('rubric_id')
+                          ->orWhere('rubric_id', $this->currentRubric->id);
+                })
+                ->get(),
         ]);
     }
 }
