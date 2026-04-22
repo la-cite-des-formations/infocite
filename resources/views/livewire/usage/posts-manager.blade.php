@@ -293,7 +293,7 @@
                                                 <i class='bx bx-pencil'></i>
                                             </a>
                                             <button
-                                                wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $template->id }}})"
+                                                wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $template->id }}, isTemplate : true})"
                                                 type="button"
                                                 class="btn btn-outline-danger bg-white small-action-btn d-flex justify-content-center align-items-center w-33"
                                                 title="Supprimer le modèle">

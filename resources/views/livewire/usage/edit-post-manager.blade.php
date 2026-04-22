@@ -16,11 +16,15 @@
             <div class="row mb-3">
                 <div class="col-2"></div>
                 <div class="col-8">
-                    <button type="button" onclick="@this.openApplyTemplateModal(window.tinymce && window.tinymce.activeEditor ? window.tinymce.activeEditor.getContent() : '')" class="btn btn-outline-primary form-control d-flex align-items-center justify-content-center">
-                        <span class="material-icons align-middle me-2" style="font-size:18px">library_add</span> Appliquer un modèle
+                    <button type="button"
+                        onclick="@this.openApplyTemplateModal(window.tinymce && window.tinymce.activeEditor ? window.tinymce.activeEditor.getContent() : '')"
+                        class="btn btn-outline-primary form-control">
+                        <span class="material-icons align-middle me-2" style="font-size:18px">library_add</span>
+                        Appliquer un modèle
                     </button>
                     <div class="form-text text-primary mt-1">
-                        <i class="bx bx-info-circle"></i> Le modèle sera ajouté à la fin de votre saisie actuelle (avec prévisualisation).
+                        <i class="bx bx-info-circle"></i> Le modèle sera ajouté à la fin de votre saisie actuelle (avec
+                        prévisualisation).
                     </div>
                 </div>
             </div>
@@ -180,9 +184,10 @@
                     </button>
                 @endif
                 @if ($mode === 'edition' && !$post->is_template)
-                    <button type="button" onclick="@this.openExtractTemplateModal(window.tinymce && window.tinymce.activeEditor ? window.tinymce.activeEditor.getContent() : '')" class="btn btn-info text-white me-1"
-                        title="Créer un nouveau modèle à partir de cet article">
-                        Extraire comme modèle
+                    <button type="button"
+                        onclick="@this.openExtractTemplateModal(window.tinymce && window.tinymce.activeEditor ? window.tinymce.activeEditor.getContent() : '')"
+                        class="btn btn-info text-white me-1" title="Créer un nouveau modèle à partir de cet article">
+                        Modéliser
                     </button>
                 @endif
                 @if ($mode === 'edition')

@@ -82,7 +82,8 @@ class Confirm extends Component
         switch($handling){
             case 'deletePost':
             case 'deletePostFromRubric':
-                    $this->message = "Êtes-vous sûr de vouloir supprimer cet article ?";
+                    $isTemplate = $data['isTemplate'] ?? FALSE;
+                    $this->message = $isTemplate ? "Êtes-vous sûr de vouloir supprimer ce modèle ?" : "Êtes-vous sûr de vouloir supprimer cet article ?";
             break;
             case 'deleteComment':
                 $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
