@@ -208,6 +208,7 @@ class PostsManager extends Component
     {
         $user = auth()->user();
         return Post::query()
+            ->notTemplates()
             ->whereIn('id', Post::query()
                 ->when($this->rubric->name != 'Une' && $this->rubric->name != 'Archives', function ($query) {
                     $query
@@ -260,6 +261,28 @@ class PostsManager extends Component
     }
 
     /**
+     * Récupère les modèles d'articles pertinents pour la rubrique actuelle.
+     * Les modèles ne sont affichés qu'en mode édition et hors archives.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTemplates() {
+        if ($this->mode != 'edition' || $this->rubric->name == 'Archives') {
+            return collect();
+        }
+
+        return Post::templates()
+            ->when($this->rubric->name == 'Une', function ($query) {
+                $query->whereNull('rubric_id');
+            })
+            ->when($this->rubric->name != 'Une', function ($query) {
+                $query->where('rubric_id', $this->rubric->id);
+            })
+            ->orderBy('title')
+            ->get();
+    }
+
+    /**
      * Rendu du composant.
      *
      * @return \Illuminate\View\View
@@ -270,6 +293,7 @@ class PostsManager extends Component
         return view('livewire.usage.posts-manager', [
             'posts' =>$this->getFilteredOrSortedPosts(),
             'pinnedPost' => $this->pinnedPosts(),
+            'templates' => $this->getTemplates(),
         ]);
     }
 

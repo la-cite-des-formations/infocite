@@ -1396,3 +1396,21 @@ a:hover {
         height: 300px;
     }
 }
+
+/*--------------------------------------------------------------
+# Article Templates (Reading Mode)
+--------------------------------------------------------------*/
+.article-template .editor-block {
+    border: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.article-template .editor-block:last-child {
+    margin-bottom: 0;
+}
+
+.article-template .editor-block::before,
+.article-template .editor-block::after {
+    display: none !important;
+}

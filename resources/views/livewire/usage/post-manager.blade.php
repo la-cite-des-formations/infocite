@@ -9,47 +9,38 @@
         </div>
     @endif
 
-    <div class="container d-flex flex-column">
-        <div class="align-self-end">
-            <div class="input-group" role="group">
-                <button @class([
-                    'btn btn-sm',
-                    'btn-danger' => $notifications->isNotEmpty(),
-                    'btn-secondary' => $notifications->isEmpty(),
-                ]) wire:click="showModal('notify')" type="button">
-                    @if ($notifications->isNotEmpty())
-                        <span class="me-1">{{ $notifications->count() }}</span>
-                    @endif
-                    <i class="bi bi-bell"></i>
+    <div class="container d-flex justify-content-end">
+        <div class="btn-group" role="group">
+            <button @class([
+                'btn btn-sm',
+                'btn-danger' => $notifications->isNotEmpty(),
+                'btn-secondary' => $notifications->isEmpty(),
+            ]) wire:click="showModal('notify')" type="button">
+                @if ($notifications->isNotEmpty())
+                    <span class="me-1">{{ $notifications->count() }}</span>
+                @endif
+                <i class="bi bi-bell"></i>
+            </button>
+            @can('edit', ['App\\Models\\Post', $post->rubric_id])
+                <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
+                    title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
+                    <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
                 </button>
-                @can('edit', ['App\\Models\\Post', $post->rubric_id])
-                    <button class="btn btn-sm btn-primary" wire:click='switchMode' type="button"
-                        title="@if ($mode == 'view') Passer en mode édition @else Passer en mode lecture @endif">
-                        <span class="bx @if ($mode == 'view') bx-pencil @else bx-show @endif"></span>
+            @endcan
+            @if ($mode == 'edition')
+                @can('create', ['App\\Models\\Post', $post->rubric_id])
+                    <button class="d-flex align-items-center btn btn-sm btn-info text-white"
+                        wire:click="showModal('post-templates-manager', {rubricId: {{ $post->rubric_id }}})"
+                        title="Gérer les modèles d'articles">
+                        <span class="material-icons fs-5">history_edu</span>
                     </button>
+                    <a href="{{ route('post.create', ['rubric' => $post->rubric->route()]) }}"
+                        title="Commencer un nouvel article" type="button"
+                        class="d-flex align-items-center input-group-text btn btn-sm btn-success">
+                        <span class="material-icons fs-5">add</span>
+                    </a>
                 @endcan
-                @if ($post->rubric->name != 'Une')
-                    <button @class([
-                        'btn btn-sm',
-                        'btn-warning' => $isFavoriteRubric,
-                        'btn-secondary' => !$isFavoriteRubric,
-                    ])
-                        @if ($isFavoriteRubric) title="Retirer la rubrique {{ $post->rubric->name }} des favoris"
-                        @else title="Ajouter la rubrique {{ $post->rubric->name }} aux favoris" @endif
-                        wire:click="switchFavoriteRubric" type="button">
-                        <i class="bx bx-star"></i>
-                    </button>
-                @endif
-                @if ($mode == 'edition')
-                    @can('create', ['App\\Models\\Post', $post->rubric_id])
-                        <a href="{{ route('post.create', ['rubric' => $post->rubric->route()]) }}"
-                            title="Commencer un nouvel article" type="button"
-                            class="d-flex input-group-text btn btn-sm btn-success">
-                            <span class="material-icons">add</span>
-                        </a>
-                    @endcan
-                @endif
-            </div>
+            @endif
         </div>
     </div>
 

@@ -28,6 +28,7 @@ trait WithFilterPosts
     {
         return User::find(auth()->user()->id)
             ->favoritePosts()
+            ->notTemplates()
             ->when($this->mode == 'view', function ($query) {
                 $query
                     ->where('published', TRUE)
@@ -51,6 +52,7 @@ trait WithFilterPosts
      */
     public function postsInFavoritesRubrics(){
         return Post::query()
+            ->notTemplates()
             ->whereIn('rubric_id', auth()->user()
                 ->favoriteRubrics()
                 ->pluck('favoriteable_id')
@@ -82,6 +84,7 @@ trait WithFilterPosts
         $userId = auth()->user()->id;
 
         return Post::query()
+            ->notTemplates()
             ->whereDoesntHave('readers', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
@@ -113,7 +116,9 @@ trait WithFilterPosts
      */
     public function mostConsultedPosts()
     {
-        return Post::withCount('readers')
+        return Post::query()
+            ->notTemplates()
+            ->withCount('readers')
             ->orderByDesc('readers_count')
             ->when($this->mode == 'view', function ($query) {
                 $query
@@ -138,6 +143,7 @@ trait WithFilterPosts
     public function mostRecentlyPosts(){
 
         return Post::query()
+            ->notTemplates()
             ->orderBy('updated_at','DESC')
             ->when($this->mode == 'view', function ($query) {
                 $query
@@ -161,7 +167,9 @@ trait WithFilterPosts
      */
     public function mostCommentedPosts()
     {
-        return Post::withCount('comments')
+        return Post::query()
+            ->notTemplates()
+            ->withCount('comments')
             ->orderByDesc('comments_count')
             ->when($this->mode == 'view', function ($query) {
                 $query
