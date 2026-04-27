@@ -7,12 +7,16 @@ use App\Models\Group;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Politique d'accès pour le modèle Group.
+ * Gère les permissions pour visualiser, créer, modifier et supprimer des groupes d'utilisateurs.
+ */
 class GroupPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any groups.
+     * Détermine si l'utilisateur peut voir la liste des groupes.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -23,7 +27,7 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the user can view the group.
+     * Détermine si l'utilisateur peut voir un groupe spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Group  $group
@@ -35,7 +39,7 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the user can create groups.
+     * Détermine si l'utilisateur peut créer des groupes.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -46,7 +50,7 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the user can update the group.
+     * Détermine si l'utilisateur peut modifier un groupe spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Group  $group
@@ -58,7 +62,7 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the user can handle the group.
+     * Détermine si l'utilisateur peut gérer un groupe (actions administratives avancées).
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Group  $group
@@ -70,7 +74,7 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the current user can delete any groups.
+     * Détermine si l'utilisateur peut supprimer n'importe quel groupe.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -81,7 +85,7 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the user can delete the group.
+     * Détermine si l'utilisateur peut supprimer un groupe spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Group  $group

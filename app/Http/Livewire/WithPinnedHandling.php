@@ -4,10 +4,21 @@ namespace App\Http\Livewire;
 
 use App\Models\Post;
 
+/**
+ * Trait pour la gestion des articles épinglés (mise à la Une).
+ */
 trait WithPinnedHandling
 {
+    /**
+     * Nombre total d'articles épinglés.
+     *
+     * @var int
+     */
     public $countPinnedPosts;
 
+    /**
+     * Met à jour le compteur d'articles épinglés.
+     */
     public function countPinnedPosts(){
 
         $this->countPinnedPosts = Post::query()
@@ -15,6 +26,11 @@ trait WithPinnedHandling
             ->count();
     }
 
+    /**
+     * Récupère la liste des articles épinglés.
+     *
+     * @return \Illuminate\Support\Collection Collection d'articles épinglés.
+     */
     public function pinnedPosts()
     {
         return Post::query()
@@ -22,10 +38,15 @@ trait WithPinnedHandling
             ->get();
     }
 
+    /**
+     * Alterne l'état épinglé d'un article.
+     *
+     * @param int $post_id ID de l'article.
+     */
     public function switchPinnedPost($post_id) {
         $post = $this->post ?? Post::find($post_id);
 
-        //on récupère le nombre d'article épinglé
+        //on récupère le nombre d'articles épinglés
         $this->countPinnedPosts();
 
         if ($post->is_pinned) {
@@ -36,7 +57,7 @@ trait WithPinnedHandling
 
         }
         else {
-            //Si le nombre de post épinglé est supérieur à 4, on épingle pas le post et on affiche un message
+            //Si le nombre d'articles épinglés est inférieur à 4, on peut épingler
             if( $this->countPinnedPosts < 4){
                 Post::query()
                     ->where('id', $post_id)

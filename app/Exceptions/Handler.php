@@ -5,6 +5,10 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
+/**
+ * Gestionnaire d'exceptions centralisé pour l'application.
+ * Personnalise le rendu des erreurs et le reporting des exceptions.
+ */
 class Handler extends ExceptionHandler
 {
     /**

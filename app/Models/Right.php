@@ -6,14 +6,18 @@ use App\CustomFacades\AP;
 use App\Http\Livewire\WithSearching;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Représente un droit (permission) au sein du système.
+ * Les droits sont associés à des utilisateurs, groupes ou profils via la table polymorphique 'rightables'.
+ */
 class Right extends Model
 {
     use WithSearching;
 
     /**
-     * The attributes that are mass assignable.
+     * Les attributs qui peuvent être assignés en masse.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'description',
@@ -24,6 +28,11 @@ class Right extends Model
         'default_roles', 'dashboard_roles'
     ];
 
+    /**
+     * Relation vers les groupes possédant ce droit.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
     public function groups() {
         return $this
             ->morphedByMany('App\Models\Group', 'rightable')
@@ -31,6 +40,12 @@ class Right extends Model
             ->orderByRaw('name ASC, resource_type ASC, resource_id ASC');
     }
 
+    /**
+     * Récupère les groupes possédant ce droit filtrés par type.
+     *
+     * @param string $type Type de groupe.
+     * @return \Illuminate\Support\Collection
+     */
     public function groupsByType($type) {
         return $this
             ->groups()
@@ -38,6 +53,11 @@ class Right extends Model
             ->get();
     }
 
+    /**
+     * Relation vers tous les utilisateurs possédant ce droit (incluant les profils).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
     public function users() {
         return $this
             ->morphedByMany('App\Models\User', 'rightable')
@@ -45,6 +65,11 @@ class Right extends Model
             ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
     }
 
+    /**
+     * Relation vers les utilisateurs réels (hors profils) possédant ce droit.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
     public function realUsers() {
         return $this
             ->morphedByMany('App\Models\User', 'rightable')
@@ -53,6 +78,11 @@ class Right extends Model
             ->orderByRaw('name ASC, first_name ASC, resource_type ASC, resource_id ASC');
     }
 
+    /**
+     * Relation vers les profils (modèles de droits) possédant ce droit.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
     public function profiles() {
         return $this
             ->morphedByMany('App\Models\User', 'rightable')
@@ -61,6 +91,12 @@ class Right extends Model
             ->orderByRaw('first_name ASC, resource_type ASC, resource_id ASC');
     }
 
+    /**
+     * Retourne une chaîne descriptive des rôles associés au droit dans le contexte du pivot.
+     * Décode le masque binaire des rôles.
+     *
+     * @return string|null
+     */
     public function getRightableRoles() {
         if (isset($this->pivot)) {
             $roles = NULL;
@@ -72,6 +108,11 @@ class Right extends Model
         return;
     }
 
+    /**
+     * Retourne une chaîne descriptive de la ressource associée au droit.
+     *
+     * @return string
+     */
     public function rightsResourceableString() {
         if (!empty($this->pivot->resource_type)) {
             $class = "\\App\\Models\\{$this->pivot->resource_type}";
@@ -81,6 +122,11 @@ class Right extends Model
         return "";
     }
 
+    /**
+     * Retourne une chaîne descriptive des rôles définis dans le tableau de bord pour ce droit.
+     *
+     * @return string
+     */
     public function rolesFromDashboard() {
         $dashboardRoles = NULL;
         foreach(Roles::all()->collection as $role) {
@@ -89,6 +135,11 @@ class Right extends Model
         return implode(', ', $dashboardRoles ?? [Roles::NONE_STRING]);
     }
 
+    /**
+     * Retourne une chaîne descriptive des rôles par défaut associés à ce droit.
+     *
+     * @return string
+     */
     public function defaultRoles() {
         $defaultRoles = NULL;
         foreach(Roles::all()->collection as $role) {
@@ -97,14 +148,32 @@ class Right extends Model
         return implode(', ', $defaultRoles ?? [Roles::NONE_STRING]);
     }
 
+    /**
+     * Vérifie si un rôle spécifique est exercé depuis le tableau de bord.
+     *
+     * @param int $roleFlag Flag du rôle à tester.
+     * @return int
+     */
     public function exercisedFromDashboard($roleFlag) {
         return $this->dashboard_roles & $roleFlag;
     }
 
+    /**
+     * Vérifie si un rôle spécifique est activé par défaut.
+     *
+     * @param int $roleFlag Flag du rôle à tester.
+     * @return int
+     */
     public function byDefault($roleFlag) {
         return $this->default_roles & $roleFlag;
     }
 
+    /**
+     * Filtre les droits selon des critères de recherche.
+     *
+     * @param array $filter Critères de filtrage.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function filter(array $filter) {
         extract($filter);
 

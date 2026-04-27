@@ -1,0 +1,91 @@
+/* Styles spécifiques pour l'affichage des cadres dans l'éditeur TinyMCE */
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+body[contenteditable="true"] .editor-block, .template-preview .editor-block {
+    border: 1px dashed #3498db !important;
+    padding: 25px 15px 15px 15px !important;
+    margin: 20px 0 !important;
+    position: relative !important;
+    border-radius: 4px !important;
+    min-height: 40px !important;
+    display: block !important;
+}
+
+body[contenteditable="true"] .editor-block::before, .template-preview .editor-block::before {
+    position: absolute;
+    top: -12px;
+    left: 10px;
+    background: white;
+    padding: 0 8px;
+    color: #3498db;
+    font-weight: 700;
+    font-size: 11px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    z-index: 10;
+}
+
+/* Icônes spécifiques via Material Icons */
+.editor-block::after {
+    font-family: 'Material Icons';
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: -5px; /* Adjust based on icon presence */
+    display: none;
+}
+
+/* Introduction */
+body[contenteditable="true"] .block-intro::before, .template-preview .block-intro::before {
+    content: "\e240  INTRODUCTION DE L'ARTICLE" !important; /* push_pin icon code */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+/* Titre */
+body[contenteditable="true"] .block-title::before, .template-preview .block-title::before {
+    content: "\e245  TITRE" !important; /* title icon code */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+/* Sous-titre */
+body[contenteditable="true"] .block-subtitle::before, .template-preview .block-subtitle::before {
+    content: "\e048  SOUS-TITRE" !important; /* subtitles icon code */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+/* Colonnes */
+body[contenteditable="true"] .block-col-left::before, .template-preview .block-col-left::before {
+    content: "\e8ed  COLONNE GAUCHE" !important; /* view_column icon code */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+body[contenteditable="true"] .block-col-right::before, .template-preview .block-col-right::before {
+    content: "\e8ed  COLONNE DROITE" !important; /* view_column icon code */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+/* Conclusion */
+body[contenteditable="true"] .block-conclusion-title::before, .template-preview .block-conclusion-title::before {
+    content: "\e01f  TITRE : CONCLUSION" !important; /* task_alt icon code (approx) */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+body[contenteditable="true"] .block-conclusion-content::before, .template-preview .block-conclusion-content::before {
+    content: "\e902  CONTENU DE LA CONCLUSION" !important; /* notes icon code */
+    font-family: 'Material Icons', sans-serif !important;
+    display: flex !important;
+}
+
+/* Conteneur global */
+.article-template {
+    padding: 10px;
+}

@@ -7,6 +7,10 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+/**
+ * Fournisseur de services gérant la correspondance entre événements et écouteurs (Listeners).
+ * Centralise la logique événementielle de l'application.
+ */
 class EventServiceProvider extends ServiceProvider
 {
     /**

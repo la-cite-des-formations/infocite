@@ -36,8 +36,8 @@ return new class extends Migration
             $table->unsignedInteger('rightable_id')->index();
             $table->string('rightable_type', 10);
             $table->unsignedInteger('resource_id')->index()->nullable()->default(NULL);
-            $table->string('rightable_type', 10)->nullable()->default(NULL);
-            $table->unsignedTinyInteger('proirity');
+            $table->string('resource_type', 10)->nullable()->default(NULL);
+            $table->unsignedTinyInteger('priority');
             $table->unsignedTinyInteger('roles'); // à changer en bit(4) dans la bdd
         });
     }

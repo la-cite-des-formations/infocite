@@ -11,7 +11,7 @@ class UserPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the current user can view any managed users or profiles.
+     * Détermine si l'utilisateur peut voir la liste des utilisateurs ou des profils.
      *
      * @param  \App\Models\User  $user
      * @param  bool  $isProfile
@@ -23,7 +23,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the current user can view the managed user or the profile.
+     * Détermine si l'utilisateur peut voir un utilisateur ou un profil spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $managedUser
@@ -36,7 +36,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the current user can create any managed users or profiles.
+     * Détermine si l'utilisateur peut créer de nouveaux utilisateurs ou profils.
      *
      * @param  \App\Models\User  $user
      * @param  bool  $isProfile
@@ -48,7 +48,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the current user can edit the managed user or the profile.
+     * Détermine si l'utilisateur peut modifier un utilisateur ou un profil spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $managedUser
@@ -61,7 +61,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the current user can delete any managed users or profiles.
+     * Détermine si l'utilisateur peut supprimer n'importe quel utilisateur ou profil.
      *
      * @param  \App\Models\User  $user
      * @param  bool  $isProfile
@@ -73,7 +73,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the current user can delete the managed user or the profile.
+     * Détermine si l'utilisateur peut supprimer un utilisateur ou un profil spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $managedUser
@@ -86,7 +86,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the current user can admin rights for any managed users or profiles.
+     * Détermine si l'utilisateur peut administrer les droits d'accès pour les utilisateurs ou les profils.
      *
      * @param  \App\Models\User  $user
      * @param  bool  $isProfile

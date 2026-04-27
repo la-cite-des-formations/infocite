@@ -1224,3 +1224,193 @@ a:hover {
 .admin-table>:not(:first-child) {
     border-top: none !important;
 }
+
+/*--------------------------------------------------------------
+# Galerie Photos
+--------------------------------------------------------------*/
+
+/* Zone d'upload (éditeur) */
+.gallery-dropzone:hover {
+    border-color: var(--select-color-1) !important;
+    background-color: rgba(0, 123, 255, 0.03);
+}
+
+/* Vignettes (éditeur) */
+.gallery-thumb-wrapper .gallery-thumb-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.gallery-thumb-wrapper:hover .gallery-thumb-actions {
+    opacity: 1;
+}
+
+/* === Grille dynamique (front-end lecture) === */
+.gallery-container {
+    max-width: 650px; /* Largeur pour 4 vignettes + gaps */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Mode Mosaïque (Mobile) */
+.gallery-mosaic {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    /* Correctif pour arrondis capricieux sur certains mobiles */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    transform: translateZ(0);
+}
+
+/* Mode Bande (Desktop) */
+.gallery-strip {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.gallery-strip .gallery-item {
+    width: 155px; /* Proche de la taille édition */
+    height: 155px;
+    flex: 0 0 155px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.gallery-item {
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Layouts Mosaïque */
+.gallery-layout-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 100%;
+}
+.gallery-layout-1 .gallery-item {
+    border-radius: 8px;
+}
+
+.gallery-layout-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    height: 100%;
+}
+.gallery-layout-2 .gallery-item:first-child {
+    border-radius: 8px 0 0 8px;
+}
+.gallery-layout-2 .gallery-item:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.gallery-layout-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3px;
+    height: 100%;
+}
+.gallery-layout-3 .gallery-item-main {
+    border-radius: 8px 0 0 8px;
+}
+.gallery-layout-3 .gallery-item-side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    height: 100%;
+}
+.gallery-layout-3 .gallery-item-side .gallery-item:first-child {
+    border-top-right-radius: 8px;
+}
+.gallery-layout-3 .gallery-item-side .gallery-item:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.gallery-layout-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    height: 100%;
+}
+.gallery-layout-4 .gallery-item:nth-child(1) {
+    border-top-left-radius: 8px;
+}
+.gallery-layout-4 .gallery-item:nth-child(2) {
+    border-top-right-radius: 8px;
+}
+.gallery-layout-4 .gallery-item:nth-child(3) {
+    border-bottom-left-radius: 8px;
+}
+.gallery-layout-4 .gallery-item:nth-child(4),
+.gallery-layout-4 .gallery-item-more {
+    border-bottom-right-radius: 8px;
+}
+
+/* Overlay "+X" pour 5+ photos */
+.gallery-item-more {
+    position: relative;
+}
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+.gallery-overlay span {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.gallery-item-more:hover .gallery-overlay {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive galerie */
+@media (max-width: 767px) {
+    .gallery-layout-1, .gallery-layout-2, .gallery-layout-3, .gallery-layout-4 {
+        height: 300px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Article Templates (Reading Mode)
+--------------------------------------------------------------*/
+.article-template .editor-block {
+    border: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.article-template .editor-block:last-child {
+    margin-bottom: 0;
+}
+
+.article-template .editor-block::before,
+.article-template .editor-block::after {
+    display: none !important;
+}

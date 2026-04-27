@@ -12,6 +12,9 @@ use App\Models\Interaction;
 use App\Statistics\Posts;
 use Carbon\Carbon;
 
+/**
+ * Composant Livewire pour la visualisation des statistiques de consultation (articles lus, articles commentés) dans l'interface d'administration.
+ */
 class ViewingManager extends Component
 {
     use WithPagination;
@@ -19,7 +22,17 @@ class ViewingManager extends Component
 
     protected $paginationTheme = 'bootstrap';
 
+    /**
+     * Identifiant de la page de statistiques.
+     *
+     * @var string
+     */
     public $statsPage = 'viewing';
+    /**
+     * Configuration des collections de statistiques de consultation (lus, commentés).
+     *
+     * @var array
+     */
     public $statsCollection = [
         'mostViewedPosts' => [
             'bladeFilePath' => 'posts.most-viewed-posts',
@@ -58,7 +71,18 @@ class ViewingManager extends Component
             'perPage' => 10,
         ],
     ];
+    /**
+     * Liste des années scolaires.
+     *
+     * @var array
+     */
     public $schoolYears = [];
+
+    /**
+     * Correspondance des mois.
+     *
+     * @var array
+     */
     public $schoolYearMonths = [
         'Septembre' => 9,
         'Octobre'   => 10,
@@ -73,6 +97,11 @@ class ViewingManager extends Component
         'Juillet'   => 7,
         'Août'      => 8,
     ];
+    /**
+     * Configuration des onglets.
+     *
+     * @var array
+     */
     public $chartTabs = [
         'name' => 'chartTabs',
         'currentTab' => 'most-viewed-posts',
@@ -92,6 +121,10 @@ class ViewingManager extends Component
         ],
     ];
 
+    /**
+     * Initialise la liste des années scolaires disponibles pour les statistiques.
+     * Se base sur la date de la plus ancienne interaction sur un article.
+     */
     protected function initSchoolYears() {
         // Récupérer la plus ancienne interaction
         $oldestOccurredAt = Interaction::where('target_type', Post::class)
@@ -116,10 +149,22 @@ class ViewingManager extends Component
         }
     }
 
+    /**
+     * Initialisation du composant.
+     */
+    /**
+     * Initialisation du composant.
+     */
     public function mount() {
         $this->initSchoolYears();
     }
 
+    /**
+     * Change l'onglet actif et rafraîchit les graphiques de consultation.
+     *
+     * @param string $tabsSystem Système d'onglets.
+     * @param string $tab Onglet cible.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
@@ -144,6 +189,9 @@ class ViewingManager extends Component
         }
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de l'année scolaire du filtre articles lus.
+     */
     public function updatedStatsCollectionMostViewedPostsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -152,6 +200,9 @@ class ViewingManager extends Component
         $this->resetPage('mostViewedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du mois du filtre articles lus.
+     */
     public function updatedStatsCollectionMostViewedPostsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -160,6 +211,9 @@ class ViewingManager extends Component
         $this->resetPage('mostViewedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du type de lecteur du filtre articles lus.
+     */
     public function updatedStatsCollectionMostViewedPostsFilterReaderType() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -169,6 +223,9 @@ class ViewingManager extends Component
         $this->resetPage('mostViewedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de rubrique du filtre articles lus.
+     */
     public function updatedStatsCollectionMostViewedPostsFilterRubricId() {
         if (empty($this->statsCollection['mostViewedPosts']['filter']['rubric_id'])) {
             $this->statsCollection['mostViewedPosts']['filter']['rubric_id'] = NULL;
@@ -181,6 +238,9 @@ class ViewingManager extends Component
         $this->resetPage('mostViewedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de l'année scolaire du filtre articles commentés.
+     */
     public function updatedStatsCollectionMostCommentedPostsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
@@ -189,6 +249,9 @@ class ViewingManager extends Component
         $this->resetPage('mostCommentedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du mois du filtre articles commentés.
+     */
     public function updatedStatsCollectionMostCommentedPostsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
@@ -197,6 +260,9 @@ class ViewingManager extends Component
         $this->resetPage('mostCommentedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement du type de lecteur du filtre articles commentés.
+     */
     public function updatedStatsCollectionMostCommentedPostsFilterReaderType() {
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
@@ -206,6 +272,9 @@ class ViewingManager extends Component
         $this->resetPage('mostCommentedPostsPage');
     }
 
+    /**
+     * Met à jour les graphiques lors du changement de rubrique du filtre articles commentés.
+     */
     public function updatedStatsCollectionMostCommentedPostsFilterRubricId() {
         if (empty($this->statsCollection['mostCommentedPosts']['filter']['rubric_id'])) {
             $this->statsCollection['mostCommentedPosts']['filter']['rubric_id'] = NULL;
@@ -218,6 +287,12 @@ class ViewingManager extends Component
         $this->resetPage('mostCommentedPostsPage');
     }
 
+    /**
+     * Rendu du composant.
+     * Calcule les statistiques de consultation (lus et commentés) pour la vue.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $viewedPosts = Posts::getViewed($this->statsCollection['mostViewedPosts']['filter']);
