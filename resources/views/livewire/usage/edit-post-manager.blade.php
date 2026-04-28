@@ -12,6 +12,7 @@
         @error('post.rubric_id')
             @include('includes.rules-error-message', ['labelsColLg' => 'col-2'])
         @enderror
+        <input type="hidden" wire:model="post.is_template">
         @if (!$post->is_template && $templates->isNotEmpty())
             <div class="row mb-3">
                 <div class="col-2"></div>
@@ -51,9 +52,10 @@
             <label class="col-2 fw-bold text-end my-auto">Icône</label>
             <div class="col-8 d-flex align-items-center">
                 @include('includes.icon-picker', ['model' => 'post'])
-                <label class="fw-bold ms-3 me-2 my-auto" for="post-title">Titre</label>
+                <label class="fw-bold ms-3 me-2 my-auto"
+                    for="post-title">{{ $post->is_template ? 'Nom' : 'Titre' }}</label>
                 <input id="post-title" wire:model="post.title" type="input" class="form-control flex-grow-1"
-                    placeholder="Titre de l'article">
+                    placeholder="{{ $post->is_template ? 'Nom du modèle' : 'Titre de l\'article' }}">
             </div>
         </div>
         @error('post.content')
@@ -164,22 +166,30 @@
                     Annuler
                 </a>
                 @if ($mode === 'edition')
-                    <button wire:click="showModal('confirm', {handling : 'update', redirectionRoute : 'post.index'})"
-                        type="button" class="btn btn-primary me-1"
-                        title="Enregistrer les modifications et Visualiser l'article">
-                        Modifier et Voir
-                    </button>
+                    @if (!$post->is_template)
+                        <button
+                            wire:click="showModal('confirm', {handling : 'update', redirectionRoute : 'post.index'})"
+                            type="button" class="btn btn-primary me-1"
+                            title="Enregistrer les modifications et Visualiser l'article">
+                            Modifier et Voir
+                        </button>
+                    @endif
                     <button wire:click="showModal('confirm', {handling : 'update'})" type="button"
-                        class="btn btn-primary me-1" title="Enregistrer les modifications">
+                        class="btn btn-primary me-1"
+                        title="{{ $post->is_template ? 'Enregistrer le modèle' : 'Enregistrer les modifications' }}">
                         Modifier
                     </button>
                 @else
-                    <button wire:click="showModal('confirm', {handling : 'create', redirectionRoute : 'post.index'})"
-                        type="button" class="btn btn-primary me-1" title="Créer et Visualiser l'article">
-                        Créer et Voir
-                    </button>
+                    @if (!$post->is_template)
+                        <button
+                            wire:click="showModal('confirm', {handling : 'create', redirectionRoute : 'post.index'})"
+                            type="button" class="btn btn-primary me-1" title="Créer et Visualiser l'article">
+                            Créer et Voir
+                        </button>
+                    @endif
                     <button wire:click="showModal('confirm', {handling : 'create'})" type="button"
-                        class="btn btn-primary me-1" title="Créer l'article">
+                        class="btn btn-primary me-1"
+                        title="{{ $post->is_template ? 'Créer le modèle' : 'Créer l\'article' }}">
                         Créer
                     </button>
                 @endif

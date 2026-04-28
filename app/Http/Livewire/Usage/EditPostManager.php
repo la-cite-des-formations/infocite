@@ -89,6 +89,7 @@ class EditPostManager extends Component
             'post.expired_at'                 => 'date|nullable',
             'post.is_acknowledgment_required' => 'boolean',
             'post.is_rating_enabled'          => 'boolean',
+            'post.is_template'                => 'boolean',
         ];
     }
 
