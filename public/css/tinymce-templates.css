@@ -1,23 +1,64 @@
 /* Styles spécifiques pour l'affichage des cadres dans l'éditeur TinyMCE */
 
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
-body[contenteditable="true"] .editor-block, .template-preview .editor-block {
-    border: 1px dashed #3498db !important;
-    padding: 25px 15px 15px 15px !important;
-    margin: 20px 0 !important;
-    position: relative !important;
-    border-radius: 4px !important;
-    min-height: 40px !important;
-    display: block !important;
+body[contenteditable="true"] .editor-block,
+.template-preview .editor-block {
+    border: 1px dashed #3498db;
+    padding: 20px 15px 15px 15px;
+    margin: 12px 0;
+    position: relative;
+    border-radius: 4px;
+    min-height: 40px;
+    display: block;
 }
 
-body[contenteditable="true"] .editor-block::before, .template-preview .editor-block::before {
+/* Marqueur pour la structure des rangées */
+body[contenteditable="true"] .row,
+.template-preview .row {
+    border: 1px dotted #bdc3c7 !important;
+    padding: 0 !important;
+    margin: 12px 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+/* On fait coller les colonnes (editor-block) à la structure row */
+body[contenteditable="true"] .row .block-col-left,
+body[contenteditable="true"] .row .block-col-right,
+.template-preview .row .block-col-left,
+.template-preview .row .block-col-right {
+    margin: 12px 0 0 0 !important;
+    padding: 5px 0 0 0 !important;
+    /* Presque nul : l'élément à l'intérieur collera à la bordure de la colonne */
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+}
+
+body[contenteditable="true"] .row::before,
+.template-preview .row::before {
+    font-family: 'Material Icons Outlined', sans-serif;
+    content: "\e8ec  STRUCTURE MULTI-COLONNES";
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 10px;
+    color: #bdc3c7;
+    font-weight: bold;
+    background: white;
+    padding: 0 5px;
+}
+
+body[contenteditable="true"] .editor-block::before,
+.template-preview .editor-block::before {
     position: absolute;
     top: -12px;
     left: 10px;
     background: white;
-    padding: 0 8px;
+    padding: 0 5px;
     color: #3498db;
     font-weight: 700;
     font-size: 11px;
@@ -28,64 +69,207 @@ body[contenteditable="true"] .editor-block::before, .template-preview .editor-bl
     z-index: 10;
 }
 
-/* Icônes spécifiques via Material Icons */
+/* Icônes spécifiques via Material Icons Outlined */
 .editor-block::after {
-    font-family: 'Material Icons';
+    font-family: 'Material Icons Outlined';
     content: '';
     position: absolute;
     top: -12px;
-    left: -5px; /* Adjust based on icon presence */
+    left: -5px;
     display: none;
 }
 
 /* Introduction */
-body[contenteditable="true"] .block-intro::before, .template-preview .block-intro::before {
-    content: "\e240  INTRODUCTION DE L'ARTICLE" !important; /* push_pin icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-intro::before,
+.template-preview .block-intro::before {
+    content: "\ef75  INTRODUCTION" !important;
+    /* push_pin icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Titre */
-body[contenteditable="true"] .block-title::before, .template-preview .block-title::before {
-    content: "\e245  TITRE" !important; /* title icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-title::before,
+.template-preview .block-title::before {
+    content: "\e264  TITRE PRINCIPAL" !important;
+    /* title icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Sous-titre */
-body[contenteditable="true"] .block-subtitle::before, .template-preview .block-subtitle::before {
-    content: "\e048  SOUS-TITRE" !important; /* subtitles icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-subtitle::before,
+.template-preview .block-subtitle::before {
+    content: "\e264 SOUS-TITRE" !important;
+    /* subtitles icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* Paragraphe */
+body[contenteditable="true"] .block-paragraph::before,
+.template-preview .block-paragraph::before {
+    content: "\e8d2  PARAGRAPHE" !important;
+    /* segment icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Colonnes */
-body[contenteditable="true"] .block-col-left::before, .template-preview .block-col-left::before {
-    content: "\e8ed  COLONNE GAUCHE" !important; /* view_column icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-col-left::before,
+.template-preview .block-col-left::before {
+    content: "\e014  COLONNE GAUCHE" !important;
+    /* format_align_left icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
-body[contenteditable="true"] .block-col-right::before, .template-preview .block-col-right::before {
-    content: "\e8ed  COLONNE DROITE" !important; /* view_column icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-col-right::before,
+.template-preview .block-col-right::before {
+    content: "\e014  COLONNE DROITE" !important;
+    /* format_align_right icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Conclusion */
-body[contenteditable="true"] .block-conclusion-title::before, .template-preview .block-conclusion-title::before {
-    content: "\e01f  TITRE : CONCLUSION" !important; /* task_alt icon code (approx) */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-conclusion-title::before,
+.template-preview .block-conclusion-title::before {
+    content: "\e264  TITRE CONCLUSIF" !important;
+    /* task_alt icon code (approx) */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
-body[contenteditable="true"] .block-conclusion-content::before, .template-preview .block-conclusion-content::before {
-    content: "\e902  CONTENU DE LA CONCLUSION" !important; /* notes icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-conclusion-content::before,
+.template-preview .block-conclusion-content::before {
+    content: "\f06e  CONCLUSION" !important;
+    /* notes icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
+}
+
+/* Alerte / Info */
+body[contenteditable="true"] .block-info::before,
+.template-preview .block-info::before {
+    content: "\e88e  INFORMATION" !important;
+    /* info icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+body[contenteditable="true"] .block-info,
+.template-preview .block-info {
+    border-color: #f39c12 !important;
+    background-color: #fcf3cf50 !important;
+}
+
+body[contenteditable="true"] .block-info::before,
+.template-preview .block-info::before {
+    color: #f39c12 !important;
 }
 
 /* Conteneur global */
 .article-template {
     padding: 10px;
+}
+
+/* BOUTONS DE CONTRÔLE CIRCULAIRES */
+/* Style commun pour tous les boutons de contrôle des cadres */
+body[contenteditable="true"] .delete-block-btn,
+body[contenteditable="true"] .move-up-btn,
+body[contenteditable="true"] .move-down-btn,
+body[contenteditable="true"] .add-newline-btn,
+body[contenteditable="true"] .add-preline-btn {
+    position: absolute;
+    background: #7f8c8d;
+    color: white !important;
+    font-family: 'Material Icons Outlined' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-indent: 0 !important;
+    letter-spacing: normal !important;
+    border-radius: 50% !important;
+    cursor: pointer;
+    z-index: 1000;
+    opacity: 0;
+    flex: none !important; /* Empêche la déformation dans les containers flex (row) */
+    box-sizing: border-box !important;
+    transition: opacity 0.2s, background 0.2s, transform 0.2s;
+    user-select: none;
+    pointer-events: auto;
+}
+
+body[contenteditable="true"] .editor-block:hover > [class*="-btn"],
+body[contenteditable="true"] .row:hover > [class*="-btn"] {
+    opacity: 0.6;
+}
+
+body[contenteditable="true"] [class*="-btn"]:hover {
+    opacity: 1 !important;
+    transform: scale(1.2);
+}
+
+/* Couleurs et positions spécifiques */
+body[contenteditable="true"] .delete-block-btn {
+    top: -10px;
+    right: 0;
+    background: #e74c3c !important;
+}
+body[contenteditable="true"] .delete-block-btn:hover { background: #c0392b !important; }
+
+body[contenteditable="true"] .move-up-btn {
+    top: -10px;
+    right: 25px;
+    background: #34495e !important;
+}
+
+body[contenteditable="true"] .add-preline-btn {
+    top: -10px;
+    left: 0;
+    background: #3498db !important;
+}
+
+body[contenteditable="true"] .add-newline-btn {
+    bottom: -10px;
+    right: 0;
+    background: #3498db !important;
+}
+
+body[contenteditable="true"] .move-down-btn {
+    bottom: -10px;
+    right: 25px;
+    background: #34495e !important;
+}
+
+/* Pas de bouton sur les colonnes individuelles */
+body[contenteditable="true"] .block-col-left > [class*="-btn"],
+body[contenteditable="true"] .block-col-right > [class*="-btn"] {
+    display: none !important;
+}
+
+/* Masquer les boutons en dehors de l'édition */
+.template-preview .delete-block-btn,
+.article-template .delete-block-btn,
+.template-preview .move-up-btn,
+.article-template .move-up-btn,
+.template-preview .move-down-btn,
+.article-template .move-down-btn,
+.template-preview .add-preline-btn,
+.article-template .add-preline-btn,
+.template-preview .add-newline-btn,
+.article-template .add-newline-btn {
+    display: none !important;
 }
