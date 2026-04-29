@@ -221,6 +221,15 @@ const initEditor = function () {
             };
 
             editor.on('NodeChange SetContent', injectControlButtons);
+            
+            // Détection des images cassées (fichiers manquants)
+            editor.on('init', () => {
+                editor.getBody().addEventListener('error', (e) => {
+                    if (e.target.tagName === 'IMG') {
+                        e.target.classList.add('img-broken');
+                    }
+                }, true);
+            });
 
             // 6. Gestion globale des clics
             editor.on('click', (e) => {
@@ -342,6 +351,7 @@ const initEditor = function () {
                     const div = document.createElement('div');
                     div.innerHTML = e.content;
                     div.querySelectorAll('.delete-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
+                    div.querySelectorAll('img.img-broken').forEach(img => img.classList.remove('img-broken'));
                     div.querySelectorAll('.editor-block').forEach(block => {
                         // Retirer la classe de menu si présente
                         block.classList.remove('show-style-menu');
