@@ -2,13 +2,27 @@
 
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
-body[contenteditable="true"] .editor-block,
-.template-preview .editor-block {
+:root {
+    --editor-bg: #f8f9fa; /* Modifiez cette valeur pour correspondre au fond de votre éditeur */
+}
+
+body[contenteditable="true"] .editor-block:not(.alert),
+.template-preview .editor-block:not(.alert) {
     border: 1px dashed #3498db;
     padding: 20px 15px 15px 15px;
     margin: 12px 0;
     position: relative;
     border-radius: 4px;
+    min-height: 40px;
+    display: block;
+}
+
+/* Les alertes (Notes) gardent leurs propriétés structurelles mais laissent Bootstrap gérer la bordure */
+body[contenteditable="true"] .editor-block.alert,
+.template-preview .editor-block.alert {
+    padding: 20px 15px 15px 15px;
+    margin: 12px 0;
+    position: relative;
     min-height: 40px;
     display: block;
 }
@@ -55,9 +69,9 @@ body[contenteditable="true"] .row::before,
 body[contenteditable="true"] .editor-block::before,
 .template-preview .editor-block::before {
     position: absolute;
-    top: -12px;
+    top: -10px;
     left: 10px;
-    background: white;
+    background-color: var(--editor-bg);
     padding: 0 5px;
     color: #3498db;
     font-weight: 700;
@@ -149,24 +163,103 @@ body[contenteditable="true"] .block-conclusion-content::before,
     display: flex !important;
 }
 
-/* Alerte / Info */
-body[contenteditable="true"] .block-info::before,
-.template-preview .block-info::before {
-    content: "\e88e  INFORMATION" !important;
-    /* info icon code */
+/* Variantes du Bloc Note */
+
+/* 1. INFO (Bleu - Défaut) */
+body[contenteditable="true"] .block-note-info::before,
+.template-preview .block-note-info::before {
+    content: "\e88e  NOTE INFORMATION" !important;
+    color: #0c5460 !important;
+    background: transparent !important;
     font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
-body[contenteditable="true"] .block-info,
-.template-preview .block-info {
-    border-color: #f39c12 !important;
-    background-color: #fcf3cf50 !important;
+/* 2. SUCCÈS (Vert) */
+body[contenteditable="true"] .block-note-success::before,
+.template-preview .block-note-success::before {
+    content: "\e86c  NOTE SUCCÈS" !important;
+    color: #155724 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
 }
 
-body[contenteditable="true"] .block-info::before,
-.template-preview .block-info::before {
-    color: #f39c12 !important;
+/* 3. ATTENTION (Orange) */
+body[contenteditable="true"] .block-note-warning::before,
+.template-preview .block-note-warning::before {
+    content: "\e8b2  NOTE ATTENTION" !important;
+    color: #856404 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 4. ALERTE (Rouge) */
+body[contenteditable="true"] .block-note-alert::before,
+.template-preview .block-note-alert::before {
+    content: "\e99a  NOTE ALERTE" !important;
+    color: #721c24 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* MENU DE SÉLECTION DE STYLE */
+body[contenteditable="true"] .style-selector-menu {
+    position: absolute;
+    top: 15px;
+    right: 50px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    display: none;
+    flex-direction: column;
+    padding: 5px;
+    width: 120px;
+}
+
+body[contenteditable="true"] .show-style-menu .style-selector-menu {
+    display: flex !important;
+}
+
+.style-option {
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.style-option:hover {
+    background: #f0f0f0;
+}
+
+.style-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.dot-info {
+    background: #3498db;
+}
+
+.dot-success {
+    background: #27ae60;
+}
+
+.dot-warning {
+    background: #f39c12;
+}
+
+.dot-alert {
+    background: #e74c3c;
 }
 
 /* Conteneur global */
@@ -180,7 +273,8 @@ body[contenteditable="true"] .delete-block-btn,
 body[contenteditable="true"] .move-up-btn,
 body[contenteditable="true"] .move-down-btn,
 body[contenteditable="true"] .add-newline-btn,
-body[contenteditable="true"] .add-preline-btn {
+body[contenteditable="true"] .add-preline-btn,
+body[contenteditable="true"] .change-style-btn {
     position: absolute;
     background: #7f8c8d;
     color: white !important;
@@ -205,15 +299,16 @@ body[contenteditable="true"] .add-preline-btn {
     cursor: pointer;
     z-index: 1000;
     opacity: 0;
-    flex: none !important; /* Empêche la déformation dans les containers flex (row) */
+    flex: none !important;
+    /* Empêche la déformation dans les containers flex (row) */
     box-sizing: border-box !important;
     transition: opacity 0.2s, background 0.2s, transform 0.2s;
     user-select: none;
     pointer-events: auto;
 }
 
-body[contenteditable="true"] .editor-block:hover > [class*="-btn"],
-body[contenteditable="true"] .row:hover > [class*="-btn"] {
+body[contenteditable="true"] .editor-block:hover>[class*="-btn"],
+body[contenteditable="true"] .row:hover>[class*="-btn"] {
     opacity: 0.6;
 }
 
@@ -228,7 +323,10 @@ body[contenteditable="true"] .delete-block-btn {
     right: 0;
     background: #e74c3c !important;
 }
-body[contenteditable="true"] .delete-block-btn:hover { background: #c0392b !important; }
+
+body[contenteditable="true"] .delete-block-btn:hover {
+    background: #c0392b !important;
+}
 
 body[contenteditable="true"] .move-up-btn {
     top: -10px;
@@ -240,12 +338,19 @@ body[contenteditable="true"] .add-preline-btn {
     top: -10px;
     left: 0;
     background: #3498db !important;
+    transform: rotate(180deg);
+    padding-top: 1px !important; /* Compense la rotation pour remonter l'icône */
+}
+
+body[contenteditable="true"] .add-preline-btn:hover {
+    transform: rotate(180deg) scale(1.2) !important;
 }
 
 body[contenteditable="true"] .add-newline-btn {
     bottom: -10px;
     right: 0;
     background: #3498db !important;
+    padding-bottom: 1px !important; /* Remonte l'icône */
 }
 
 body[contenteditable="true"] .move-down-btn {
@@ -255,21 +360,32 @@ body[contenteditable="true"] .move-down-btn {
 }
 
 /* Pas de bouton sur les colonnes individuelles */
-body[contenteditable="true"] .block-col-left > [class*="-btn"],
-body[contenteditable="true"] .block-col-right > [class*="-btn"] {
+body[contenteditable="true"] .block-col-left>[class*="-btn"],
+body[contenteditable="true"] .block-col-right>[class*="-btn"] {
     display: none !important;
 }
 
-/* Masquer les boutons en dehors de l'édition */
+body[contenteditable="true"] .change-style-btn {
+    top: -10px;
+    right: 50px;
+    background: #9b59b6 !important;
+    /* Violet pour la palette */
+}
+
+/* Masquer le bouton en dehors de l'édition */
 .template-preview .delete-block-btn,
 .article-template .delete-block-btn,
 .template-preview .move-up-btn,
 .article-template .move-up-btn,
 .template-preview .move-down-btn,
 .article-template .move-down-btn,
+.template-preview .add-newline-btn,
+.article-template .add-newline-btn,
 .template-preview .add-preline-btn,
 .article-template .add-preline-btn,
-.template-preview .add-newline-btn,
-.article-template .add-newline-btn {
+.template-preview .change-style-btn,
+.article-template .change-style-btn,
+.template-preview .style-selector-menu,
+.article-template .style-selector-menu {
     display: none !important;
 }

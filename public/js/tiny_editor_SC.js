@@ -137,7 +137,7 @@ const initEditor = function () {
             editor.addShortcut('alt+shift+s', 'Sous-titre', () => safeInsert('<div class="editor-block block-subtitle"><h4>Sous-titre de section</h4></div>'));
             editor.addShortcut('alt+shift+p', 'Paragraphe', () => safeInsert('<div class="editor-block block-paragraph"><p>Saisissez votre texte ici...</p></div>'));
             editor.addShortcut('alt+shift+c', 'Colonnes', () => safeInsert('<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><p>&nbsp;</p></div><div class="col-12 col-md-6 editor-block block-col-right"><p>&nbsp;</p></div></div>'));
-            editor.addShortcut('alt+shift+n', 'Information', () => safeInsert('<div class="editor-block block-info"><p><strong>Note :</strong> Saisissez une information importante ici...</p></div>'));
+            editor.addShortcut('alt+shift+n', 'Note', () => safeInsert('<div class="editor-block block-note-info alert alert-info"><p class="mb-0"><strong>Note :</strong> Saisissez une note importante ici...</p></div>'));
             editor.addShortcut('alt+shift+z', 'Conclusion', () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>'));
 
             // 4. Bouton Menu "Blocs"
@@ -151,7 +151,7 @@ const initEditor = function () {
                         { type: 'menuitem', text: 'Sous-titre', icon: 'mi-subtitle', onAction: () => safeInsert('<div class="editor-block block-subtitle"><h4>Sous-titre de section</h4></div>') },
                         { type: 'menuitem', text: 'Paragraphe', icon: 'mi-paragraph', onAction: () => safeInsert('<div class="editor-block block-paragraph"><p>Saisissez votre texte ici...</p></div>') },
                         { type: 'menuitem', text: 'Colonnes x2', icon: 'mi-columns', onAction: () => safeInsert('<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><p>&nbsp;</p></div><div class="col-12 col-md-6 editor-block block-col-right"><p>&nbsp;</p></div></div>') },
-                        { type: 'menuitem', text: 'Information', icon: 'mi-info', onAction: () => safeInsert('<div class="editor-block block-info"><p><strong>Note :</strong> Saisissez une information importante ici...</p></div>') },
+                        { type: 'menuitem', text: 'Note', icon: 'mi-info', onAction: () => safeInsert('<div class="editor-block block-note-info alert alert-info"><p class="mb-0"><strong>Note :</strong> Saisissez une note importante ici...</p></div>') },
                         { type: 'menuitem', text: 'Titre conclusif', icon: 'mi-title', onAction: () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div>') },
                         { type: 'menuitem', text: 'Conclusion avec titre', icon: 'mi-conclusion', onAction: () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>') },
                         { type: 'menuitem', text: 'Conclusion sans titre', icon: 'mi-conclusion', onAction: () => safeInsert('<div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>') }
@@ -180,6 +180,24 @@ const initEditor = function () {
                     }
                     if (!editor.dom.select(':scope > .move-down-btn', el).length) {
                         editor.dom.add(el, 'span', { class: 'move-down-btn material-icons-outlined', contenteditable: 'false', title: 'Descendre' }, 'expand_more');
+                    }
+
+                    // Bouton Palette de style (Uniquement pour les blocs Note)
+                    if (el.classList.contains('block-note-info') || el.classList.contains('block-note-success') || el.classList.contains('block-note-warning') || el.classList.contains('block-note-alert')) {
+                        if (!editor.dom.select(':scope > .change-style-btn', el).length) {
+                            editor.dom.add(el, 'span', { class: 'change-style-btn material-icons-outlined', contenteditable: 'false', title: 'Changer le style' }, 'palette');
+                            
+                            // Injection directe du menu dans le bloc
+                            const menuHtml = `
+                                <div class="style-selector-menu" contenteditable="false">
+                                    <div class="style-option" data-style="block-note-info"><span class="style-dot dot-info"></span> Information</div>
+                                    <div class="style-option" data-style="block-note-success"><span class="style-dot dot-success"></span> Succès</div>
+                                    <div class="style-option" data-style="block-note-warning"><span class="style-dot dot-warning"></span> Attention</div>
+                                    <div class="style-option" data-style="block-note-alert"><span class="style-dot dot-alert"></span> Alerte</div>
+                                </div>
+                            `;
+                            editor.dom.add(el, 'div', { class: 'menu-wrapper-safe', contenteditable: 'false' }, menuHtml);
+                        }
                     }
                 });
             };
@@ -237,6 +255,56 @@ const initEditor = function () {
                         editor.fire('change');
                     }
                 }
+
+                // Gestion du bouton Palette
+                // Gestion du bouton Palette
+                const paletteBtn = target.closest('.change-style-btn');
+                if (paletteBtn) {
+                    const targetBlock = paletteBtn.closest('.editor-block');
+                    if (targetBlock) {
+                        e.preventDefault();
+                        // Fermer les autres menus ouverts
+                        editor.dom.select('.show-style-menu').forEach(openBlock => {
+                            if (openBlock !== targetBlock) openBlock.classList.remove('show-style-menu');
+                        });
+                        targetBlock.classList.toggle('show-style-menu');
+                        return;
+                    }
+                }
+
+                // Gestion des options du menu
+                const option = target.closest('.style-option');
+                if (option) {
+                    const styleBlock = option.closest('.editor-block');
+                    const newStyle = option.getAttribute('data-style');
+                    if (styleBlock) {
+                        editor.undoManager.transact(() => {
+                            // Supprimer toutes les classes de style note et alert possibles
+                            styleBlock.classList.remove('block-note-info', 'block-note-success', 'block-note-warning', 'block-note-alert');
+                            styleBlock.classList.remove('alert', 'alert-info', 'alert-success', 'alert-warning', 'alert-danger');
+                            
+                            // Ajouter les nouvelles (Note + Bootstrap)
+                            styleBlock.classList.add(newStyle);
+                            styleBlock.classList.add('alert');
+                            if (newStyle === 'block-note-info') styleBlock.classList.add('alert-info');
+                            if (newStyle === 'block-note-success') styleBlock.classList.add('alert-success');
+                            if (newStyle === 'block-note-warning') styleBlock.classList.add('alert-warning');
+                            if (newStyle === 'block-note-alert') styleBlock.classList.add('alert-danger');
+                            
+                            // Gérer la marge du paragraphe interne
+                            const innerP = styleBlock.querySelector('p');
+                            if (innerP) innerP.classList.add('mb-0');
+                            
+                            styleBlock.classList.remove('show-style-menu');
+                        });
+                        editor.fire('change');
+                    }
+                } else if (!target.closest('.style-selector-menu')) {
+                    // Fermer le menu si on clique ailleurs
+                    editor.dom.select('.show-style-menu').forEach(openBlock => {
+                        openBlock.classList.remove('show-style-menu');
+                    });
+                }
             });
 
             // 7. Nettoyage final
@@ -244,8 +312,11 @@ const initEditor = function () {
                 if (e.content) {
                     const div = document.createElement('div');
                     div.innerHTML = e.content;
-                    div.querySelectorAll('.delete-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn').forEach(btn => btn.remove());
+                    div.querySelectorAll('.delete-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
                     div.querySelectorAll('.editor-block').forEach(block => {
+                        // Retirer la classe de menu si présente
+                        block.classList.remove('show-style-menu');
+                        
                         const hasText = block.textContent.trim().length > 0;
                         const hasImages = block.querySelectorAll('img').length > 0;
                         if (!hasText && !hasImages) {
