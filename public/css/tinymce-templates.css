@@ -3,11 +3,12 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
 :root {
-    --editor-bg: #f8f9fa; /* Modifiez cette valeur pour correspondre au fond de votre éditeur */
+    --editor-bg: #f8f9fa;
+    /* Modifiez cette valeur pour correspondre au fond de votre éditeur */
 }
 
-body[contenteditable="true"] .editor-block:not(.alert),
-.template-preview .editor-block:not(.alert) {
+body[contenteditable="true"] .editor-block:not(.alert):not([class*="block-frame-"]),
+.template-preview .editor-block:not(.alert):not([class*="block-frame-"]) {
     border: 1px dashed #3498db;
     padding: 20px 15px 15px 15px;
     margin: 12px 0;
@@ -15,6 +16,8 @@ body[contenteditable="true"] .editor-block:not(.alert),
     border-radius: 4px;
     min-height: 40px;
     display: block;
+    background-color: inherit;
+    /* Hérite du fond de l'éditeur */
 }
 
 /* Les alertes (Notes) gardent leurs propriétés structurelles mais laissent Bootstrap gérer la bordure */
@@ -66,8 +69,7 @@ body[contenteditable="true"] .row::before,
     padding: 0 5px;
 }
 
-body[contenteditable="true"] .editor-block::before,
-.template-preview .editor-block::before {
+body[contenteditable="true"] .editor-block::before {
     position: absolute;
     top: -10px;
     left: 10px;
@@ -94,8 +96,7 @@ body[contenteditable="true"] .editor-block::before,
 }
 
 /* Introduction */
-body[contenteditable="true"] .block-intro::before,
-.template-preview .block-intro::before {
+body[contenteditable="true"] .block-intro::before {
     content: "\ef75  INTRODUCTION" !important;
     /* push_pin icon code */
     font-family: 'Material Icons Outlined', sans-serif !important;
@@ -103,8 +104,7 @@ body[contenteditable="true"] .block-intro::before,
 }
 
 /* Titre */
-body[contenteditable="true"] .block-title::before,
-.template-preview .block-title::before {
+body[contenteditable="true"] .block-title::before {
     content: "\e264  TITRE PRINCIPAL" !important;
     /* title icon code */
     font-family: 'Material Icons Outlined', sans-serif !important;
@@ -112,8 +112,7 @@ body[contenteditable="true"] .block-title::before,
 }
 
 /* Sous-titre */
-body[contenteditable="true"] .block-subtitle::before,
-.template-preview .block-subtitle::before {
+body[contenteditable="true"] .block-subtitle::before {
     content: "\e264 SOUS-TITRE" !important;
     /* subtitles icon code */
     font-family: 'Material Icons Outlined', sans-serif !important;
@@ -121,8 +120,7 @@ body[contenteditable="true"] .block-subtitle::before,
 }
 
 /* Paragraphe */
-body[contenteditable="true"] .block-paragraph::before,
-.template-preview .block-paragraph::before {
+body[contenteditable="true"] .block-paragraph::before {
     content: "\e8d2  PARAGRAPHE" !important;
     /* segment icon code */
     font-family: 'Material Icons Outlined', sans-serif !important;
@@ -130,8 +128,7 @@ body[contenteditable="true"] .block-paragraph::before,
 }
 
 /* Colonnes */
-body[contenteditable="true"] .block-col-left::before,
-.template-preview .block-col-left::before {
+body[contenteditable="true"] .block-col-left::before {
     content: "\e014  COLONNE GAUCHE" !important;
     /* format_align_left icon code */
     font-family: 'Material Icons Outlined', sans-serif !important;
@@ -166,8 +163,7 @@ body[contenteditable="true"] .block-conclusion-content::before,
 /* Variantes du Bloc Note */
 
 /* 1. INFO (Bleu - Défaut) */
-body[contenteditable="true"] .block-note-info::before,
-.template-preview .block-note-info::before {
+body[contenteditable="true"] .block-note-info::before {
     content: "\e88e  NOTE INFORMATION" !important;
     color: #0c5460 !important;
     background: transparent !important;
@@ -176,8 +172,7 @@ body[contenteditable="true"] .block-note-info::before,
 }
 
 /* 2. SUCCÈS (Vert) */
-body[contenteditable="true"] .block-note-success::before,
-.template-preview .block-note-success::before {
+body[contenteditable="true"] .block-note-success::before {
     content: "\e86c  NOTE SUCCÈS" !important;
     color: #155724 !important;
     background: transparent !important;
@@ -186,8 +181,7 @@ body[contenteditable="true"] .block-note-success::before,
 }
 
 /* 3. ATTENTION (Orange) */
-body[contenteditable="true"] .block-note-warning::before,
-.template-preview .block-note-warning::before {
+body[contenteditable="true"] .block-note-warning::before {
     content: "\e8b2  NOTE ATTENTION" !important;
     color: #856404 !important;
     background: transparent !important;
@@ -196,13 +190,128 @@ body[contenteditable="true"] .block-note-warning::before,
 }
 
 /* 4. ALERTE (Rouge) */
-body[contenteditable="true"] .block-note-alert::before,
-.template-preview .block-note-alert::before {
+body[contenteditable="true"] .block-note-alert::before {
     content: "\e99a  NOTE ALERTE" !important;
     color: #721c24 !important;
     background: transparent !important;
     font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
+}
+
+/* ==============================================================
+   VARIANTES DES CADRES D'ORNEMENTATION 
+   ============================================================== */
+
+/* Sélecteur de base pour tous les cadres */
+[class*="block-frame-"] {
+    padding: 25px 20px 15px 20px !important;
+    margin: 20px 0 !important;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* 1. SIMPLE (Gris discret) */
+.block-frame-simple {
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+}
+
+body[contenteditable="true"] .block-frame-simple::before {
+    content: "\f089  CADRE SIMPLE" !important;
+    color: #6c757d !important;
+    background-color: var(--editor-bg) !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 2. MODERNE (Ombre portée) */
+.block-frame-modern {
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    background-color: #fff !important;
+    border-radius: 10px !important;
+}
+
+body[contenteditable="true"] .block-frame-modern::before {
+    content: "\e53b  CADRE MODERNE" !important;
+    color: #3498db !important;
+    background-color: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 3. ÉLÉGANT (Liseré gauche + fond léger) */
+.block-frame-elegant {
+    border: none !important;
+    border-left: 5px solid #2c3e50 !important;
+    background-color: #f8f9fa !important;
+    border-radius: 0 4px 4px 0 !important;
+}
+
+body[contenteditable="true"] .block-frame-elegant::before {
+    content: "\e5dc  CADRE ÉLÉGANT" !important;
+    color: #2c3e50 !important;
+    background-color: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 4. POINTILLÉ (Style Coupon) */
+.block-frame-dashed {
+    border: 2px dashed #95a5a6 !important;
+    border-radius: 0 !important;
+}
+
+body[contenteditable="true"] .block-frame-dashed::before {
+    content: "\e14e  CADRE POINTILLÉ" !important;
+    color: #7f8c8d !important;
+    background-color: var(--editor-bg) !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* Pastilles du menu palette */
+.style-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.dot-info {
+    background-color: #3498db;
+}
+
+.dot-success {
+    background-color: #27ae60;
+}
+
+.dot-warning {
+    background-color: #f39c12;
+}
+
+.dot-alert {
+    background-color: #e74c3c;
+}
+
+/* Pastilles spécifiques pour les cadres */
+.dot-simple {
+    background-color: #ced4da;
+}
+
+.dot-modern {
+    background-color: #3498db;
+    border: 1px solid #eee;
+}
+
+.dot-elegant {
+    background-color: #2c3e50;
+}
+
+.dot-dashed {
+    border: 1px dashed #95a5a6;
+    background: transparent;
 }
 
 /* MENU DE SÉLECTION DE STYLE */
@@ -339,7 +448,8 @@ body[contenteditable="true"] .add-preline-btn {
     left: 0;
     background: #3498db !important;
     transform: rotate(180deg);
-    padding-top: 1px !important; /* Compense la rotation pour remonter l'icône */
+    padding-top: 1px !important;
+    /* Compense la rotation pour remonter l'icône */
 }
 
 body[contenteditable="true"] .add-preline-btn:hover {
@@ -350,7 +460,8 @@ body[contenteditable="true"] .add-newline-btn {
     bottom: -10px;
     right: 0;
     background: #3498db !important;
-    padding-bottom: 1px !important; /* Remonte l'icône */
+    padding-bottom: 1px !important;
+    /* Remonte l'icône */
 }
 
 body[contenteditable="true"] .move-down-btn {
