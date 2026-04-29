@@ -1,23 +1,80 @@
-/* Styles spécifiques pour l'affichage des cadres dans l'éditeur TinyMCE */
+/* Styles spécifiques pour l'affichage des blocs dans l'éditeur TinyMCE */
 
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
-body[contenteditable="true"] .editor-block, .template-preview .editor-block {
-    border: 1px dashed #3498db !important;
-    padding: 25px 15px 15px 15px !important;
-    margin: 20px 0 !important;
-    position: relative !important;
-    border-radius: 4px !important;
-    min-height: 40px !important;
-    display: block !important;
+:root {
+    --editor-bg: #f8f9fa;
+    /* Modifiez cette valeur pour correspondre au fond de votre éditeur */
 }
 
-body[contenteditable="true"] .editor-block::before, .template-preview .editor-block::before {
+body[contenteditable="true"] .editor-block:not(.alert):not([class*="block-frame-"]),
+.template-preview .editor-block:not(.alert):not([class*="block-frame-"]) {
+    border: 1px dashed #3498db;
+    padding: 20px 15px 15px 15px;
+    margin: 12px 0;
+    position: relative;
+    border-radius: 4px;
+    min-height: 40px;
+    display: block;
+    background-color: inherit;
+    /* Hérite du fond de l'éditeur */
+}
+
+/* Les alertes (Notes) gardent leurs propriétés structurelles mais laissent Bootstrap gérer la bordure */
+body[contenteditable="true"] .editor-block.alert,
+.template-preview .editor-block.alert {
+    padding: 20px 15px 15px 15px;
+    margin: 12px 0;
+    position: relative;
+    min-height: 40px;
+    display: block;
+}
+
+/* Marqueur pour la structure des rangées */
+body[contenteditable="true"] .row,
+.template-preview .row {
+    border: 1px dotted #bdc3c7 !important;
+    padding: 0 !important;
+    margin: 12px 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+/* On fait coller les colonnes (editor-block) à la structure row */
+body[contenteditable="true"] .row .block-col-left,
+body[contenteditable="true"] .row .block-col-right,
+.template-preview .row .block-col-left,
+.template-preview .row .block-col-right {
+    margin: 12px 0 0 0 !important;
+    padding: 5px 0 0 0 !important;
+    /* Presque nul : l'élément à l'intérieur collera à la bordure de la colonne */
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+}
+
+body[contenteditable="true"] .row::before,
+.template-preview .row::before {
+    font-family: 'Material Icons Outlined', sans-serif;
+    content: "\e8ec  STRUCTURE MULTI-COLONNES";
     position: absolute;
-    top: -12px;
-    left: 10px;
+    top: -10px;
+    right: 10px;
+    font-size: 10px;
+    color: #bdc3c7;
+    font-weight: bold;
     background: white;
-    padding: 0 8px;
+    padding: 0 5px;
+}
+
+body[contenteditable="true"] .editor-block::before {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: var(--editor-bg);
+    padding: 0 5px;
     color: #3498db;
     font-weight: 700;
     font-size: 11px;
@@ -28,64 +85,418 @@ body[contenteditable="true"] .editor-block::before, .template-preview .editor-bl
     z-index: 10;
 }
 
-/* Icônes spécifiques via Material Icons */
+/* Icônes spécifiques via Material Icons Outlined */
 .editor-block::after {
-    font-family: 'Material Icons';
+    font-family: 'Material Icons Outlined';
     content: '';
     position: absolute;
     top: -12px;
-    left: -5px; /* Adjust based on icon presence */
+    left: -5px;
     display: none;
 }
 
 /* Introduction */
-body[contenteditable="true"] .block-intro::before, .template-preview .block-intro::before {
-    content: "\e240  INTRODUCTION DE L'ARTICLE" !important; /* push_pin icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-intro::before {
+    content: "\ef75  INTRODUCTION" !important;
+    /* push_pin icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Titre */
-body[contenteditable="true"] .block-title::before, .template-preview .block-title::before {
-    content: "\e245  TITRE" !important; /* title icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-title::before {
+    content: "\e264  TITRE PRINCIPAL" !important;
+    /* title icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Sous-titre */
-body[contenteditable="true"] .block-subtitle::before, .template-preview .block-subtitle::before {
-    content: "\e048  SOUS-TITRE" !important; /* subtitles icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-subtitle::before {
+    content: "\e264 SOUS-TITRE" !important;
+    /* subtitles icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* Paragraphe */
+body[contenteditable="true"] .block-paragraph::before {
+    content: "\e8d2  PARAGRAPHE" !important;
+    /* segment icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Colonnes */
-body[contenteditable="true"] .block-col-left::before, .template-preview .block-col-left::before {
-    content: "\e8ed  COLONNE GAUCHE" !important; /* view_column icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-col-left::before {
+    content: "\e014  COLONNE GAUCHE" !important;
+    /* format_align_left icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
-body[contenteditable="true"] .block-col-right::before, .template-preview .block-col-right::before {
-    content: "\e8ed  COLONNE DROITE" !important; /* view_column icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-col-right::before,
+.template-preview .block-col-right::before {
+    content: "\e014  COLONNE DROITE" !important;
+    /* format_align_right icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
 /* Conclusion */
-body[contenteditable="true"] .block-conclusion-title::before, .template-preview .block-conclusion-title::before {
-    content: "\e01f  TITRE : CONCLUSION" !important; /* task_alt icon code (approx) */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-conclusion-title::before,
+.template-preview .block-conclusion-title::before {
+    content: "\e264  TITRE CONCLUSIF" !important;
+    /* task_alt icon code (approx) */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
 }
 
-body[contenteditable="true"] .block-conclusion-content::before, .template-preview .block-conclusion-content::before {
-    content: "\e902  CONTENU DE LA CONCLUSION" !important; /* notes icon code */
-    font-family: 'Material Icons', sans-serif !important;
+body[contenteditable="true"] .block-conclusion-content::before,
+.template-preview .block-conclusion-content::before {
+    content: "\f06e  CONCLUSION" !important;
+    /* notes icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
     display: flex !important;
+}
+
+/* Variantes du Bloc Note */
+
+/* 1. INFO (Bleu - Défaut) */
+body[contenteditable="true"] .block-note-info::before {
+    content: "\e88e  NOTE INFORMATION" !important;
+    color: #0c5460 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 2. SUCCÈS (Vert) */
+body[contenteditable="true"] .block-note-success::before {
+    content: "\e86c  NOTE SUCCÈS" !important;
+    color: #155724 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 3. ATTENTION (Orange) */
+body[contenteditable="true"] .block-note-warning::before {
+    content: "\e8b2  NOTE ATTENTION" !important;
+    color: #856404 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 4. ALERTE (Rouge) */
+body[contenteditable="true"] .block-note-alert::before {
+    content: "\e99a  NOTE ALERTE" !important;
+    color: #721c24 !important;
+    background: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* ==============================================================
+   VARIANTES DES CADRES D'ORNEMENTATION 
+   ============================================================== */
+
+/* Sélecteur de base pour tous les cadres */
+[class*="block-frame-"] {
+    padding: 25px 20px 15px 20px !important;
+    margin: 20px 0 !important;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* 1. SIMPLE (Gris discret) */
+.block-frame-simple {
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+}
+
+body[contenteditable="true"] .block-frame-simple::before {
+    content: "\f089  CADRE SIMPLE" !important;
+    color: #6c757d !important;
+    background-color: var(--editor-bg) !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 2. MODERNE (Ombre portée) */
+.block-frame-modern {
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    background-color: #fff !important;
+    border-radius: 10px !important;
+}
+
+body[contenteditable="true"] .block-frame-modern::before {
+    content: "\e53b  CADRE MODERNE" !important;
+    color: #3498db !important;
+    background-color: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 3. ÉLÉGANT (Liseré gauche + fond léger) */
+.block-frame-elegant {
+    border: none !important;
+    border-left: 5px solid #2c3e50 !important;
+    background-color: #f8f9fa !important;
+    border-radius: 0 4px 4px 0 !important;
+}
+
+body[contenteditable="true"] .block-frame-elegant::before {
+    content: "\e5dc  CADRE ÉLÉGANT" !important;
+    color: #2c3e50 !important;
+    background-color: transparent !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* 4. POINTILLÉ (Style Coupon) */
+.block-frame-dashed {
+    border: 2px dashed #95a5a6 !important;
+    border-radius: 0 !important;
+}
+
+body[contenteditable="true"] .block-frame-dashed::before {
+    content: "\e14e  CADRE POINTILLÉ" !important;
+    color: #7f8c8d !important;
+    background-color: var(--editor-bg) !important;
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
+/* Pastilles du menu palette */
+.style-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.dot-info {
+    background-color: #3498db;
+}
+
+.dot-success {
+    background-color: #27ae60;
+}
+
+.dot-warning {
+    background-color: #f39c12;
+}
+
+.dot-alert {
+    background-color: #e74c3c;
+}
+
+/* Pastilles spécifiques pour les cadres */
+.dot-simple {
+    background-color: #ced4da;
+}
+
+.dot-modern {
+    background-color: #3498db;
+    border: 1px solid #eee;
+}
+
+.dot-elegant {
+    background-color: #2c3e50;
+}
+
+.dot-dashed {
+    border: 1px dashed #95a5a6;
+    background: transparent;
+}
+
+/* MENU DE SÉLECTION DE STYLE */
+body[contenteditable="true"] .style-selector-menu {
+    position: absolute;
+    top: 15px;
+    right: 50px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    display: none;
+    flex-direction: column;
+    padding: 5px;
+    width: 120px;
+}
+
+body[contenteditable="true"] .show-style-menu .style-selector-menu {
+    display: flex !important;
+}
+
+.style-option {
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.style-option:hover {
+    background: #f0f0f0;
+}
+
+.style-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.dot-info {
+    background: #3498db;
+}
+
+.dot-success {
+    background: #27ae60;
+}
+
+.dot-warning {
+    background: #f39c12;
+}
+
+.dot-alert {
+    background: #e74c3c;
 }
 
 /* Conteneur global */
 .article-template {
     padding: 10px;
+}
+
+/* BOUTONS DE CONTRÔLE CIRCULAIRES */
+/* Style commun pour tous les boutons de contrôle des blocs */
+body[contenteditable="true"] .delete-block-btn,
+body[contenteditable="true"] .move-up-btn,
+body[contenteditable="true"] .move-down-btn,
+body[contenteditable="true"] .add-newline-btn,
+body[contenteditable="true"] .add-preline-btn,
+body[contenteditable="true"] .change-style-btn {
+    position: absolute;
+    background: #7f8c8d;
+    color: white !important;
+    font-family: 'Material Icons Outlined' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-indent: 0 !important;
+    letter-spacing: normal !important;
+    border-radius: 50% !important;
+    cursor: pointer;
+    z-index: 1000;
+    opacity: 0;
+    flex: none !important;
+    /* Empêche la déformation dans les containers flex (row) */
+    box-sizing: border-box !important;
+    transition: opacity 0.2s, background 0.2s, transform 0.2s;
+    user-select: none;
+    pointer-events: auto;
+}
+
+body[contenteditable="true"] .editor-block:hover>[class*="-btn"],
+body[contenteditable="true"] .row:hover>[class*="-btn"] {
+    opacity: 0.6;
+}
+
+body[contenteditable="true"] [class*="-btn"]:hover {
+    opacity: 1 !important;
+    transform: scale(1.2);
+}
+
+/* Couleurs et positions spécifiques */
+body[contenteditable="true"] .delete-block-btn {
+    top: -10px;
+    right: 0;
+    background: #e74c3c !important;
+}
+
+body[contenteditable="true"] .delete-block-btn:hover {
+    background: #c0392b !important;
+}
+
+body[contenteditable="true"] .move-up-btn {
+    top: -10px;
+    right: 25px;
+    background: #34495e !important;
+}
+
+body[contenteditable="true"] .add-preline-btn {
+    top: -10px;
+    left: 0;
+    background: #3498db !important;
+    transform: rotate(180deg);
+    padding-top: 1px !important;
+    /* Compense la rotation pour remonter l'icône */
+}
+
+body[contenteditable="true"] .add-preline-btn:hover {
+    transform: rotate(180deg) scale(1.2) !important;
+}
+
+body[contenteditable="true"] .add-newline-btn {
+    bottom: -10px;
+    right: 0;
+    background: #3498db !important;
+    padding-bottom: 1px !important;
+    /* Remonte l'icône */
+}
+
+body[contenteditable="true"] .move-down-btn {
+    bottom: -10px;
+    right: 25px;
+    background: #34495e !important;
+}
+
+/* Pas de bouton sur les colonnes individuelles */
+body[contenteditable="true"] .block-col-left>[class*="-btn"],
+body[contenteditable="true"] .block-col-right>[class*="-btn"] {
+    display: none !important;
+}
+
+body[contenteditable="true"] .change-style-btn {
+    top: -10px;
+    right: 50px;
+    background: #9b59b6 !important;
+    /* Violet pour la palette */
+}
+
+/* Masquer le bouton en dehors de l'édition */
+.template-preview .delete-block-btn,
+.article-template .delete-block-btn,
+.template-preview .move-up-btn,
+.article-template .move-up-btn,
+.template-preview .move-down-btn,
+.article-template .move-down-btn,
+.template-preview .add-newline-btn,
+.article-template .add-newline-btn,
+.template-preview .add-preline-btn,
+.article-template .add-preline-btn,
+.template-preview .change-style-btn,
+.article-template .change-style-btn,
+.template-preview .style-selector-menu,
+.article-template .style-selector-menu {
+    display: none !important;
 }
