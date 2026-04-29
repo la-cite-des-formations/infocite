@@ -30,6 +30,36 @@ body[contenteditable="true"] .editor-block.alert,
     display: block;
 }
 
+/* Aide visuelle pour les images cassées dans l'éditeur */
+body[contenteditable="true"] img:not([src]),
+body[contenteditable="true"] img[src=""],
+body[contenteditable="true"] img.img-broken {
+    outline: 2px dashed #e74c3c !important;
+    outline-offset: -2px;
+    background-color: #f8d7da !important;
+    min-width: 150px;
+    min-height: 80px;
+    display: block;
+    position: relative;
+}
+
+body[contenteditable="true"] img:not([src])::after,
+body[contenteditable="true"] img[src=""]::after,
+body[contenteditable="true"] img.img-broken::after {
+    content: "\e8b2  IMAGE MANQUANTE" !important;
+    font-family: 'Material Icons Outlined';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    font-weight: bold;
+    color: #721c24;
+    width: 100%;
+    text-align: center;
+}
+
 /* Marqueur pour la structure des rangées */
 body[contenteditable="true"] .row,
 .template-preview .row {
