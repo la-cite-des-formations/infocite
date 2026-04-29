@@ -1,4 +1,4 @@
-/* Styles spécifiques pour l'affichage des cadres dans l'éditeur TinyMCE */
+/* Styles spécifiques pour l'affichage des blocs dans l'éditeur TinyMCE */
 
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
@@ -175,7 +175,7 @@ body[contenteditable="true"] .block-info::before,
 }
 
 /* BOUTONS DE CONTRÔLE CIRCULAIRES */
-/* Style commun pour tous les boutons de contrôle des cadres */
+/* Style commun pour tous les boutons de contrôle des blocs */
 body[contenteditable="true"] .delete-block-btn,
 body[contenteditable="true"] .move-up-btn,
 body[contenteditable="true"] .move-down-btn,

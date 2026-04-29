@@ -37,7 +37,7 @@ const initEditor = function () {
         image_advtab: true,
         contextmenu: false,
         toolbar: [
-            "undo redo | cadres | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media | emoticons charmap | searchreplace preview code fullscreen"
+            "undo redo | blocs | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist hr table paste | link image media | emoticons charmap | searchreplace preview code fullscreen"
         ],
         entity_encoding: 'raw',
         content_style: `.mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before { display: block; width: 100%; text-align: center; padding-top: 40px; }`,
@@ -140,9 +140,9 @@ const initEditor = function () {
             editor.addShortcut('alt+shift+n', 'Information', () => safeInsert('<div class="editor-block block-info"><p><strong>Note :</strong> Saisissez une information importante ici...</p></div>'));
             editor.addShortcut('alt+shift+z', 'Conclusion', () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>'));
 
-            // 4. Bouton Menu "Cadres"
-            editor.ui.registry.addMenuButton('cadres', {
-                text: 'Cadres',
+            // 4. Bouton Menu "Blocs"
+            editor.ui.registry.addMenuButton('blocs', {
+                text: 'Blocs',
                 icon: 'visualblocks',
                 fetch: (callback) => {
                     var items = [
