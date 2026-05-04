@@ -409,6 +409,7 @@ body[contenteditable="true"] .show-style-menu .style-selector-menu {
 /* BOUTONS DE CONTRÔLE CIRCULAIRES */
 /* Style commun pour tous les boutons de contrôle des blocs */
 body[contenteditable="true"] .delete-block-btn,
+body[contenteditable="true"] .unwrap-block-btn,
 body[contenteditable="true"] .move-up-btn,
 body[contenteditable="true"] .move-down-btn,
 body[contenteditable="true"] .add-newline-btn,
@@ -513,9 +514,18 @@ body[contenteditable="true"] .change-style-btn {
     /* Violet pour la palette */
 }
 
+body[contenteditable="true"] .unwrap-block-btn {
+    top: 12px;
+    right: 0;
+    background: #f39c12 !important;
+    /* Orange pour le dégroupage */
+}
+
 /* Masquer le bouton en dehors de l'édition */
 .template-preview .delete-block-btn,
 .article-template .delete-block-btn,
+.template-preview .unwrap-block-btn,
+.article-template .unwrap-block-btn,
 .template-preview .move-up-btn,
 .article-template .move-up-btn,
 .template-preview .move-down-btn,
