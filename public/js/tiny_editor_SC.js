@@ -138,60 +138,111 @@ const initEditor = function () {
 
             const safeInsert = (templateHtml) => {
                 const selection = editor.selection;
-                const node = selection.getNode();
-                const target = findBestTarget(node);
+                const selectedContent = selection.getContent();
+                const hasSelection = selectedContent.trim() !== '';
+                const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
+                
+                // --- VÉRIFICATION DES RESTRICTIONS POUR LES TITRES ---
+                if (isTitleBlock) {
+                    const node = selection.getNode();
+                    const target = findBestTarget(node);
+                    const isList = target && (target.nodeName === 'UL' || target.nodeName === 'OL');
+                    
+                    // Détection de sélection multi-blocs (si elle contient des balises de bloc)
+                    const isMultiBlock = hasSelection && (selectedContent.match(/<(p|div|ul|ol|li|h[1-6]|blockquote|table)/gi) || []).length > 1;
+
+                    if (isList || isMultiBlock) {
+                        editor.notificationManager.open({
+                            text: "Un bloc 'Titre' ne peut pas contenir de liste ou de sélection multiple.",
+                            type: 'warning',
+                            timeout: 4000
+                        });
+                        return; // On annule l'insertion
+                    }
+                }
                 
                 editor.undoManager.transact(() => {
-                    // On ne traite que si on a une cible valide qui n'est pas déjà un bloc
-                    if (target && target.nodeName !== 'BODY' && !target.classList.contains('editor-block') && !target.classList.contains('row')) {
+                    if (hasSelection) {
+                        // --- LOGIQUE MULTI-BLOCS (SÉLECTION ACTIVE) ---
                         const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
                         const isColumnBlock = templateHtml.includes('class="row"');
-                        const isList = target.nodeName === 'UL' || target.nodeName === 'OL';
-                        
-                        // Détection plus fine du vide (on garde si image, iframe, etc.)
-                        const isEmpty = target.textContent.trim() === '' && !target.querySelector('img, iframe, video, table, .editor-block');
 
-                        // Préparation des nouveaux nœuds à partir du template
                         const fragment = editor.dom.createFragment(templateHtml);
                         const newNodes = Array.from(fragment.childNodes);
-                        const firstBlock = newNodes.find(n => n.nodeType === 1); // Le premier élément réel (DIV)
+                        
+                        // On cherche le bloc "réceptacle" (le dernier bloc de contenu ou le premier DIV)
+                        const targetBlock = newNodes.reverse().find(n => n.nodeType === 1) || newNodes[0];
+                        newNodes.reverse(); // On remet dans l'ordre
 
-                        if (!isEmpty && firstBlock) {
-                            let contentHtml = isList ? target.outerHTML : target.innerHTML;
-                            if (isTitleBlock) contentHtml = cleanTitleText(contentHtml);
-
-                            if (isColumnBlock) {
-                                const leftCol = firstBlock.querySelector('.block-col-left');
-                                if (leftCol) leftCol.innerHTML = `<p>${contentHtml}</p>`;
+                        if (targetBlock) {
+                            if (isTitleBlock) {
+                                const titleTag = targetBlock.querySelector('h1, h2, h3, h4, h5, h6');
+                                if (titleTag) titleTag.innerText = cleanTitleText(selectedContent);
+                            } else if (isColumnBlock) {
+                                const leftCol = targetBlock.querySelector('.block-col-left');
+                                if (leftCol) leftCol.innerHTML = selectedContent;
                             } else {
-                                // On cherche la première balise de contenu du template (p, h2, h4...)
-                                const contentTag = firstBlock.querySelector('p, h1, h2, h3, h4, h5, h6');
+                                // On cherche la balise de contenu par défaut (P)
+                                const contentTag = targetBlock.querySelector('p');
                                 if (contentTag) {
-                                    if (isList) {
-                                        // On remplace le P/H par la structure complète de la liste
-                                        editor.dom.replace(editor.dom.createFragment(contentHtml), contentTag);
-                                    } else {
-                                        contentTag.innerHTML = contentHtml;
-                                    }
+                                    editor.dom.replace(editor.dom.createFragment(selectedContent), contentTag);
                                 }
                             }
                         }
-
-                        // Insertion chirurgicale : on insère les nouveaux nœuds APRÈS la cible, puis on supprime la cible
-                        let ref = target;
-                        newNodes.forEach(newNode => {
-                            editor.dom.insertAfter(newNode, ref);
-                            ref = newNode;
-                        });
-                        editor.dom.remove(target);
                         
-                        // Positionnement du curseur dans le premier bloc inséré
-                        const focusNode = firstBlock.querySelector('p, h2, h4') || firstBlock;
-                        editor.selection.setCursorLocation(focusNode, 0);
-                        editor.fire('change');
+                        // On remplace la sélection par le résultat final
+                        const wrapper = document.createElement('div');
+                        newNodes.forEach(n => wrapper.appendChild(n));
+                        editor.insertContent(wrapper.innerHTML);
+
                     } else {
-                        // Si pas de cible ou cible déjà bloquée, insertion classique
-                        editor.insertContent(templateHtml);
+                        // --- LOGIQUE MONO-BLOC (CURSEUR SIMPLE) ---
+                        const node = selection.getNode();
+                        const target = findBestTarget(node);
+                        
+                        if (target && target.nodeName !== 'BODY' && !target.classList.contains('editor-block') && !target.classList.contains('row')) {
+                            const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
+                            const isColumnBlock = templateHtml.includes('class="row"');
+                            const isList = target.nodeName === 'UL' || target.nodeName === 'OL';
+                            
+                            const isEmpty = target.textContent.trim() === '' && !target.querySelector('img, iframe, video, table, .editor-block');
+
+                            const fragment = editor.dom.createFragment(templateHtml);
+                            const newNodes = Array.from(fragment.childNodes);
+                            const firstBlock = newNodes.find(n => n.nodeType === 1);
+
+                            if (!isEmpty && firstBlock) {
+                                let contentHtml = isList ? target.outerHTML : target.innerHTML;
+                                if (isTitleBlock) contentHtml = cleanTitleText(contentHtml);
+
+                                if (isColumnBlock) {
+                                    const leftCol = firstBlock.querySelector('.block-col-left');
+                                    if (leftCol) leftCol.innerHTML = `<p>${contentHtml}</p>`;
+                                } else {
+                                    const contentTag = firstBlock.querySelector('p, h1, h2, h3, h4, h5, h6');
+                                    if (contentTag) {
+                                        if (isList) {
+                                            editor.dom.replace(editor.dom.createFragment(contentHtml), contentTag);
+                                        } else {
+                                            contentTag.innerHTML = contentHtml;
+                                        }
+                                    }
+                                }
+                            }
+
+                            let ref = target;
+                            newNodes.forEach(newNode => {
+                                editor.dom.insertAfter(newNode, ref);
+                                ref = newNode;
+                            });
+                            editor.dom.remove(target);
+                            
+                            const focusNode = firstBlock.querySelector('p, h2, h4') || firstBlock;
+                            editor.selection.setCursorLocation(focusNode, 0);
+                            editor.fire('change');
+                        } else {
+                            editor.insertContent(templateHtml);
+                        }
                     }
                 });
             };
