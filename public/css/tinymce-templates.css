@@ -515,8 +515,8 @@ body[contenteditable="true"] .change-style-btn {
 }
 
 body[contenteditable="true"] .unwrap-block-btn {
-    top: -10px;
-    right: 75px;
+    top: 12px;
+    right: 0;
     background: #f39c12 !important;
     /* Orange pour le dégroupage */
 }
