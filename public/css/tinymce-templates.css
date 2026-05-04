@@ -409,6 +409,7 @@ body[contenteditable="true"] .show-style-menu .style-selector-menu {
 /* BOUTONS DE CONTRÔLE CIRCULAIRES */
 /* Style commun pour tous les boutons de contrôle des blocs */
 body[contenteditable="true"] .delete-block-btn,
+body[contenteditable="true"] .unwrap-block-btn,
 body[contenteditable="true"] .move-up-btn,
 body[contenteditable="true"] .move-down-btn,
 body[contenteditable="true"] .add-newline-btn,
