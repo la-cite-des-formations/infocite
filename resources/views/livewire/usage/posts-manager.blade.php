@@ -9,7 +9,7 @@
         </div>
     @endif
 
-    <div class="container d-flex justify-content-between">
+    <div class="container d-flex justify-content-between align-items-start">
         <div class="btn-group" role="group">
             <!--Bouton affichage liste/grille-->
             <button @class([
@@ -31,6 +31,11 @@
                 Liste
             </button>
         </div>
+
+        <div class="section-title p-0 mb-0 flex-grow-1 mx-3">
+            <h2 class="text-center">{{ $rubric->title }}</h2>
+        </div>
+
         <div class="btn-group" role="group">
             <button @class([
                 'd-flex align-items-center',
@@ -98,44 +103,18 @@
             @endif
         </div>
     </div>
+
     @if ($showFilter)
         <div id="filterContainer">
             @include('livewire.usage.posts-sort-manager', ['filter' => $filter, 'sorter' => $sorter])
         </div>
     @endif
-    {{-- Titre de la rubric --}}
-    <div class="container">
-        <div class="section-title">
-            <div class="row justify-content-center">
-                <h2 class="col-9">{{ $rubric->title }}</h2>
-                @if (!empty($rubric->description))
-                    <p>{{ $rubric->description }}</p>
-                @endif
-            </div>
-            <div class="container d-flex justify-content-center">
-                <!--Personnalisation de la description de la rubric en fonction du filtre actif-->
-                <div class="d-flex align-items-center">
-                    @if ($rubric->name === 'Une')
-                        @if (Session::get('lastFilter'))
-                            <span class="material-icons fs-2 me-1">
-                                {{ AP::getUneFilteredByName(Session::get('lastFilter'))['icone'] }}
-                            </span>
-                            <p class="m-auto">
-                                {{ AP::getUneFilteredByName(Session::get('lastFilter'))['libelle'] }}
-                            </p>
-                        @elseif(Session::get('lastSorter'))
-                            <span class="material-icons fs-2 me-1">
-                                {{ AP::getUneSortedByName(Session::get('lastSorter'))['icone'] }}
-                            </span>
-                            <p>
-                                {{ AP::getUneSortedByName(Session::get('lastSorter'))['libelle'] }}
-                            </p>
-                        @endif
-                    @endif
-                </div>
-            </div>
-        </div>
+
+    <div class="container mt-4">
         @if (session('displayPosts') === 'list' && $posts->isNotEmpty())
+            @if ($rubric->name === 'Une')
+                @include('livewire.usage.posts-filter-badge')
+            @endif
             <!-- Affichage des articles en liste -->
             <table class="posts-list w-100 mb-3">
                 <thead>
@@ -162,10 +141,30 @@
             </table>
         @else
             <!--Affichage des articles en carte-->
-            @if ($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
-                <!-- Affichage des articles épinglés uniquement sur la "Une" et uniquement si le filtre "Tout les posts" est actif-->
-                @include('livewire.usage.posts-pinnedPosts')
+            @if ($rubric->name === 'Une' && $filter['allPosts'] == 'on')
+                <!-- Zone Hero Hybride : Épinglés (Gauche) / Récents (Droite) -->
+                <div class="row mb-4">
+                    <div class="col-12 col-lg-6">
+                        <div class="d-flex align-items-center mb-2 px-2">
+                            <i class="bx bx-pin text-success fs-4 me-2"></i>
+                            <h3 class="h5 mb-0 fw-bold text-dark">Sélection de la rédaction</h3>
+                        </div>
+                        @include('livewire.usage.posts-pinnedPosts')
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="d-flex align-items-center mb-2 px-2">
+                            <i class="bx bx-time-five text-primary fs-4 me-2"></i>
+                            <h3 class="h5 mb-0 fw-bold text-dark">Dernières publications</h3>
+                        </div>
+                        @include('livewire.usage.posts-recentPosts')
+                    </div>
+                </div>
             @endif
+
+            @if ($rubric->name === 'Une')
+                @include('livewire.usage.posts-filter-badge')
+            @endif
+
             <!-- Affichage des autres articles-->
             <div class="row">
                 @foreach ($posts as $i => $post)
@@ -261,7 +260,16 @@
                     @endcan
                 @endforeach
             </div>
+            @if ($posts->isEmpty())
+                <div class="container d-flex justify-content-center">
+                    <div class="col-sm-12 col-md-8 col-lg-6 alert alert-info text-center shadow-sm">
+                        <i class="bx bx-info-circle fs-4 me-2"></i>
+                        Aucun article à afficher pour cette rubrique ou avec ces filtres.
+                    </div>
+                </div>
+            @endif
         @endif
+        <!-- Pagination -->
         @include('includes.pagination', ['elements' => $posts, 'perPage' => 'perPage'])
 
         @if ($mode == 'edition' && $rubric->name != 'Archives' && $templates->isNotEmpty())

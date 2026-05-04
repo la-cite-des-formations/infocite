@@ -2,7 +2,7 @@
   @foreach ($pinnedPost as $i => $post)
    @can('read', $post)
     <div wire:click='redirectToPost({{ $post->id }})' role="button"
-        class="pinned-post col-sm-12 col-md-6 col-lg-3 d-flex align-items-stretch mt-2 mb-3"
+        class="pinned-post col-6 d-flex align-items-stretch mt-2 mb-3"
         @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 4 + 1) * 100 }}" @endif>
         <div class="position-relative icon-box flex-fill d-flex flex-column">
             <span class="position-absolute start-50 bi bi-pin-angle-fill"></span>

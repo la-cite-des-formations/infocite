@@ -61,6 +61,20 @@ class PostsManager extends Component
     protected $posts;
 
     /**
+     * Indique si la rubrique est en favoris.
+     *
+     * @var bool
+     */
+    public $isFavoriteRubric;
+
+    /**
+     * Liste des 4 articles les plus récents pour la Une.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public $recentPosts;
+
+    /**
      * Indique si le composant a été rendu.
      *
      * @var bool
@@ -123,6 +137,7 @@ class PostsManager extends Component
         $this->setMode();
         $this->rubric = $viewBag->rubric;
         $this->isFavoriteRubric = $this->rubric->isFavorite;
+        $this->recentPosts = collect();
         $this->setNotifications();
         $this->lastFilterActive();
         $this->lastSorterActive();
@@ -207,28 +222,26 @@ class PostsManager extends Component
     public function allPosts()
     {
         $user = auth()->user();
+        $recentIds = $this->recentPosts ? $this->recentPosts->pluck('id')->toArray() : [];
+
         return Post::query()
             ->notTemplates()
             ->whereIn('id', Post::query()
                 ->when($this->rubric->name != 'Une' && $this->rubric->name != 'Archives', function ($query) {
-                    $query
-                        ->where('rubric_id', $this->rubric->id);
+                    $query->where('rubric_id', $this->rubric->id);
                 })
                 ->when($this->rubric->name == 'Une', function ($query) use ($user) {
-                    $query
-                        ->whereIn('rubric_id', $user->myRubrics()->pluck('id'));
+                    $query->whereIn('rubric_id', $user->myRubrics()->pluck('id'));
                 })
                 ->when($this->rubric->name == 'Archives', function ($query) use ($user) {
-                    $query
-                        ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
+                    $query->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
                         ->where('published', TRUE)
                         ->where('expired_at', '<=', today()->format('Y-m-d'))
                         ->where('auto_delete', FALSE);
                 })
                 ->get()
                 ->filter(function ($post) use ($user) {
-                    return
-                        $user->can('read', $post) &&
+                    return $user->can('read', $post) &&
                         !$post->is_pinned && (
                             $this->mode == 'edition' ||
                             $post->released && $this->rubric->name != 'Archives' ||
@@ -237,8 +250,9 @@ class PostsManager extends Component
                 })
                 ->pluck('id')
             )
-            ->when($this->mode == 'edition', function ($query) {
-                $query->orderBy('published');
+            ->when($this->rubric->name == 'Une' && $this->filter['allPosts'] == 'on', function ($query) use ($recentIds) {
+                // Exclusion des articles déjà affichés dans la section "Récents"
+                $query->whereNotIn('id', $recentIds);
             })
             ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
             ->paginate($this->perPage);
@@ -250,6 +264,25 @@ class PostsManager extends Component
      * @return mixed
      */
     protected function getFilteredOrSortedPosts(){
+        $user = auth()->user();
+        
+        // Chargement des 4 articles les plus récents pour la Une (uniquement si filtre par défaut)
+        if ($this->rubric->name === 'Une') {
+            $this->recentPosts = Post::query()
+                ->notTemplates()
+                ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
+                ->where('published', TRUE)
+                ->where(function ($query) {
+                    $query->where('published_at', '<=', today()->format('Y-m-d'))
+                          ->orWhereNull('published_at');
+                })
+                ->where('is_pinned', FALSE) // On ne veut pas de doublons avec les épinglés
+                ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
+                ->take(4)
+                ->get();
+        } else {
+            $this->recentPosts = collect();
+        }
 
         if (session()->has('lastFilter') && $this->rubric->name === 'Une'){
             return $this->lastFilterActive();

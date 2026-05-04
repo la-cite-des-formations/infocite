@@ -1439,3 +1439,100 @@ img::after {
     border-radius: inherit;
     z-index: 1;
 }
+
+/*--------------------------------------------------------------
+# Refonte de la Une (Hero Hybride)
+--------------------------------------------------------------*/
+.section-title {
+    padding-bottom: 20px;
+}
+
+#posts .container > .d-flex .section-title {
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+#posts .container > .d-flex .section-title h2 {
+    padding-bottom: 12px;
+    margin-bottom: 0;
+    margin-top: 0;
+    line-height: 1;
+}
+
+#posts .container > .d-flex .section-title h2::after {
+    bottom: 0;
+}
+
+.section-title h2 {
+    font-size: 32px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    color: var(--select-color-3);
+}
+
+.section-title h2::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--select-color-1);
+    bottom: 0;
+    left: calc(50% - 20px);
+}
+
+.recent-post-box {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 15px;
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.recent-post-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.recent-post-box .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.1) 100%);
+    z-index: 1;
+}
+
+.recent-post-box .z-index-2 {
+    position: relative;
+    z-index: 2;
+}
+
+.recent-post-box h4 a {
+    color: white !important;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.recent-post-box p {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    line-height: 1.2;
+}
+
+.recent-post-box .actions {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.recent-post-box:hover .actions {
+    opacity: 1;
+}
