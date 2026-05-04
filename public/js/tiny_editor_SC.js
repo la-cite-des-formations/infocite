@@ -138,62 +138,66 @@ const initEditor = function () {
 
             const safeInsert = (templateHtml) => {
                 const selection = editor.selection;
-                const selectedContent = selection.getContent();
-                const hasSelection = selectedContent.trim() !== '';
+                const isCollapsed = selection.isCollapsed();
                 const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
                 
-                // --- VÉRIFICATION DES RESTRICTIONS POUR LES TITRES ---
-                if (isTitleBlock) {
-                    const node = selection.getNode();
-                    const target = findBestTarget(node);
-                    const isList = target && (target.nodeName === 'UL' || target.nodeName === 'OL');
-                    
-                    // Détection de sélection multi-blocs (si elle contient des balises de bloc)
-                    const isMultiBlock = hasSelection && (selectedContent.match(/<(p|div|ul|ol|li|h[1-6]|blockquote|table)/gi) || []).length > 1;
-
-                    if (isList || isMultiBlock) {
-                        editor.notificationManager.open({
-                            text: "Un bloc 'Titre' ne peut pas contenir de liste ou de sélection multiple.",
-                            type: 'warning',
-                            timeout: 4000
-                        });
-                        return; // On annule l'insertion
-                    }
-                }
-                
                 editor.undoManager.transact(() => {
-                    if (hasSelection) {
+                    if (!isCollapsed) {
                         // --- LOGIQUE MULTI-BLOCS (SÉLECTION ACTIVE) ---
-                        const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
-                        const isColumnBlock = templateHtml.includes('class="row"');
+                        // On identifie les blocs de départ et de fin
+                        let startBlock = findBestTarget(selection.getStart());
+                        let endBlock = findBestTarget(selection.getEnd());
+                        
+                        if (!startBlock || !endBlock) return;
+
+                        // On collecte tous les blocs frères entre start et end
+                        let collectedBlocks = [];
+                        let current = startBlock;
+                        while (current) {
+                            collectedBlocks.push(current);
+                            if (current === endBlock || !current.nextElementSibling) break;
+                            current = current.nextElementSibling;
+                        }
+
+                        // Sécurité Titre : Interdire si plusieurs blocs ou si liste
+                        const hasList = collectedBlocks.some(b => b.nodeName === 'UL' || b.nodeName === 'OL');
+                        if (isTitleBlock && (collectedBlocks.length > 1 || hasList)) {
+                            editor.notificationManager.open({
+                                text: "Un bloc 'Titre' ne peut pas contenir de liste ou de sélection multi-blocs.",
+                                type: 'warning',
+                                timeout: 4000
+                            });
+                            return;
+                        }
+
+                        // Fusion du contenu HTML de tous les blocs collectés
+                        const combinedHtml = collectedBlocks.map(b => b.outerHTML).join('');
 
                         const fragment = editor.dom.createFragment(templateHtml);
                         const newNodes = Array.from(fragment.childNodes);
-                        
-                        // On cherche le bloc "réceptacle" (le dernier bloc de contenu ou le premier DIV)
                         const targetBlock = newNodes.reverse().find(n => n.nodeType === 1) || newNodes[0];
-                        newNodes.reverse(); // On remet dans l'ordre
+                        newNodes.reverse();
 
                         if (targetBlock) {
                             if (isTitleBlock) {
                                 const titleTag = targetBlock.querySelector('h1, h2, h3, h4, h5, h6');
-                                if (titleTag) titleTag.innerText = cleanTitleText(selectedContent);
-                            } else if (isColumnBlock) {
-                                const leftCol = targetBlock.querySelector('.block-col-left');
-                                if (leftCol) leftCol.innerHTML = selectedContent;
+                                if (titleTag) titleTag.innerText = cleanTitleText(combinedHtml);
                             } else {
-                                // On cherche la balise de contenu par défaut (P)
                                 const contentTag = targetBlock.querySelector('p');
                                 if (contentTag) {
-                                    editor.dom.replace(editor.dom.createFragment(selectedContent), contentTag);
+                                    editor.dom.replace(editor.dom.createFragment(combinedHtml), contentTag);
                                 }
                             }
                         }
                         
-                        // On remplace la sélection par le résultat final
-                        const wrapper = document.createElement('div');
-                        newNodes.forEach(n => wrapper.appendChild(n));
-                        editor.insertContent(wrapper.innerHTML);
+                        // Remplacement : Insérer après le dernier bloc et supprimer les anciens
+                        let ref = endBlock;
+                        newNodes.forEach(n => {
+                            editor.dom.insertAfter(n, ref);
+                            ref = n;
+                        });
+                        collectedBlocks.forEach(b => editor.dom.remove(b));
+                        editor.fire('change');
 
                     } else {
                         // --- LOGIQUE MONO-BLOC (CURSEUR SIMPLE) ---
@@ -201,12 +205,20 @@ const initEditor = function () {
                         const target = findBestTarget(node);
                         
                         if (target && target.nodeName !== 'BODY' && !target.classList.contains('editor-block') && !target.classList.contains('row')) {
-                            const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
+                            // (Logique identique à la précédente, conservée pour le curseur simple)
                             const isColumnBlock = templateHtml.includes('class="row"');
                             const isList = target.nodeName === 'UL' || target.nodeName === 'OL';
                             
-                            const isEmpty = target.textContent.trim() === '' && !target.querySelector('img, iframe, video, table, .editor-block');
+                            if (isTitleBlock && isList) {
+                                editor.notificationManager.open({
+                                    text: "Un bloc 'Titre' ne peut pas contenir de liste.",
+                                    type: 'warning',
+                                    timeout: 4000
+                                });
+                                return;
+                            }
 
+                            const isEmpty = target.textContent.trim() === '' && !target.querySelector('img, iframe, video, table, .editor-block');
                             const fragment = editor.dom.createFragment(templateHtml);
                             const newNodes = Array.from(fragment.childNodes);
                             const firstBlock = newNodes.find(n => n.nodeType === 1);
