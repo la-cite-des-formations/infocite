@@ -224,7 +224,10 @@ const initEditor = function () {
                     if (el.classList.contains('row') && !editor.dom.select('.editor-block', el).length) return;
 
                     if (!editor.dom.select(':scope > .delete-block-btn', el).length) {
-                        editor.dom.add(el, 'span', { class: 'delete-block-btn material-icons-outlined', contenteditable: 'false', title: 'Supprimer' }, 'delete');
+                        editor.dom.add(el, 'span', { class: 'delete-block-btn material-icons-outlined', contenteditable: 'false', title: 'Supprimer tout' }, 'delete');
+                    }
+                    if (!editor.dom.select(':scope > .unwrap-block-btn', el).length) {
+                        editor.dom.add(el, 'span', { class: 'unwrap-block-btn material-icons-outlined', contenteditable: 'false', title: 'Retirer le cadre (garder le contenu)' }, 'layers_clear');
                     }
                     if (!editor.dom.select(':scope > .add-newline-btn', el).length) {
                         editor.dom.add(el, 'span', { class: 'add-newline-btn material-icons-outlined', contenteditable: 'false', title: 'Ligne après' }, 'keyboard_return');
@@ -303,6 +306,23 @@ const initEditor = function () {
                                 editor.selection.setCursorLocation(p, 0);
                             }
                         }
+                    });
+                    editor.fire('change');
+                }
+                if (target.classList.contains('unwrap-block-btn')) {
+                    editor.undoManager.transact(() => {
+                        // On récupère le contenu interne (en filtrant les boutons de contrôle)
+                        const div = document.createElement('div');
+                        div.innerHTML = block.innerHTML;
+                        // Nettoyer les boutons de contrôle du contenu extrait pour éviter les doublons
+                        div.querySelectorAll('.delete-block-btn, .unwrap-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
+                        
+                        const contentHtml = div.innerHTML;
+                        const fragment = editor.dom.createFragment(contentHtml);
+                        
+                        // Insérer le contenu à la place du bloc
+                        editor.dom.insertAfter(fragment, block);
+                        editor.dom.remove(block);
                     });
                     editor.fire('change');
                 }
@@ -404,7 +424,7 @@ const initEditor = function () {
                 if (e.content) {
                     const div = document.createElement('div');
                     div.innerHTML = e.content;
-                    div.querySelectorAll('.delete-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
+                    div.querySelectorAll('.delete-block-btn, .unwrap-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
                     div.querySelectorAll('img.img-broken').forEach(img => img.classList.remove('img-broken'));
                     div.querySelectorAll('.editor-block').forEach(block => {
                         // Retirer la classe de menu si présente

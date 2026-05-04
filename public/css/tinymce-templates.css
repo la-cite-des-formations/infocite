@@ -513,9 +513,18 @@ body[contenteditable="true"] .change-style-btn {
     /* Violet pour la palette */
 }
 
+body[contenteditable="true"] .unwrap-block-btn {
+    top: -10px;
+    right: 75px;
+    background: #f39c12 !important;
+    /* Orange pour le dégroupage */
+}
+
 /* Masquer le bouton en dehors de l'édition */
 .template-preview .delete-block-btn,
 .article-template .delete-block-btn,
+.template-preview .unwrap-block-btn,
+.article-template .unwrap-block-btn,
 .template-preview .move-up-btn,
 .article-template .move-up-btn,
 .template-preview .move-down-btn,
