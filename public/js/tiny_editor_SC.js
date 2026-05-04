@@ -95,70 +95,124 @@ const initEditor = function () {
             editor.ui.registry.addIcon('mi-down', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" fill="currentColor"/></svg>');
             editor.ui.registry.addIcon('mi-frame', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M0,0h24v24H0V0z" fill="none"/><path d="M18,13c-3.31,0-6,2.69-6,6C15.31,19,18,16.31,18,13z M6,13c0,3.31,2.69,6,6,6C12,15.69,9.31,13,6,13z M8,11.03 c0,0.86,0.7,1.56,1.56,1.56c0.33,0,0.63-0.1,0.89-0.28l-0.01,0.12c0,0.86,0.7,1.56,1.56,1.56s1.56-0.7,1.56-1.56l-0.01-0.12 c0.25,0.17,0.56,0.28,0.89,0.28c0.86,0,1.56-0.7,1.56-1.56c0-0.62-0.37-1.16-0.89-1.41C15.63,9.38,16,8.84,16,8.22 c0-0.86-0.7-1.56-1.56-1.56c-0.33,0-0.63,0.1-0.89,0.28l0.01-0.12c0-0.86-0.7-1.56-1.56-1.56s-1.56,0.7-1.56,1.56l0.01,0.12 C10.2,6.76,9.89,6.66,9.56,6.66C8.7,6.66,8,7.36,8,8.22c0,0.62,0.37,1.16,0.89,1.41C8.37,9.87,8,10.41,8,11.03z M12,8.06 c0.86,0,1.56,0.7,1.56,1.56s-0.7,1.56-1.56,1.56s-1.56-0.7-1.56-1.56S11.14,8.06,12,8.06z M20,4v16H4V4H20 M20,2H4C2.9,2,2,2.9,2,4 v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z" fill="currentColor"/></svg>');
 
-            // 2. Fonction safeInsert (version originale + injection de contenu)
-            const safeInsert = (html) => {
-                let node = editor.selection.getNode();
-                if (node && node.nodeName === 'P') {
-                    const content = node.innerHTML.replace(/&nbsp;/g, '').replace(/\s/g, '').trim();
-                    if (content === '' || content === '<br>' || content === '<br data-mce-bogus="1">') {
-                        // Paragraphe vide : on le sélectionne pour le remplacer
-                        editor.selection.select(node);
-                    } else {
-                        // Paragraphe avec texte : on injecte son contenu dans le template
-                        const pInner = node.innerHTML;
-                        html = html.replace(
-                            /(<(?:p|h[1-6])[^>]*>)(.*?)(<\/(?:p|h[1-6])>)/i,
-                            function(match, openTag, oldContent, closeTag) {
-                                return openTag + pInner + closeTag;
-                            }
-                        );
-                        editor.selection.select(node);
-                    }
-                } 
-                else if (node && node.classList.contains('editor-block')) {
-                    const inner = node.innerHTML.replace(/&nbsp;/g, '').replace(/\s/g, '').trim();
-                    if (inner === '' || inner === '<br>' || inner === '<br data-mce-bogus="1">') {
-                        editor.selection.select(node, true);
-                    } else {
-                        const firstChild = node.firstElementChild;
-                        if (firstChild && firstChild.nodeName === 'P' && node.children.length === 1) {
-                            const pContent = firstChild.innerHTML.replace(/&nbsp;/g, '').replace(/\s/g, '').trim();
-                            if (pContent === '' || pContent === '<br>') {
-                                editor.selection.select(firstChild);
-                            }
-                        }
-                    }
-                }
-                editor.insertContent(html);
+            // 1. Définition centralisée des blocs (DRY)
+            const BLOCK_DEFINITIONS = [
+                { id: 'intro', title: 'Introduction', icon: 'mi-intro', shortcut: 'alt+shift+i', template: '<div class="editor-block block-intro"><p><em>Rédigez l\'introduction ici...</em></p></div>' },
+                { id: 'title', title: 'Titre principal', icon: 'mi-title', shortcut: 'alt+shift+t', template: '<div class="editor-block block-title"><h2>Titre principal</h2></div>' },
+                { id: 'subtitle', title: 'Sous-titre', icon: 'mi-subtitle', shortcut: 'alt+shift+s', template: '<div class="editor-block block-subtitle"><h4>Sous-titre de section</h4></div>' },
+                { id: 'paragraph', title: 'Paragraphe', icon: 'mi-paragraph', shortcut: 'alt+shift+p', template: '<div class="editor-block block-paragraph"><p>Saisissez votre texte ici...</p></div>' },
+                { id: 'columns', title: 'Colonnes x2', icon: 'mi-columns', shortcut: 'alt+shift+c', template: '<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><p>&nbsp;</p></div><div class="col-12 col-md-6 editor-block block-col-right"><p>&nbsp;</p></div></div>' },
+                { id: 'note', title: 'Note', icon: 'mi-info', shortcut: 'alt+shift+n', template: '<div class="editor-block block-note-info alert alert-info"><p class="mb-0"><strong>Note :</strong> Saisissez une note importante ici...</p></div>' },
+                { id: 'frame', title: 'Cadre', icon: 'mi-frame', shortcut: 'alt+shift+f', template: '<div class="editor-block block-frame-simple"><p>Saisissez le contenu du cadre ici...</p></div>' },
+                { id: 'conclusion_title', title: 'Titre conclusif', icon: 'mi-title', template: '<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div>' },
+                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>' },
+                { id: 'conclusion_content', title: 'Conclusion sans titre', icon: 'mi-conclusion', template: '<div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>' }
+            ];
+
+            // 2. Fonctions utilitaires
+            const cleanTitleText = (html) => {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || "";
             };
 
-            // 3. Raccourcis clavier
-            editor.addShortcut('alt+shift+i', 'Introduction', () => safeInsert('<div class="editor-block block-intro"><p><em>Rédigez l\'introduction ici...</em></p></div>'));
-            editor.addShortcut('alt+shift+t', 'Titre', () => safeInsert('<div class="editor-block block-title"><h2>Titre principal</h2></div>'));
-            editor.addShortcut('alt+shift+s', 'Sous-titre', () => safeInsert('<div class="editor-block block-subtitle"><h4>Sous-titre de section</h4></div>'));
-            editor.addShortcut('alt+shift+p', 'Paragraphe', () => safeInsert('<div class="editor-block block-paragraph"><p>Saisissez votre texte ici...</p></div>'));
-            editor.addShortcut('alt+shift+c', 'Colonnes', () => safeInsert('<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><p>&nbsp;</p></div><div class="col-12 col-md-6 editor-block block-col-right"><p>&nbsp;</p></div></div>'));
-            editor.addShortcut('alt+shift+n', 'Note', () => safeInsert('<div class="editor-block block-note-info alert alert-info"><p class="mb-0"><strong>Note :</strong> Saisissez une note importante ici...</p></div>'));
-            editor.addShortcut('alt+shift+f', 'Cadre', () => safeInsert('<div class="editor-block block-frame-simple"><p>Saisissez le contenu du cadre ici...</p></div>'));
-            editor.addShortcut('alt+shift+z', 'Conclusion', () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>'));
+            const findBestTarget = (node) => {
+                if (!node || node.nodeName === 'BODY') return null;
+                
+                // Si on est dans une liste, on remonte jusqu'au UL/OL
+                const list = editor.dom.getParent(node, 'ul, ol');
+                if (list) return list;
 
-            // 4. Bouton Menu "Blocs"
+                // On cherche le bloc parent significatif
+                let current = editor.dom.getParent(node, 'p,h1,h2,h3,h4,h5,h6,blockquote,div.editor-block,div.row');
+                if (!current) return node;
+
+                // Si c'est un editor-block ou une row, on vérifie si on peut descendre
+                if (current.classList.contains('editor-block')) {
+                    const first = current.firstElementChild;
+                    if (first && current.children.length === 1) return first;
+                }
+
+                return current;
+            };
+
+            const safeInsert = (templateHtml) => {
+                const selection = editor.selection;
+                const node = selection.getNode();
+                const target = findBestTarget(node);
+                
+                editor.undoManager.transact(() => {
+                    // On ne traite que si on a une cible valide qui n'est pas déjà un bloc
+                    if (target && target.nodeName !== 'BODY' && !target.classList.contains('editor-block') && !target.classList.contains('row')) {
+                        const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
+                        const isColumnBlock = templateHtml.includes('class="row"');
+                        const isList = target.nodeName === 'UL' || target.nodeName === 'OL';
+                        
+                        // Détection plus fine du vide (on garde si image, iframe, etc.)
+                        const isEmpty = target.textContent.trim() === '' && !target.querySelector('img, iframe, video, table, .editor-block');
+
+                        // Préparation des nouveaux nœuds à partir du template
+                        const fragment = editor.dom.createFragment(templateHtml);
+                        const newNodes = Array.from(fragment.childNodes);
+                        const firstBlock = newNodes.find(n => n.nodeType === 1); // Le premier élément réel (DIV)
+
+                        if (!isEmpty && firstBlock) {
+                            let contentHtml = isList ? target.outerHTML : target.innerHTML;
+                            if (isTitleBlock) contentHtml = cleanTitleText(contentHtml);
+
+                            if (isColumnBlock) {
+                                const leftCol = firstBlock.querySelector('.block-col-left');
+                                if (leftCol) leftCol.innerHTML = `<p>${contentHtml}</p>`;
+                            } else {
+                                // On cherche la première balise de contenu du template (p, h2, h4...)
+                                const contentTag = firstBlock.querySelector('p, h1, h2, h3, h4, h5, h6');
+                                if (contentTag) {
+                                    if (isList) {
+                                        // On remplace le P/H par la structure complète de la liste
+                                        editor.dom.replace(editor.dom.createFragment(contentHtml), contentTag);
+                                    } else {
+                                        contentTag.innerHTML = contentHtml;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Insertion chirurgicale : on insère les nouveaux nœuds APRÈS la cible, puis on supprime la cible
+                        let ref = target;
+                        newNodes.forEach(newNode => {
+                            editor.dom.insertAfter(newNode, ref);
+                            ref = newNode;
+                        });
+                        editor.dom.remove(target);
+                        
+                        // Positionnement du curseur dans le premier bloc inséré
+                        const focusNode = firstBlock.querySelector('p, h2, h4') || firstBlock;
+                        editor.selection.setCursorLocation(focusNode, 0);
+                        editor.fire('change');
+                    } else {
+                        // Si pas de cible ou cible déjà bloquée, insertion classique
+                        editor.insertContent(templateHtml);
+                    }
+                });
+            };
+
+            // 3. Enregistrement dynamique des raccourcis et du menu
+            BLOCK_DEFINITIONS.forEach(block => {
+                if (block.shortcut) {
+                    editor.addShortcut(block.shortcut, block.title, () => safeInsert(block.template));
+                }
+            });
+
             editor.ui.registry.addMenuButton('blocs', {
                 text: 'Blocs',
                 icon: 'visualblocks',
                 fetch: (callback) => {
-                    var items = [
-                        { type: 'menuitem', text: 'Introduction', icon: 'mi-intro', onAction: () => safeInsert('<div class="editor-block block-intro"><p><em>Rédigez l\'introduction ici...</em></p></div>') },
-                        { type: 'menuitem', text: 'Titre', icon: 'mi-title', onAction: () => safeInsert('<div class="editor-block block-title"><h2>Titre principal</h2></div>') },
-                        { type: 'menuitem', text: 'Sous-titre', icon: 'mi-subtitle', onAction: () => safeInsert('<div class="editor-block block-subtitle"><h4>Sous-titre de section</h4></div>') },
-                        { type: 'menuitem', text: 'Paragraphe', icon: 'mi-paragraph', onAction: () => safeInsert('<div class="editor-block block-paragraph"><p>Saisissez votre texte ici...</p></div>') },
-                        { type: 'menuitem', text: 'Colonnes x2', icon: 'mi-columns', onAction: () => safeInsert('<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><p>&nbsp;</p></div><div class="col-12 col-md-6 editor-block block-col-right"><p>&nbsp;</p></div></div>') },
-                        { type: 'menuitem', text: 'Note', icon: 'mi-info', onAction: () => safeInsert('<div class="editor-block block-note-info alert alert-info"><p class="mb-0"><strong>Note :</strong> Saisissez une note importante ici...</p></div>') },
-                        { type: 'menuitem', text: 'Cadre', icon: 'mi-frame', onAction: () => safeInsert('<div class="editor-block block-frame-simple"><p>Saisissez le contenu du cadre ici...</p></div>') },
-                        { type: 'menuitem', text: 'Titre conclusif', icon: 'mi-title', onAction: () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div>') },
-                        { type: 'menuitem', text: 'Conclusion avec titre', icon: 'mi-conclusion', onAction: () => safeInsert('<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>') },
-                        { type: 'menuitem', text: 'Conclusion sans titre', icon: 'mi-conclusion', onAction: () => safeInsert('<div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>') }
-                    ];
+                    const items = BLOCK_DEFINITIONS.map(block => ({
+                        type: 'menuitem',
+                        text: block.title,
+                        icon: block.icon,
+                        onAction: () => safeInsert(block.template)
+                    }));
                     callback(items);
                 }
             });
@@ -357,8 +411,9 @@ const initEditor = function () {
                         block.classList.remove('show-style-menu');
                         
                         const hasText = block.textContent.trim().length > 0;
-                        const hasImages = block.querySelectorAll('img').length > 0;
-                        if (!hasText && !hasImages) {
+                        const hasMedia = block.querySelectorAll('img, iframe, video, audio, table, object').length > 0;
+                        
+                        if (!hasText && !hasMedia) {
                             block.remove();
                         }
                     });
