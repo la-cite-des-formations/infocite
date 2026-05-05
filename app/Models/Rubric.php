@@ -151,6 +151,16 @@ class Rubric extends Model
     }
 
     /**
+     * Retourne le chemin des segments de la rubrique sans le slash initial.
+     * Utile pour passer la rubrique en paramètre aux routes Laravel.
+     *
+     * @return string
+     */
+    public function segmentPath() {
+        return ltrim($this->route(), '/');
+    }
+
+    /**
      * Retourne l'identité complète de la rubrique (Nom + Parent éventuel).
      *
      * @return string

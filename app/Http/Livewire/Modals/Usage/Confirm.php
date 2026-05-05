@@ -127,6 +127,7 @@ class Confirm extends Component
                 }
             break;
         }
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     /**

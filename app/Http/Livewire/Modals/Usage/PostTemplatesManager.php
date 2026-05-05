@@ -61,10 +61,10 @@ class PostTemplatesManager extends Component
         if ($isUne && is_numeric($this->filterRubricId)) {
             $filteredRubric = \App\Models\Rubric::find($this->filterRubricId);
             if ($filteredRubric) {
-                $targetCreateRoute = $filteredRubric->route();
+                $targetCreateRoute = $filteredRubric->segmentPath();
             }
         } elseif (!$isUne && $currentRubric) {
-            $targetCreateRoute = $currentRubric->route();
+            $targetCreateRoute = $currentRubric->segmentPath();
         }
 
         return view('livewire.modals.usage.post-templates-manager', [
