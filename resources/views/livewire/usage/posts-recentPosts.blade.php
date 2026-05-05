@@ -1,10 +1,9 @@
 <div class="row">
     @foreach ($recentPosts as $i => $post)
         @can('read', $post)
-            <div wire:click='redirectToPost({{ $post->id }})' role="button" 
-                class="recent-post col-6 mt-2 mb-3"
-                @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i % 4 + 1) * 100 }}" @endif>
-                
+            <div wire:click='redirectToPost({{ $post->id }})' role="button" class="recent-post col-6 mt-2 mb-3"
+                @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ (($i % 4) + 1) * 100 }}" @endif>
+
                 @php
                     $bgImage = '/img/default-post-bg.png';
                     if ($post->gallery && $post->gallery->imagesCount() > 0) {
@@ -12,9 +11,9 @@
                     }
                 @endphp
 
-                <div class="position-relative recent-post-box icon-box d-flex flex-column" 
+                <div class="position-relative recent-post-box icon-box d-flex flex-column"
                     style="background-image: url('{!! addslashes(asset($bgImage)) !!}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-                    
+
                     <div class="overlay"></div>
                     <div class="ribbon-new">NOUVEAU</div>
 
@@ -24,11 +23,13 @@
                     @endif
 
                     <!-- Boutons d'actions -->
-                    <div wire:click.prefetch='blockRedirection' class="actions position-absolute top-0 end-0 m-2 z-index-2">
-                        <div class="list-group list-group-horizontal btn-group btn-group-sm" role="group" aria-label="Actions">
+                    <div wire:click.prefetch='blockRedirection'
+                        class="actions position-absolute bottom-0 end-0 m-2 z-index-2">
+                        <div class="list-group list-group-horizontal btn-group btn-group-sm" role="group"
+                            aria-label="Actions">
                             @if ($mode == 'edition')
                                 @can('update', $post)
-                                    <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                                    <a href="{{ route('post.edit', ['rubric' => $post->rubric->segmentPath(), 'post_id' => $post->id]) }}"
                                         title="Modifier" role="button" class="btn btn-success small-action-btn">
                                         <i class="bx bx-pencil"></i>
                                     </a>
@@ -48,7 +49,8 @@
                                 'btn small-action-btn',
                                 'btn-warning' => $post->isFavorite,
                                 'btn-secondary' => !$post->isFavorite,
-                            ]) title="@if ($post->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
+                            ])
+                                title="@if ($post->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
                                 wire:click="switchFavoritePost({{ $post->id }})" type="button">
                                 <i class="bx bx-star"></i>
                             </button>
@@ -57,7 +59,8 @@
                                     'btn small-action-btn',
                                     'btn-success' => $post->is_pinned,
                                     'btn-secondary' => !$post->is_pinned,
-                                ]) title="@if ($post->is_pinned) Désépingler @else Épingler @endif"
+                                ])
+                                    title="@if ($post->is_pinned) Désépingler @else Épingler @endif"
                                     wire:click="switchPinnedPost({{ $post->id }})" type="button">
                                     <i class='bx bx-pin'></i>
                                 </button>
@@ -66,12 +69,14 @@
                                 'list-group-item small-action-btn',
                                 'list-group-item-success' => $post->isRead(),
                                 'list-group-item-danger' => !$post->isRead(),
-                            ]) type="text" @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
+                            ]) type="text"
+                                @if ($post->isRead()) title="Déjà consulté" @else title="À consulter" @endif>
                                 <i class="bx bx-message-alt-check"></i>
                             </button>
                             @if ($mode == 'edition')
                                 @can('delete', $post)
-                                    <button wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
+                                    <button
+                                        wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
                                         type="button" class="btn btn-danger small-action-btn" title="Supprimer">
                                         <i class="bx bx-trash"></i>
                                     </button>

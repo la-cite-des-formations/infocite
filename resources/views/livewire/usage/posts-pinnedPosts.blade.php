@@ -22,7 +22,7 @@
                 <div class="list-group list-group-horizontal btn-group btn-group-sm" role="group" aria-label="Actions">
                     @if ($mode == 'edition')
                         @can('update', $post)
-                            <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                            <a href="{{ route('post.edit', ['rubric' => $post->rubric->segmentPath(), 'post_id' => $post->id]) }}"
                                 title="Modifier" role="button" class="btn btn-success small-action-btn">
                                 <i class="bx bx-pencil"></i>
                             </a>

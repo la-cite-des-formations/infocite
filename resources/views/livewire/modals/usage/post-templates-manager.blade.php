@@ -46,7 +46,7 @@
                         </span>
                     </td>
                     <td class="align-middle border-0 text-end">
-                        <a href="{{ route('post.edit', ['rubric' => ($template->rubric ? $template->rubric->route() : 'site.test-modeles'), 'post_id' => $template->id]) }}" 
+                        <a href="{{ route('post.edit', ['rubric' => ($template->rubric ? $template->rubric->segmentPath() : 'site.test-modeles'), 'post_id' => $template->id]) }}" 
                            class="btn btn-sm btn-primary" title="Modifier le modèle">
                             <i class="bx bx-pencil"></i>
                         </a>

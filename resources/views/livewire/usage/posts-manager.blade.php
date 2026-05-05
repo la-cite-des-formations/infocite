@@ -9,8 +9,8 @@
         </div>
     @endif
 
-    <div class="container d-flex justify-content-between align-items-start">
-        <div class="btn-group" role="group">
+    <div class="container d-flex justify-content-center align-items-start position-relative">
+        <div class="btn-group position-absolute start-0" role="group" style="z-index: 2;">
             <!--Bouton affichage liste/grille-->
             <button @class([
                 'd-flex align-items-center',
@@ -32,11 +32,11 @@
             </button>
         </div>
 
-        <div class="section-title p-0 mb-0 flex-grow-1 mx-3">
-            <h2 class="text-center">{{ $rubric->title }}</h2>
+        <div class="section-title w-100" style="padding-left: 300px; padding-right: 300px;">
+            <h2 class="text-center mb-2">{{ $rubric->title }}</h2>
         </div>
 
-        <div class="btn-group" role="group">
+        <div class="btn-group position-absolute end-0" role="group" style="z-index: 2;">
             <button @class([
                 'd-flex align-items-center',
                 'btn btn-sm',
@@ -66,7 +66,7 @@
                         title="Gérer les modèles d'articles">
                         <span class="material-icons fs-5">history_edu</span>
                     </button>
-                    <a href="{{ route('post.create', ['rubric' => $rubric->route()]) }}" title="Commencer un nouvel article"
+                    <a href="{{ route('post.create', ['rubric' => $rubric->segmentPath()]) }}" title="Commencer un nouvel article"
                         type="button" class="d-flex align-items-center input-group-text btn btn-sm btn-success">
                         <span class="material-icons fs-5">add</span>
                     </a>
@@ -112,30 +112,68 @@
 
     <div class="container mt-1">
         @if (session('displayPosts') === 'list' && $posts->isNotEmpty())
-            @if ($rubric->name === 'Une')
-                @include('livewire.usage.posts-filter-badge')
-            @endif
-            <!-- Affichage des articles en liste -->
-            <table class="posts-list w-100 mb-3">
-                <thead>
-                    <tr>
-                        <th class="col-6 ps-5">Article</th>
-                        <th class="col-2">Rubrique</th>
-                        <th class="col text-center">Maj</th>
-                        <th class="col">Infos</th>
-                        <th class="col">Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if ($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+            @if ($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts')
+                <!-- Zone Hero en liste : Épinglés + Récents -->
+                <table class="posts-list w-100 mb-3">
+                    <colgroup>
+                        <col class="col-6">
+                        <col class="col-2">
+                        <col class="col">
+                        <col class="col">
+                        <col class="col">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="col-6 ps-5">Article</th>
+                            <th class="col-2">Rubrique</th>
+                            <th class="col text-center">Maj</th>
+                            <th class="col">Infos</th>
+                            <th class="col">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @include('livewire.usage.posts-list', [
                             'posts' => $pinnedPost,
                             'withPinning' => true,
                         ])
                         <tr height="@if ($pinnedPost->isNotEmpty()) 30px @else 10px @endif"></tr>
-                    @else
-                        <tr height="10px"></tr>
-                    @endif
+
+                        @include('livewire.usage.posts-list', [
+                            'posts' => $recentPosts,
+                            'withPinning' => false,
+                            'isRecent' => true,
+                        ])
+                        <tr height="20px"></tr>
+                    </tbody>
+                </table>
+            @endif
+
+            @if ($rubric->name === 'Une')
+                @include('livewire.usage.posts-filter-badge')
+            @endif
+
+            <!-- Affichage des articles paginés en liste -->
+            <table class="posts-list w-100 mb-3">
+                <colgroup>
+                    <col class="col-6">
+                    <col class="col-2">
+                    <col class="col">
+                    <col class="col">
+                    <col class="col">
+                </colgroup>
+                @if (!($rubric->name === 'Une' && Session::get('lastFilter') === 'allPosts'))
+                    <thead>
+                        <tr>
+                            <th class="col-6 ps-5">Article</th>
+                            <th class="col-2">Rubrique</th>
+                            <th class="col text-center">Maj</th>
+                            <th class="col">Infos</th>
+                            <th class="col">Options</th>
+                        </tr>
+                    </thead>
+                @endif
+                <tbody>
+                    <tr height="10px"></tr>
                     @include('livewire.usage.posts-list', ['posts' => $posts, 'withPinning' => false])
                 </tbody>
             </table>
@@ -163,8 +201,8 @@
             <div class="row">
                 @foreach ($posts as $i => $post)
                     @can('read', $post)
-                        <div wire:key='{{ $post->id }}' wire:click='redirectToPost({{ $post->id }})'
-                            role="button" class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
+                        <div wire:key='{{ $post->id }}' wire:click='redirectToPost({{ $post->id }})' role="button"
+                            class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
                             @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ (($i % 6) + 1) * 100 }}" @endif>
                             <div class="position-relative post-box icon-box d-flex flex-column">
                                 @if (!$post->released && is_object($post->status))
@@ -173,7 +211,8 @@
                                 @endif
                                 <!-- Titre de l'article et icone-->
                                 <h4 class="mb-1 mt-1">
-                                    <i class="material-icons ms-0 me-1 align-middle" style="color: var(--select-color-1); font-size: 30px;">{{ $post->icon }}</i>
+                                    <i class="material-icons ms-0 me-1 align-middle"
+                                        style="color: var(--select-color-1); font-size: 30px;">{{ $post->icon }}</i>
                                     <a>{{ $post->title }}</a>
                                 </h4>
                                 <!-- Sous Titre de l'article -->
@@ -186,7 +225,7 @@
                                         <!-- Article publié ou non (pas un bouton d'action) -->
                                         @if ($mode == 'edition')
                                             @can('update', $post)
-                                                <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                                                <a href="{{ route('post.edit', ['rubric' => $post->rubric->segmentPath(), 'post_id' => $post->id]) }}"
                                                     title="Modifier" role="button"
                                                     class="btn btn-success small-action-btn d-flex">
                                                     <i class="bx bx-pencil my-auto"></i>
@@ -282,12 +321,12 @@
                                     </div>
                                     <div class="mt-auto pt-3 text-center">
                                         <div class="btn-group btn-group-sm w-100 shadow-sm" role="group">
-                                            <a href="{{ route('post.create', ['rubric' => $rubric->route(), 'from_template' => $template->id]) }}"
+                                            <a href="{{ route('post.create', ['rubric' => $rubric->segmentPath(), 'from_template' => $template->id]) }}"
                                                 class="btn btn-outline-primary bg-white small-action-btn d-flex justify-content-center align-items-center w-33"
                                                 title="Créer un article à partir de ce modèle">
                                                 <i class='bx bx-plus-circle'></i>
                                             </a>
-                                            <a href="{{ route('post.edit', ['rubric' => $template->rubric ? $template->rubric->route() : ($rubric->name == 'Une' ? 'une' : $rubric->route()), 'post_id' => $template->id]) }}"
+                                            <a href="{{ route('post.edit', ['rubric' => $template->rubric ? $template->rubric->segmentPath() : ($rubric->name == 'Une' ? 'une' : $rubric->segmentPath()), 'post_id' => $template->id]) }}"
                                                 class="btn btn-outline-success bg-white small-action-btn d-flex justify-content-center align-items-center w-33"
                                                 title="Modifier le modèle">
                                                 <i class='bx bx-pencil'></i>

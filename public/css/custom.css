@@ -1082,6 +1082,11 @@ a:hover {
 /*--------------------------------------------------------------
 # Display liste
 --------------------------------------------------------------*/
+.posts-list {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
 
 .services .posts-list .icon-box p {
     margin-bottom: 0;
@@ -1111,47 +1116,45 @@ a:hover {
 
 .services .posts-list .pinned-post {
     background-image: linear-gradient(to bottom left, var(--select-color-10), var(--select-color-12), var(--select-color-14));
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+    position: relative;
+    z-index: 1;
 }
 
-.services .posts-list .pinned-post td > div {
+.services .posts-list .pinned-post td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.services .posts-list .pinned-post td {
     border-top: 2px dashed var(--select-color-1);
     border-bottom: 2px dashed var(--select-color-1);
 }
 
-.services .posts-list .pinned-post td:first-child > div {
+.services .posts-list .pinned-post td:first-child {
     border-left: 2px dashed var(--select-color-1);
-    /* transform-style: preserve-3d;
-    transform: perspective(60cm);
-    transform-origin: 100% 50%; */
-}
-
-.services .posts-list .pinned-post td:last-child > div {
-    border-right: 2px dashed var(--select-color-1);
-}
-
-.services .posts-list .pinned-post td:first-child > div {
     border-top-left-radius: 10px;
-}
-
-.services .posts-list .pinned-post td:last-child > div {
-    border-top-right-radius: 10px;
-}
-
-.services .posts-list .pinned-post td:first-child > div {
     border-bottom-left-radius: 10px;
 }
 
-.services .posts-list .pinned-post td:last-child > div {
+.services .posts-list .pinned-post td:last-child {
+    border-right: 2px dashed var(--select-color-1);
+    border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
 .services .posts-list .icon-box.pinned-post:hover {
-    box-shadow: -5px 13px 25px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
     background-image: linear-gradient(to bottom left, var(--select-color-10) 25%, var(--select-color-12),var(--select-color-14));
-    transform: unset;
-    /* td:first-child > div {
-        transform: rotate3d(1, 0.5, 0, 9deg);
-    } */
+    transform: none;
+    z-index: 10;
 }
 
 
@@ -1514,7 +1517,7 @@ img::after {
     z-index: 1;
 }
 
-.recent-post-box .ribbon-new {
+.ribbon-new {
     position: absolute;
     top: 18px;
     left: -43px;
@@ -1529,6 +1532,49 @@ img::after {
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     letter-spacing: 1px;
 }
+
+.services .posts-list .recent-post-row {
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.2) !important;
+    position: relative;
+    z-index: 1;
+}
+
+.services .posts-list .recent-post-row td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.services .posts-list .recent-post-row td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.services .posts-list .recent-post-row:hover {
+    transform: translateX(10px);
+    box-shadow: -8px 0 20px rgba(0,0,0,0.3) !important;
+    z-index: 10;
+}
+
+.services .posts-list .recent-post-row td {
+    background: transparent !important;
+    color: white !important;
+    border-bottom: none;
+    height: 75px !important;
+}
+
+.posts-list .recent-post-row h4,
+.posts-list .recent-post-row h4 a,
+.posts-list .recent-post-row p,
+.posts-list .recent-post-row .icon i {
+    color: white !important;
+}
+
+.posts-list .recent-post-row:hover td {
+    background-color: transparent !important;
+}
+
 .recent-post-box .z-index-2 {
     position: relative;
     z-index: 2;

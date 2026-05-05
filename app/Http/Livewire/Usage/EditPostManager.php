@@ -156,6 +156,8 @@ class EditPostManager extends Component
         $this->post->is_pinned = $this->post->is_pinned ?? FALSE;
         $this->post->is_acknowledgment_required = $this->post->is_acknowledgment_required ?? FALSE;
         $this->post->is_rating_enabled = $this->post->is_rating_enabled ?? FALSE;
+        $this->post->is_template = $this->post->is_template ?? FALSE;
+        $this->post->published = $this->post->published ?? FALSE;
 
         $this->validate();
 
@@ -185,7 +187,7 @@ class EditPostManager extends Component
         // Pour les modèles : pas de galerie, droits, interactions ni notifications
         if ($this->post->is_template) {
             redirect()->route('post.edit', [
-                'rubric' => optional($this->post->rubric)->route() ?? 'une',
+                'rubric' => optional($this->post->rubric)->segmentPath() ?? 'une',
                 'post_id' => $this->post->id,
             ]);
             return;
@@ -294,7 +296,7 @@ class EditPostManager extends Component
 
         // redirection
         redirect()->route($redirectionRoute, [
-            'rubric' => Rubric::find($this->post->rubric_id)->route(),
+            'rubric' => Rubric::find($this->post->rubric_id)->segmentPath(),
             'post_id' => $this->post->id,
         ]);
     }
@@ -355,7 +357,7 @@ class EditPostManager extends Component
         $template->save();
 
         if ($redirect) {
-            return redirect()->route('post.edit', ['rubric' => optional($template->rubric)->route() ?? 'une', 'post_id' => $template->id]);
+            return redirect()->route('post.edit', ['rubric' => optional($template->rubric)->segmentPath() ?? 'une', 'post_id' => $template->id]);
         }
 
         $this->sendAlert([
