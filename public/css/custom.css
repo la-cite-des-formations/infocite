@@ -337,8 +337,9 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .services .post-box.icon-box {
-    width: 520px;
-    min-height: 208px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    padding: 15px;
 }
 
 .services .post-box.icon-box .icon {
@@ -975,16 +976,18 @@ a:hover {
 }
 
 .services :not(tr).pinned-post .bi-pin-angle-fill {
-    top: calc(2 * var(--pinned-icon-box-py) / 3 - 16px);
-    /* z-index: 1; */
+    top: 4px;
+    font-size: 1.2rem;
+    transform: translateX(-50%);
 }
 
 .services .pinned-post .icon-box {
-    padding: var(--pinned-icon-box-py) var(--pinned-icon-box-px);
-    min-height: 260px;
+    padding: 25px 15px 15px 15px;
+    height: 180px;
+    overflow: hidden;
     transform-style: preserve-3d;
     transform: perspective(60cm);
-    transform-origin: 50% calc(2 * var(--pinned-icon-box-py) / 3);
+    transform-origin: 50% 10px;
     border-radius: 10px;
     border: 2px dashed var(--select-color-1);
     background-image: linear-gradient(to bottom left, var(--select-color-10),var(--select-color-12),var(--select-color-14));
@@ -1079,6 +1082,11 @@ a:hover {
 /*--------------------------------------------------------------
 # Display liste
 --------------------------------------------------------------*/
+.posts-list {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
 
 .services .posts-list .icon-box p {
     margin-bottom: 0;
@@ -1108,47 +1116,45 @@ a:hover {
 
 .services .posts-list .pinned-post {
     background-image: linear-gradient(to bottom left, var(--select-color-10), var(--select-color-12), var(--select-color-14));
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+    position: relative;
+    z-index: 1;
 }
 
-.services .posts-list .pinned-post td > div {
+.services .posts-list .pinned-post td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.services .posts-list .pinned-post td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.services .posts-list .pinned-post td {
     border-top: 2px dashed var(--select-color-1);
     border-bottom: 2px dashed var(--select-color-1);
 }
 
-.services .posts-list .pinned-post td:first-child > div {
+.services .posts-list .pinned-post td:first-child {
     border-left: 2px dashed var(--select-color-1);
-    /* transform-style: preserve-3d;
-    transform: perspective(60cm);
-    transform-origin: 100% 50%; */
-}
-
-.services .posts-list .pinned-post td:last-child > div {
-    border-right: 2px dashed var(--select-color-1);
-}
-
-.services .posts-list .pinned-post td:first-child > div {
     border-top-left-radius: 10px;
-}
-
-.services .posts-list .pinned-post td:last-child > div {
-    border-top-right-radius: 10px;
-}
-
-.services .posts-list .pinned-post td:first-child > div {
     border-bottom-left-radius: 10px;
 }
 
-.services .posts-list .pinned-post td:last-child > div {
+.services .posts-list .pinned-post td:last-child {
+    border-right: 2px dashed var(--select-color-1);
+    border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
 .services .posts-list .icon-box.pinned-post:hover {
-    box-shadow: -5px 13px 25px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
     background-image: linear-gradient(to bottom left, var(--select-color-10) 25%, var(--select-color-12),var(--select-color-14));
-    transform: unset;
-    /* td:first-child > div {
-        transform: rotate3d(1, 0.5, 0, 9deg);
-    } */
+    transform: none;
+    z-index: 10;
 }
 
 
@@ -1438,4 +1444,163 @@ img::after {
     background-position: center;
     border-radius: inherit;
     z-index: 1;
+}
+
+/*--------------------------------------------------------------
+# Refonte de la Une (Hero Hybride)
+--------------------------------------------------------------*/
+.section-title {
+    padding-bottom: 20px;
+}
+
+#posts .container > .d-flex .section-title {
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+#posts .container > .d-flex .section-title h2 {
+    padding-bottom: 12px;
+    margin-bottom: 0;
+    margin-top: 0;
+    line-height: 1;
+}
+
+#posts .container > .d-flex .section-title h2::after {
+    bottom: 0;
+}
+
+.section-title h2 {
+    font-size: 32px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    color: var(--select-color-3);
+}
+
+.section-title h2::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--select-color-1);
+    bottom: 0;
+    left: calc(50% - 20px);
+}
+
+.recent-post-box {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 15px;
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.recent-post-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.recent-post-box .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.1) 100%);
+    z-index: 1;
+}
+
+.ribbon-new {
+    position: absolute;
+    top: 18px;
+    left: -43px;
+    background-color: var(--select-color-1);
+    color: white;
+    padding: 3px 40px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-align: center;
+    transform: rotate(-45deg);
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 1px;
+}
+
+.services .posts-list .recent-post-row {
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.2) !important;
+    position: relative;
+    z-index: 1;
+}
+
+.services .posts-list .recent-post-row td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.services .posts-list .recent-post-row td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.services .posts-list .recent-post-row:hover {
+    transform: translateX(10px);
+    box-shadow: -8px 0 20px rgba(0,0,0,0.3) !important;
+    z-index: 10;
+}
+
+.services .posts-list .recent-post-row td {
+    background: transparent !important;
+    color: white !important;
+    border-bottom: none;
+    height: 75px !important;
+}
+
+.posts-list .recent-post-row h4,
+.posts-list .recent-post-row h4 a,
+.posts-list .recent-post-row p,
+.posts-list .recent-post-row .icon i {
+    color: white !important;
+}
+
+.posts-list .recent-post-row:hover td {
+    background-color: transparent !important;
+}
+
+.recent-post-box .z-index-2 {
+    position: relative;
+    z-index: 2;
+}
+
+.recent-post-box h4 a {
+    color: white !important;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.recent-post-box p {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    line-height: 1.2;
+}
+
+.recent-post-box .actions,
+.pinned-post .icon-box .actions,
+.post-box.icon-box .actions {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.recent-post-box:hover .actions,
+.pinned-post .icon-box:hover .actions,
+.post-box.icon-box:hover .actions {
+    opacity: 1;
 }

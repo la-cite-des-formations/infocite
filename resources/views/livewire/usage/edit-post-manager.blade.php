@@ -202,7 +202,7 @@
                 @endif
                 @if ($mode === 'edition')
                     @can('create', ['App\\Models\\Post', $currentRubric->id])
-                        <a href="{{ route('post.create', ['rubric' => $currentRubric->route(), 'backRoute' => $backRoute] + ($post->is_template ? ['template' => 1] : [])) }}"
+                        <a href="{{ route('post.create', ['rubric' => $currentRubric->segmentPath(), 'backRoute' => $backRoute] + ($post->is_template ? ['template' => 1] : [])) }}"
                             title="{{ $post->is_template ? 'Créer un nouveau modèle' : 'Commencer un nouvel article' }}"
                             type="button" class="d-flex btn btn-sm btn-success me-1">
                             <span class="material-icons">add</span>

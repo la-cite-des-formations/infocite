@@ -27,7 +27,7 @@ class Post extends Model
     protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required', 'is_rating_enabled', 'is_template'];
 
     /** @var array<string, bool> Valeurs par défaut pour les attributs. */
-    protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE];
+    protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE, 'is_template' => FALSE, 'is_pinned' => FALSE, 'is_acknowledgment_required' => FALSE, 'is_rating_enabled' => FALSE];
 
     /**
      * Les attributs qui doivent être castés.
