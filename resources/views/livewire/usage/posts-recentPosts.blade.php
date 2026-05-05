@@ -16,6 +16,7 @@
                     style="background-image: url('{!! addslashes(asset($bgImage)) !!}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
                     
                     <div class="overlay"></div>
+                    <div class="ribbon-new">NOUVEAU</div>
 
                     @if (!$post->released && is_object($post->status))
                         <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger z-index-2"
@@ -23,7 +24,7 @@
                     @endif
 
                     <!-- Boutons d'actions -->
-                    <div wire:click.prefetch='blockRedirection' class="actions position-absolute top-0 start-0 m-2 z-index-2">
+                    <div wire:click.prefetch='blockRedirection' class="actions position-absolute top-0 end-0 m-2 z-index-2">
                         <div class="list-group list-group-horizontal btn-group btn-group-sm" role="group" aria-label="Actions">
                             @if ($mode == 'edition')
                                 @can('update', $post)

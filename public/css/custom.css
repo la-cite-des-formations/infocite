@@ -337,8 +337,9 @@ label>.material-icons, label>.material-icons-outlined {
 }
 
 .services .post-box.icon-box {
-    width: 520px;
-    min-height: 208px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    padding: 15px;
 }
 
 .services .post-box.icon-box .icon {
@@ -975,16 +976,18 @@ a:hover {
 }
 
 .services :not(tr).pinned-post .bi-pin-angle-fill {
-    top: calc(2 * var(--pinned-icon-box-py) / 3 - 16px);
-    /* z-index: 1; */
+    top: 4px;
+    font-size: 1.2rem;
+    transform: translateX(-50%);
 }
 
 .services .pinned-post .icon-box {
-    padding: var(--pinned-icon-box-py) var(--pinned-icon-box-px);
-    min-height: 260px;
+    padding: 25px 15px 15px 15px;
+    height: 180px;
+    overflow: hidden;
     transform-style: preserve-3d;
     transform: perspective(60cm);
-    transform-origin: 50% calc(2 * var(--pinned-icon-box-py) / 3);
+    transform-origin: 50% 10px;
     border-radius: 10px;
     border: 2px dashed var(--select-color-1);
     background-image: linear-gradient(to bottom left, var(--select-color-10),var(--select-color-12),var(--select-color-14));
@@ -1511,6 +1514,21 @@ img::after {
     z-index: 1;
 }
 
+.recent-post-box .ribbon-new {
+    position: absolute;
+    top: 18px;
+    left: -43px;
+    background-color: var(--select-color-1);
+    color: white;
+    padding: 3px 40px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-align: center;
+    transform: rotate(-45deg);
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 1px;
+}
 .recent-post-box .z-index-2 {
     position: relative;
     z-index: 2;
@@ -1528,11 +1546,15 @@ img::after {
     line-height: 1.2;
 }
 
-.recent-post-box .actions {
+.recent-post-box .actions,
+.pinned-post .icon-box .actions,
+.post-box.icon-box .actions {
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.recent-post-box:hover .actions {
+.recent-post-box:hover .actions,
+.pinned-post .icon-box:hover .actions,
+.post-box.icon-box:hover .actions {
     opacity: 1;
 }

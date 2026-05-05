@@ -110,7 +110,7 @@
         </div>
     @endif
 
-    <div class="container mt-4">
+    <div class="container mt-1">
         @if (session('displayPosts') === 'list' && $posts->isNotEmpty())
             @if ($rubric->name === 'Une')
                 @include('livewire.usage.posts-filter-badge')
@@ -145,17 +145,11 @@
                 <!-- Zone Hero Hybride : Épinglés (Gauche) / Récents (Droite) -->
                 <div class="row mb-4">
                     <div class="col-12 col-lg-6">
-                        <div class="d-flex align-items-center mb-2 px-2">
-                            <i class="bx bx-pin text-success fs-4 me-2"></i>
-                            <h3 class="h5 mb-0 fw-bold text-dark">Sélection de la rédaction</h3>
-                        </div>
+
                         @include('livewire.usage.posts-pinnedPosts')
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="d-flex align-items-center mb-2 px-2">
-                            <i class="bx bx-time-five text-primary fs-4 me-2"></i>
-                            <h3 class="h5 mb-0 fw-bold text-dark">Dernières publications</h3>
-                        </div>
+
                         @include('livewire.usage.posts-recentPosts')
                     </div>
                 </div>
@@ -178,17 +172,15 @@
                                         title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
                                 @endif
                                 <!-- Titre de l'article et icone-->
-                                <h4>
-                                    <div class="icon">
-                                        <i class="material-icons">{{ $post->icon }}</i>
-                                    </div>
+                                <h4 class="mb-1 mt-1">
+                                    <i class="material-icons ms-0 me-1 align-middle" style="color: var(--select-color-1); font-size: 30px;">{{ $post->icon }}</i>
                                     <a>{{ $post->title }}</a>
                                 </h4>
                                 <!-- Sous Titre de l'article -->
-                                <p>{!! $post->preview() !!}</p>
+                                <p class="small mb-1">{!! AP::strLimiter(strip_tags($post->content), 80) !!}</p>
                                 <!-- Boutons d'actions -->
                                 <div wire:click.prefetch='blockRedirection'
-                                    class="position-relative align-self-end mt-auto">
+                                    class="actions position-absolute bottom-0 end-0 m-2 z-index-2">
                                     <div class="list-group list-group-horizontal btn-group btn-group-sm" role="group"
                                         aria-label="Actions">
                                         <!-- Article publié ou non (pas un bouton d'action) -->
