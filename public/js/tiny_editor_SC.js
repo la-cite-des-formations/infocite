@@ -41,6 +41,19 @@ const initEditor = function () {
         ],
         entity_encoding: 'raw',
         content_style: `.mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before { display: block; width: 100%; text-align: center; padding-top: 40px; }`,
+        media_url_resolver: function (data, resolve) {
+            // Intercepter les URLs Google Drive pour générer un iframe /preview
+            var driveMatch = data.url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                var embedUrl = 'https://drive.google.com/file/d/' + driveMatch[1] + '/preview';
+                resolve({
+                    html: '<iframe src="' + embedUrl + '" width="560" height="314" frameborder="0" allowfullscreen="allowfullscreen"></iframe>'
+                });
+            } else {
+                // Laisser TinyMCE gérer normalement (YouTube, Vimeo, etc.)
+                resolve({ html: '' });
+            }
+        },
         video_template_callback: function (data) {
             return '<div class="embed-responsive embed-responsive-4by3">' +
                 '<video frameborder="0" class="embed-responsive-item" controls="controls">' +
