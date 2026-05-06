@@ -259,6 +259,8 @@ const initEditor = function () {
                 });
             };
 
+
+
             // 3. Enregistrement dynamique des raccourcis et du menu
             BLOCK_DEFINITIONS.forEach(block => {
                 if (block.shortcut) {
@@ -331,6 +333,10 @@ const initEditor = function () {
                                         <div class="style-option" data-style="block-frame-modern"><span class="style-dot dot-modern"></span> Moderne</div>
                                         <div class="style-option" data-style="block-frame-elegant"><span class="style-dot dot-elegant"></span> Élégant</div>
                                         <div class="style-option" data-style="block-frame-dashed"><span class="style-dot dot-dashed"></span> Pointillé</div>
+                                        <hr class="my-1">
+                                        <div class="style-option" data-align-val="left"><i class="material-icons-outlined fs-6">format_align_left</i> Gauche</div>
+                                        <div class="style-option" data-align-val="center"><i class="material-icons-outlined fs-6">format_align_center</i> Centrer</div>
+                                        <div class="style-option" data-align-val="right"><i class="material-icons-outlined fs-6">format_align_right</i> Droite</div>
                                     </div>
                                 `;
                             }
@@ -341,6 +347,7 @@ const initEditor = function () {
             };
 
             editor.on('NodeChange SetContent', injectControlButtons);
+
             
             // Détection des images cassées (fichiers manquants)
             editor.on('init', () => {
@@ -354,6 +361,19 @@ const initEditor = function () {
             // 6. Gestion globale des clics
             editor.on('click', (e) => {
                 const target = e.target;
+
+                // --- AIMANT À PARAGRAPHE (Correction de la ligne fantôme) ---
+                // Si le curseur atterrit sur le DIV du cadre lui-même, on le renvoie dans le dernier paragraphe
+                const node = editor.selection.getNode();
+                if (node && node.classList && (node.classList.contains('block-frame-simple') || node.classList.contains('block-frame-modern') || node.classList.contains('block-frame-elegant') || node.classList.contains('block-frame-dashed'))) {
+                    const lastP = node.querySelector('p:last-of-type');
+                    if (lastP) {
+                        // On force le curseur à la fin, après le dernier élément enfant (ex: après une vidéo)
+                        editor.selection.setCursorLocation(lastP, lastP.childNodes.length);
+                    }
+                }
+                // -------------------------------------------------------------
+
                 const block = target.parentElement;
 
                 if (target.classList.contains('delete-block-btn')) {
@@ -436,38 +456,45 @@ const initEditor = function () {
                     }
                 }
 
-                // Gestion des options du menu
                 const option = target.closest('.style-option');
                 if (option) {
                     const styleBlock = option.closest('.editor-block');
                     const newStyle = option.getAttribute('data-style');
+                    const newAlign = option.getAttribute('data-align-val');
+                    
                     if (styleBlock) {
                         editor.undoManager.transact(() => {
-                            // Supprimer toutes les classes de style note, alert et frame possibles
-                            styleBlock.classList.remove('block-note-info', 'block-note-success', 'block-note-warning', 'block-note-alert');
-                            styleBlock.classList.remove('block-frame-simple', 'block-frame-modern', 'block-frame-elegant', 'block-frame-dashed');
-                            styleBlock.classList.remove('alert', 'alert-info', 'alert-success', 'alert-warning', 'alert-danger');
-                            
-                            // Ajouter les nouvelles
-                            styleBlock.classList.add(newStyle);
-                            
-                            // Si c'est une note, ajouter les classes Bootstrap alert
-                            if (newStyle.startsWith('block-note-')) {
-                                styleBlock.classList.add('alert');
-                                if (newStyle === 'block-note-info') styleBlock.classList.add('alert-info');
-                                if (newStyle === 'block-note-success') styleBlock.classList.add('alert-success');
-                                if (newStyle === 'block-note-warning') styleBlock.classList.add('alert-warning');
-                                if (newStyle === 'block-note-alert') styleBlock.classList.add('alert-danger');
+                            if (newStyle) {
+                                // Supprimer toutes les classes de style note, alert et frame possibles
+                                styleBlock.classList.remove('block-note-info', 'block-note-success', 'block-note-warning', 'block-note-alert');
+                                styleBlock.classList.remove('block-frame-simple', 'block-frame-modern', 'block-frame-elegant', 'block-frame-dashed');
+                                styleBlock.classList.remove('alert', 'alert-info', 'alert-success', 'alert-warning', 'alert-danger');
+                                
+                                // Ajouter la nouvelle
+                                styleBlock.classList.add(newStyle);
+                                
+                                // Si c'est une note, ajouter les classes Bootstrap alert
+                                if (newStyle.startsWith('block-note-')) {
+                                    styleBlock.classList.add('alert');
+                                    if (newStyle === 'block-note-info') styleBlock.classList.add('alert-info');
+                                    if (newStyle === 'block-note-success') styleBlock.classList.add('alert-success');
+                                    if (newStyle === 'block-note-warning') styleBlock.classList.add('alert-warning');
+                                    if (newStyle === 'block-note-alert') styleBlock.classList.add('alert-danger');
+                                }
+                                
+                                // Gérer la marge du paragraphe interne
+                                const innerP = styleBlock.querySelector('p');
+                                if (innerP) {
+                                    if (newStyle.startsWith('block-note-')) {
+                                        innerP.classList.add('mb-0');
+                                    } else {
+                                        innerP.classList.remove('mb-0');
+                                    }
+                                }
                             }
                             
-                            // Gérer la marge du paragraphe interne (commun aux deux si besoin, ou spécifique aux notes)
-                            const innerP = styleBlock.querySelector('p');
-                            if (innerP) {
-                                if (newStyle.startsWith('block-note-')) {
-                                    innerP.classList.add('mb-0');
-                                } else {
-                                    innerP.classList.remove('mb-0');
-                                }
+                            if (newAlign) {
+                                styleBlock.style.textAlign = newAlign;
                             }
                             
                             styleBlock.classList.remove('show-style-menu');
@@ -500,6 +527,7 @@ const initEditor = function () {
                             block.remove();
                         }
                     });
+
                     e.content = div.innerHTML;
                 }
             });
