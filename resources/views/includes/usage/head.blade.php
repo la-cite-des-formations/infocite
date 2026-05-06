@@ -30,6 +30,7 @@
 <!-- Template Main CSS File -->
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+<link href="{{ asset('css/tinymce-templates.css') }}" rel="stylesheet">
 
 <!-- =======================================================
 * Template Name: Arsha - v2.3.1

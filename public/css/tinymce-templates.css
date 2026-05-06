@@ -233,11 +233,65 @@ body[contenteditable="true"] .block-note-alert::before {
    ============================================================== */
 
 /* Sélecteur de base pour tous les cadres */
-[class*="block-frame-"] {
-    padding: 25px 20px 15px 20px !important;
+.block-frame-simple,
+.block-frame-modern,
+.block-frame-elegant,
+.block-frame-dashed {
+    padding: 20px !important;
     margin: 20px 0 !important;
     position: relative;
+    display: block;
+    width: fit-content;
     transition: all 0.3s ease;
+}
+
+/* Supprimer la marge du dernier élément pour équilibrer le padding du bas */
+.block-frame-simple > *:last-child,
+.block-frame-modern > *:last-child,
+.block-frame-elegant > *:last-child,
+.block-frame-dashed > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Positionnement des cadres via l'attribut style natif de TinyMCE (text-align) */
+.block-frame-simple[style*="text-align: center"],
+.block-frame-modern[style*="text-align: center"],
+.block-frame-elegant[style*="text-align: center"],
+.block-frame-dashed[style*="text-align: center"],
+.block-frame-simple[style*="text-align:center"],
+.block-frame-modern[style*="text-align:center"],
+.block-frame-elegant[style*="text-align:center"],
+.block-frame-dashed[style*="text-align:center"] {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+}
+
+.block-frame-simple[style*="text-align: right"],
+.block-frame-modern[style*="text-align: right"],
+.block-frame-elegant[style*="text-align: right"],
+.block-frame-dashed[style*="text-align: right"],
+.block-frame-simple[style*="text-align:right"],
+.block-frame-modern[style*="text-align:right"],
+.block-frame-elegant[style*="text-align:right"],
+.block-frame-dashed[style*="text-align:right"] {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    display: block !important;
+}
+
+.block-frame-simple[style*="text-align: justify"],
+.block-frame-modern[style*="text-align: justify"],
+.block-frame-elegant[style*="text-align: justify"],
+.block-frame-dashed[style*="text-align: justify"],
+.block-frame-simple[style*="text-align:justify"],
+.block-frame-modern[style*="text-align:justify"],
+.block-frame-elegant[style*="text-align:justify"],
+.block-frame-dashed[style*="text-align:justify"] {
+    width: auto !important;
+    display: block !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /* 1. SIMPLE (Gris discret) */
