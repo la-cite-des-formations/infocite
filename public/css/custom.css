@@ -1599,6 +1599,10 @@ img::after {
     transition: opacity 0.3s ease;
 }
 
+.recent-post-box .actions {
+    z-index: 3;
+}
+
 .recent-post-box:hover .actions,
 .pinned-post .icon-box:hover .actions,
 .post-box.icon-box:hover .actions {
