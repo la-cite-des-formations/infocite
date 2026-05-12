@@ -64,9 +64,8 @@
         <div class="row mb-3">
             <label class="col-2 fw-bold text-end my-auto mt-1" for="post-content">Contenu</label>
             <div wire:ignore id="post-content-editor" class="col-8">
-                <textarea id="post-content" wire:model="post.content" type="input" class="form-control tinymce"
-                    placeholder="Saisir ici le contenu de l'article...">
-                </textarea>
+                <textarea id="post-content" type="input" class="form-control tinymce"
+                    placeholder="Saisir ici le contenu de l'article...">{{ $post->content }}</textarea>
             </div>
         </div>
         @unless ($post->is_template)
