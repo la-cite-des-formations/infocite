@@ -392,8 +392,11 @@ class EditPostManager extends Component
         $template = Post::templates()->findOrFail($templateId);
         $this->post->content .= $template->content;
 
-        // On émet vers JS pour injecter dans TinyMCE
-        $this->emit('insertCleanContent', $template->content);
+        // On utilise un événement navigateur pour plus de robustesse
+        $this->dispatchBrowserEvent('tinymce-force-insert', [
+            'content' => (string)$template->content,
+            'atEnd' => true
+        ]);
 
         $this->sendAlert([
             'alertClass' => 'success',
