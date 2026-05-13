@@ -42,7 +42,8 @@
                 'btn btn-sm',
                 'btn-secondary' => $notifications->isEmpty(),
                 'btn-danger' => $notifications->isNotEmpty(),
-            ]) wire:click="$emitTo('modal-manager', 'show', {component: 'usage.notifications-manager'})" type="button"
+            ])
+                wire:click="$emitTo('modal-manager', 'show', {component: 'usage.notifications-manager'})" type="button"
                 title="voir les notifications">
                 @if ($notifications->count() > 0)
                     <span class="me-1">{{ $notifications->count() }}</span>
@@ -86,8 +87,8 @@
                     <span class="bx bx-star"></span>
                 </button>
                 <button class="d-flex align-items-center btn btn-sm btn-primary"
-                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.rubric-info', data: {rubricId : {{ $rubric->id }}}})" type="button"
-                    title="Voir les droits de la rubrique">
+                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.rubric-info', data: {rubricId : {{ $rubric->id }}}})"
+                    type="button" title="Voir les droits de la rubrique">
                     <span class="material-icons fs-5">info</span>
                 </button>
             @elseif($rubric->name == 'Une')
@@ -306,11 +307,11 @@
 
         @if ($mode == 'edition' && $rubric->name != 'Archives' && $templates->isNotEmpty())
             <div class="mt-5 pt-4 border-top">
-                <div class="d-inline-flex align-items-center mb-3" role="button" 
+                <div class="d-inline-flex align-items-center link-info mb-3" role="button"
                     wire:click="$emitTo('modal-manager', 'show', {component: 'usage.post-templates-manager', data: {rubricId: {{ $rubric->id }}}})"
                     title="Gérer les modèles d'articles">
-                    <span class="material-icons text-info me-2 ms-0">history_edu</span>
-                    <h3 class="h4 mb-0 text-info fw-bold">Modèles disponibles</h3>
+                    <span class="material-icons me-2 ms-0">history_edu</span>
+                    <h3 class="h4 mb-0 fw-bold">Modèles disponibles</h3>
                 </div>
                 <div class="row">
                     @foreach ($templates as $template)
@@ -353,7 +354,6 @@
                                 </div>
                             </div>
                         </div>
-
                     @endforeach
                 </div>
             </div>
