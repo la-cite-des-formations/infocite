@@ -33,9 +33,13 @@ trait WithPinnedHandling
      */
     public function pinnedPosts()
     {
+        $user = auth()->user();
         return Post::query()
-            ->where('is_pinned', '=', TRUE)
-            ->get();
+            ->with(['rubric', 'author', 'comments', 'currentUserReader', 'gallery'])
+            ->where('is_pinned', TRUE)
+            ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
+            ->get()
+            ->filter(fn($post) => $user->can('read', $post));
     }
 
     /**

@@ -51,7 +51,7 @@
                                 role="button" class="btn btn-sm btn-success" title="Modifier">
                                 <i class="bx bx-pencil"></i>
                             </a>
-                            <button wire:click="showModal('confirm', {handling : 'deleteApp', appId : {{ $app->id }}})"
+                            <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deleteApp', appId : {{ $app->id }}}})"
                                     type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
@@ -113,7 +113,7 @@
                                 role="button" class="btn btn-sm btn-success" title="Modifier">
                                 <i class="bx bx-pencil"></i>
                             </a>
-                            <button wire:click="showModal('confirm', {handling : 'deleteApp', appId : {{ $app->id }}})"
+                            <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deleteApp', appId : {{ $app->id }}}})"
                                     type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>

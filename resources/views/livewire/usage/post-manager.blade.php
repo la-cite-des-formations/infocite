@@ -15,7 +15,7 @@
                 'btn btn-sm',
                 'btn-danger' => $notifications->isNotEmpty(),
                 'btn-secondary' => $notifications->isEmpty(),
-            ]) wire:click="showModal('notify')" type="button">
+            ]) wire:click="$emitTo('modal-manager', 'show', {component: 'usage.notifications-manager'})" type="button">
                 @if ($notifications->isNotEmpty())
                     <span class="me-1">{{ $notifications->count() }}</span>
                 @endif
@@ -30,7 +30,7 @@
             @if ($mode == 'edition')
                 @can('create', ['App\\Models\\Post', $post->rubric_id])
                     <button class="d-flex align-items-center btn btn-sm btn-info text-white"
-                        wire:click="showModal('post-templates-manager', {rubricId: {{ $post->rubric_id }}})"
+                        wire:click="$emitTo('modal-manager', 'show', {component: 'usage.post-templates-manager', data: {rubricId: {{ $post->rubric_id }}}})"
                         title="Gérer les modèles d'articles">
                         <span class="material-icons fs-5">history_edu</span>
                     </button>
@@ -79,7 +79,7 @@
                                 </a>
                             @endcan
                             @can('delete', $post)
-                                <button wire:click="showModal('confirm', {handling : 'deletePost'})" type="button"
+                                <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePost'}})" type="button"
                                     class="btn btn-sm btn-danger" title="Supprimer">
                                     <i class="bx bx-trash"></i>
                                 </button>
@@ -113,7 +113,7 @@
                             @can('edit', ['App\\Models\\Post', $post->rubric_id])
                                 <button type="button" class="btn btn-sm btn-primary"
                                     title="Voir les utilisateurs ayant acquitté l'article"
-                                    wire:click="showModal('post-acknowledgers', {id: {{ $post->id }}})">
+                                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.post-acknowledgers', data: {id: {{ $post->id }}}})">
                                     Acquitté
                                     <span
                                         class="badge bg-light text-primary mx-1">{{ $post->acknowledgers->count() }}</span>
@@ -200,7 +200,7 @@
                                                     </li>
                                                     @can('delete', $comment)
                                                         <button
-                                                            wire:click="showModal('confirm',  {handling : 'deleteComment', id : {{ $comment->id }}})"
+                                                            wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deleteComment', id : {{ $comment->id }}}})"
                                                             title="Supprimer ce commentaire"
                                                             class="px-1 pb-0 ms-1 me-1 align-self-center btn btn-sm btn-danger">
                                                             <i class="bx bx-trash"></i>

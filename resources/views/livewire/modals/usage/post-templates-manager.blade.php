@@ -46,16 +46,28 @@
                         </span>
                     </td>
                     <td class="align-middle border-0 text-end">
-                        <a href="{{ route('post.edit', ['rubric' => ($template->rubric ? $template->rubric->segmentPath() : 'site.test-modeles'), 'post_id' => $template->id]) }}" 
-                           class="btn btn-sm btn-primary" title="Modifier le modèle">
-                            <i class="bx bx-pencil"></i>
-                        </a>
-                        <button wire:click="deleteTemplate({{ $template->id }})" 
-                                class="btn btn-sm btn-danger" 
-                                title="Supprimer le modèle"
-                                onclick="confirm('Confirmer la suppression de ce modèle ?') || event.stopImmediatePropagation()">
-                            <i class="bx bx-trash"></i>
-                        </button>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{{ route('post.create', ['rubric' => ($template->rubric ? $template->rubric->segmentPath() : 'site.test-modeles'), 'from_template' => $template->id]) }}" 
+                               class="btn btn-info text-white" title="Créer un article à partir de ce modèle">
+                                <i class="bx bx-plus-circle"></i>
+                            </a>
+                            <a href="{{ route('post.edit', ['rubric' => ($template->rubric ? $template->rubric->segmentPath() : 'site.test-modeles'), 'post_id' => $template->id]) }}" 
+                               class="btn btn-primary" title="Modifier le modèle">
+                                <i class="bx bx-pencil"></i>
+                            </a>
+                            <button wire:click="duplicateTemplate({{ $template->id }})" 
+                                    class="btn btn-warning text-white"
+                                    title="Dupliquer le modèle"
+                                    onclick="confirm('Dupliquer le modèle « {{ $template->title }} » ?') || event.stopImmediatePropagation()">
+                                <i class="bx bx-copy"></i>
+                            </button>
+                            <button wire:click="deleteTemplate({{ $template->id }})" 
+                                    class="btn btn-danger" 
+                                    title="Supprimer le modèle"
+                                    onclick="confirm('Confirmer la suppression de ce modèle ?') || event.stopImmediatePropagation()">
+                                <i class="bx bx-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @empty

@@ -178,6 +178,13 @@
                         title="{{ $post->is_template ? 'Enregistrer le modèle' : 'Enregistrer les modifications' }}">
                         Modifier
                     </button>
+                    @if ($post->is_template)
+                        <button type="button"
+                            onclick="@this.openDuplicateModal(window.tinymce && window.tinymce.activeEditor ? window.tinymce.activeEditor.getContent() : '')"
+                            class="btn btn-warning text-white me-1" title="Dupliquer ce modèle">
+                            Dupliquer
+                        </button>
+                    @endif
                 @else
                     @if (!$post->is_template)
                         <button

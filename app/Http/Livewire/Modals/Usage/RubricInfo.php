@@ -22,7 +22,8 @@ class RubricInfo extends Component
      */
     public function mount($data)
     {
-        $this->rubric = Rubric::find($data['id']);
+        $id = $data['rubricId'] ?? $data['id'];
+        $this->rubric = Rubric::find($id);
     }
 
     /**

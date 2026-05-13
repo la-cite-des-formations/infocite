@@ -28,7 +28,7 @@ class PostPolicy
     public function read(User $user, Post $post)
     {
         // vérification de l'accès à la rubrique de l'article concerné
-        if ($user->myRubrics()->contains('id', $post->rubric_id)) {
+        if (is_null($post->rubric_id) || $user->myRubrics()->contains('id', $post->rubric_id)) {
 
             // vérification des droits de l'utilisateur en lecture ('Lecteur')
             // sur l'article concerné (si publié ou si éditable par l'utilisateur)
@@ -140,7 +140,7 @@ class PostPolicy
     public function update(User $user, Post $post)
     {
         // vérification de l'accès à la rubrique de l'article concerné
-        if ($user->myRubrics()->contains('id', $post->rubric_id)) {
+        if (is_null($post->rubric_id) || $user->myRubrics()->contains('id', $post->rubric_id)) {
 
             // vérification des droits de l'utilisateur en édition ('Editeur' / 'Modérateur')
             // sur l'article concerné
@@ -200,7 +200,7 @@ class PostPolicy
     public function delete(User $user, Post $post)
     {
         // vérification de l'accès à la rubrique de l'article concerné
-        if ($user->myRubrics()->contains('id', $post->rubric_id)) {
+        if (is_null($post->rubric_id) || $user->myRubrics()->contains('id', $post->rubric_id)) {
 
             // vérification des droits de l'utilisateur en suppression ('Administrateur')
             // sur l'article concerné

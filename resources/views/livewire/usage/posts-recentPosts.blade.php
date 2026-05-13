@@ -76,7 +76,7 @@
                             @if ($mode == 'edition')
                                 @can('delete', $post)
                                     <button
-                                        wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
+                                        wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePostFromRubric', postId : {{ $post->id }}}})"
                                         type="button" class="btn btn-danger small-action-btn" title="Supprimer">
                                         <i class="bx bx-trash"></i>
                                     </button>

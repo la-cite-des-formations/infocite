@@ -136,8 +136,6 @@ const initEditor = function () {
                 reader.readAsDataURL(file);
                 reader.onload = function () {
                     var id = 'blobid' + (new Date()).getTime();
-                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
-                    var base64 = reader.result.split(',')[1];
                     var blobInfo = blobCache.create(id, file, base64);
                     blobCache.add(blobInfo);
                     cb(blobInfo.blobUri(), { title: file.name });
@@ -245,24 +243,6 @@ const initEditor = function () {
                 });
                 editor.fire('change');
             };
-
-            BLOCK_DEFINITIONS.forEach(block => {
-                if (block.shortcut) editor.addShortcut(block.shortcut, block.title, () => safeInsert(block.template));
-            });
-
-            editor.ui.registry.addMenuButton('blocs', {
-                text: 'Blocs',
-                icon: 'visualblocks',
-                fetch: (callback) => {
-                    const items = BLOCK_DEFINITIONS.map(block => ({
-                        type: 'menuitem',
-                        text: block.title,
-                        icon: block.icon,
-                        onAction: () => safeInsert(block.template)
-                    }));
-                    callback(items);
-                }
-            });
 
             const injectControlButtons = () => {
                 editor.dom.select('.editor-block, .row').forEach(el => {
