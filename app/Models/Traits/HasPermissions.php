@@ -63,14 +63,20 @@ trait HasPermissions
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
+    protected $allRightsCache = null;
+
     public function allRights() {
+        if ($this->allRightsCache !== null) {
+            return $this->allRightsCache;
+        }
+
         $allRights = $this->personalRights->concat($this->groupsRights());
 
         $this->profiles->each(function ($profile) use (&$allRights) {
             $allRights = $allRights->concat($profile->allRights());
         });
 
-        return $allRights;
+        return $this->allRightsCache = $allRights;
     }
 
     /**

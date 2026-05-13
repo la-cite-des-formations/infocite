@@ -96,6 +96,17 @@ class Post extends Model
     }
 
     /**
+     * Relation vers le lecteur correspondant à l'utilisateur courant (pour l'eager loading).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function currentUserReader() {
+        return $this->belongsToMany('App\Models\User')
+            ->where('users.id', auth()->id())
+            ->withPivot(['is_read', 'tags', 'rating']);
+    }
+
+    /**
      * Relation vers les utilisateurs ayant acquitté la lecture de cet article.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -104,6 +115,16 @@ class Post extends Model
         return $this->morphToMany(User::class, 'target', 'interactions')
             ->wherePivot('type', 'acknowledge')
             ->withPivot('occurred_at');
+    }
+
+    /**
+     * Relation vers les interactions de l'utilisateur courant (pour l'eager loading).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function currentUserInteractions() {
+        return $this->morphMany(Interaction::class, 'target')
+            ->where('user_id', auth()->id());
     }
 
     /**
@@ -276,9 +297,8 @@ class Post extends Model
      * @return bool
      */
     public function isRead() {
-        $postUser = $this->readers->find(auth()->user()->id);
-
-        return $postUser ? $postUser->pivot->is_read : FALSE;
+        $reader = $this->currentUserReader->first() ?? $this->readers->find(auth()->id());
+        return $reader ? $reader->pivot->is_read : FALSE;
     }
 
     /**
@@ -287,9 +307,8 @@ class Post extends Model
      * @return string|null
      */
     public function tags() {
-        $postUser = $this->readers->find(auth()->user()->id);
-
-        return $postUser ? $postUser->pivot->tags : NULL;
+        $reader = $this->currentUserReader->first() ?? $this->readers->find(auth()->id());
+        return $reader ? $reader->pivot->tags : NULL;
     }
 
     /**
@@ -309,8 +328,7 @@ class Post extends Model
      * @return int
      */
     public function userRating() {
-        $reader = $this->readers->find(auth()->id());
-
+        $reader = $this->currentUserReader->first() ?? $this->readers->find(auth()->id());
         return $reader ? $reader->pivot->rating : 0;
     }
 
@@ -398,9 +416,11 @@ class Post extends Model
      * @return int
      */
     public function getViewsNbAttribute() {
+        if ($this->relationLoaded('readers')) {
+            return $this->readers->where('pivot.is_read', TRUE)->count();
+        }
         return $this->readers()
             ->where('is_read', TRUE)
-            ->get()
             ->count();
     }
 
@@ -410,8 +430,10 @@ class Post extends Model
      * @return int
      */
     public function getCommentsNbAttribute() {
-        return $this->comments
-            ->count();
+        if ($this->relationLoaded('comments')) {
+            return $this->comments->count();
+        }
+        return $this->comments()->count();
     }
 
     /**

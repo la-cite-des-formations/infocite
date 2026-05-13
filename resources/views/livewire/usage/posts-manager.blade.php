@@ -42,7 +42,7 @@
                 'btn btn-sm',
                 'btn-secondary' => $notifications->isEmpty(),
                 'btn-danger' => $notifications->isNotEmpty(),
-            ]) wire:click="showModal('notify')" type="button"
+            ]) wire:click="$emitTo('modal-manager', 'show', {component: 'usage.notifications-manager'})" type="button"
                 title="voir les notifications">
                 @if ($notifications->count() > 0)
                     <span class="me-1">{{ $notifications->count() }}</span>
@@ -62,7 +62,7 @@
             @if ($mode == 'edition')
                 @can('create', ['App\\Models\\Post', $rubric->id])
                     <button class="d-flex align-items-center btn btn-sm btn-info text-white"
-                        wire:click="showModal('post-templates-manager', {rubricId: {{ $rubric->id }}})"
+                        wire:click="$emitTo('modal-manager', 'show', {component: 'usage.post-templates-manager', data: {rubricId: {{ $rubric->id }}}})"
                         title="Gérer les modèles d'articles">
                         <span class="material-icons fs-5">history_edu</span>
                     </button>
@@ -86,7 +86,7 @@
                     <span class="bx bx-star"></span>
                 </button>
                 <button class="d-flex align-items-center btn btn-sm btn-primary"
-                    wire:click="showModal('rubric-info', {id : {{ $rubric->id }}})" type="button"
+                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.rubric-info', data: {rubricId : {{ $rubric->id }}}})" type="button"
                     title="Voir les droits de la rubrique">
                     <span class="material-icons fs-5">info</span>
                 </button>
@@ -279,7 +279,7 @@
                                         @if ($mode == 'edition')
                                             @can('delete', $post)
                                                 <button
-                                                    wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})"
+                                                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePostFromRubric', postId : {{ $post->id }}}})"
                                                     type="button" class="btn btn-danger small-action-btn" title="Supprimer">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
@@ -307,7 +307,7 @@
         @if ($mode == 'edition' && $rubric->name != 'Archives' && $templates->isNotEmpty())
             <div class="mt-5 pt-4 border-top">
                 <div class="d-inline-flex align-items-center mb-3" role="button" 
-                    wire:click="showModal('post-templates-manager', {rubricId: {{ $rubric->id }}})"
+                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.post-templates-manager', data: {rubricId: {{ $rubric->id }}}})"
                     title="Gérer les modèles d'articles">
                     <span class="material-icons text-info me-2 ms-0">history_edu</span>
                     <h3 class="h4 mb-0 text-info fw-bold">Modèles disponibles</h3>
@@ -335,14 +335,14 @@
                                                 <i class='bx bx-pencil'></i>
                                             </a>
                                             <button
-                                                wire:click="showModal('duplicate-template', {templateId: {{ $template->id }}})"
+                                                wire:click="$emitTo('modal-manager', 'show', {component: 'usage.duplicate-template-manager', data: {templateId: {{ $template->id }}}})"
                                                 type="button"
                                                 class="btn btn-outline-warning bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
                                                 title="Dupliquer le modèle">
                                                 <i class='bx bx-copy'></i>
                                             </button>
                                             <button
-                                                wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $template->id }}, isTemplate : true})"
+                                                wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePostFromRubric', postId : {{ $template->id }}, isTemplate : true}})"
                                                 type="button"
                                                 class="btn btn-outline-danger bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
                                                 title="Supprimer le modèle">

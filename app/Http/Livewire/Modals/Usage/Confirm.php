@@ -63,6 +63,9 @@ class Confirm extends Component
      */
     public $perPage = 8;
 
+    public $event;
+    public $params = [];
+
 
     /**
      * Initialisation du composant.
@@ -71,15 +74,19 @@ class Confirm extends Component
      * @param array $data Données contenant l'action ('handling') et les IDs nécessaires.
      */
     public function mount($data) {
-        extract($data);
+        $this->handling = $data['handling'] ?? 'default';
+        $this->postId = $data['postId'] ?? NULL;
+        $this->commentId = $data['id'] ?? NULL;
+        $this->appId = $data['appId'] ?? NULL;
+        $this->event = $data['event'] ?? NULL;
+        $this->params = $data['params'] ?? [];
 
-        $this->handling = $handling;
-        $this->postId = $postId ?? NULL;
-        $this->commentId = $id ?? NULL;
-        $this->appId = $appId ?? NULL;
-        $this->redirectionRoute = $redirectionRoute ?? NULL;
+        if (isset($data['content'])) {
+            $this->message = $data['content'];
+            return;
+        }
 
-        switch($handling){
+        switch($this->handling){
             case 'deletePost':
             case 'deletePostFromRubric':
                     $isTemplate = $data['isTemplate'] ?? FALSE;
@@ -97,6 +104,8 @@ class Confirm extends Component
             case 'create':
                 $this->message = "Êtes-vous sûr de vouloir créer ?";
             break;
+            default:
+                $this->message = "Confirmer l'action ?";
         }
     }
 
@@ -106,13 +115,13 @@ class Confirm extends Component
     public function confirm() {
         switch($this->handling){
             case('deletePost'):
-                $this->emit('deletePost')->to('PostManager');
+                $this->emit('deletePost')->to('PostsManager');
             break;
             case('deletePostFromRubric'):
                 $this->emit('deletePost', $this->postId)->to('PostsManager');
             break;
             case('deleteComment'):
-                $this->emit('deleteComment', $this->commentId)->to('PostManager');
+                $this->emit('deleteComment', $this->commentId)->to('PostsManager');
             break;
             case('deleteApp'):
                 $this->emit('deleteApp', $this->appId)->to('AppsManager');
@@ -124,6 +133,11 @@ class Confirm extends Component
                 }
                 else {
                     $this->emit('save');
+                }
+            break;
+            default:
+                if ($this->event) {
+                    $this->emit($this->event, ...$this->params);
                 }
             break;
         }

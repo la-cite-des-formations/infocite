@@ -19,9 +19,33 @@ class PostObserver
      */
     public function deleting(Post $post)
     {
-        foreach ($post->notifications as $notification) {
-            $notification->users()->detach();
-            $notification->delete();
+        // Les modèles n'ont généralement pas de notifications, interactions ou favoris.
+        // On saute ce nettoyage pour les modèles afin d'accélérer la suppression.
+        if ($post->is_template) {
+            $post->readers()->detach();
+            return;
         }
+
+        $notificationIds = $post->notifications()->pluck('id');
+        if ($notificationIds->isNotEmpty()) {
+            \Illuminate\Support\Facades\DB::table('notification_user')
+                ->whereIn('notification_id', $notificationIds)
+                ->delete();
+            \App\Models\Notification::whereIn('id', $notificationIds)->delete();
+        }
+
+        // Nettoyage des interactions liées (polymorphique)
+        \App\Models\Interaction::where('target_type', 'App\Models\Post')
+            ->where('target_id', $post->id)
+            ->delete();
+
+        // Nettoyage des favoris liés (polymorphique)
+        \Illuminate\Support\Facades\DB::table('favorites')
+            ->where('favoriteable_type', 'App\Models\Post')
+            ->where('favoriteable_id', $post->id)
+            ->delete();
+
+        // Nettoyage des lecteurs (pivot post_user)
+        $post->readers()->detach();
     }
 }

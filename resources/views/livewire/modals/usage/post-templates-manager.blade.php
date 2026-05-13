@@ -54,15 +54,21 @@
                            class="btn btn-sm btn-primary" title="Modifier le modèle">
                             <i class="bx bx-pencil"></i>
                         </a>
-                        <button wire:click="showModal('duplicate-template', {templateId: {{ $template->id }}})"
+                        <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.duplicate-template-manager', data: {templateId: {{ $template->id }}}})"
                                 class="btn btn-sm btn-warning text-white"
                                 title="Dupliquer le modèle">
                             <i class="bx bx-copy"></i>
                         </button>
-                        <button wire:click="deleteTemplate({{ $template->id }})" 
+                        <button wire:click="$emitTo('modal-manager', 'show', {
+                                    component: 'usage.confirm',
+                                    data: {
+                                        handling: 'deletePostFromRubric',
+                                        postId: {{ $template->id }},
+                                        isTemplate: true
+                                    }
+                                })" 
                                 class="btn btn-sm btn-danger" 
-                                title="Supprimer le modèle"
-                                onclick="confirm('Confirmer la suppression de ce modèle ?') || event.stopImmediatePropagation()">
+                                title="Supprimer le modèle">
                             <i class="bx bx-trash"></i>
                         </button>
                     </td>

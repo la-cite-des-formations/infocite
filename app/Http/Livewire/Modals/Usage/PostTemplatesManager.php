@@ -14,6 +14,8 @@ class PostTemplatesManager extends Component
 {
     use WithModal;
 
+    protected $listeners = ['deleteTemplate'];
+
     /**
      * ID de la rubrique courante pour filtrer les modèles.
      *
@@ -37,15 +39,6 @@ class PostTemplatesManager extends Component
         $this->rubricId = $data['rubricId'] ?? null;
     }
 
-    /**
-     * Supprime un modèle d'article.
-     *
-     * @param int $id ID du modèle à supprimer.
-     */
-    public function deleteTemplate($id) {
-        $template = Post::templates()->findOrFail($id);
-        $template->delete();
-    }
 
     /**
      * Rendu du composant.
@@ -67,16 +60,22 @@ class PostTemplatesManager extends Component
             $targetCreateRoute = $currentRubric->segmentPath();
         }
 
+        $user = auth()->user();
+        $myRubricsIds = $user->myRubrics()->pluck('id')->toArray();
+
         return view('livewire.modals.usage.post-templates-manager', [
             'rubric' => $currentRubric,
             'isUne' => $isUne,
             'targetCreateRoute' => $targetCreateRoute,
             'allRubrics' => $isUne ? \App\Models\Rubric::query()
+                ->select('id', 'name')
                 ->where('contains_posts', TRUE)
+                ->whereIn('id', $myRubricsIds)
                 ->where('rank', '!=', '0')
                 ->orderByRaw('position ASC, rank ASC')
                 ->get() : collect(),
             'templates' => Post::templates()
+                ->with(['rubric', 'author', 'currentUserReader'])
                 ->when(!$isUne, function($query) {
                     $query->where(function($q) {
                         $q->whereNull('rubric_id')
@@ -90,12 +89,21 @@ class PostTemplatesManager extends Component
                         $query->where('rubric_id', $this->filterRubricId);
                     }
                 })
-                ->with('rubric')
-                ->get()
-                ->sortBy(function ($template) {
-                    $rubricName = $template->rubric_id ? $template->rubric->name : '000_Global';
-                    return $rubricName . '_' . $template->title;
+                ->leftJoin('rubrics', 'posts.rubric_id', '=', 'rubrics.id')
+                ->select('posts.*')
+                ->where(function($query) use ($myRubricsIds) {
+                    $query->whereIn('posts.rubric_id', $myRubricsIds)
+                          ->orWhereNull('posts.rubric_id');
                 })
+                ->orderByRaw('COALESCE(rubrics.name, "000_Global") ASC')
+                ->orderBy('posts.title', 'ASC')
+                ->get()
         ]);
+    }
+
+    public function deleteTemplate($id) {
+        $template = Post::templates()->findOrFail($id);
+        $template->delete();
+        $this->emit('render'); // Rafraîchir le parent PostsManager
     }
 }

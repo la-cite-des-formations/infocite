@@ -96,7 +96,7 @@ class PostsManager extends Component
     public $blockRedirection = FALSE;
 
 
-    protected $listeners = ['modalClosed', 'deletePost'];
+    protected $listeners = ['modalClosed', 'deletePost', 'render'];
 
     /**
      * Filtres actifs pour la liste d'articles.
@@ -223,36 +223,55 @@ class PostsManager extends Component
     {
         $user = auth()->user();
         $recentIds = $this->recentPosts ? $this->recentPosts->pluck('id')->toArray() : [];
+        $myRubricsIds = $user->myRubrics()->pluck('id')->toArray();
+
+        // Si l'utilisateur n'a accès à aucune rubrique, on s'arrête là
+        if (empty($myRubricsIds)) {
+            return Post::whereNull('id')->paginate($this->perPage);
+        }
+
+        // Construction de la requête de base avec filtrage par rubrique (SQL)
+        $query = Post::query()
+            ->notTemplates()
+            ->where('is_pinned', FALSE);
+
+        if ($this->rubric->name == 'Une' || $this->rubric->name == 'Archives') {
+            $query->whereIn('rubric_id', $myRubricsIds);
+        } else {
+            $query->where('rubric_id', $this->rubric->id);
+        }
+
+        // Filtres de publication/archives (SQL)
+        if ($this->rubric->name == 'Archives') {
+            $query->where('published', TRUE)
+                ->where('expired_at', '<=', today()->format('Y-m-d'))
+                ->where('auto_delete', FALSE);
+        } elseif ($this->mode != 'edition') {
+            $query->where('published', TRUE)
+                ->where(function ($q) {
+                    $q->where('published_at', '<=', today()->format('Y-m-d'))
+                      ->orWhereNull('published_at');
+                })
+                ->where(function ($q) {
+                    $q->where('expired_at', '>', today()->format('Y-m-d'))
+                      ->orWhereNull('expired_at');
+                });
+        }
+
+        // On ne garde que les articles pour lesquels l'utilisateur a le droit de lecture
+        // Au lieu de charger tous les articles, on filtre par politique si nécessaire
+        // Mais pour optimiser, on peut essayer de paginer directement si le droit est global
+        // Pour être sûr de respecter la politique complexe, on récupère uniquement les IDs
+        $filteredIds = $query->select('id', 'rubric_id', 'author_id', 'published', 'published_at', 'expired_at')
+            ->get()
+            ->filter(fn($post) => $user->can('read', $post))
+            ->pluck('id');
 
         return Post::query()
-            ->notTemplates()
-            ->whereIn('id', Post::query()
-                ->when($this->rubric->name != 'Une' && $this->rubric->name != 'Archives', function ($query) {
-                    $query->where('rubric_id', $this->rubric->id);
-                })
-                ->when($this->rubric->name == 'Une', function ($query) use ($user) {
-                    $query->whereIn('rubric_id', $user->myRubrics()->pluck('id'));
-                })
-                ->when($this->rubric->name == 'Archives', function ($query) use ($user) {
-                    $query->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
-                        ->where('published', TRUE)
-                        ->where('expired_at', '<=', today()->format('Y-m-d'))
-                        ->where('auto_delete', FALSE);
-                })
-                ->get()
-                ->filter(function ($post) use ($user) {
-                    return $user->can('read', $post) &&
-                        !$post->is_pinned && (
-                            $this->mode == 'edition' ||
-                            $post->released && $this->rubric->name != 'Archives' ||
-                            $post->archived && $this->rubric->name == 'Archives'
-                        );
-                })
-                ->pluck('id')
-            )
-            ->when($this->rubric->name == 'Une' && $this->filter['allPosts'] == 'on', function ($query) use ($recentIds) {
-                // Exclusion des articles déjà affichés dans la section "Récents"
-                $query->whereNotIn('id', $recentIds);
+            ->with(['rubric', 'author', 'comments', 'currentUserReader', 'gallery'])
+            ->whereIn('id', $filteredIds)
+            ->when($this->rubric->name == 'Une' && $this->filter['allPosts'] == 'on', function ($q) use ($recentIds) {
+                $q->whereNotIn('id', $recentIds);
             })
             ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
             ->paginate($this->perPage);
@@ -270,6 +289,7 @@ class PostsManager extends Component
         if ($this->rubric->name === 'Une') {
             $this->recentPosts = Post::query()
                 ->notTemplates()
+                ->with(['rubric', 'author', 'comments', 'currentUserReader', 'gallery'])
                 ->whereIn('rubric_id', $user->myRubrics()->pluck('id'))
                 ->where('published', TRUE)
                 ->where(function ($query) {
@@ -279,7 +299,8 @@ class PostsManager extends Component
                 ->where('is_pinned', FALSE) // On ne veut pas de doublons avec les épinglés
                 ->orderByRaw('published_at DESC, updated_at DESC, created_at DESC')
                 ->take(4)
-                ->get();
+                ->get()
+                ->filter(fn($post) => $user->can('read', $post));
         } else {
             $this->recentPosts = collect();
         }
@@ -304,12 +325,20 @@ class PostsManager extends Component
             return collect();
         }
 
+        $user = auth()->user();
+        $myRubricsIds = $user->myRubrics()->pluck('id')->toArray();
+
         return Post::templates()
+            ->with(['rubric', 'author', 'currentUserInteractions', 'currentUserReader'])
             ->when($this->rubric->name == 'Une', function ($query) {
                 $query->whereNull('rubric_id');
             })
             ->when($this->rubric->name != 'Une', function ($query) {
                 $query->where('rubric_id', $this->rubric->id);
+            })
+            ->where(function ($query) use ($myRubricsIds) {
+                $query->whereIn('rubric_id', $myRubricsIds)
+                    ->orWhereNull('rubric_id');
             })
             ->orderBy('title')
             ->get();

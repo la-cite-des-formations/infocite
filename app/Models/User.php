@@ -212,8 +212,13 @@ class User extends Authenticatable
      * Relation vers les rubriques mises en favoris par l'utilisateur.
      * Table 'favorites' (polymorphique).
      */
+    protected $favoriteRubricsCache = null;
+
     public function favoriteRubrics() {
-        return $this->morphedByMany(Rubric::class, 'favoriteable', 'favorites')
+        if ($this->favoriteRubricsCache !== null) {
+            return $this->favoriteRubricsCache;
+        }
+        return $this->favoriteRubricsCache = $this->morphedByMany(Rubric::class, 'favoriteable', 'favorites')
                     ->withPivot('rank');
     }
 
@@ -296,7 +301,13 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
+    protected $myRubricsCache = null;
+
     public function myRubrics() {
+        if ($this->myRubricsCache !== null) {
+            return $this->myRubricsCache;
+        }
+
         $myRubrics = new Collection();
 
         $this->groups->each(function ($group) use (&$myRubrics) {
@@ -307,7 +318,7 @@ class User extends Authenticatable
             $myRubrics = $myRubrics->merge($profile->myRubrics());
         });
 
-        return $myRubrics->unique();
+        return $this->myRubricsCache = $myRubrics->unique();
     }
 
     /**
