@@ -54,7 +54,7 @@ class DuplicateTemplateManager extends Component
             ]);
         }
 
-        $this->emit('render');
+        $this->emit('refreshPage');
     }
 
     public function render()

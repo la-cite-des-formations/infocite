@@ -19,13 +19,6 @@ class PostObserver
      */
     public function deleting(Post $post)
     {
-        // Les modèles n'ont généralement pas de notifications, interactions ou favoris.
-        // On saute ce nettoyage pour les modèles afin d'accélérer la suppression.
-        if ($post->is_template) {
-            $post->readers()->detach();
-            return;
-        }
-
         $notificationIds = $post->notifications()->pluck('id');
         if ($notificationIds->isNotEmpty()) {
             \Illuminate\Support\Facades\DB::table('notification_user')

@@ -104,6 +104,16 @@ class PostTemplatesManager extends Component
     public function deleteTemplate($id) {
         $template = Post::templates()->findOrFail($id);
         $template->delete();
-        $this->emit('render'); // Rafraîchir le parent PostsManager
+        // Signaler au JS qu'un rafraîchissement de la page sera nécessaire à la fermeture de la modale
+        $this->dispatchBrowserEvent('mark-needs-refresh');
+    }
+
+    public function duplicateTemplate($id) {
+        $original = Post::templates()->findOrFail($id);
+        $copy = $original->replicate();
+        $copy->title = 'Copie de ' . $original->title;
+        $copy->save();
+        // Signaler au JS qu'un rafraîchissement de la page sera nécessaire à la fermeture de la modale
+        $this->dispatchBrowserEvent('mark-needs-refresh');
     }
 }

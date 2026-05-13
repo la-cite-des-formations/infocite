@@ -96,7 +96,7 @@ class PostsManager extends Component
     public $blockRedirection = FALSE;
 
 
-    protected $listeners = ['modalClosed', 'deletePost', 'render'];
+    protected $listeners = ['deletePost', 'refreshPage' => '$refresh'];
 
     /**
      * Filtres actifs pour la liste d'articles.
@@ -325,20 +325,16 @@ class PostsManager extends Component
             return collect();
         }
 
-        $user = auth()->user();
-        $myRubricsIds = $user->myRubrics()->pluck('id')->toArray();
-
         return Post::templates()
-            ->with(['rubric', 'author', 'currentUserInteractions', 'currentUserReader'])
+            ->with('rubric')
             ->when($this->rubric->name == 'Une', function ($query) {
                 $query->whereNull('rubric_id');
             })
             ->when($this->rubric->name != 'Une', function ($query) {
-                $query->where('rubric_id', $this->rubric->id);
-            })
-            ->where(function ($query) use ($myRubricsIds) {
-                $query->whereIn('rubric_id', $myRubricsIds)
-                    ->orWhereNull('rubric_id');
+                $query->where(function ($q) {
+                    $q->where('rubric_id', $this->rubric->id)
+                      ->orWhereNull('rubric_id');
+                });
             })
             ->orderBy('title')
             ->get();

@@ -32,10 +32,23 @@ window.addEventListener('showModal', () => {
 
     if (!modalElement.dataset.listenerAdded) {
         modalElement.addEventListener('hidden.bs.modal', () => {
+            const needsRefresh = modalElement.dataset.needsRefresh === 'true';
             Livewire.emitTo('modal-manager', 'unload');
+            if (needsRefresh) {
+                Livewire.emit('refreshPage');
+                delete modalElement.dataset.needsRefresh;
+            }
             forceCleanup();
         });
         modalElement.dataset.listenerAdded = 'true';
+    }
+});
+
+// Drapeau posé par le serveur quand une action nécessite un rafraîchissement de la page
+window.addEventListener('mark-needs-refresh', () => {
+    const modalElement = document.getElementById('modal');
+    if (modalElement) {
+        modalElement.dataset.needsRefresh = 'true';
     }
 });
 
