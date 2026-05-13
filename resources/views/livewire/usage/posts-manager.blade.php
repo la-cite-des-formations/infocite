@@ -66,8 +66,9 @@
                         title="Gérer les modèles d'articles">
                         <span class="material-icons fs-5">history_edu</span>
                     </button>
-                    <a href="{{ route('post.create', ['rubric' => $rubric->segmentPath()]) }}" title="Commencer un nouvel article"
-                        type="button" class="d-flex align-items-center input-group-text btn btn-sm btn-success">
+                    <a href="{{ route('post.create', ['rubric' => $rubric->segmentPath()]) }}"
+                        title="Commencer un nouvel article" type="button"
+                        class="d-flex align-items-center input-group-text btn btn-sm btn-success">
                         <span class="material-icons fs-5">add</span>
                     </a>
                 @endcan
@@ -305,8 +306,10 @@
 
         @if ($mode == 'edition' && $rubric->name != 'Archives' && $templates->isNotEmpty())
             <div class="mt-5 pt-4 border-top">
-                <div class="d-flex align-items-center mb-3">
-                    <span class="material-icons text-info me-2">history_edu</span>
+                <div class="d-inline-flex align-items-center mb-3" role="button" 
+                    wire:click="showModal('post-templates-manager', {rubricId: {{ $rubric->id }}})"
+                    title="Gérer les modèles d'articles">
+                    <span class="material-icons text-info me-2 ms-0">history_edu</span>
                     <h3 class="h4 mb-0 text-info fw-bold">Modèles disponibles</h3>
                 </div>
                 <div class="row">
@@ -322,19 +325,26 @@
                                     <div class="mt-auto pt-3 text-center">
                                         <div class="btn-group btn-group-sm w-100 shadow-sm" role="group">
                                             <a href="{{ route('post.create', ['rubric' => $rubric->segmentPath(), 'from_template' => $template->id]) }}"
-                                                class="btn btn-outline-primary bg-white small-action-btn d-flex justify-content-center align-items-center w-33"
+                                                class="btn btn-outline-primary bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
                                                 title="Créer un article à partir de ce modèle">
                                                 <i class='bx bx-plus-circle'></i>
                                             </a>
                                             <a href="{{ route('post.edit', ['rubric' => $template->rubric ? $template->rubric->segmentPath() : ($rubric->name == 'Une' ? 'une' : $rubric->segmentPath()), 'post_id' => $template->id]) }}"
-                                                class="btn btn-outline-success bg-white small-action-btn d-flex justify-content-center align-items-center w-33"
+                                                class="btn btn-outline-success bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
                                                 title="Modifier le modèle">
                                                 <i class='bx bx-pencil'></i>
                                             </a>
                                             <button
+                                                wire:click="showModal('duplicate-template', {templateId: {{ $template->id }}})"
+                                                type="button"
+                                                class="btn btn-outline-warning bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
+                                                title="Dupliquer le modèle">
+                                                <i class='bx bx-copy'></i>
+                                            </button>
+                                            <button
                                                 wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $template->id }}, isTemplate : true})"
                                                 type="button"
-                                                class="btn btn-outline-danger bg-white small-action-btn d-flex justify-content-center align-items-center w-33"
+                                                class="btn btn-outline-danger bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
                                                 title="Supprimer le modèle">
                                                 <i class="bx bx-trash"></i>
                                             </button>
@@ -344,34 +354,40 @@
                             </div>
                         </div>
 
-                        <style>
-                            .template-card:hover {
-                                transform: translateY(-5px);
-                                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-                            }
-
-                            .template-card .btn-outline-primary:hover {
-                                background-color: var(--bs-primary) !important;
-                                color: white !important;
-                            }
-
-                            .template-card .btn-outline-success:hover {
-                                background-color: var(--bs-success) !important;
-                                color: white !important;
-                            }
-
-                            .template-card .btn-outline-danger:hover {
-                                background-color: var(--bs-danger) !important;
-                                color: white !important;
-                            }
-
-                            .w-33 {
-                                width: 33.33%;
-                            }
-                        </style>
                     @endforeach
                 </div>
             </div>
+
+            <style>
+                .template-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+                }
+
+                .template-card .btn-outline-primary:hover {
+                    background-color: var(--bs-primary) !important;
+                    color: white !important;
+                }
+
+                .template-card .btn-outline-success:hover {
+                    background-color: var(--bs-success) !important;
+                    color: white !important;
+                }
+
+                .template-card .btn-outline-warning:hover {
+                    background-color: var(--bs-warning) !important;
+                    color: white !important;
+                }
+
+                .template-card .btn-outline-danger:hover {
+                    background-color: var(--bs-danger) !important;
+                    color: white !important;
+                }
+
+                .w-25 {
+                    width: 25%;
+                }
+            </style>
         @endif
     </div>
 </section>

@@ -405,6 +405,19 @@ class EditPostManager extends Component
     }
 
     /**
+     * Ouvre la modale de duplication pour le modèle actuel.
+     *
+     * @param string $currentContent Contenu actuel de l'éditeur TinyMCE.
+     */
+    public function openDuplicateModal($currentContent) {
+        $this->showModal('duplicate-template', [
+            'templateId' => $this->post->id,
+            'fromEdit' => true,
+            'currentContent' => $currentContent
+        ]);
+    }
+
+    /**
      * Rendu du composant.
      *
      * @return \Illuminate\View\View

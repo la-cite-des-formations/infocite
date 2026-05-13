@@ -66,6 +66,10 @@ trait WithModal
                 $component = "usage.extract-template-manager";
                 break;
 
+            case 'duplicate-template':
+                $component = "usage.duplicate-template-manager";
+                break;
+
             default :
                 $component = "admin.{$this->models}.$modal";
         }
