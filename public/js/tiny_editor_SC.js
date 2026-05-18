@@ -176,6 +176,12 @@ const initEditor = function () {
                 { id: 'conclusion_content', title: 'Conclusion sans titre', icon: 'mi-conclusion', template: '<div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>' }
             ];
 
+            const cleanTitleText = (html) => {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || "";
+            };
+
             const findBestTarget = (node) => {
                 if (!node || node.nodeName === 'BODY') return null;
                 const list = editor.dom.getParent(node, 'ul, ol');
@@ -196,9 +202,14 @@ const initEditor = function () {
                 
                 editor.undoManager.transact(() => {
                     if (!isCollapsed) {
+                        // --- LOGIQUE MULTI-BLOCS (SÉLECTION ACTIVE) ---
+                        // On identifie les blocs de départ et de fin
                         let startBlock = findBestTarget(selection.getStart());
                         let endBlock = findBestTarget(selection.getEnd());
+                        
                         if (!startBlock || !endBlock) return;
+
+                        // On collecte tous les blocs frères entre start et end
                         let collectedBlocks = [];
                         let current = startBlock;
                         while (current) {
@@ -206,44 +217,105 @@ const initEditor = function () {
                             if (current === endBlock || !current.nextElementSibling) break;
                             current = current.nextElementSibling;
                         }
+
+                        // Sécurité Titre : Interdire si plusieurs blocs ou si liste
+                        const hasList = collectedBlocks.some(b => b.nodeName === 'UL' || b.nodeName === 'OL');
+                        if (isTitleBlock && (collectedBlocks.length > 1 || hasList)) {
+                            editor.notificationManager.open({
+                                text: "Un bloc 'Titre' ne peut pas contenir de liste ou de sélection multi-blocs.",
+                                type: 'warning',
+                                timeout: 4000
+                            });
+                            return;
+                        }
+
+                        // Fusion du contenu HTML de tous les blocs collectés
                         const combinedHtml = collectedBlocks.map(b => b.outerHTML).join('');
+
                         const fragment = editor.dom.createFragment(templateHtml);
                         const newNodes = Array.from(fragment.childNodes);
                         const targetBlock = newNodes.reverse().find(n => n.nodeType === 1) || newNodes[0];
                         newNodes.reverse();
+
                         if (targetBlock) {
                             if (isTitleBlock) {
                                 const titleTag = targetBlock.querySelector('h1, h2, h3, h4, h5, h6');
-                                if (titleTag) titleTag.innerText = combinedHtml.replace(/<[^>]*>/g, '');
+                                if (titleTag) titleTag.innerText = cleanTitleText(combinedHtml);
                             } else {
                                 const contentTag = targetBlock.querySelector('p');
-                                if (contentTag) editor.dom.replace(editor.dom.createFragment(combinedHtml), contentTag);
+                                if (contentTag) {
+                                    editor.dom.replace(editor.dom.createFragment(combinedHtml), contentTag);
+                                }
                             }
                         }
+                        
+                        // Remplacement : Insérer après le dernier bloc et supprimer les anciens
                         let ref = endBlock;
-                        newNodes.forEach(n => { editor.dom.insertAfter(n, ref); ref = n; });
+                        newNodes.forEach(n => {
+                            editor.dom.insertAfter(n, ref);
+                            ref = n;
+                        });
                         collectedBlocks.forEach(b => editor.dom.remove(b));
+                        editor.fire('change');
+
                     } else {
+                        // --- LOGIQUE MONO-BLOC (CURSEUR SIMPLE) ---
                         const node = selection.getNode();
                         const target = findBestTarget(node);
+                        
                         if (target && target.nodeName !== 'BODY' && !target.classList.contains('editor-block') && !target.classList.contains('row')) {
+                            // (Logique identique à la précédente, conservée pour le curseur simple)
+                            const isColumnBlock = templateHtml.includes('class="row"');
+                            const isList = target.nodeName === 'UL' || target.nodeName === 'OL';
+                            
+                            if (isTitleBlock && isList) {
+                                editor.notificationManager.open({
+                                    text: "Un bloc 'Titre' ne peut pas contenir de liste.",
+                                    type: 'warning',
+                                    timeout: 4000
+                                });
+                                return;
+                            }
+
+                            const isEmpty = target.textContent.trim() === '' && !target.querySelector('img, iframe, video, table, .editor-block');
                             const fragment = editor.dom.createFragment(templateHtml);
                             const newNodes = Array.from(fragment.childNodes);
                             const firstBlock = newNodes.find(n => n.nodeType === 1);
-                            if (firstBlock) {
-                                let contentHtml = target.innerHTML;
-                                const contentTag = firstBlock.querySelector('p, h1, h2, h3, h4, h5, h6');
-                                if (contentTag) contentTag.innerHTML = contentHtml;
+
+                            if (!isEmpty && firstBlock) {
+                                let contentHtml = isList ? target.outerHTML : target.innerHTML;
+                                if (isTitleBlock) contentHtml = cleanTitleText(contentHtml);
+
+                                if (isColumnBlock) {
+                                    const leftCol = firstBlock.querySelector('.block-col-left');
+                                    if (leftCol) leftCol.innerHTML = `<p>${contentHtml}</p>`;
+                                } else {
+                                    const contentTag = firstBlock.querySelector('p, h1, h2, h3, h4, h5, h6');
+                                    if (contentTag) {
+                                        if (isList) {
+                                            editor.dom.replace(editor.dom.createFragment(contentHtml), contentTag);
+                                        } else {
+                                            contentTag.innerHTML = contentHtml;
+                                        }
+                                    }
+                                }
                             }
+
                             let ref = target;
-                            newNodes.forEach(newNode => { editor.dom.insertAfter(newNode, ref); ref = newNode; });
+                            newNodes.forEach(newNode => {
+                                editor.dom.insertAfter(newNode, ref);
+                                ref = newNode;
+                            });
                             editor.dom.remove(target);
+                            
+                            const focusNode = firstBlock.querySelector('p, h2, h4') || firstBlock;
+                            editor.selection.setCursorLocation(focusNode, 0);
+                            editor.fire('change');
                         } else {
                             editor.insertContent(templateHtml);
                         }
                     }
                 });
-                editor.fire('change');
             };
 
             const injectControlButtons = () => {
