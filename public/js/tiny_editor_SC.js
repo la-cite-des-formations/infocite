@@ -258,6 +258,21 @@ const initEditor = function () {
                 });
             };
 
+            editor.ui.registry.addMenuButton('blocs', {
+                text: 'Blocs',
+                icon: 'visualblocks',
+                fetch: (callback) => {
+                    const items = BLOCK_DEFINITIONS.map(block => ({
+                        type: 'menuitem',
+                        text: block.title,
+                        icon: block.icon,
+                        shortcut: block.shortcut,
+                        onAction: () => safeInsert(block.template)
+                    }));
+                    callback(items);
+                }
+            });
+
             editor.on('NodeChange SetContent', injectControlButtons);
             editor.on('click', (e) => {
                 const target = e.target;
