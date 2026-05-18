@@ -136,6 +136,8 @@ const initEditor = function () {
                 reader.readAsDataURL(file);
                 reader.onload = function () {
                     var id = 'blobid' + (new Date()).getTime();
+                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    var base64 = reader.result.split(',')[1];
                     var blobInfo = blobCache.create(id, file, base64);
                     blobCache.add(blobInfo);
                     cb(blobInfo.blobUri(), { title: file.name });
@@ -247,24 +249,261 @@ const initEditor = function () {
             const injectControlButtons = () => {
                 editor.dom.select('.editor-block, .row').forEach(el => {
                     if (el.classList.contains('block-col-left') || el.classList.contains('block-col-right')) return;
+                    if (el.classList.contains('row') && !editor.dom.select('.editor-block', el).length) return;
+
                     if (!editor.dom.select(':scope > .delete-block-btn', el).length) {
-                        editor.dom.add(el, 'span', { class: 'delete-block-btn material-icons-outlined', contenteditable: 'false', title: 'Supprimer' }, 'delete');
-                        editor.dom.add(el, 'span', { class: 'unwrap-block-btn material-icons-outlined', contenteditable: 'false', title: 'Dégrouper' }, 'layers_clear');
+                        editor.dom.add(el, 'span', { class: 'delete-block-btn material-icons-outlined', contenteditable: 'false', title: 'Supprimer tout' }, 'delete');
+                    }
+                    if (!editor.dom.select(':scope > .unwrap-block-btn', el).length) {
+                        editor.dom.add(el, 'span', { class: 'unwrap-block-btn material-icons-outlined', contenteditable: 'false', title: 'Retirer le cadre (garder le contenu)' }, 'layers_clear');
+                    }
+                    if (!editor.dom.select(':scope > .add-newline-btn', el).length) {
                         editor.dom.add(el, 'span', { class: 'add-newline-btn material-icons-outlined', contenteditable: 'false', title: 'Ligne après' }, 'keyboard_return');
+                    }
+                    if (!editor.dom.select(':scope > .add-preline-btn', el).length) {
                         editor.dom.add(el, 'span', { class: 'add-preline-btn material-icons-outlined', contenteditable: 'false', title: 'Ligne avant' }, 'keyboard_return');
+                    }
+                    if (!editor.dom.select(':scope > .move-up-btn', el).length) {
                         editor.dom.add(el, 'span', { class: 'move-up-btn material-icons-outlined', contenteditable: 'false', title: 'Monter' }, 'expand_less');
+                    }
+                    if (!editor.dom.select(':scope > .move-down-btn', el).length) {
                         editor.dom.add(el, 'span', { class: 'move-down-btn material-icons-outlined', contenteditable: 'false', title: 'Descendre' }, 'expand_more');
+                    }
+
+                    // Bouton Palette de style (Pour les blocs Note et Cadre)
+                    const isNote = el.classList.contains('block-note-info') || el.classList.contains('block-note-success') || el.classList.contains('block-note-warning') || el.classList.contains('block-note-alert');
+                    const isFrame = el.classList.contains('block-frame-simple') || el.classList.contains('block-frame-modern') || el.classList.contains('block-frame-elegant') || el.classList.contains('block-frame-dashed');
+
+                    if (isNote || isFrame) {
+                        if (!editor.dom.select(':scope > .change-style-btn', el).length) {
+                            editor.dom.add(el, 'span', { class: 'change-style-btn material-icons-outlined', contenteditable: 'false', title: 'Changer le style' }, 'palette');
+                            
+                            // Injection dynamique du menu selon le type de bloc
+                            let menuHtml = '';
+                            if (isNote) {
+                                menuHtml = `
+                                    <div class="style-selector-menu" contenteditable="false">
+                                        <div class="style-option" data-style="block-note-info"><span class="style-dot dot-info"></span> Information</div>
+                                        <div class="style-option" data-style="block-note-success"><span class="style-dot dot-success"></span> Succès</div>
+                                        <div class="style-option" data-style="block-note-warning"><span class="style-dot dot-warning"></span> Attention</div>
+                                        <div class="style-option" data-style="block-note-alert"><span class="style-dot dot-alert"></span> Alerte</div>
+                                    </div>
+                                `;
+                            } else if (isFrame) {
+                                menuHtml = `
+                                    <div class="style-selector-menu" contenteditable="false">
+                                        <div class="style-option" data-style="block-frame-simple"><span class="style-dot dot-simple"></span> Simple</div>
+                                        <div class="style-option" data-style="block-frame-modern"><span class="style-dot dot-modern"></span> Moderne</div>
+                                        <div class="style-option" data-style="block-frame-elegant"><span class="style-dot dot-elegant"></span> Élégant</div>
+                                        <div class="style-option" data-style="block-frame-dashed"><span class="style-dot dot-dashed"></span> Pointillé</div>
+                                        <hr class="my-1">
+                                        <div class="style-option" data-align-val="left"><i class="material-icons-outlined fs-6">format_align_left</i> Gauche</div>
+                                        <div class="style-option" data-align-val="center"><i class="material-icons-outlined fs-6">format_align_center</i> Centrer</div>
+                                        <div class="style-option" data-align-val="right"><i class="material-icons-outlined fs-6">format_align_right</i> Droite</div>
+                                    </div>
+                                `;
+                            }
+                            editor.dom.add(el, 'div', { class: 'menu-wrapper-safe', contenteditable: 'false' }, menuHtml);
+                        }
                     }
                 });
             };
 
+            editor.ui.registry.addMenuButton('blocs', {
+                text: 'Blocs',
+                icon: 'visualblocks',
+                fetch: (callback) => {
+                    const items = BLOCK_DEFINITIONS.map(block => ({
+                        type: 'menuitem',
+                        text: block.title,
+                        icon: block.icon,
+                        shortcut: block.shortcut,
+                        onAction: () => safeInsert(block.template)
+                    }));
+                    callback(items);
+                }
+            });
+
             editor.on('NodeChange SetContent', injectControlButtons);
+            // Détection des images cassées (fichiers manquants)
+            editor.on('init', () => {
+                editor.getBody().addEventListener('error', (e) => {
+                    if (e.target.tagName === 'IMG') {
+                        e.target.classList.add('img-broken');
+                    }
+                }, true);
+            });
+
             editor.on('click', (e) => {
                 const target = e.target;
+
+                // --- AIMANT À PARAGRAPHE (Correction de la ligne fantôme) ---
+                // Si le curseur atterrit sur le DIV du cadre lui-même, on le renvoie dans le dernier paragraphe
+                const node = editor.selection.getNode();
+                if (node && node.classList && (node.classList.contains('block-frame-simple') || node.classList.contains('block-frame-modern') || node.classList.contains('block-frame-elegant') || node.classList.contains('block-frame-dashed'))) {
+                    const lastP = node.querySelector('p:last-of-type');
+                    if (lastP) {
+                        // On force le curseur à la fin, après le dernier élément enfant (ex: après une vidéo)
+                        editor.selection.setCursorLocation(lastP, lastP.childNodes.length);
+                    }
+                }
+                // -------------------------------------------------------------
+
                 const block = target.parentElement;
-                if (target.classList.contains('delete-block-btn')) { editor.dom.remove(block); editor.fire('change'); }
-                if (target.classList.contains('add-newline-btn')) { const p = editor.dom.create('p', {}, '&nbsp;'); editor.dom.insertAfter(p, block); editor.selection.setCursorLocation(p, 0); editor.fire('change'); }
-                // ... autres boutons simplifiés ici ...
+
+                if (target.classList.contains('delete-block-btn')) {
+                    editor.undoManager.transact(() => {
+                        const parentCol = block.parentElement;
+                        editor.dom.remove(block);
+                        // Si le parent est une colonne et qu'elle est maintenant vide, y injecter un P
+                        if (parentCol && (parentCol.classList.contains('block-col-left') || parentCol.classList.contains('block-col-right'))) {
+                            const remaining = parentCol.innerHTML.replace(/&nbsp;/g, '').replace(/\s/g, '').trim();
+                            if (remaining === '' || remaining === '<br>' || remaining === '<br data-mce-bogus="1">') {
+                                const p = editor.dom.create('p', {}, '&nbsp;');
+                                parentCol.appendChild(p);
+                                editor.selection.setCursorLocation(p, 0);
+                            }
+                        }
+                    });
+                    editor.fire('change');
+                }
+                if (target.classList.contains('unwrap-block-btn')) {
+                    editor.undoManager.transact(() => {
+                        // On récupère le contenu interne (en filtrant les boutons de contrôle)
+                        const div = document.createElement('div');
+                        div.innerHTML = block.innerHTML;
+                        // Nettoyer les boutons de contrôle du contenu extrait pour éviter les doublons
+                        div.querySelectorAll('.delete-block-btn, .unwrap-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
+                        
+                        const contentHtml = div.innerHTML;
+                        const fragment = editor.dom.createFragment(contentHtml);
+                        
+                        // Insérer le contenu à la place du bloc
+                        editor.dom.insertAfter(fragment, block);
+                        editor.dom.remove(block);
+                    });
+                    editor.fire('change');
+                }
+                if (target.classList.contains('add-newline-btn')) {
+                    editor.undoManager.transact(() => {
+                        const p = editor.dom.create('p', {}, '&nbsp;');
+                        editor.dom.insertAfter(p, block);
+                        editor.selection.setCursorLocation(p, 0);
+                    });
+                    editor.fire('change');
+                }
+                if (target.classList.contains('add-preline-btn')) {
+                    editor.undoManager.transact(() => {
+                        const p = editor.dom.create('p', {}, '&nbsp;');
+                        block.parentNode.insertBefore(p, block);
+                        editor.selection.setCursorLocation(p, 0);
+                    });
+                    editor.fire('change');
+                }
+                if (target.classList.contains('move-up-btn')) {
+                    const prev = block.previousElementSibling;
+                    if (prev && (prev.classList.contains('editor-block') || prev.classList.contains('row'))) {
+                        editor.undoManager.transact(() => { block.parentNode.insertBefore(block, prev); });
+                        editor.fire('change');
+                    }
+                }
+                if (target.classList.contains('move-down-btn')) {
+                    const next = block.nextElementSibling;
+                    if (next && (next.classList.contains('editor-block') || next.classList.contains('row'))) {
+                        editor.undoManager.transact(() => { block.parentNode.insertBefore(next, block); });
+                        editor.fire('change');
+                    }
+                }
+
+                // Gestion du bouton Palette
+                const paletteBtn = target.closest('.change-style-btn');
+                if (paletteBtn) {
+                    const targetBlock = paletteBtn.closest('.editor-block');
+                    if (targetBlock) {
+                        e.preventDefault();
+                        // Fermer les autres menus ouverts
+                        editor.dom.select('.show-style-menu').forEach(openBlock => {
+                            if (openBlock !== targetBlock) openBlock.classList.remove('show-style-menu');
+                        });
+                        targetBlock.classList.toggle('show-style-menu');
+                        return;
+                    }
+                }
+
+                const option = target.closest('.style-option');
+                if (option) {
+                    const styleBlock = option.closest('.editor-block');
+                    const newStyle = option.getAttribute('data-style');
+                    const newAlign = option.getAttribute('data-align-val');
+                    
+                    if (styleBlock) {
+                        editor.undoManager.transact(() => {
+                            if (newStyle) {
+                                // Supprimer toutes les classes de style note, alert et frame possibles
+                                styleBlock.classList.remove('block-note-info', 'block-note-success', 'block-note-warning', 'block-note-alert');
+                                styleBlock.classList.remove('block-frame-simple', 'block-frame-modern', 'block-frame-elegant', 'block-frame-dashed');
+                                styleBlock.classList.remove('alert', 'alert-info', 'alert-success', 'alert-warning', 'alert-danger');
+                                
+                                // Ajouter la nouvelle
+                                styleBlock.classList.add(newStyle);
+                                
+                                // Si c'est une note, ajouter les classes Bootstrap alert
+                                if (newStyle.startsWith('block-note-')) {
+                                    styleBlock.classList.add('alert');
+                                    if (newStyle === 'block-note-info') styleBlock.classList.add('alert-info');
+                                    if (newStyle === 'block-note-success') styleBlock.classList.add('alert-success');
+                                    if (newStyle === 'block-note-warning') styleBlock.classList.add('alert-warning');
+                                    if (newStyle === 'block-note-alert') styleBlock.classList.add('alert-danger');
+                                }
+                                
+                                // Gérer la marge du paragraphe interne
+                                const innerP = styleBlock.querySelector('p');
+                                if (innerP) {
+                                    if (newStyle.startsWith('block-note-')) {
+                                        innerP.classList.add('mb-0');
+                                    } else {
+                                        innerP.classList.remove('mb-0');
+                                    }
+                                }
+                            }
+                            
+                            if (newAlign) {
+                                styleBlock.style.textAlign = newAlign;
+                            }
+                            
+                            styleBlock.classList.remove('show-style-menu');
+                        });
+                        editor.fire('change');
+                    }
+                } else if (!target.closest('.style-selector-menu')) {
+                    // Fermer le menu si on clique ailleurs
+                    editor.dom.select('.show-style-menu').forEach(openBlock => {
+                        openBlock.classList.remove('show-style-menu');
+                    });
+                }
+            });
+
+            // 7. Nettoyage final
+            editor.on('GetContent', (e) => {
+                if (e.content) {
+                    const div = document.createElement('div');
+                    div.innerHTML = e.content;
+                    div.querySelectorAll('.delete-block-btn, .unwrap-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
+                    div.querySelectorAll('img.img-broken').forEach(img => img.classList.remove('img-broken'));
+                    div.querySelectorAll('.editor-block').forEach(block => {
+                        // Retirer la classe de menu si présente
+                        block.classList.remove('show-style-menu');
+                        
+                        const hasText = block.textContent.trim().length > 0;
+                        const hasMedia = block.querySelectorAll('img, iframe, video, audio, table, object').length > 0;
+                        
+                        if (!hasText && !hasMedia) {
+                            block.remove();
+                        }
+                    });
+
+                    e.content = div.innerHTML;
+                }
             });
 
             editor.on('change', () => { Livewire.emit('contentChange', editor.getContent()); });
