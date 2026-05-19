@@ -245,14 +245,6 @@ body[contenteditable="true"] .block-note-alert::before {
     transition: all 0.3s ease;
 }
 
-/* Supprimer la marge du dernier élément pour équilibrer le padding du bas */
-.block-frame-simple > *:last-child,
-.block-frame-modern > *:last-child,
-.block-frame-elegant > *:last-child,
-.block-frame-dashed > *:last-child {
-    margin-bottom: 0 !important;
-}
-
 /* Positionnement des cadres via l'attribut style natif de TinyMCE (text-align) */
 .block-frame-simple[style*="text-align: center"],
 .block-frame-modern[style*="text-align: center"],
