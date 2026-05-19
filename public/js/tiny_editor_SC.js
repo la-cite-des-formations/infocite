@@ -9,7 +9,7 @@ const insertHandler = (cleanHtml, atEnd = false) => {
 
     const editors = (window.tinymce.editors || window.tinymce.get() || []);
     console.log("Événement d'injection reçu pour " + editors.length + " éditeur(s)");
-    
+
     editors.forEach(targetEditor => {
         if (targetEditor && !targetEditor.removed) {
             const editorId = targetEditor.id;
@@ -36,7 +36,7 @@ const insertHandler = (cleanHtml, atEnd = false) => {
                     }
                     // On relance l'initialisation (définie plus bas)
                     initEditor();
-                    
+
                     console.log("Ré-initialisation réussie pour " + editorId);
                 } catch (err) {
                     console.error("Erreur injection dans " + editorId, err);
@@ -164,16 +164,16 @@ const initEditor = function () {
             editor.ui.registry.addIcon('mi-frame', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M0,0h24v24H0V0z" fill="none"/><path d="M18,13c-3.31,0-6,2.69-6,6C15.31,19,18,16.31,18,13z M6,13c0,3.31,2.69,6,6,6C12,15.69,9.31,13,6,13z M8,11.03 c0,0.86,0.7,1.56,1.56,1.56c0.33,0,0.63-0.1,0.89-0.28l-0.01,0.12c0,0.86,0.7,1.56,1.56,1.56s1.56-0.7,1.56-1.56l-0.01-0.12 c0.25,0.17,0.56,0.28,0.89,0.28c0.86,0,1.56-0.7,1.56-1.56c0-0.62-0.37-1.16-0.89-1.41C15.63,9.38,16,8.84,16,8.22 c0-0.86-0.7-1.56-1.56-1.56c-0.33,0-0.63,0.1-0.89,0.28l0.01-0.12c0-0.86-0.7-1.56-1.56-1.56s-1.56,0.7-1.56,1.56l0.01,0.12 C10.2,6.76,9.89,6.66,9.56,6.66C8.7,6.66,8,7.36,8,8.22c0,0.62,0.37,1.16,0.89,1.41C8.37,9.87,8,10.41,8,11.03z M12,8.06 c0.86,0,1.56,0.7,1.56,1.56s-0.7,1.56-1.56,1.56s-1.56-0.7-1.56-1.56S11.14,8.06,12,8.06z M20,4v16H4V4H20 M20,2H4C2.9,2,2,2.9,2,4 v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z" fill="currentColor"/></svg>');
 
             const BLOCK_DEFINITIONS = [
-                { id: 'intro', title: 'Introduction', icon: 'mi-intro', shortcut: 'alt+shift+i', template: '<div class="editor-block block-intro"><p><em>Rédigez l\'introduction ici...</em></p></div>' },
-                { id: 'title', title: 'Titre principal', icon: 'mi-title', shortcut: 'alt+shift+t', template: '<div class="editor-block block-title"><h2>Titre principal</h2></div>' },
-                { id: 'subtitle', title: 'Sous-titre', icon: 'mi-subtitle', shortcut: 'alt+shift+s', template: '<div class="editor-block block-subtitle"><h4>Sous-titre de section</h4></div>' },
-                { id: 'paragraph', title: 'Paragraphe', icon: 'mi-paragraph', shortcut: 'alt+shift+p', template: '<div class="editor-block block-paragraph"><p>Saisissez votre texte ici...</p></div>' },
-                { id: 'columns', title: 'Colonnes x2', icon: 'mi-columns', shortcut: 'alt+shift+c', template: '<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><p>&nbsp;</p></div><div class="col-12 col-md-6 editor-block block-col-right"><p>&nbsp;</p></div></div>' },
-                { id: 'note', title: 'Note', icon: 'mi-info', shortcut: 'alt+shift+n', template: '<div class="editor-block block-note-info alert alert-info"><p class="mb-0"><strong>Note :</strong> Saisissez une note importante ici...</p></div>' },
-                { id: 'frame', title: 'Cadre', icon: 'mi-frame', shortcut: 'alt+shift+f', template: '<div class="editor-block block-frame-simple"><p>Saisissez le contenu du cadre ici...</p></div>' },
-                { id: 'conclusion_title', title: 'Titre conclusif', icon: 'mi-title', template: '<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div>' },
-                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><h2>Titre de conclusion</h2></div><div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>' },
-                { id: 'conclusion_content', title: 'Conclusion sans titre', icon: 'mi-conclusion', template: '<div class="editor-block block-conclusion-content"><p><em>Rédigez le mot de la fin ici...</em></p></div>' }
+                { id: 'intro', title: 'Introduction', icon: 'mi-intro', shortcut: 'alt+shift+i', template: '<div class="editor-block block-intro"><div class="block-content"><p><em>Rédigez l\'introduction ici...</em></p></div></div>' },
+                { id: 'title', title: 'Titre principal', icon: 'mi-title', shortcut: 'alt+shift+t', template: '<div class="editor-block block-title"><div class="block-content"><h2>Titre principal</h2></div></div>' },
+                { id: 'subtitle', title: 'Sous-titre', icon: 'mi-subtitle', shortcut: 'alt+shift+s', template: '<div class="editor-block block-subtitle"><div class="block-content"><h4>Sous-titre de section</h4></div></div>' },
+                { id: 'paragraph', title: 'Paragraphe', icon: 'mi-paragraph', shortcut: 'alt+shift+p', template: '<div class="editor-block block-paragraph"><div class="block-content"><p>Saisissez votre texte ici...</p></div></div>' },
+                { id: 'columns', title: 'Colonnes x2', icon: 'mi-columns', shortcut: 'alt+shift+c', template: '<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><div class="block-content"><p>&nbsp;</p></div></div><div class="col-12 col-md-6 editor-block block-col-right"><div class="block-content"><p>&nbsp;</p></div></div></div>' },
+                { id: 'note', title: 'Note', icon: 'mi-info', shortcut: 'alt+shift+n', template: '<div class="editor-block block-note-info alert alert-info"><div class="block-content lc-mb-0"><p><strong>Note :</strong> Saisissez une note importante ici...</p></div></div>' },
+                { id: 'frame', title: 'Cadre', icon: 'mi-frame', shortcut: 'alt+shift+f', template: '<div class="editor-block block-frame-simple"><div class="block-content lc-mb-0"><p>Saisissez le contenu du cadre ici...</p></div></div>' },
+                { id: 'conclusion_title', title: 'Titre conclusif', icon: 'mi-title', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div></div>' },
+                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' },
+                { id: 'conclusion_content', title: 'Conclusion sans titre', icon: 'mi-conclusion', template: '<div class="editor-block block-conclusion-content"><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' }
             ];
 
             const cleanTitleText = (html) => {
@@ -199,14 +199,14 @@ const initEditor = function () {
                 const selection = editor.selection;
                 const isCollapsed = selection.isCollapsed();
                 const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
-                
+
                 editor.undoManager.transact(() => {
                     if (!isCollapsed) {
                         // --- LOGIQUE MULTI-BLOCS (SÉLECTION ACTIVE) ---
                         // On identifie les blocs de départ et de fin
                         let startBlock = findBestTarget(selection.getStart());
                         let endBlock = findBestTarget(selection.getEnd());
-                        
+
                         if (!startBlock || !endBlock) return;
 
                         // On collecte tous les blocs frères entre start et end
@@ -248,7 +248,7 @@ const initEditor = function () {
                                 }
                             }
                         }
-                        
+
                         // Remplacement : Insérer après le dernier bloc et supprimer les anciens
                         let ref = endBlock;
                         newNodes.forEach(n => {
@@ -262,12 +262,12 @@ const initEditor = function () {
                         // --- LOGIQUE MONO-BLOC (CURSEUR SIMPLE) ---
                         const node = selection.getNode();
                         const target = findBestTarget(node);
-                        
+
                         if (target && target.nodeName !== 'BODY' && !target.classList.contains('editor-block') && !target.classList.contains('row')) {
                             // (Logique identique à la précédente, conservée pour le curseur simple)
                             const isColumnBlock = templateHtml.includes('class="row"');
                             const isList = target.nodeName === 'UL' || target.nodeName === 'OL';
-                            
+
                             if (isTitleBlock && isList) {
                                 editor.notificationManager.open({
                                     text: "Un bloc 'Titre' ne peut pas contenir de liste.",
@@ -307,7 +307,7 @@ const initEditor = function () {
                                 ref = newNode;
                             });
                             editor.dom.remove(target);
-                            
+
                             const focusNode = firstBlock.querySelector('p, h2, h4') || firstBlock;
                             editor.selection.setCursorLocation(focusNode, 0);
                             editor.fire('change');
@@ -349,7 +349,7 @@ const initEditor = function () {
                     if (isNote || isFrame) {
                         if (!editor.dom.select(':scope > .change-style-btn', el).length) {
                             editor.dom.add(el, 'span', { class: 'change-style-btn material-icons-outlined', contenteditable: 'false', title: 'Changer le style' }, 'palette');
-                            
+
                             // Injection dynamique du menu selon le type de bloc
                             let menuHtml = '';
                             if (isNote) {
@@ -441,15 +441,9 @@ const initEditor = function () {
                 }
                 if (target.classList.contains('unwrap-block-btn')) {
                     editor.undoManager.transact(() => {
-                        // On récupère le contenu interne (en filtrant les boutons de contrôle)
-                        const div = document.createElement('div');
-                        div.innerHTML = block.innerHTML;
-                        // Nettoyer les boutons de contrôle du contenu extrait pour éviter les doublons
-                        div.querySelectorAll('.delete-block-btn, .unwrap-block-btn, .add-newline-btn, .add-preline-btn, .move-up-btn, .move-down-btn, .change-style-btn, .style-selector-menu, .menu-wrapper-safe').forEach(btn => btn.remove());
-                        
-                        const contentHtml = div.innerHTML;
-                        const fragment = editor.dom.createFragment(contentHtml);
-                        
+                        // On récupère le contenu interne (classe block-content)
+                        const fragment = editor.dom.createFragment(block.querySelector('.block-content').innerHTML);
+
                         // Insérer le contenu à la place du bloc
                         editor.dom.insertAfter(fragment, block);
                         editor.dom.remove(block);
@@ -507,7 +501,7 @@ const initEditor = function () {
                     const styleBlock = option.closest('.editor-block');
                     const newStyle = option.getAttribute('data-style');
                     const newAlign = option.getAttribute('data-align-val');
-                    
+
                     if (styleBlock) {
                         editor.undoManager.transact(() => {
                             if (newStyle) {
@@ -515,10 +509,10 @@ const initEditor = function () {
                                 styleBlock.classList.remove('block-note-info', 'block-note-success', 'block-note-warning', 'block-note-alert');
                                 styleBlock.classList.remove('block-frame-simple', 'block-frame-modern', 'block-frame-elegant', 'block-frame-dashed');
                                 styleBlock.classList.remove('alert', 'alert-info', 'alert-success', 'alert-warning', 'alert-danger');
-                                
+
                                 // Ajouter la nouvelle
                                 styleBlock.classList.add(newStyle);
-                                
+
                                 // Si c'est une note, ajouter les classes Bootstrap alert
                                 if (newStyle.startsWith('block-note-')) {
                                     styleBlock.classList.add('alert');
@@ -527,7 +521,7 @@ const initEditor = function () {
                                     if (newStyle === 'block-note-warning') styleBlock.classList.add('alert-warning');
                                     if (newStyle === 'block-note-alert') styleBlock.classList.add('alert-danger');
                                 }
-                                
+
                                 // Gérer la marge du paragraphe interne
                                 const innerP = styleBlock.querySelector('p');
                                 if (innerP) {
@@ -538,11 +532,11 @@ const initEditor = function () {
                                     }
                                 }
                             }
-                            
+
                             if (newAlign) {
                                 styleBlock.style.textAlign = newAlign;
                             }
-                            
+
                             styleBlock.classList.remove('show-style-menu');
                         });
                         editor.fire('change');
@@ -565,10 +559,10 @@ const initEditor = function () {
                     div.querySelectorAll('.editor-block').forEach(block => {
                         // Retirer la classe de menu si présente
                         block.classList.remove('show-style-menu');
-                        
+
                         const hasText = block.textContent.trim().length > 0;
                         const hasMedia = block.querySelectorAll('img, iframe, video, audio, table, object').length > 0;
-                        
+
                         if (!hasText && !hasMedia) {
                             block.remove();
                         }
@@ -579,7 +573,7 @@ const initEditor = function () {
             });
 
             editor.on('change', () => { Livewire.emit('contentChange', editor.getContent()); });
-            
+
             // Note: On n'enregistre plus de Livewire.on ici pour éviter les doublons lors des re-init
         }
     });
