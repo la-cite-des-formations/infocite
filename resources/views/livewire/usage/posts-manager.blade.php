@@ -330,7 +330,7 @@
                                                 title="Créer un article à partir de ce modèle">
                                                 <i class='bx bx-plus-circle'></i>
                                             </a>
-                                            <a href="{{ route('post.edit', ['rubric' => $template->rubric ? $template->rubric->segmentPath() : ($rubric->name == 'Une' ? 'une' : $rubric->segmentPath()), 'post_id' => $template->id]) }}"
+                                            <a href="{{ route('post.edit', ['rubric' => $template->rubric ? $template->rubric->segmentPath() : 'une', 'post_id' => $template->id]) }}"
                                                 class="btn btn-outline-success bg-white small-action-btn d-flex justify-content-center align-items-center w-25"
                                                 title="Modifier le modèle">
                                                 <i class='bx bx-pencil'></i>

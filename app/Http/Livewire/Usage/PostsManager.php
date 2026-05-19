@@ -331,10 +331,7 @@ class PostsManager extends Component
                 $query->whereNull('rubric_id');
             })
             ->when($this->rubric->name != 'Une', function ($query) {
-                $query->where(function ($q) {
-                    $q->where('rubric_id', $this->rubric->id)
-                      ->orWhereNull('rubric_id');
-                });
+                $query->where('rubric_id', $this->rubric->id);
             })
             ->orderBy('title')
             ->get();
