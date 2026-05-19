@@ -172,7 +172,7 @@ const initEditor = function () {
                 { id: 'note', title: 'Note', icon: 'mi-info', shortcut: 'alt+shift+n', template: '<div class="editor-block block-note-info alert alert-info"><div class="block-content lc-mb-0"><p><strong>Note :</strong> Saisissez une note importante ici...</p></div></div>' },
                 { id: 'frame', title: 'Cadre', icon: 'mi-frame', shortcut: 'alt+shift+f', template: '<div class="editor-block block-frame-simple"><div class="block-content lc-mb-0"><p>Saisissez le contenu du cadre ici...</p></div></div>' },
                 { id: 'conclusion_title', title: 'Titre conclusif', icon: 'mi-title', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div></div>' },
-                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' },
+                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div></div><div class="editor-block block-conclusion-content"><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' },
                 { id: 'conclusion_content', title: 'Conclusion sans titre', icon: 'mi-conclusion', template: '<div class="editor-block block-conclusion-content"><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' }
             ];
 
