@@ -80,6 +80,7 @@ class Confirm extends Component
         $this->appId = $data['appId'] ?? NULL;
         $this->event = $data['event'] ?? NULL;
         $this->params = $data['params'] ?? [];
+        $this->redirectionRoute = $data['redirectionRoute'] ?? NULL;
 
         if (isset($data['content'])) {
             $this->message = $data['content'];
