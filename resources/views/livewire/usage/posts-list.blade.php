@@ -27,7 +27,8 @@
             style="{!! $bgStyle !!}">
             <td>
                 @if ($isRecent ?? false)
-                    <div class="position-absolute top-0 start-0" style="width: 120px; height: 100%; overflow: hidden; pointer-events: none; clip-path: inset(0px round 10px 0 0 10px);">
+                    <div class="position-absolute top-0 start-0"
+                        style="width: 120px; height: 100%; overflow: hidden; pointer-events: none; clip-path: inset(0px round 10px 0 0 10px);">
                         <div class="ribbon-new">NOUVEAU</div>
                     </div>
                 @endif
@@ -79,6 +80,15 @@
                             <i class="bx bx-message-alt-check"></i>
                         </button>
                     </div>
+                    @if ($post->is_acknowledgment_required && !$post->isAcknowledged())
+                        <i @class([
+                            'material-icons text-danger fs-5 rounded-circle p-1 ms-1 me-0',
+                            'bg-danger-subtle' => !($isRecent ?? false),
+                            'bg-white' => $isRecent ?? false,
+                        ])
+                            class="material-icons text-danger fs-5 bg-danger-subtle rounded-circle p-1 ms-1 me-0"
+                            title="Acquittement requis — non encore signé">draw</i>
+                    @endif
                     @if (!$post->released && is_object($post->status))
                         <i class=" material-icons text-danger m-1"
                             title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
