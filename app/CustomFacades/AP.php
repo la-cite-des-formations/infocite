@@ -257,7 +257,7 @@ class AP // Application Parameters
         'allPosts'=>
             [
                 'name'=>'allPosts',
-                'libelle'=>'Articles actuellement publiés',
+                'libelle'=>'Articles publiés',
                 'icone'=>'article',
             ],
         'notViewPosts' =>
@@ -265,6 +265,12 @@ class AP // Application Parameters
                 'name'=>'notViewPosts',
                 'libelle'=>'Articles non consultés',
                 'icone'=>'fiber_new',
+            ],
+        'notAcknowledgedPosts' =>
+            [
+                'name'=>'notAcknowledgedPosts',
+                'libelle'=>'Articles non acquittés',
+                'icone'=>'draw',
             ],
         'favoritePosts'=>
             [

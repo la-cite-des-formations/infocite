@@ -16,11 +16,12 @@
 
                     <div class="overlay"></div>
                     <div class="ribbon-new">NOUVEAU</div>
-
-                    @if (!$post->released && is_object($post->status))
-                        <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger z-index-2"
-                            title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                    @endif
+                    <div class="position-absolute top-0 end-0 mt-1 me-1 d-flex align-items-end">
+                        @if ($post->is_acknowledgment_required && !$post->isAcknowledged())
+                            <i class="material-icons text-danger fs-5 bg-white rounded-circle p-1 z-index-2"
+                                title="Acquittement requis — non encore signé">draw</i>
+                        @endif
+                    </div>
 
                     <!-- Boutons d'actions -->
                     <div wire:click.prefetch='blockRedirection'

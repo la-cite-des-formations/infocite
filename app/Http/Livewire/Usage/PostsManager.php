@@ -106,6 +106,7 @@ class PostsManager extends Component
     public $filter = [
         'favoritePosts' => '',
         'notViewPosts' => '',
+        'notAcknowledgedPosts' => '',
         'postsInFavoritesRubrics' => '',
         'allPosts' => '',
     ];

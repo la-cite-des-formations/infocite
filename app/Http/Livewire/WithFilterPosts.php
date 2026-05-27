@@ -107,6 +107,32 @@ trait WithFilterPosts
     }
 
     /**
+     * Retourne les articles pas encore acquittés.
+     */
+    public function notAcknowledgedPosts()
+    {
+        $userId = auth()->id();
+
+        return Post::query()
+            ->notTemplates()
+            ->where('is_acknowledgment_required', TRUE)
+            ->whereDoesntHave('acknowledgers', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->orderBy('published_at', 'DESC')
+            ->when($this->mode == 'view', function ($query) {
+                $query
+                    ->where('published', TRUE)
+                    ->where(function ($query) {
+                        $query
+                            ->where('expired_at', '>', today()->format('Y-m-d'))
+                            ->orWhereNull('expired_at');
+                    });
+            })
+            ->paginate($this->perPage);
+    }
+
+    /**
      * Retourne les articles les plus consultés.
      */
     /**
