@@ -207,10 +207,18 @@
                             class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
                             @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ (($i % 6) + 1) * 100 }}" @endif>
                             <div class="position-relative post-box icon-box d-flex flex-column">
-                                @if (!$post->released && is_object($post->status))
-                                    <i class="position-absolute top-0 end-0 mt-2 me-2 material-icons text-danger"
-                                        title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
-                                @endif
+                                {{-- Icônes dans le coin supérieur droit : statut + acquittement --}}
+                                <div class="position-absolute top-0 end-0 mt-1 me-1 d-flex align-items-end"
+                                    style="gap: 2px;">
+                                    @if ($post->is_acknowledgment_required && !$post->isAcknowledged())
+                                        <i class="material-icons text-danger fs-5 bg-danger-subtle rounded-circle p-1"
+                                            title="Acquittement requis — non encore signé">draw</i>
+                                    @endif
+                                    @if (!$post->released && is_object($post->status))
+                                        <i class="material-icons text-danger fs-5"
+                                            title="{{ $post->status->title }}">{{ $post->status->icon }}</i>
+                                    @endif
+                                </div>
                                 <!-- Titre de l'article et icone-->
                                 <h4 class="mb-1 mt-1">
                                     <i class="material-icons ms-0 me-1 align-middle"

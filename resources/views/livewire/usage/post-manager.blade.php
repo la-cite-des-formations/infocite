@@ -41,6 +41,13 @@
                     </a>
                 @endcan
             @endif
+            @if ($post->rubric && !in_array($post->rubric->name, ['Une', 'Archives']))
+                <button class="d-flex align-items-center btn btn-sm btn-primary"
+                    wire:click="$emitTo('modal-manager', 'show', {component: 'usage.rubric-info', data: {rubricId : {{ $post->rubric_id }}}})"
+                    type="button" title="Voir les droits de la rubrique parente de cet article">
+                    <span class="material-icons fs-5">info</span>
+                </button>
+            @endif
         </div>
     </div>
 
