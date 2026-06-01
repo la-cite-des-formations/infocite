@@ -4,8 +4,18 @@ namespace App\Statistics;
 
 use App\Models\Interaction;
 
+/**
+ * Statistiques liées aux connexions des utilisateurs.
+ * Agrège les interactions de type 'connection' pour le monitoring de l'usage.
+ */
 class Connections
 {
+    /**
+     * Regroupe les connexions par jour de manière décroissante.
+     *
+     * @param array $filter Filtres optionnels (ex: userType).
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function groupByDay($filter = []) {
         return Interaction::ofType('connection')
             ->byUserType($filter['userType'] ?? null)
@@ -17,6 +27,12 @@ class Connections
             ->orderBy('occurred_at', 'desc');
     }
 
+    /**
+     * Récupère les données de connexion pour les deux dernières semaines (comparatif).
+     *
+     * @param array $filter Filtres optionnels.
+     * @return array Contient les clés 'current' et 'previous' avec les résultats indexés par jour.
+     */
     public static function groupByLastTwoWeeks(array $filter = []) {
         $today = today();
 
@@ -46,6 +62,12 @@ class Connections
         ];
     }
 
+    /**
+     * Regroupe les connexions par mois.
+     *
+     * @param array $filter Filtres optionnels.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function groupByMonth($filter = []) {
         return Interaction::ofType('connection')
             ->byUserType($filter['userType'] ?? null)
@@ -57,6 +79,12 @@ class Connections
             ->orderBy('year_month', 'desc');
     }
 
+    /**
+     * Regroupe les connexions par année scolaire et mois pour comparaison N vs N-1.
+     *
+     * @param array $filter Filtres optionnels.
+     * @return array Contient 'previous' et 'current' avec les totaux par mois.
+     */
     public static function groupBySchoolYearAndMonth(array $filter = []) {
         $today = now();
         $startSchoolYear  = $today->month >= 9 ? $today->year : $today->year - 1;

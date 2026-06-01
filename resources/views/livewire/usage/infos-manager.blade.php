@@ -185,17 +185,17 @@
     <!-- Mes rubriques favoris -->
     <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
         <h3 class="title-icon text-center mb-4"><i class="material-icons fs-2 me-2">category</i>Mes rubriques favoris</h3>
-      @if ($user->rubrics->isEmpty())
+      @if ($user->favoriteRubrics->isEmpty())
         <p class="text-center">Aucune rubrique dans les favoris</p>
       @else
-       @foreach ($user->rubrics as $i => $rubric)
+       @foreach ($user->favoriteRubrics as $i => $rubric)
         <div class="column aos-init aos-animate mt-2 mb-3"
              @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i  % 20 + 1) * 100 }}" @endif>
             <div class="rubrics-div">
                 <p class="fs-5 text-center">
                     <a href="{{ route('rubric.index', ['rubric' => $rubric->route()]) }}">{{ $rubric->name }}</a>
-                    <button class="btn @if ($rubric->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                            title="@if ($rubric->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                    <button class="btn @if ($rubric->isFavorite) btn-warning @else btn-secondary @endif btn-sm"
+                            title="@if ($rubric->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
                             wire:click="switchFavoriteRubric({{ $rubric->id }})" type="button">
                         <i class="bx bx-star"></i>
                     </button>
@@ -256,8 +256,8 @@
                             </div>
                           @endif
                             <!-- Pour ajouter l'article aux favoris : class warning si deja ajouté aux favoris-->
-                            <button class="btn @if ($post->isFavorite()) btn-warning @else btn-secondary @endif btn-sm"
-                                    title="@if ($post->isFavorite()) Retirer des favoris @else Ajouter aux favoris @endif"
+                            <button class="btn @if ($post->isFavorite) btn-warning @else btn-secondary @endif btn-sm"
+                                    title="@if ($post->isFavorite) Retirer des favoris @else Ajouter aux favoris @endif"
                                     wire:click="switchFavoritePost({{ $post->id }})" type="button">
                                 <i class="bx bx-star"></i>
                             </button>
@@ -268,7 +268,7 @@
                             </div>
                           @if ($mode == 'edition')
                            @can('delete', $post)
-                            <button wire:click="showModal('confirm', {handling : 'deletePostFromRubric', postId : {{ $post->id }}})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
+                            <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePostFromRubric', postId : {{ $post->id }}}})" type="button" class="btn btn-sm btn-danger" title="Supprimer">
                                 <i class="bx bx-trash"></i>
                             </button>
                            @endcan

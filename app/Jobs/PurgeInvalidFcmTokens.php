@@ -11,6 +11,10 @@ use Illuminate\Queue\SerializesModels;
 use Kreait\Firebase\Messaging;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Job de file d'attente (Queueable) gérant la purge des tokens FCM invalides.
+ * Vérifie auprès de Firebase si les tokens sont toujours valides et supprime ceux qui ne le sont plus.
+ */
 class PurgeInvalidFcmTokens implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -22,7 +26,11 @@ class PurgeInvalidFcmTokens implements ShouldQueue
     const BATCH_SIZE = 500;
 
     /**
-     * Execute the job.
+     * Exécute le job de purge des tokens.
+     * Traite les tokens par lots de 500 et les valide via le service Messaging de Firebase.
+     *
+     * @param Messaging $messaging Le service de messagerie Firebase injecté.
+     * @return void
      */
     public function handle(Messaging $messaging): void
     {

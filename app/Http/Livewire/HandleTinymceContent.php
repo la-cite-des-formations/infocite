@@ -5,11 +5,32 @@ namespace App\Http\Livewire;
 use DOMDocument;
 use DOMXPath;
 
+/**
+ * Trait pour la gestion du contenu provenant de l'éditeur TinyMCE dans les composants Livewire.
+ * Gère l'initialisation, le collage (avec nettoyage sémantique profond) et la synchronisation du modèle.
+ */
 trait HandleTinymceContent
 {
+    /**
+     * Propriété du modèle à synchroniser (ex: 'post').
+     *
+     * @var string
+     */
     public $modelProperty;
+
+    /**
+     * Attribut de contenu à synchroniser (ex: 'content').
+     *
+     * @var string
+     */
     public $contentAttribute;
 
+    /**
+     * Initialise la configuration pour TinyMCE.
+     *
+     * @param string $modelAttributeContentPath Chemin vers l'attribut du modèle (ex: 'post.content').
+     * @throws \Exception Si l'objet du modèle n'existe pas.
+     */
     public function initTinymceContent(string $modelAttributeContentPath)
     {
         [$modelProperty, $contentAttribute] = explode('.', $modelAttributeContentPath);
@@ -22,10 +43,20 @@ trait HandleTinymceContent
         $this->contentAttribute = $contentAttribute;
     }
 
+    /**
+     * Met à jour le contenu de l'attribut du modèle lors d'un changement dans l'éditeur.
+     *
+     * @param string $content Nouveau contenu HTML.
+     */
     public function contentChange($content) {
         $this->{$this->modelProperty}->{$this->contentAttribute} = $content;
     }
 
+    /**
+     * Gère le collage de contenu dans l'éditeur en le nettoyant au préalable.
+     *
+     * @param string $content Contenu HTML brut collé.
+     */
     public function contentPaste($content) {
         // Appelé après l'événement Livewire.emit('contentPaste', rawHtml)
 

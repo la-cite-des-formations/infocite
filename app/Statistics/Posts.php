@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class Posts
 {
     /**
-     * Récupère les posts vus selon les filtres
+     * Récupère les articles vus selon les filtres
      *
      * @param array $filter
      *      - readerType: 'all' | 'staff' | 'learners'
@@ -47,7 +47,7 @@ class Posts
     }
 
     /**
-     * Récupère les posts commentés selon les filtres
+     * Récupère les articles commentés selon les filtres
      *
      * @param array $filter
      *      - readerType: 'all' | 'staff' | 'learners'

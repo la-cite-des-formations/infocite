@@ -8,19 +8,38 @@ use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Statistiques liées aux utilisateurs.
+ * Gère les compteurs de notifications, l'activité éditoriale et l'usage des applications personnelles.
+ */
 class Users
 {
+    /**
+     * Récupère les employés ayant désactivé les notifications de bureau.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function allRefuseDesktopNotifications() {
         return Employee::query()
             ->where('desktop_notifications_granted', FALSE);
     }
 
+    /**
+     * Récupère les employés ayant activé toutes les notifications de bureau.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function allGrantAllDesktopNotifications() {
         return Employee::query()
             ->where('desktop_notifications_granted', TRUE)
             ->where('notify_only_favorites', FALSE);
     }
 
+    /**
+     * Récupère les employés ayant activé les notifications de bureau uniquement pour les favoris.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function allGrantOnlyFavoritesDesktopNotifications() {
         return Employee::query()
             ->where('desktop_notifications_granted', TRUE)
@@ -28,12 +47,14 @@ class Users
     }
 
     /**
-     * Récupère les éditeurs actifs (auteurs/correcteurs)
+     * Récupère les éditeurs les plus actifs (création/modification d'articles).
      *
-     * @param array $filter
-     *      - editorType: 'all' | 'authors' | 'correctors'
-     *      - schoolYear: int|null
-     *      - month: int|null
+     * @param array $filter Filtres :
+     *      - editorType: 'all' | 'authors' (create) | 'correctors' (update)
+     *      - schoolYear: int (Année de début)
+     *      - month: int
+     *      - rubricId: int
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function getActiveEditors(array $filter = []) {
         $schoolYear = $filter['schoolYear'] ?? NULL;
@@ -82,12 +103,13 @@ class Users
     }
 
     /**
-     * Récupère les commentateurs actifs
+     * Récupère les commentateurs les plus actifs.
      *
-     * @param array $filter
+     * @param array $filter Filtres :
      *      - commentatorType: 'all' | 'staff' | 'learners'
-     *      - schoolYear: int|null
-     *      - month: int|null
+     *      - schoolYear: int
+     *      - month: int
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function getActiveCommentators(array $filter = []) {
         $schoolYear      = $filter['schoolYear'] ?? NULL;
@@ -119,6 +141,13 @@ class Users
         ->orderBy('first_name');
     }
 
+    /**
+     * Statistiques sur les utilisateurs créant des applications personnelles.
+     *
+     * @param array $filter Filtres :
+     *      - userType: 'all' | 'staff' | 'learners'
+     * @return \Illuminate\Database\Query\Builder
+     */
     public static function personalAppsUsers($filter = []) {
         extract($filter);
         $byStaff = !isset($userType) || ($userType == 'all') ? NULL : $userType == 'staff';

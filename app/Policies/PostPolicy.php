@@ -9,12 +9,17 @@ use App\Models\Rubric;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Politique d'accès pour le modèle Post (Articles).
+ * Gère les permissions complexes basées sur les rubriques, l'état de publication et les rôles.
+ */
 class PostPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can read the post (ui).
+     * Détermine si l'utilisateur peut lire un article.
+     * Vérifie l'accès à la rubrique et si l'article est publié ou éditable par l'utilisateur.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Post  $post
@@ -22,8 +27,8 @@ class PostPolicy
      */
     public function read(User $user, Post $post)
     {
-        // vérification de l'accès à la rubrique de l'arcticle concerné
-        if ($user->myRubrics()->contains('id', $post->rubric_id)) {
+        // vérification de l'accès à la rubrique de l'article concerné
+        if (is_null($post->rubric_id) || $user->myRubrics()->contains('id', $post->rubric_id)) {
 
             // vérification des droits de l'utilisateur en lecture ('Lecteur')
             // sur l'article concerné (si publié ou si éditable par l'utilisateur)
@@ -36,10 +41,10 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can create posts in a specific rubric.
+     * Détermine si l'utilisateur peut créer des articles dans une rubrique spécifique.
      *
      * @param  \App\Models\User  $user
-     * @param  int  $rubricId
+     * @param  int|null $rubricId ID de la rubrique.
      * @return mixed
      */
     public function create(User $user, int $rubricId = NULL)
@@ -65,10 +70,11 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can edit any posts in a specific rubric.
+     * Détermine si l'utilisateur peut modifier les articles d'une rubrique.
+     * Utilisé pour la gestion en masse ou l'accès aux interfaces d'édition.
      *
      * @param  \App\Models\User  $user
-     * @param  int  $rubricId
+     * @param  int  $rubricId ID de la rubrique.
      * @return mixed
      */
     public function edit(User $user, int $rubricId)
@@ -94,10 +100,11 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can publish any posts in a specific rubric.
+     * Détermine si l'utilisateur peut publier des articles dans une rubrique.
+     * Nécessite le rôle 'Modérateur' sur la rubrique concernée.
      *
      * @param  \App\Models\User  $user
-     * @param  int  $rubricId
+     * @param  int|null $rubricId ID de la rubrique.
      * @return mixed
      */
     public function publish(User $user, int $rubricId = NULL)
@@ -123,7 +130,8 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can update the post.
+     * Détermine si l'utilisateur peut mettre à jour un article spécifique.
+     * Vérifie si l'article est déjà publié (nécessite Modérateur) ou en brouillon (Editeur suffit).
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Post  $post
@@ -131,8 +139,8 @@ class PostPolicy
      */
     public function update(User $user, Post $post)
     {
-        // vérification de l'accès à la rubrique de l'arcticle concerné
-        if ($user->myRubrics()->contains('id', $post->rubric_id)) {
+        // vérification de l'accès à la rubrique de l'article concerné
+        if (is_null($post->rubric_id) || $user->myRubrics()->contains('id', $post->rubric_id)) {
 
             // vérification des droits de l'utilisateur en édition ('Editeur' / 'Modérateur')
             // sur l'article concerné
@@ -154,10 +162,11 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can delete any posts from a specific rubric.
+     * Détermine si l'utilisateur peut supprimer tous les articles d'une rubrique.
+     * Nécessite le rôle 'Administrateur' sur la rubrique.
      *
      * @param  \App\Models\User  $user
-     * @param  int  $rubricId
+     * @param  int  $rubricId ID de la rubrique.
      * @return mixed
      */
     public function clear(User $user, int $rubricId) {
@@ -182,7 +191,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can delete the post.
+     * Détermine si l'utilisateur peut supprimer un article spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Post  $post
@@ -190,8 +199,8 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        // vérification de l'accès à la rubrique de l'arcticle concerné
-        if ($user->myRubrics()->contains('id', $post->rubric_id)) {
+        // vérification de l'accès à la rubrique de l'article concerné
+        if (is_null($post->rubric_id) || $user->myRubrics()->contains('id', $post->rubric_id)) {
 
             // vérification des droits de l'utilisateur en suppression ('Administrateur')
             // sur l'article concerné
@@ -204,7 +213,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can pin the post.
+     * Détermine si l'utilisateur peut épingler un article (mise à la Une).
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Post  $post

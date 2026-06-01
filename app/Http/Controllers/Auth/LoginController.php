@@ -9,6 +9,10 @@ use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+/**
+ * Contrôleur gérant l'authentification des utilisateurs.
+ * Gère à la fois l'authentification classique de Laravel et l'authentification via Google (Socialite).
+ */
 class LoginController extends Controller
 {
     /*
@@ -42,9 +46,9 @@ class LoginController extends Controller
     }
 
     /**
-     * Redirect the user to the Google authentication page.
+     * Redirige l'utilisateur vers la page d'authentification de Google.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function redirectToProvider()
     {
@@ -52,9 +56,11 @@ class LoginController extends Controller
     }
 
     /**
-     * Obtain the user information from Google.
+     * Gère le retour de l'authentification Google (Callback).
+     * Récupère l'e-mail de l'utilisateur Google et tente de trouver un compte correspondant.
+     * Si trouvé, connecte l'utilisateur et redirige vers l'accueil.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handleProviderCallback()
     {
@@ -67,7 +73,7 @@ class LoginController extends Controller
             return redirect()->route('home');
         }
 
-        // retour à la page d'authentification
+        // retour à la page d'authentification en cas d'échec
         return view('auth.login');
     }
 }

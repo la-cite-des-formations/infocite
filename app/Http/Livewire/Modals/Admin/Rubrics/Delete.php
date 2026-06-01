@@ -6,16 +6,44 @@ use App\Models\Right;
 use App\Models\Rubric;
 use Livewire\Component;
 
+/**
+ * Composant Livewire pour la modale de suppression de rubriques.
+ */
 class Delete extends Component
 {
+    /**
+     * Liste des identifiants des rubriques à supprimer.
+     *
+     * @var array
+     */
     public $rubricsIDs;
+
+    /**
+     * Indique si la suppression a été effectuée.
+     *
+     * @var bool
+     */
     public $deletionPerformed = FALSE;
+
+    /**
+     * Message d'alerte en cas d'erreur lors de la suppression.
+     *
+     * @var string
+     */
     public $alertMessage = '';
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param array $rubricsIDs Identifiants des rubriques à supprimer.
+     */
     public function mount($rubricsIDs) {
         $this->rubricsIDs = $rubricsIDs;
     }
 
+    /**
+     * Supprime les rubriques sélectionnées si elles ne contiennent pas d'articles.
+     */
     public function delete() {
         foreach(Rubric::query()
             ->whereIn('id', $this->rubricsIDs)
@@ -48,6 +76,11 @@ class Delete extends Component
         }
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         if ($this->alertMessage) {

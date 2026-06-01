@@ -9,10 +9,14 @@ use App\Channels\FcmChannel;
 use App\Models\Post;
 use App\Observers\PostObserver;
 
+/**
+ * Fournisseur de services principal de l'application.
+ * Gère l'enregistrement des observateurs, le mapping polymorphique et les extensions système.
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Enregistre les services de l'application dans le conteneur de services.
      *
      * @return void
      */
@@ -22,7 +26,9 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Initialise les services de l'application au démarrage (Bootstrap).
+     * Configure les observateurs de modèles, les relations polymorphiques
+     * et étend le gestionnaire de notifications par défaut pour inclure FCM.
      *
      * @return void
      */

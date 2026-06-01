@@ -9,49 +9,215 @@ use App\CustomFacades\AP;
 use App\Http\Livewire\WithAlert;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Composant Livewire pour la modale d'édition d'un droit utilisateur.
+ */
 class Edit extends Component
 {
     use WithAlert;
     const IS_PROFILE = TRUE;
 
+    /**
+     * Mode d'affichage ou d'édition.
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Indique si l'ajout est autorisé.
+     *
+     * @var bool
+     */
     public $canAdd;
 
+    /**
+     * Modèle du droit utilisateur.
+     *
+     * @var \App\Models\Right
+     */
     public $right;
+
+    /**
+     * Rôles par défaut sous forme de cases à cocher.
+     *
+     * @var array
+     */
     public $defaultRolesCbx;
+
+    /**
+     * Rôles du tableau de bord sous forme de cases à cocher.
+     *
+     * @var array
+     */
     public $dashboardRolesCbx;
 
+    /**
+     * Configuration des entités liées (groupes, profils, utilisateurs) pour l'onglet actif.
+     *
+     * @var array
+     */
     public $rightables;
 
+    /**
+     * Type de groupe pour le filtrage ('C', 'P', etc.).
+     *
+     * @var string
+     */
     public $groupType = 'C';
+
+    /**
+     * Mot-clé de recherche pour les groupes.
+     *
+     * @var string
+     */
     public $groupSearch = '';
+
+    /**
+     * Groupes attachés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAttachedGroups = [];
+
+    /**
+     * Groupes à attacher sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedToAttachGroups = [];
+
+    /**
+     * Rôles des groupes sous forme de cases à cocher.
+     *
+     * @var array
+     */
     public $groupsRolesCbx;
 
+    /**
+     * Mot-clé de recherche pour les profils.
+     *
+     * @var string
+     */
     public $profileSearch = '';
+
+    /**
+     * Profils attachés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAttachedProfiles = [];
+
+    /**
+     * Profils à attacher sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedToAttachProfiles = [];
+
+    /**
+     * Rôles des profils sous forme de cases à cocher.
+     *
+     * @var array
+     */
     public $profilesRolesCbx;
 
+    /**
+     * Mot-clé de recherche pour les utilisateurs.
+     *
+     * @var string
+     */
     public $userSearch = '';
+
+    /**
+     * Utilisateurs attachés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAttachedUsers = [];
+
+    /**
+     * Utilisateurs à attacher sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedToAttachUsers = [];
+
+    /**
+     * Rôles des utilisateurs sous forme de cases à cocher.
+     *
+     * @var array
+     */
     public $usersRolesCbx;
 
+    /**
+     * Priorité du droit.
+     *
+     * @var int|null
+     */
     public $priority;
 
+    /**
+     * Indique si une ressource spécifique est associée.
+     *
+     * @var bool|null
+     */
     public $hasResource = FALSE;
+
+    /**
+     * Type de ressource associée.
+     *
+     * @var string|null
+     */
     public $resourceType;
+
+    /**
+     * Identifiant de la ressource associée.
+     *
+     * @var int|null
+     */
     public $resourceId;
 
+    /**
+     * Configuration des onglets du formulaire principal.
+     *
+     * @var array
+     */
     public $formTabs;
+
+    /**
+     * Configuration des sous-onglets pour la gestion des groupes.
+     *
+     * @var array
+     */
     public $groupsTabs;
+
+    /**
+     * Configuration des sous-onglets pour la gestion des profils.
+     *
+     * @var array
+     */
     public $profilesTabs;
+
+    /**
+     * Configuration des sous-onglets pour la gestion des utilisateurs.
+     *
+     * @var array
+     */
     public $usersTabs;
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['render'];
 
+    /**
+     * Règles de validation pour le droit.
+     *
+     * @var array
+     */
     protected $rules = [
         'right.name' => 'required|string|max:255',
         'right.description' => 'required|string',
@@ -65,6 +231,11 @@ class Edit extends Component
         'right.ad_description' => 'required|string',
     ];
 
+    /**
+     * Définit le droit et initialise les onglets du formulaire.
+     *
+     * @param int|null $id Identifiant du droit.
+     */
     public function setRight($id = NULL) {
         $this->right = $this->right ?? Right::findOrNew($id);
 
@@ -185,6 +356,9 @@ class Edit extends Component
         $this->setRight($id ?? NULL);
     }
 
+    /**
+     * Réinitialise les modifications en rechargeant les données.
+     */
     public function refresh() {
         $this->right = Right::find($this->right->id);
 
@@ -210,6 +384,12 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Définit l'onglet courant et initialise la configuration `rightables` correspondante.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
@@ -269,6 +449,11 @@ class Edit extends Component
         $this->updatedSelectedAttachedRightables();
     }
 
+    /**
+     * Bascule entre les modes (vue, édition, création).
+     *
+     * @param string $mode Nouveau mode.
+     */
     public function switchMode($mode) {
         $this->mode = $mode;
 
@@ -285,6 +470,11 @@ class Edit extends Component
         $this->selectedToAttachUsers = [];
     }
 
+    /**
+     * Ajoute des ressources ou des rôles selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case  'groups' :
@@ -509,6 +699,11 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire des ressources ou des rôles selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'groups' :
@@ -578,6 +773,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Enregistre le droit et met à jour les rôles par défaut.
+     */
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -766,6 +964,12 @@ class Edit extends Component
         return NULL;
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @param array|null $messageBag Sac de messages d'alerte (optionnel).
+     * @return \Illuminate\View\View
+     */
     public function render($messageBag = NULL)
     {
         if ($messageBag) {

@@ -9,12 +9,17 @@ use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * Politique d'accès pour le modèle Rubric (Rubriques).
+ * Gère l'accès public aux rubriques et leur administration technique.
+ */
 class RubricPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can access the rubric (ui).
+     * Détermine si l'utilisateur peut accéder au contenu d'une rubrique (UI).
+     * Vérifie l'accès via les droits personnalisés 'rubrics'.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Rubric  $rubric
@@ -41,7 +46,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can view any rubrics.
+     * Détermine si l'utilisateur peut voir la liste des rubriques dans l'administration.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -52,7 +57,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can view the rubric.
+     * Détermine si l'utilisateur peut voir une rubrique spécifique dans l'administration.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Rubric  $rubric
@@ -64,7 +69,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can create rubrics.
+     * Détermine si l'utilisateur peut créer des rubriques.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -75,7 +80,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can update the rubric.
+     * Détermine si l'utilisateur peut modifier une rubrique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Rubric  $rubric
@@ -87,7 +92,8 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can change the rubric segment.
+     * Détermine si l'utilisateur peut modifier le segment technique d'une rubrique.
+     * Nécessite le rôle 'Administrateur' sur la rubrique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Rubric  $rubric
@@ -99,7 +105,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can handle the rubric.
+     * Détermine si l'utilisateur peut gérer une rubrique (actions de modération).
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Rubric  $rubric
@@ -111,7 +117,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can delete any rubrics.
+     * Détermine si l'utilisateur peut supprimer n'importe quelle rubrique.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -122,7 +128,7 @@ class RubricPolicy
     }
 
     /**
-     * Determine whether the user can delete the rubric.
+     * Détermine si l'utilisateur peut supprimer une rubrique spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Rubric  $rubric

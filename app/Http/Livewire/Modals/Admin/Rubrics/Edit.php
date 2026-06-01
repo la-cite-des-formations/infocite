@@ -10,26 +10,110 @@ use App\Http\Livewire\WithIconpicker;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
+/**
+ * Composant Livewire pour la modale d'édition d'une rubrique.
+ */
 class Edit extends Component
 {
     use WithAlert;
     use WithIconpicker;
 
+    /**
+     * Modèle de la rubrique.
+     *
+     * @var \App\Models\Rubric
+     */
     public $rubric;
+
+    /**
+     * Mode d'affichage ou d'édition.
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Indique si l'ajout est autorisé.
+     *
+     * @var bool
+     */
     public $canAdd;
+
+    /**
+     * Configuration des onglets du formulaire.
+     *
+     * @var array
+     */
     public $formTabs;
+
+    /**
+     * Type de groupe pour le filtrage ('C', 'P', etc.).
+     *
+     * @var string
+     */
     public $groupType = 'C';
+
+    /**
+     * Mot-clé de recherche pour les groupes.
+     *
+     * @var string
+     */
     public $groupSearch;
+
+    /**
+     * Groupes liés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedGroups = [];
+
+    /**
+     * Groupes disponibles sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableGroups = [];
+
+    /**
+     * Identifiant de la rubrique cible pour le transfert d'articles.
+     *
+     * @var int|null
+     */
     public $targetRubricId;
+
+    /**
+     * Liste des identifiants des articles.
+     *
+     * @var array
+     */
     public $postsIDs;
+
+    /**
+     * Articles liés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedPosts = [];
+
+    /**
+     * Articles disponibles sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailablePosts = [];
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['render'];
 
+    /**
+     * Règles de validation pour la rubrique.
+     *
+     * @var array
+     */
     protected $rules = [
         'rubric.name' => 'required|string|max:255',
         'rubric.title' => 'required|string|max:255',
@@ -44,6 +128,11 @@ class Edit extends Component
         'rubric.view' => 'nullable|string',
     ];
 
+    /**
+     * Définit la rubrique et initialise les onglets du formulaire.
+     *
+     * @param int|null $id Identifiant de la rubrique.
+     */
     public function setRubric($id = NULL) {
         $this->rubric = $this->rubric ?? Rubric::findOrNew($id);
 
@@ -92,6 +181,11 @@ class Edit extends Component
         ];
     }
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param array $data Données contenant l'ID de la rubrique et éventuellement le mode.
+     */
     public function mount($data) {
         extract($data);
 
@@ -100,6 +194,9 @@ class Edit extends Component
         $this->setRubric($id ?? NULL);
     }
 
+    /**
+     * Réinitialise les modifications (envoie une alerte de succès).
+     */
     public function refresh() {
         $this
             ->emit('render', [
@@ -109,12 +206,23 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Définit l'onglet courant.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
         $this->$tabsSystem['currentTab'] = $tab;
     }
 
+    /**
+     * Bascule entre les modes (vue, édition, création).
+     *
+     * @param string $mode Nouveau mode.
+     */
     public function switchMode($mode) {
         $this->mode = $mode;
 
@@ -127,6 +235,11 @@ class Edit extends Component
         };
     }
 
+    /**
+     * Ajoute des groupes ou transfère des articles selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'groups' : $this->addSelectedAvailableGroups();
@@ -137,6 +250,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Associe les groupes sélectionnés à la rubrique.
+     */
     private function addSelectedAvailableGroups() {
         if ($this->isEmpty('selectedAvailableGroups', "Aucun groupe sélectionné")) return;
 
@@ -171,6 +287,11 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire des groupes ou transfère des articles vers l'extérieur selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'groups' : $this->removeSelectedLinkedGroups();
@@ -181,6 +302,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Retire les groupes sélectionnés de la rubrique.
+     */
     private function removeSelectedLinkedGroups() {
         if ($this->isEmpty('selectedLinkedGroups', "Aucun groupe sélectionné")) return;
 
@@ -215,6 +339,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Enregistre la rubrique ou les modifications, et gère les rangs des rubriques enfants.
+     */
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -269,6 +396,11 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Récupère la liste des groupes disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableGroups() {
         $search = $this->groupSearch;
         return Group::query()
@@ -281,6 +413,11 @@ class Edit extends Component
             ->get();
     }
 
+    /**
+     * Récupère la liste des articles disponibles dans la rubrique cible.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availablePosts() {
         return Post::query()
             ->where('rubric_id', $this->targetRubricId)
@@ -288,6 +425,11 @@ class Edit extends Component
             ->get();
     }
 
+    /**
+     * Récupère la liste des rubriques cibles disponibles pour le transfert.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     private function availableTargetRubrics() {
         return Rubric::query()
             ->where('id', '<>', $this->rubric->id)
@@ -300,6 +442,12 @@ class Edit extends Component
             });
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @param array|null $messageBag Sac de messages d'alerte (optionnel).
+     * @return \Illuminate\View\View
+     */
     public function render($messageBag = NULL)
     {
         if ($messageBag) {

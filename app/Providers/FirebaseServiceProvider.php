@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging;
 
+/**
+ * Fournisseur de services gérant l'intégration avec Firebase (via Kreait).
+ * Permet l'envoi de notifications push et la gestion de la messagerie Firebase.
+ */
 class FirebaseServiceProvider extends ServiceProvider
 {
     /**

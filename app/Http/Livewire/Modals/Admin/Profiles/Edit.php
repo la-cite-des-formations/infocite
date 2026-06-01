@@ -9,37 +9,168 @@ use Livewire\Component;
 use App\CustomFacades\AP;
 use App\Http\Livewire\WithAlert;
 
+/**
+ * Composant Livewire pour la modale d'édition d'un profil.
+ */
 class Edit extends Component
 {
     use WithAlert;
 
+    /**
+     * Modèle du profil (utilisateur de type profil).
+     *
+     * @var \App\Models\User
+     */
     public $profile;
+
+    /**
+     * Mode d'affichage ou d'édition.
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Indique si l'ajout est autorisé.
+     *
+     * @var bool
+     */
     public $canAdd = TRUE;
+
+    /**
+     * Type de groupe pour le filtrage ('C', 'P', etc.).
+     *
+     * @var string
+     */
     public $groupType = 'C';
+
+    /**
+     * Mot-clé de recherche pour les groupes.
+     *
+     * @var string
+     */
     public $groupSearch = '';
+
+    /**
+     * Liste des identifiants des groupes associés au profil.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $groupsIDs;
+
+    /**
+     * Groupes liés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedGroups = [];
+
+    /**
+     * Groupes disponibles sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableGroups = [];
+
+    /**
+     * Mot-clé de recherche pour les applications.
+     *
+     * @var string
+     */
     public $appSearch = '';
+
+    /**
+     * Liste des identifiants des applications associées au profil.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $appsIDs;
+
+    /**
+     * Applications liées sélectionnées dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedApps = [];
+
+    /**
+     * Applications disponibles sélectionnées dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableApps = [];
+
+    /**
+     * Mot-clé de recherche pour les utilisateurs.
+     *
+     * @var string
+     */
     public $userSearch = '';
+
+    /**
+     * Liste des identifiants des utilisateurs associés au profil.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $usersIDs;
+
+    /**
+     * Utilisateurs liés sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedLinkedUsers = [];
+
+    /**
+     * Utilisateurs disponibles sélectionnés dans l'interface.
+     *
+     * @var array
+     */
     public $selectedAvailableUsers = [];
+
+    /**
+     * Fonction à attribuer aux membres (via l'onglet fonction).
+     *
+     * @var string
+     */
     public $function = '';
+
+    /**
+     * Configuration des onglets du formulaire principal.
+     *
+     * @var array
+     */
     public $formTabs;
+
+    /**
+     * Configuration des sous-onglets pour la gestion des groupes.
+     *
+     * @var array
+     */
     public $groupsTabs;
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['render'];
 
+    /**
+     * Règles de validation pour le profil.
+     *
+     * @var array
+     */
     protected $rules = [
         'profile.name' => 'required|string|max:255',
         'profile.first_name' => 'required|string|max:255',
     ];
 
+    /**
+     * Définit le profil et initialise les onglets du formulaire.
+     *
+     * @param int|null $id Identifiant de l'utilisateur de type profil.
+     */
     public function setProfile($id = NULL) {
         $this->profile = $this->profile ?? User::findOrNew($id);
         if (!$id) {
@@ -95,6 +226,11 @@ class Edit extends Component
         ];
     }
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param array $data Données contenant l'ID du profil et éventuellement le mode.
+     */
     public function mount($data) {
         extract($data);
         $this->mode = $mode ?? 'view';
@@ -106,6 +242,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Réinitialise les modifications en rechargeant les données depuis la base.
+     */
     public function refresh() {
         $this->profile->groups()->sync($this->groupsIDs);
         $this->selectedLinkedGroups = [];
@@ -128,6 +267,12 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Définit l'onglet courant et réinitialise les sélections.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     * @param string $tab Identifiant de l'onglet.
+     */
     public function setCurrentTab($tabsSystem, $tab) {
         if ($this->$tabsSystem['currentTab'] === $tab) return;
 
@@ -139,6 +284,11 @@ class Edit extends Component
         $this->updatedSelectedLinkedGroups();
     }
 
+    /**
+     * Bascule entre les modes (vue, édition, création).
+     *
+     * @param string $mode Nouveau mode.
+     */
     public function switchMode($mode) {
         $this->mode = $mode;
 
@@ -151,6 +301,11 @@ class Edit extends Component
         $this->updatedSelectedLinkedGroups();
     }
 
+    /**
+     * Ajoute des éléments (utilisateurs, applications, groupes, fonction) selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function add($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'users' : $this->addSelectedAvailableUsersAndApllyProfile();
@@ -167,6 +322,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Applique la configuration du profil (groupes et applications) aux utilisateurs liés sélectionnés.
+     */
     public function applyProfile() {
         if ($this->isEmpty('selectedLinkedUsers', "Aucun utilisateur sélectionné")) return;
 
@@ -199,6 +357,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Associe les utilisateurs sélectionnés et leur applique la configuration du profil.
+     */
     private function addSelectedAvailableUsersAndApllyProfile() {
         if ($this->isEmpty('selectedAvailableUsers', "Aucun utilisateur sélectionné")) return;
 
@@ -218,6 +379,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Associe les applications sélectionnées au profil.
+     */
     private function addSelectedAvailableApps() {
         if ($this->isEmpty('selectedAvailableApps', "Aucune application sélectionnée")) return;
 
@@ -235,6 +399,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Associe des groupes disponibles au profil.
+     */
     public function addSelectedAvailableGroups() {
         if ($this->isEmpty('selectedAvailableGroups', "Aucun groupe sélectionné")) return;
 
@@ -278,6 +445,11 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire des éléments (utilisateurs, applications, groupes, fonction) selon l'onglet actif.
+     *
+     * @param string $tabsSystem Nom du système d'onglets.
+     */
     public function remove($tabsSystem) {
         switch($this->$tabsSystem['currentTab']) {
             case 'users' : $this->removeSelectedLinkedUsers();
@@ -294,6 +466,9 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Retire les utilisateurs sélectionnés du profil.
+     */
     private function removeSelectedLinkedUsers() {
         if ($this->isEmpty('selectedLinkedUsers', "Aucun utilisateur sélectionné")) return;
 
@@ -311,6 +486,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire les applications sélectionnées du profil.
+     */
     private function removeSelectedLinkedApps() {
         if ($this->isEmpty('selectedLinkedApps', "Aucune application sélectionnée")) return;
 
@@ -328,6 +506,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire les groupes sélectionnés du profil.
+     */
     private function removeSelectedLinkedGroups() {
         if ($this->isEmpty('selectedLinkedGroups', "Aucun groupe sélectionné")) return;
 
@@ -345,6 +526,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Retire la fonction attribuée aux groupes sélectionnés.
+     */
     private function removeFunction() {
         if ($this->isEmpty('selectedLinkedGroups', "Aucun groupe sélectionné")) return;
 
@@ -362,6 +546,9 @@ class Edit extends Component
             ->self();
     }
 
+    /**
+     * Enregistre le profil ou les modifications.
+     */
     public function save() {
         if ($this->mode === 'view') return;
 
@@ -394,6 +581,11 @@ class Edit extends Component
         }
     }
 
+    /**
+     * Récupère la liste des groupes disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableGroups() {
         $search = $this->groupSearch;
         return Group::query()
@@ -406,6 +598,11 @@ class Edit extends Component
             ->get();
     }
 
+    /**
+     * Récupère la liste des applications disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableApps() {
         $search = $this->appSearch;
         return App::query()
@@ -417,6 +614,11 @@ class Edit extends Component
             ->get();
     }
 
+    /**
+     * Récupère la liste des utilisateurs disponibles pour l'association.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function availableUsers() {
         $search = $this->userSearch;
         return User::query()
@@ -429,6 +631,12 @@ class Edit extends Component
                 ->get();
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @param array|null $messageBag Sac de messages d'alerte (optionnel).
+     * @return \Illuminate\View\View
+     */
     public function render($messageBag = NULL)
     {
         if ($messageBag) {

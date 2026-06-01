@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+/**
+ * Contrôleur gérant l'affichage du tableau de bord.
+ */
 class DashboardController extends Controller
 {
     /**
-     * Show the application dashboard.
+     * Affiche le tableau de bord de l'application.
+     * Permet de spécifier quel onglet ou section du dashboard afficher.
      *
+     * @param string $dashboard Identifiant de la section du dashboard (défaut: 'main').
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index($dashboard = 'main')

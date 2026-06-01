@@ -7,12 +7,16 @@ use App\Models\Roles;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Politique d'accès pour le modèle App.
+ * Gère les permissions pour visualiser, créer, modifier et supprimer des applications.
+ */
 class AppPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any apps.
+     * Détermine si l'utilisateur peut voir la liste des applications.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -23,7 +27,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can view the app.
+     * Détermine si l'utilisateur peut voir une application spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\App  $app
@@ -35,7 +39,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can filter apps by type.
+     * Détermine si l'utilisateur peut filtrer les applications par type.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -46,7 +50,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can create institutional apps.
+     * Détermine si l'utilisateur peut créer des applications institutionnelles.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -57,7 +61,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can create personal apps for someone.
+     * Détermine si l'utilisateur peut créer des applications personnelles pour un tiers.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -68,7 +72,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can update the app.
+     * Détermine si l'utilisateur peut modifier une application (institutionnelle).
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\App  $app
@@ -80,7 +84,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can update the personal app for someone.
+     * Détermine si l'utilisateur peut modifier une application personnelle pour un tiers.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\App  $app
@@ -92,7 +96,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can delete any apps.
+     * Détermine si l'utilisateur peut supprimer n'importe quelle application.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -103,7 +107,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can delete the app.
+     * Détermine si l'utilisateur peut supprimer une application spécifique.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\App  $app
@@ -115,7 +119,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can add his own apps (usage front).
+     * Détermine si l'utilisateur peut ajouter ses propres applications (usage front/personnel).
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -126,7 +130,7 @@ class AppPolicy
     }
 
     /**
-     * Determine whether the user can update or delete his app (usage front).
+     * Détermine si l'utilisateur peut modifier ou supprimer sa propre application (usage front).
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\App  $app

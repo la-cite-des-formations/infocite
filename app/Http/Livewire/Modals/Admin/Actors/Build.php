@@ -8,16 +8,47 @@ use Livewire\Component;
 use App\Http\Livewire\WithAlert;
 use Illuminate\Support\Collection;
 
+/**
+ * Composant Livewire pour la modale de génération automatique des liens hiérarchiques (acteurs).
+ */
 class Build extends Component
 {
     use WithAlert;
 
+    /**
+     * Indique si la génération automatique a été effectuée.
+     *
+     * @var bool
+     */
     public $autoGenerationPerformed = FALSE;
+
+    /**
+     * Liste des employés sélectionnés pour le traitement.
+     *
+     * @var \Illuminate\Database\Eloquent\Collection
+     */
     public $employees;
+
+    /**
+     * Filtres appliqués pour la sélection.
+     *
+     * @var array
+     */
     public $filter;
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['render'];
 
+    /**
+     * Initialisation du composant avec les utilisateurs sélectionnés.
+     *
+     * @param array $selectionIds Identifiants des utilisateurs sélectionnés.
+     * @param array $filter Filtres appliqués à la recherche.
+     */
     public function mount($selectionIds, $filter) {
         $this->employees = User::query()
             ->whereIn('id', $selectionIds)
@@ -27,6 +58,12 @@ class Build extends Component
         $this->filter = $filter;
     }
 
+    /**
+     * Génère automatiquement les liens hiérarchiques pour les employés sélectionnés.
+     * Se base sur les processus fonctionnels et leurs responsables.
+     *
+     * @param bool|string $filteredActors Indique s'il faut traiter tous les acteurs filtrés.
+     */
     public function build($filteredActors = FALSE) {
         if($filteredActors == 'all') {
             $this->employees = User::filter($this->filter)->get();
@@ -141,6 +178,11 @@ class Build extends Component
         }
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render() {
         return view('livewire.modals.admin.actors.build');
     }

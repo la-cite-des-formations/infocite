@@ -6,15 +6,37 @@ use App\Models\Right;
 use App\Models\User;
 use Livewire\Component;
 
+/**
+ * Composant Livewire pour la modale de suppression de profils.
+ */
 class Delete extends Component
 {
+    /**
+     * Liste des identifiants des profils à supprimer.
+     *
+     * @var array
+     */
     public $profilesIDs;
+
+    /**
+     * Indique si la suppression a été effectuée.
+     *
+     * @var bool
+     */
     public $deletionPerformed = FALSE;
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param array $profilesIDs Identifiants des profils à supprimer.
+     */
     public function mount($profilesIDs) {
         $this->profilesIDs = $profilesIDs;
     }
 
+    /**
+     * Supprime les profils sélectionnés ainsi que leurs droits associés.
+     */
     public function delete() {
         Right::each(function ($right) {
             $right
@@ -36,6 +58,11 @@ class Delete extends Component
         $this->deletionPerformed = TRUE;
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.modals.admin.delete-models', [

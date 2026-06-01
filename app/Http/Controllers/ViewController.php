@@ -7,10 +7,17 @@ use App\Models\Rubric;
 use App\Models\Interaction;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur principal gérant l'affichage des rubriques, des messages et des applications.
+ * Assure également le suivi des connexions utilisateurs et la préparation des données pour les vues.
+ */
 class ViewController extends Controller
 {
     /**
-     * records dayly connection if needed
+     * Enregistre une interaction de type 'connexion' si l'utilisateur ne l'a pas encore fait aujourd'hui.
+     * Cette méthode est appelée à chaque chargement de vue majeure.
+     *
+     * @return void
      */
     private function verifyConnectionRecord()
     {
@@ -28,10 +35,11 @@ class ViewController extends Controller
     }
 
     /**
-     * return the existing rubric of the current route
+     * Identifie et retourne la rubrique (Rubric) correspondant à la route actuelle.
+     * Gère les rubriques parentes et enfants via les segments de l'URL.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return object|NULL
+     * @return \App\Models\Rubric|null
      */
     private function getRubric(Request $request) {
         $rubricStr = $request->route()->parameter('rubric');
@@ -46,11 +54,12 @@ class ViewController extends Controller
     }
 
     /**
-     * return the current view data bag
+     * Prépare le "sac de données" (ViewBag) nécessaire au rendu de la vue 'usage.index'.
+     * Regroupe les rubriques de navigation, la rubrique courante, les IDs de ressources et le mode.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  string $template
-     * @param  string|null $mode
+     * @param  string $template Nom du template de contenu à charger (ex: 'posts', 'post').
+     * @param  string|null $mode Mode d'affichage/action (ex: 'creation', 'edition').
      * @return object
      */
     private function getViewBag(Request $request, string $template = 'posts', ? string $mode = NULL)
@@ -74,10 +83,11 @@ class ViewController extends Controller
     }
 
     /**
-     * Display a post's listing of the rubric.
+     * Affiche la liste des messages d'une rubrique.
+     * Redirige automatiquement vers le message s'il n'y en a qu'un seul de publié.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
      public function index(Request $request)
     {
@@ -98,7 +108,7 @@ class ViewController extends Controller
     }
 
     /**
-     * Display a post.
+     * Affiche un message spécifique (Post).
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -111,7 +121,7 @@ class ViewController extends Controller
     }
 
     /**
-     * Display a post creation form.
+     * Affiche le formulaire de création d'un message.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -124,7 +134,7 @@ class ViewController extends Controller
     }
 
     /**
-     * Display a post edition form.
+     * Affiche le formulaire de modification d'un message.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -137,7 +147,7 @@ class ViewController extends Controller
     }
 
     /**
-     * Display a personal app creation form.
+     * Affiche le formulaire de création d'une application personnelle.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -150,7 +160,7 @@ class ViewController extends Controller
     }
 
     /**
-     * Display a personal app edition form.
+     * Affiche le formulaire de modification d'une application personnelle.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -163,10 +173,11 @@ class ViewController extends Controller
     }
 
     /**
-     * Upload a file in /public/storage/uploads
+     * Gère l'upload de fichiers vers le dossier /public/storage/uploads.
+     * Retourne le chemin JSON du fichier pour intégration (ex: dans un éditeur WYSIWYG).
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
     {

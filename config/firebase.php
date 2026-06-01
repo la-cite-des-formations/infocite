@@ -13,4 +13,7 @@ return [
     */
 
     'credentials' => env('FIREBASE_CREDENTIALS', 'app/firebase_credentials_notifs-ic.json'),
+
+    /** Indique si l'envoi des notifications de bureau est activé. */
+    'enabled' => env('FCM_NOTIFICATIONS_ENABLED', TRUE),
 ];

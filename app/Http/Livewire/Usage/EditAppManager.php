@@ -9,19 +9,56 @@ use App\Http\Livewire\WithModal;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * Composant Livewire pour l'édition d'une application existante ou la création d'une nouvelle.
+ */
 class EditAppManager extends Component
 {
     use WithModal;
     use WithAlert;
     use WithIconpicker;
 
+    /**
+     * Route de retour après enregistrement.
+     *
+     * @var string
+     */
     public $backRoute;
+
+    /**
+     * Route de la rubrique parente.
+     *
+     * @var string
+     */
     public $rubricRoute;
+
+    /**
+     * Mode d'édition ('creation' ou 'edition').
+     *
+     * @var string
+     */
     public $mode;
+
+    /**
+     * Instance de l'application en cours d'édition.
+     *
+     * @var \App\Models\App
+     */
     public $app;
 
 
+    /**
+     * Écouteurs d'événements.
+     *
+     * @var array
+     */
     protected $listeners = ['modalClosed', 'save'];
+
+    /**
+     * Règles de validation pour l'application.
+     *
+     * @var array
+     */
     protected $rules = [
         'app.name' => 'required|string|max:255',
         'app.description' => 'required|string',
@@ -29,6 +66,11 @@ class EditAppManager extends Component
         'app.url' => 'required|url|string|max:255'
     ];
 
+    /**
+     * Initialisation du composant.
+     *
+     * @param object $viewBag Sac de données contenant le mode et l'ID de l'application.
+     */
     public function mount($viewBag) {
         $this->backRoute = session('appsBackRoute');
         $this->rubricRoute = '/'.$viewBag->rubricSegment;
@@ -36,6 +78,10 @@ class EditAppManager extends Component
         $this->app = App::findOrNew($viewBag->app_id);
     }
 
+    /**
+     * Enregistre les modifications ou crée la nouvelle application.
+     * Récupère automatiquement le favicon du domaine.
+     */
     public function save() {
         $this->validate();
 
@@ -82,6 +128,11 @@ class EditAppManager extends Component
         );
     }
 
+    /**
+     * Rendu du composant.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render() {
         return view('livewire.usage.edit-app-manager', [
             'icons' => $this->getMiCodes(),

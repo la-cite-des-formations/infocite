@@ -5,13 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * Contrôleur gérant les fonctionnalités d'administration du portail.
+ * Permet d'accéder aux différents gestionnaires de ressources (utilisateurs, groupes, etc.).
+ */
 class AdminController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Affiche la vue d'administration pour un modèle de ressource spécifique.
+     * Vérifie les droits d'accès via les Gates avant d'afficher le composant de gestion.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request Requête contenant le segment du modèle.
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
