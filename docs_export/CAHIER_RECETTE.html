@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Cahier de Recette - Infocite</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: auto; padding: 20px; }
+        h1 { color: #f39c12; text-align: center; border-bottom: 2px solid #f39c12; padding-bottom: 10px; }
+        h2 { color: #d35400; margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #fef5e7; font-weight: bold; }
+        .check { color: #27ae60; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+<h1>Cahier de Recette (Scénarios de Tests)</h1>
+
+<p>Ce document liste les tests manuels à effectuer pour valider le bon fonctionnement du portail Infocite après une mise à jour.</p>
+
+<table>
+    <tr>
+        <th>N°</th>
+        <th>Fonctionnalité</th>
+        <th>Action à réaliser</th>
+        <th>Résultat attendu</th>
+        <th>État</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Connexion Google</td>
+        <td>Cliquer sur le bouton "Se connecter"</td>
+        <td>Redirection vers Google, puis retour sur le portail identifié.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Création d'article</td>
+        <td>Rédaction d'un article test dans une rubrique</td>
+        <td>L'article apparaît bien dans le flux "À la Une".</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Notifications</td>
+        <td>Publier un article épinglé</td>
+        <td>Une bulle de notification apparaît sur le bureau (si activée).</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Favoris</td>
+        <td>Cliquer sur l'étoile d'un article</td>
+        <td>L'article apparaît bien dans l'onglet "Infos" > Favoris.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Organigramme</td>
+        <td>Cliquer sur une case de l'organigramme</td>
+        <td>Une fenêtre s'ouvre avec la liste des membres rattachés.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Recherche</td>
+        <td>Taper un mot-clé existant dans la loupe</td>
+        <td>Les articles et applications correspondants s'affichent.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>Commentaires</td>
+        <td>Déposer un commentaire sous un article</td>
+        <td>Le commentaire est posté et le compteur s'incrémente.</td>
+        <td class="check">OK</td>
+    </tr>
+</table>
+
+<p><i>Note : Ce cahier doit être complété à chaque ajout de nouvelle fonctionnalité majeure.</i></p>
+
+</body>
+</html>

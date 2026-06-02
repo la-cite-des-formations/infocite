@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Changelog - Infocite</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: auto; padding: 20px; }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .version { background-color: #ecf0f1; border-radius: 5px; padding: 15px; margin: 20px 0; border-left: 5px solid #3498db; }
+        .version-title { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; }
+        .date { color: #7f8c8d; font-size: 0.9em; }
+        ul { margin-top: 5px; }
+        li { margin-bottom: 5px; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.8em; font-weight: bold; margin-right: 5px; color: white; }
+        .tag-feat { background-color: #27ae60; }
+        .tag-fix { background-color: #e67e22; }
+        .tag-doc { background-color: #3498db; }
+        .tag-tech { background-color: #9b59b6; }
+    </style>
+</head>
+<body>
+
+<h1>Journal des Modifications (Changelog)</h1>
+
+<div class="version">
+    <div class="version-title">Version 1.6.1 - Intégration Native Google Drive</div>
+    <div class="date">06 Mai 2026</div>
+    <ul>
+        <li><span class="tag tag-fix">FIX</span> Résolution de l'intégration des vidéos Google Drive dans TinyMCE via un resolver d'URL automatique (conversion <code>/view</code> vers <code>/preview</code>).</li>
+        <li><span class="tag tag-feat">FEAT</span> Support transparent des iframes Drive institutionnelles avec redimensionnement automatique.</li>
+    </ul>
+</div>
+
+ <div class="version">
+     <div class="version-title">Version 1.6 - Blocs Intelligents et Optimisations TinyMCE</div>
+     <div class="date">04 Mai 2026</div>
+     <ul>
+         <li><span class="tag tag-feat">FEAT</span> Système d'aspiration groupée (multi-blocs) lors de l'insertion.</li>
+         <li><span class="tag tag-feat">FEAT</span> Bouton "Dégrouper" (Unwrap) pour retirer les cadres sans perdre le contenu.</li>
+         <li><span class="tag tag-feat">FEAT</span> Sécurité sémantique et notifications pour les blocs de titres.</li>
+         <li><span class="tag tag-fix">FIX</span> Correction de la persistance des IFRAME et vidéos dans l'éditeur.</li>
+         <li><span class="tag tag-tech">TECH</span> Architecture DRY pour la gestion des définitions de blocs.</li>
+     </ul>
+ </div>
+ 
+ <div class="version">
+     <div class="version-title">Version 1.5 - Système de Modèles d'Articles</div>
+     <div class="date">22 Avril 2026</div>
+     <ul>
+         <li><span class="tag tag-feat">FEAT</span> Implémentation d'un système complet de modèles (templates) d'articles.</li>
+         <li><span class="tag tag-feat">FEAT</span> Section dédiée "Modèles disponibles" avec ségrégation visuelle et fonctionnelle.</li>
+         <li><span class="tag tag-feat">FEAT</span> Outils de productivité : "Extraire comme modèle" et "Appliquer un modèle".</li>
+         <li><span class="tag tag-tech">TECH</span> Sécurisation des flux via le scope Eloquent <code>notTemplates()</code>.</li>
+     </ul>
+ </div>
+
+<div class="version">
+    <div class="version-title">Version 1.4.1 - Sécurité des Notifications</div>
+    <div class="date">14 Avril 2026</div>
+    <ul>
+        <li><span class="tag tag-fix">FIX</span> Ajout de la variable <code>FCM_NOTIFICATIONS_ENABLED</code> pour piloter l'envoi des notifications.</li>
+        <li><span class="tag tag-fix">FIX</span> Sécurisation de l'environnement local pour éviter les envois accidentels vers le Firebase de production.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.4 - Médias et Correctifs Majeurs</div>
+    <div class="date">14 Avril 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Nouveau module de galerie photo asynchrone (Session & JSON).</li>
+        <li><span class="tag tag-feat">FEAT</span> Intégration de GLightbox (visionneuse haute performance).</li>
+        <li><span class="tag tag-feat">FEAT</span> Rendu hybride intelligent (Mosaïque mobile / Bande Desktop).</li>
+        <li><span class="tag tag-feat">FEAT</span> Intégration du module galerie dans l'interface d'administration (édition & visualisation).</li>
+        <li><span class="tag tag-fix">FIX</span> Correction du bug critique de création d'article (validation booléenne).</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.3 - Interactivité et Engagement</div>
+    <div class="date">Début Avril 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Système d'acquittement de lecture "Lu et Approuvé".</li>
+        <li><span class="tag tag-feat">FEAT</span> Module de notation par étoiles (1 à 5).</li>
+        <li><span class="tag tag-fix">FIX</span> Refonte de la modale d'information des rubriques.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.2 - Pack de Documentation Étendu</div>
+    <div class="date">Mars 2026</div>
+    <ul>
+        <li><span class="tag tag-doc">DOC</span> Rédaction des guides utilisateurs et administrateurs exhaustifs.</li>
+        <li><span class="tag tag-doc">DOC</span> Création du dictionnaire de données et guide de maintenance serveur.</li>
+        <li><span class="tag tag-doc">DOC</span> Documentation des dépendances APIs (Google, Firebase).</li>
+        <li><span class="tag tag-feat">FEAT</span> Optimisation de l'affichage des schémas de flux pour Google Docs.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.1 - Modernisation et Corrections</div>
+    <div class="date">Février 2026</div>
+    <ul>
+        <li><span class="tag tag-fix">FIX</span> Correction de l'organigramme (abandon du module Acteurs au profit des codes fonctions).</li>
+        <li><span class="tag tag-feat">FEAT</span> Nouveau système de notifications de bureau avec vidéo d'aide intégrée.</li>
+        <li><span class="tag tag-fix">FIX</span> Amélioration de la synchronisation YParéo pour les nouveaux apprenants.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.0 - Lancement initial</div>
+    <div class="date">2021-2023</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Création du portail Infocite (Laravel / Livewire).</li>
+        <li><span class="tag tag-feat">FEAT</span> Mise en place du catalogue d'articles et d'applications.</li>
+        <li><span class="tag tag-feat">FEAT</span> Intégration de l'authentification Google OAuth.</li>
+    </ul>
+</div>
+
+</body>
+</html>

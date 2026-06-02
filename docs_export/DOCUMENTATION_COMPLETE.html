@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Complète Infocite - LIVRE BLANC</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #2980b9;
+        }
+        
+        /* Master layout */
+        html, body {
+            margin: 0; padding: 0;
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .master-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Print resets */
+        @media print {
+            @page { margin: 1cm; }
+            html, body { background: white; margin: 0; padding: 0; }
+            .master-container { box-shadow: none; max-width: 100%; border: none; padding: 0; margin: 0; }
+            .no-print { display: none !important; }
+            .page-break { page-break-before: always; }
+            
+            /* Cover page print fix */
+            .cover-page-wrapper {
+                page-break-after: always;
+                page-break-inside: avoid;
+                height: 95vh;
+                margin: 0;
+                padding: 0;
+                display: flex !important;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .cover-page {
+                border: 8px solid var(--primary);
+                width: 100%;
+                height: 100%;
+                box-sizing: border-box;
+                padding: 40px;
+                display: flex !important;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            /* Header / Footer print fix */
+            h1, h2, h3, h4 { page-break-after: avoid; }
+            table, img, .highlight, .container, .card, .audit-item,
+            .notification-box, .edition-box, .info-box, .warning-box,
+            .tip, .warning, .service-card, .version, .menu-item { 
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            /* Remove background color, shadows, borders and excessive padding for the first 4 sections to save ink and space */
+            .doc-wrapper-0, .doc-wrapper-1, .doc-wrapper-2, .doc-wrapper-3 {
+                background-color: transparent !important;
+                background: transparent !important;
+            }
+            .doc-wrapper-0 .card, .doc-wrapper-1 .container, .doc-wrapper-2 .container, .doc-wrapper-3 .container {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+        }
+        
+        /* Cover Page Screen */
+        .cover-page-wrapper {
+            padding: 80px 40px;
+            background: white;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .cover-page {
+            text-align: center;
+            border: 10px double var(--primary);
+            padding: 80px 40px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .cover-title { font-size: 4rem; color: var(--primary); font-weight: bold; margin: 0; text-transform: uppercase; }
+        .cover-divider { width: 100px; height: 5px; background: var(--secondary); margin: 30px auto; }
+        .cover-subtitle { font-size: 2rem; margin: 0; color: var(--secondary); font-weight: 300; }
+        .cover-text { margin-top: 50px; font-size: 1.2rem; color: #555; }
+        .cover-footer { margin-top: 80px; border-top: 1px solid #eee; padding-top: 20px; font-size: 1.1rem; color: #777; width: 100%; }
+        
+        /* TOC */
+        .toc-box { background: #f8f9fa; padding: 40px; border-left: 8px solid var(--primary); margin: 40px; border-radius: 8px; }
+        .toc-box h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .toc-box ul { list-style: none; padding: 0; }
+        .toc-box li { margin: 15px 0; border-bottom: 1px dotted #ccc; display: flex; justify-content: space-between; align-items: baseline; font-size: 1.1rem; }
+        .toc-box a { text-decoration: none; color: var(--primary); font-weight: bold; }
+        .toc-box a:hover { color: var(--secondary); }
+        
+        /* Inner doc overrides */
+        .doc-wrapper {
+            padding: 40px;
+            margin: 0;
+            background: white;
+            overflow: hidden; /* Prevent margin collapse */
+        }
+        
+        /* Styles for SYNTHESE_RESPONSABLE.html */
+
+        .doc-wrapper-0 { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: auto; padding: 40px; background-color: #f0f4f8; }
+        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 8px solid #2980b9; }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
+        h2 { color: #2980b9; border-bottom: 2px solid #e1e8ed; padding-bottom: 10px; margin-top: 35px; }
+        .section { margin-bottom: 25px; }
+        .highlight { background: #e8f4fd; padding: 20px; border-radius: 8px; border-left: 5px solid #2980b9; margin: 20px 0; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        .footer { text-align: center; margin-top: 50px; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #eee; padding-top: 20px; }
+    
+/* Styles for RAPPORT_EVOLUTIONS.html */
+
+        .doc-wrapper-1 { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 40px; background-color: #f8f9fa; }
+        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; }
+        h2 { color: #2980b9; margin-top: 40px; border-left: 5px solid #2980b9; padding-left: 15px; }
+        h3 { color: #16a085; margin-top: 25px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-right: 5px; }
+        .badge-tech { background-color: #ebf5fb; color: #2980b9; border: 1px solid #2980b9; }
+        .badge-func { background-color: #e8f8f5; color: #16a085; border: 1px solid #16a085; }
+        .audit-item { background: #fdfefe; border: 1px solid #e1e8ed; padding: 20px; border-radius: 8px; margin: 15px 0; }
+        .improvement { color: #27ae60; font-weight: bold; }
+        .roadmap { border-left: 2px dashed #bdc3c7; color: #7f8c8d; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 5px; font-style: italic; }
+    
+/* Styles for GUIDE_UTILISATEUR.html */
+
+        .doc-wrapper-2 { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: auto; padding: 30px; background-color: #f9f9f9; }
+        .container { background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; text-align: center; }
+        h2 { color: #3498db; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 40px; }
+        h3 { color: #2980b9; margin-top: 25px; }
+        .notification-box { background: #e8f4fd; border: 2px solid #3498db; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .edition-box { background: #fff5f8; border: 2px solid #e91e63; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .tip { background: #e8f8f5; border-left: 5px solid #1abc9c; padding: 15px; margin: 20px 0; }
+        .warning { background: #fdf2e9; border-left: 5px solid #e67e22; padding: 15px; margin: 20px 0; }
+        code { background: #eee; padding: 2px 5px; border-radius: 3px; }
+        ul, ol { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    
+/* Styles for GUIDE_ADMINISTRATION.html */
+
+        .doc-wrapper-3 { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 30px; background-color: #f4f7f6; }
+        .container { background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #27ae60; border-bottom: 4px solid #2ecc71; padding-bottom: 15px; text-align: center; }
+        h2 { color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 40px; background-color: #e8f5e9; padding: 10px; border-radius: 5px; }
+        h3 { color: #1b5e20; margin-top: 25px; border-left: 4px solid #2ecc71; padding-left: 10px; }
+        .info-box { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 15px; margin: 20px 0; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0; }
+        .menu-item { margin-bottom: 20px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        .menu-title { font-weight: bold; color: #2ecc71; font-size: 1.1em; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f1f8e9; }
+        code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    
+/* Styles for SPECIFICATIONS_TECHNIQUES.html */
+
+        .doc-wrapper-4 { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        h2 { color: #16a085; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        h3 { color: #2980b9; }
+        code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: Courier, monospace; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; border: 1px solid #ddd; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 40px 0; }
+        .mermaid { color: #d35400; font-style: italic; background: #fff5e6; padding: 10px; border-left: 5px solid #d35400; }
+    
+/* Styles for DICTIONNAIRE_DONNEES.html */
+
+        .doc-wrapper-5 { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #2c3e50; padding-bottom: 10px; text-align: center; }
+        h2 { color: #2980b9; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        h3 { color: #16a085; margin-top: 20px; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; font-size: 0.9em; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .pk { color: #d35400; font-weight: bold; }
+        .fk { color: #2980b9; font-style: italic; }
+        .desc { color: #666; font-style: italic; }
+    
+/* Styles for DEPENDANCES_EXTERNES.html */
+
+        .doc-wrapper-6 { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: auto; padding: 20px; }
+        h1 { color: #8e44ad; text-align: center; border-bottom: 2px solid #8e44ad; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        .service-card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0; background-color: #fcfcfc; }
+        .service-title { font-weight: bold; font-size: 1.2em; color: #8e44ad; }
+        .warning { color: #c0392b; font-weight: bold; }
+    
+/* Styles for MAINTENANCE_SERVEUR.html */
+
+        .doc-wrapper-7 { font-family: 'Courier New', Courier, monospace; line-height: 1.6; color: #1a1a1a; max-width: 900px; margin: auto; padding: 20px; background-color: #fdfdfd; }
+        .terminal { background-color: #2b2b2b; color: #a9b7c6; padding: 20px; border-radius: 5px; font-family: Consolas, monospace; margin: 20px 0; }
+        h1 { color: #c0392b; text-align: center; border-bottom: 2px solid #c0392b; padding-bottom: 10px; }
+        h2 { color: #2980b9; border-left: 5px solid #2980b9; padding-left: 10px; margin-top: 40px; }
+        .cmd { color: #f1c40f; }
+        .comment { color: #7f8c8d; }
+        .important { background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 5px; color: #856404; }
+    
+/* Styles for CAHIER_RECETTE.html */
+
+        .doc-wrapper-8 { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: auto; padding: 20px; }
+        h1 { color: #f39c12; text-align: center; border-bottom: 2px solid #f39c12; padding-bottom: 10px; }
+        h2 { color: #d35400; margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #fef5e7; font-weight: bold; }
+        .check { color: #27ae60; font-weight: bold; text-align: center; }
+    
+/* Styles for CHANGELOG.html */
+
+        .doc-wrapper-9 { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: auto; padding: 20px; }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .version { background-color: #ecf0f1; border-radius: 5px; padding: 15px; margin: 20px 0; border-left: 5px solid #3498db; }
+        .version-title { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; }
+        .date { color: #7f8c8d; font-size: 0.9em; }
+        ul { margin-top: 5px; }
+        li { margin-bottom: 5px; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.8em; font-weight: bold; margin-right: 5px; color: white; }
+        .tag-feat { background-color: #27ae60; }
+        .tag-fix { background-color: #e67e22; }
+        .tag-doc { background-color: #3498db; }
+    
+    </style>
+</head>
+<body>
+
+<div class="master-container">
+    <div class="cover-page-wrapper">
+        <div class="cover-page">
+            <h1 class="cover-title">INFOCITE</h1>
+            <div class="cover-divider"></div>
+            <h2 class="cover-subtitle">CORPUS DOCUMENTAIRE COMPLET</h2>
+            <div class="cover-text">
+                <p><strong>Cité des Formations - Tours</strong></p>
+                <p>Dossier de Maintenance & Évolutions Techniques</p>
+            </div>
+            <div class="cover-footer">
+                <p>Généré le 04 Mai 2026 - Livre Blanc Extrait</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    <div class="toc-box">
+        <h2>Sommaire</h2>
+        <ul>
+            <li><a href="#doc0">1. Synthèse pour le Responsable</a></li>
+            <li><a href="#doc1">2. Rapport d'Évolutions Techniques</a></li>
+            <li><a href="#doc2">3. Mode d'Emploi - Interface d'Usage</a></li>
+            <li><a href="#doc3">4. Mode d'Emploi - Administration</a></li>
+            <li><a href="#doc4">5. Spécifications Techniques</a></li>
+            <li><a href="#doc5">6. Dictionnaire de Données</a></li>
+            <li><a href="#doc6">7. Dépendances Externes</a></li>
+            <li><a href="#doc7">8. Maintenance Serveur</a></li>
+            <li><a href="#doc8">9. Cahier de Recette</a></li>
+            <li><a href="#doc9">10. Journal des Modifications</a></li>
+        </ul>
+    </div>
+<div class="doc-wrapper doc-wrapper-0 doc-page" id="doc0">
+<div class="page-break"></div>
+
+
+<div class="card">
+    <h1>Synthèse du Dossier Documentaire : Infocite</h1>
+
+    <p>Ce dossier regroupe l'ensemble des éléments nécessaires à la pérennité, la maintenance et l'évolution du portail Infocite. Il constitue un actif immatériel stratégique pour l'établissement.</p>
+
+    <div class="highlight">
+        <strong>Objectif principal</strong> : Garantir l'indépendance technique de l'établissement en documentant chaque aspect critique du projet, facilitant ainsi toute future transition ou mise à jour.
+    </div>
+
+    <h2>1. Contenu du Dossier `docs_export`</h2>
+    <div class="section">
+        <ul>
+            <li><strong>📘 Guides Opérationnels</strong> : Pour les usagers (Usage des notifications) et les gestionnaires (Tableau de bord).</li>
+            <li><strong>🛠️ Documentation Technique</strong> : Architecture logicielle, localisation précise du code et dictionnaire de base de données.</li>
+            <li><strong>🔗 Écosystème et Maintenance</strong> : Gestion des dépendances (Google, Firebase, YParéo), procédures SysAdmin et historiques de modifications (Changelog).</li>
+            <li><strong>✅ Qualité et Tests</strong> : Cahier de recette pour valider les futures montées de version sans risque de régression.</li>
+        </ul>
+    </div>
+
+    <h2>2. Valeur Ajoutée pour la Direction</h2>
+    <div class="section">
+        <ul>
+            <li><strong>Continuité de Service</strong> : En cas de changement de prestataire ou d'équipe technique, la reprise en main est immédiate grâce à la documentation structurée.</li>
+            <li><strong>Maîtrise des Coûts</strong> : Moins de temps passé à "chercher" le code signifie des évolutions plus rapides et moins coûteuses.</li>
+            <li><strong>Conformité et Sécurité</strong> : Les points de contact avec les services tiers (Google/Firebase) sont clairement identifiés et sécurisés.</li>
+        </ul>
+    </div>
+
+    <h2>3. Recommandations Stratégiques</h2>
+    <div class="section">
+        <ul>
+            <li><strong>Audit Annuel</strong> : Prévoir une vérification simple des accès aux consoles d'administration tierces.</li>
+            <li><strong>Support de Formation</strong> : Utiliser le <em>Guide Utilisateur</em> pour faciliter l'intégration de tout nouveau collaborateur.</li>
+            <li><strong>Évolutivité</strong> : Le système d'organigramme a été assaini et documenté comme étant désormais automatisé via YParéo, éliminant les tâches manuelles obsolètes.</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Dossier généré le 11 mars 2026 - Documentation Infocite
+    </div>
+</div>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-1 doc-page" id="doc1">
+<div class="page-break"></div>
+
+
+<div class="container">
+    <h1>Rapport d'Analyse : Évolutions et Optimisations</h1>
+
+    <div class="highlight">
+        Note : Ce document est une base de réflexion stratégique. Il souligne l'incroyable travail accompli en autodidacte sur Laravel et propose des pistes pour passer au "niveau supérieur" de maîtrise technologique.
+    </div>
+
+    <h2>1. Audit de l'Architecture Actuelle</h2>
+    
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Refactorisation des Modèles (Table de 1000 lignes)</h3>
+        <p>Le modèle <code>User.php</code> centralise actuellement toute la logique métier, ce qui le rend difficile à maintenir.</p>
+        <p><span class="improvement">Piste d'amélioration :</span> Extraire la logique de droits dans un <code>Trait</code> (ex: <code>HasPermissions</code>) ou utiliser des <strong>Service Classes</strong> pour les calculs complexes. Cela allègera le modèle pour ne garder que les relations Eloquent.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Performance</span> Optimisation des Requêtes SQL (Eloquent)</h3>
+        <p>De nombreux filtres (<code>Post::filter</code>) récupèrent d'abord toutes les données en PHP avant de les filtrer. Sur un gros volume (<code>interactions</code>), cela pourrait ralentir le serveur.</p>
+        <p><span class="improvement">Piste d'amélioration :</span> Utiliser les <strong>Local Scopes</strong> de Laravel pour que le filtrage se fasse directement dans la base de données (SQL <code>WHERE</code>) plutôt que dans la mémoire de PHP.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Découplage de la God Class "AP"</h3>
+        <p>La façade <code>AP</code> est le "cerceau" de l'application. Bien que pratique, elle crée une dépendance très forte.</p>
+        <p><span class="improvement">Piste d'amélioration stratégique (La Règle du Boy Scout) :</span> Sachant que la direction valorise le travail bien fait plutôt que la précipitation, il n'est pas nécessaire de tout bloquer pour faire une "grande refonte". <strong>L'approche suggérée :</strong> améliorer l'architecture au fil de l'eau. Par exemple, lors du développement du bouton "Info", profiter de ce moment ciblé sur une Rubrique pour optimiser en profondeur les requêtes SQL et logiques associées.</p>
+    </div>
+
+    <h2>2. Évolutions Fonctionnelles Suggestives</h2>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Fonctionnel</span> Centralisation des Notifications (Cloche Globale)</h3>
+        <p>Le système actuel possède déjà une cloche de notification interne, mais celle-ci est spécifique à certains composants (PostManager, Favoris). L'utilisateur doit se rendre sur une page précise pour voir s'il a des alertes.</p>
+        <p><span class="improvement">Piste d'amélioration :</span> Déplacer cette cloche dans la <strong>barre de navigation globale</strong> (en-tête). Ainsi, quel que soit l'endroit où se trouve l'usager, il est alerté en temps réel de nouveaux contenus, renforçant l'efficacité du système actuel.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Fonctionnel</span> Tableaux de Bord Personnalisés</h3>
+        <p>Permettre aux administrateurs de choisir quels widgets statistiques afficher en premier sur leur dashboard (Data Visualization).</p>
+    </div>
+
+    <h2>3. Stratégie de Versioning et Workflow</h2>
+    
+    <h3>Gestion des Versions (SemVer)</h3>
+    <p>Adopter le <strong>Semantic Versioning</strong> (X.Y.Z) :</p>
+    <ul>
+        <li><strong>X (Majeur)</strong> : Changement cassant ou refonte graphique totale.</li>
+        <li><strong>Y (Mineur)</strong> : Ajout d'une fonctionnalité (ex: nouveau menu Statistiques).</li>
+        <li><strong>Z (Patch)</strong> : Correction de bug ou petite retouche de texte.</li>
+    </ul>
+
+    <h3>Workflow Git (GitHub Flow)</h3>
+    <p>Pour la maintenance quotidienne :</p>
+    <ol>
+        <li><strong>Main branch</strong> : Toujours stable, correspond à la production.</li>
+        <li><strong>Feature branches</strong> : Chaque modification se fait sur une branche séparée avant d'être fusionnée après test.</li>
+    </ol>
+
+    <h2>4. Cahier des Charges - Nouveaux Modules</h2>
+    <div class="highlight" style="margin-bottom: 20px;">
+        Spécifications fonctionnelles et techniques pour les prochaines évolutions prioritaires du projet Infocité, validées pour développement.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Modèles d'Articles</h3>
+        <p>Création d'un système de modèles (templates) permettant de pré-remplir la structure d'un article pour gagner du temps lors de la rédaction.</p>
+        <ul>
+            <li><strong>Droits d'accès :</strong>
+                <ul>
+                    <li><em>Lecteur</em> : Peut utiliser les modèles.</li>
+                    <li><em>Éditeur</em> : Peut créer et modifier des modèles.</li>
+                    <li><em>Administrateur</em> : Gère l'ensemble (création, modification, suppression).</li>
+                </ul>
+            </li>
+            <li><strong>Interface d'Utilisation :</strong> Ajout d'une liste déroulante "Modèles" dans l'éditeur (filtrée par la rubrique en cours + modèles génériques via Livewire). La sélection injecte le code du modèle <strong>en-dessous</strong> du contenu déjà saisi. Le menu n'est visible qu'en mode <em>Création</em>, pas en mode de <em>Modification</em>.</li>
+            <li><strong>Gestion (CRUD) :</strong> Bouton dédié "Gérer les modèles" à côté de la création d'article ouvrant un éditeur spécifique (titre, liste des modèles, contenu).</li>
+            <li><strong>Base de données (Table <code>articles</code>) :</strong>
+                <ul>
+                    <li><code>titre</code> (Obligatoire) : Nom du modèle.</li>
+                    <li><code>contenu</code> (Obligatoire) : Template HTML du modèle.</li>
+                    <li><code>rubrique</code> (Facultatif) : Restriction du modèle à une catégorie.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Module "Galeries Photos"</h3>
+        <p>Option permettant d'associer une mini-galerie d'images structurée à la fin d'un article.</p>
+        <ul>
+            <li><strong>Interface Auteur :</strong> Bloc "Galeries" sous l'éditeur avec un bouton pour uploader/sélectionner des images en masse. Visualisation par vignettes, sélection pour suppression, et ordre ajustable (glisser-déposer). L'accès est lié aux droits d'édition standards de l'article.</li>
+            <li><strong>Base de données (Nouvelle Table <code>galeries</code>) :</strong> <code>id_galerie</code> (PK), <code>id_article</code> (FK), et <code>datas</code> (colonne de type JSON stockant l'ordre et l'URL des médias).</li>
+            <li><strong>Rendu Front-End (Grille dynamique) :</strong>
+                <ul>
+                    <li><em>1 photo</em> : 1 grande vignette pleine largeur.</li>
+                    <li><em>2 photos</em> : 2 vignettes côte à côte (50/50).</li>
+                    <li><em>3 photos</em> : 1 grande à gauche, 2 superposées à droite.</li>
+                    <li><em>4 photos</em> : Un carré strict 2x2.</li>
+                    <li><em>5 photos et plus</em> : Grille 2x2, mais la 4ème vignette est grisée avec un overlay texte "<code>+ X</code>" indiquant le reste des images masquer.</li>
+                </ul>
+            </li>
+            <li><strong>Comportement :</strong> Les images utilisent un rognage ("object-fit: cover") pour assurer des grilles parfaires. Au clic, ouverture d'une <strong>modale/lightbox</strong> permettant de naviguer (précédent/suivant/fermer).</li>
+        </ul>
+    </div>
+
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Système d'Insertion Universelle de Blocs</h3>
+        <p>Refonte majeure du mécanisme d'insertion de blocs (Notes, Cadres, Titres) pour rendre l'éditeur plus intelligent, sémantique et productif.</p>
+        <ul>
+            <li><strong>Aspiration Groupée :</strong> Capacité à capturer l'intégralité des blocs sélectionnés (paragraphes, listes, images) pour les "emballer" dans un nouveau style sans aucune perte de données.</li>
+            <li><strong>Bouton "Dégrouper" :</strong> Nouvelle fonctionnalité ergonomique permettant de retirer uniquement l'enveloppe décorative (cadre ou note) tout en conservant le contenu textuel ou multimédia à sa place initiale.</li>
+            <li><strong>Restrictions Sémantiques :</strong> Système de protection interdisant l'insertion de structures complexes (listes, multi-blocs) dans des éléments de titre, accompagné de notifications utilisateurs en temps réel.</li>
+            <li><strong>Architecture DRY (Centralisée) :</strong> Refonte du code pour centraliser les définitions de blocs, facilitant l'ajout de nouveaux templates et la maintenance des raccourcis clavier.</li>
+            <li><strong>Protection des Médias :</strong> Sécurisation des balises <code>IFRAME</code> et <code>VIDEO</code> pour garantir leur persistance lors des sauvegardes et des changements de mode (aperçu/code).</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Système d'Acquittement de Lecture</h3>
+        <p>Mise en place d'un mécanisme obligatoire de "Lu et Approuvé" pour les articles sensibles ou officiels.</p>
+        <ul>
+            <li><strong>Interface de Rédaction :</strong> Ajout d'une option "Lecture avec accusé de réception" (Admin/Public). Cette option n'est modifiable que par les utilisateurs disposant des droits de publication.</li>
+            <li><strong>Expérience Utilisateur :</strong>
+                <ul>
+                    <li>Affichage d'un bandeau d'alerte (Warning) en haut de l'article tant que l'acquittement n'est pas fait.</li>
+                    <li>Bouton d'action "J'ai pris connaissance de ce document" en bas d'article.</li>
+                    <li>Remplacement dynamique par un badge "Lu et approuvé le [date]" après validation.</li>
+                </ul>
+            </li>
+            <li><strong>Suivi des Éditeurs :</strong> Un bouton dédié (accessible via les droits d'édition) permet d'ouvrir une modale listant l'ensemble des utilisateurs ayant acquitté, avec horodatage précis.</li>
+            <li><strong>Architecture Technique (Table <code>interactions</code>) :</strong> Utilisation d'Interaction polymorphique de type <code>acknowledge</code>. Ce choix permet de ne pas surcharger la table pivot <code>post_user</code> et de bénéficier du système de log global.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Maintenance</span> Correctif : Bug de Création d'Article</h3>
+        <p>Un bug bloquant empêchait la création d'articles lorsque certains champs optionnels (acquittement, notation) étaient nuls dans le formulaire.</p>
+        <p><span class="improvement">Résolution :</span> Initialisation forcée des valeurs booléennes dans <code>EditPostManager</code> avant la validation Laravel.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Sécurité</span> Pilotage de l'envoi FCM en environnement local</h3>
+        <p>Afin d'éviter de notifier par erreur les utilisateurs réels lors de tests en local, l'envoi des notifications de bureau a été sécurisé.</p>
+        <p><span class="improvement">Résolution :</span> Introduction de la variable <code>FCM_NOTIFICATIONS_ENABLED</code>. La logique a été déplacée de <code>isLocal()</code> vers cette variable dédiée pour permettre une activation/désactivation granulaire quel que soit l'environnement (production ou développement).</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Resolver Médias Google Drive</h3>
+        <p>Problématique d'intégration des vidéos Drive qui généraient un code non fonctionnel (<code>source src="undefined"</code>) dans TinyMCE.</p>
+        <p><span class="improvement">Résolution :</span> Implémentation d'un <code>media_url_resolver</code> dans la configuration TinyMCE. Ce script intercepte les URLs de type <code>/file/d/.../view</code> et les transforme dynamiquement en iframes <code>/preview</code>, garantissant ainsi l'affichage immédiat et correct des vidéos stockées sur le Drive institutionnel.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Moteur de Recherche Approfondi & Intégration Google Workspace / Drive</h3>
+        <p>Afin de rendre la recherche la plus approfondie possible (à la demande du COPIL) pour la Cité des Formations travaillant sous <strong>Google for Education</strong>, le système de recherche sera transformé pour indexer en profondeur les contenus internes et les documents externes liés.</p>
+        <ul>
+            <li><strong>Recherche Interne Avancée (Meilisearch & Laravel Scout) :</strong>
+                <ul>
+                    <li>Remplacement des recherches SQL <code>LIKE</code> par l'intégration de <strong>Laravel Scout</strong> avec <strong>Meilisearch</strong>.</li>
+                    <li>Apport de la tolérance aux fautes d'orthographe (typo-tolerance), de la racinisation/lemmatisation, et de la pertinence pondérée (mots dans le titre priorisés).</li>
+                </ul>
+            </li>
+            <li><strong>Indexation Asynchrone du Google Drive Institutionnel :</strong>
+                <ul>
+                    <li>Analyse automatique (Laravel Jobs) du contenu HTML des articles pour détecter les liens de partage Google Drive.</li>
+                    <li>Extraction automatique du contenu textuel des fichiers liés (Google Docs, Sheets, PDFs, fichiers Word) via l'<strong>API Google Drive</strong> en utilisant un compte de service sécurisé.</li>
+                    <li>Indexation locale du texte extrait, associé à l'article parent, pour permettre aux utilisateurs de trouver un article en recherchant le contenu d'un document qui y est lié.</li>
+                </ul>
+            </li>
+            <li><strong>Option "Assistant IA" (Agent IA / RAG) :</strong>
+                <ul>
+                    <li>Création d'un Agent IA dédié utilisant des modèles souverains/sécurisés (comme les APIs Google Cloud Vertex AI / Gemini garantissant la confidentialité des données).</li>
+                    <li>L'utilisateur peut poser des questions en langage naturel. L'agent effectue une recherche sémantique, extrait à la volée ou via cache les textes des documents Drive ciblés, et génère une réponse rédigée et synthétisée avec des citations vers les sources d'origine.</li>
+                </ul>
+            </li>
+            <li><strong>Sécurité et Gestion des Accès (OAuth 2.0) :</strong>
+                <ul>
+                    <li>Pour éviter toute fuite d'informations (fichiers Drive confidentiels indexés par erreur), mise en place d'une validation des permissions.</li>
+                    <li>Utilisation du jeton d'accès <strong>OAuth Google Workspace</strong> de l'utilisateur connecté pour interroger l'API Google Drive en son nom. Si l'usager n'a pas accès au document sur Google Drive, celui-ci est masqué de ses résultats de recherche et de l'analyse de l'Agent IA.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h2>5. Feuille de Route Stratégique (Priorisation)</h2>
+    <div class="highlight" style="margin-bottom: 30px;">
+        Note de priorisation : La gestion des développements s'inscrit dans une logique de qualité et de robustesse (pas de pression sur les délais stricts de la part de la direction). Les temps de traitement donnés ci-dessous sont des estimations "confortables" permettant de sécuriser le code (refactoring continu, tests) plutôt que de s'engager dans des <em>"Quick Wins"</em> précipités. L'objectif est d'alterner habilement fonctionnalités métiers et remboursement de la dette technique.
+    </div>
+    
+    <div class="roadmap">
+        <ul>
+            <li><strong>Phase 1 : Évolutions Fonctionnelles Majeures (Court terme - 1 à 2 mois)</strong>
+                <p><em>Charge estimée assumée qualitativement pour sécuriser les bases.</em></p>
+                <ul>
+                    <li><del>Bouton d'information (droits et éditeurs) sur les fiches de Rubrique.</del> ✅ <strong>Terminé</strong></li>
+                    <li><del>Système "Acquittement / Article Lu" avec horodatage.</del> ✅ <strong>Terminé (08/04/2026)</strong></li>
+                    <li><del>Module de notation par étoiles (1 à 5).</del> ✅ <strong>Terminé (08/04/2026)</strong></li>
+                    <li><del>Module "Galeries Photos" complet (upload, rendu hybride, GLightbox).</del> ✅ <strong>Terminé (14/04/2026)</strong></li>
+                    <li><del>Système avancé de Modèles d'Articles (Templates).</del> ✅ <strong>Terminé (22/04/2026)</strong></li>
+                    <li><del>Insertion Universelle de Blocs et Dégroupage.</del> ✅ <strong>Terminé (04/05/2026)</strong></li>
+                </ul>
+            </li>
+            
+            <li style="margin-top: 25px;"><strong>Phase 2 : Chantiers Intermédiaires (Moyen terme - 3 à 6 mois)</strong>
+                <p><em>Dépendances métiers et intégrations complexes.</em></p>
+                <ul>
+                    <li><del>Intégration institutionnelle Google Drive sur TinyMCE via iframe.</del> ✅ <strong>Terminé (06/05/2026)</strong></li>
+                    <li>Sous-rubrique 'Agenda' dans 'Événements' avec fonctionnalité Timeline. (<em>~1 semaine</em>)</li>
+                </ul>
+            </li>
+            
+            <li style="margin-top: 25px;"><strong>Phase 3 : Maintenance Préventive et Sécurité (Opérations de fond)</strong>
+                <p><em>Chantiers invisibles mais cruciaux nécessitant un environnement de développement stable.</em></p>
+                <ul>
+                    <li>Mise en place d'un journal d'audit (<strong>Log Activity System</strong>) global des éléments. (<em>~2 semaines</em>)</li>
+                    <li>Mise à jour majeure du framework (Migration vers Laravel 10/11) : requiert des tests de non-régression massifs. (<em>~3 semaines - idéal en basse saison usagers</em>)</li>
+                    <li>Optimisation des configurations ORM (mise entre quotes des noms de colonnes BDD). (<em>~1 semaine</em>)</li>
+                </ul>
+            </li>
+            
+            <li style="margin-top: 25px;"><strong>Backlog Stratégique (À valider en COPIL & Options à long terme)</strong>
+                <p><em>Éléments nécessitant une forte réflexion conceptuelle.</em></p>
+                <ul>
+                    <li><del>Amélioration poussée du Moteur de Recherche avec module "Nuage de Mots-Clés".</del> ➔ <strong>Conception validée : Amélioration globale & Recherche Drive (Google Workspace / Google for Education)</strong></li>
+                    <li>Écosystème Ypareo : Passerelles de connexion lourdes (Agenda, Notes, Emploi du temps).</li>
+                    <li>Partage direct d'articles ciblé hors des logiques parents/enfants standards.</li>
+                    <li>Transformation du site en Progressive Web App (PWA) pour terminaux mobiles.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-2 doc-page" id="doc2">
+<div class="page-break"></div>
+
+
+<div class="container">
+    <h1>Mode d'Emploi : Interface d'Usage</h1>
+
+    <p>Ce guide vous accompagne dans l'utilisation quotidienne d'Infocite, de la gestion de vos alertes à la contribution de contenus.</p>
+
+    <div class="notification-box">
+        <h2>🚀 PRIORITÉ : Les Notifications de Bureau</h2>
+        <p>Pour rester informé sans avoir à consulter le site en permanence, Infocite vous propose d'activer les <strong>notifications de bureau</strong>.</p>
+        
+        <h3>Pourquoi les activer ?</h3>
+        <p>Une petite bulle d'alerte apparaîtra sur votre écran dès qu'un nouvel article important est publié, même si votre navigateur est réduit.</p>
+
+        <h3>Comment faire ?</h3>
+        <ol>
+            <li>Rendez-vous dans l'onglet <strong>"Infos"</strong> (votre profil).</li>
+            <li>Cochez l'interrupteur <strong>"Accepter les notifications de bureau"</strong>.</li>
+            <li>Une fenêtre de votre navigateur vous demandera confirmation : cliquez sur <strong>"Autoriser"</strong>.</li>
+        </ol>
+
+        <h3>Personnaliser vos alertes</h3>
+        <p>Une fois activées, vous pouvez choisir :</p>
+        <ul>
+            <li><strong>Toutes les notifications</strong> : Pour être au courant de tout.</li>
+            <li><strong>Seulement pour les favoris</strong> : Pour ne recevoir des alertes que pour les rubriques que vous avez marquées d'une étoile (⭐).</li>
+        </ul>
+
+        <div class="warning">
+            <strong>Un problème ?</strong> Si les notifications sont bloquées par votre navigateur, un message d'alerte rouge apparaîtra dans votre profil avec une <strong>vidéo d'aide</strong> pour vous montrer comment les débloquer manuellement dans les paramètres de Chrome/Firefox.
+        </div>
+    </div>
+
+    <hr>
+
+    <h2>1. Navigation et Recherche</h2>
+    
+    <h3>1.1 La page "À la Une"</h3>
+    <p>C'est votre tableau de bord d'actualités. Elle regroupe :</p>
+    <ul>
+        <li><strong>Les épinglés</strong> : Les 4 informations capitales en haut de page.</li>
+        <li><strong>Le flux récent</strong> : Tous les derniers articles publiés.</li>
+    </ul>
+
+    <h3>1.2 Les Favoris (⭐)</h3>
+    <p>Vous pouvez marquer des <strong>rubriques</strong> ou des <strong>articles</strong> comme favoris en cliquant sur l'étoile. Ils seront alors accessibles en un clic depuis votre profil.</p>
+
+    <h3>1.3 La Recherche Globale</h3>
+    <p>Utilisez la loupe en haut à droite pour rechercher un mot-clé. Les résultats affichent à la fois les <strong>articles</strong> et les <strong>applications</strong> correspondantes.</p>
+
+    <hr>
+
+    <div class="edition-box">
+        <h2>2. Mode Édition : Publier du contenu</h2>
+        <p>Si vous disposez des droits nécessaires (Éditeur ou Administrateur), un bouton <strong>Crayon (✎)</strong> apparaît en haut à droite de chaque rubrique.</p>
+
+        <h3>2.1 Passer en mode création</h3>
+        <p>Cliquez sur le crayon pour basculer l'interface. Les boutons de gestion apparaissent alors sur chaque contenu :</p>
+        <ul>
+            <li><strong>Bouton "+" </strong> : Créer un nouvel article ou une application dans cette rubrique.</li>
+            <li><strong>Icône Corbeille (🗑️)</strong> : Supprimer un contenu.</li>
+            <li><strong>Icône Crayon (✎)</strong> : Modifier un article existant.</li>
+        </ul>
+
+        <h3>2.2 Rédiger un Article</h3>
+        <p>Lors de la création ou modification, vous pouvez :</p>
+        <ul>
+            <li>Choisir une <strong>icône parlante</strong> (Material Design).</li>
+            <li>Définir la <strong>date de parution</strong> (pour programmer une publication future).</li>
+            <li>Définir une <strong>date d'expiration</strong> (pour un archivage automatique).</li>
+            <li>Cocher <strong>"Épingler"</strong> pour forcer l'affichage en haut de page.</li>
+            <li>Activer/Désactiver les <strong>commentaires</strong>.</li>
+        </ul>
+
+        <h3>2.3 Gérer et Utiliser les Modèles</h3>
+        <p>Pour gagner du temps, vous pouvez utiliser des <strong>modèles d'articles</strong> (structures pré-remplies) :</p>
+        <ul>
+            <li><strong>Appliquer un modèle</strong> : En mode création, utilisez le bouton "Appliquer un modèle" pour injecter une structure type dans votre éditeur.</li>
+            <li><strong>Section "Modèles"</strong> : En bas de chaque rubrique (en mode édition), vous trouverez vos modèles. Vous pouvez créer un nouvel article directement depuis un modèle ou modifier le modèle lui-même.</li>
+            <li><strong>Extraire comme modèle</strong> : Si vous venez de rédiger un article dont la structure est réutilisable, cliquez sur "Extraire comme modèle" pour le sauvegarder dans votre bibliothèque de modèles.</li>
+        </ul>
+
+        <h3>2.4 L'Éditeur Avancé (Blocs intelligents)</h3>
+        <p>L'éditeur d'articles utilise un système de <strong>blocs</strong> (Notes, Cadres, Titres, Colonnes) pour structurer vos contenus de manière professionnelle.</p>
+        
+        <div class="tip">
+            <strong>Aspiration automatique :</strong> Si vous sélectionnez du texte (un ou plusieurs paragraphes) avant d'insérer un bloc (ex: une Note), le texte sélectionné sera automatiquement placé à l'intérieur du bloc. Si vous ne sélectionnez rien, le paragraphe sous votre curseur sera transformé.
+        </div>
+
+        <ul>
+            <li><strong>Bouton Dégrouper (Orange)</strong> : Présent sur chaque bloc (juste sous la poubelle), il permet de retirer le cadre ou la note tout en conservant votre texte et vos médias à leur place.</li>
+            <li><strong>Sécurité des Titres</strong> : Les blocs de type "Titre" ne peuvent pas contenir de listes ou de longs paragraphes. Si vous tentez une action impossible, une notification orange vous en informera en haut de l'éditeur.</li>
+            <li><strong>Raccourcis Clavier</strong> : Utilisez <code>Alt + Shift + [Initiale]</code> pour insérer rapidement des blocs (ex: <code>Alt+Shift+N</code> pour une Note, <code>Alt+Shift+C</code> pour un Cadre).</li>
+            <li><strong>Vidéos Google Drive</strong> : Pour insérer une vidéo stockée sur le Drive de l'entreprise, utilisez simplement l'outil "Insérer un média" (icône caméra) et collez le lien de partage classique de votre fichier. Infocite se charge automatiquement de transformer le lien pour qu'il soit lisible directement dans votre article.</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <h2>3. Vos Outils (Applications)</h2>
+    <p>L'onglet "Applications" regroupe tous vos liens utiles.</p>
+    <ul>
+        <li><strong>Applications Institutionnelles</strong> : Liens officiels (YParéo, Webmail, etc.).</li>
+        <li><strong>Applications Personnelles</strong> : Vos propres raccourcis. En mode édition, vous pouvez cliquer sur <strong>"+"</strong> pour ajouter vos propres liens personnels que vous seul verrez.</li>
+    </ul>
+
+    <hr>
+
+    <h2>4. L'Organigramme</h2>
+    <p>L'organigramme vous permet de visualiser la hiérarchie et les visages de l'établissement. Cliquez sur une case pour voir le détail des effectifs et des fonctions rattachées.</p>
+
+</div>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-3 doc-page" id="doc3">
+<div class="page-break"></div>
+
+
+<div class="container">
+    <h1>Interface d'Administration : Guide Exhaustif</h1>
+
+    <p>Ce document détaille chaque module du tableau de bord administratif. Bien que la gestion des contenus puisse s'y faire, l'interface administrative est avant tout un outil de <strong>contrôle</strong>, de <strong>configuration globale</strong> et de <strong>supervision</strong>.</p>
+
+    <div class="info-box">
+        <strong>Note Importante</strong> : La création et la modification courante des articles se font plus naturellement via l'<strong>Interface d'Usage</strong> (en mode Édition). L'administration sert à intervenir de manière plus granulaire ou à corriger des erreurs.
+    </div>
+
+    <hr>
+
+    <h2>1. Pôle GESTION (Le cœur du système)</h2>
+    <p>Ce pôle regroupe les outils de gestion des accès et de la structure du site.</p>
+
+    <div class="menu-item">
+        <span class="menu-title">👥 Utilisateurs</span>
+        <p>Permet de rechercher parmi tous les usagers du portail. Vous pouvez modifier les informations de profil, voir le statut YParéo (Code Net, Login) et activer/désactiver manuellement un compte si nécessaire.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🖼️ Profils</span>
+        <p>Gestion des profils d'utilisateurs. Un profil définit un ensemble d'informations (avatar, identité) qui peut être rattaché à un compte système.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">👨‍👩‍👧‍👦 Groupes</span>
+        <p>Création et modification des groupes (Classes, Équipes, Services). C'est ici que l'on définit la typologie d'un groupe (ex: <code>P</code> pour Processus, <code>E</code> pour Équipe Pédagogique). Ces groupes servent ensuite de base pour l'attribution des droits.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📱 Applications</span>
+        <p>Gestion des liens externes institutionnels. Vous pouvez configurer l'URL, l'icône, et surtout le <strong>type d'authentification</strong> (Google OAuth, spécifique ou sans authentification).</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📂 Rubriques</span>
+        <p>C'est ici que vous construisez l'arborescence du site. Vous pouvez déplacer une rubrique, changer son icône, modifier son segment (URL) ou sa position (Menu principal ou Pied de page).</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📄 Contenus (Articles)</span>
+        <p>Liste exhaustive de tous les articles. Permet un contrôle rapide sur l'état de parution de tout le site. Utile pour retrouver un article expiré ou pour forcer une modification sur un article dont vous n'êtes pas l'auteur.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">💬 Commentaires</span>
+        <p>Modération globale. Vous pouvez voir tous les derniers commentaires déposés sur le site et les supprimer si leur contenu n'est pas approprié.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🔑 Droits (Permissions)</span>
+        <div class="warning-box"><strong>Attention</strong> : Module critique.</div>
+        <p>Définit les rôles de chaque utilisateur ou groupe sur chaque objet (Rubriques, Articles, etc.). Vous y gérez qui est <strong>Lecteur</strong>, <strong>Éditeur</strong>, <strong>Modérateur</strong> ou <strong>Administrateur</strong>.</p>
+    </div>
+
+    <hr>
+
+    <h2>2. Pôle ORGANIGRAMME (Structure visuelle)</h2>
+    <p>Ce pôle gère la construction dynamique de l'organigramme de l'établissement.</p>
+
+    <div class="menu-item">
+        <span class="menu-title">📏 Mise en forme (Formats)</span>
+        <p>Définit l'aspect visuel des cases de l'organigramme (couleurs, type de bordure continue ou pointillée).</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🔳 Nœuds (Chartnodes)</span>
+        <p>Création des "cases" de l'organigramme. Chaque nœud peut avoir un parent (pour créer la hiérarchie) et un format visuel spécifique.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🏷️ Libellés (Labels)</span>
+        <p>Gestion des fonctions et intitulés de postes officiels qui s'afficheront dans les cases.</p>
+    </div>
+
+    <hr>
+
+    <h2>3. Pôle STATISTIQUES (Audience et Usage)</h2>
+    <p>Outils d'analyse pour comprendre comment le portail est utilisé.</p>
+
+    <div class="menu-item">
+        <span class="menu-title">🌐 Connexions</span>
+        <p>Historique des accès au site. Permet de voir les pics de fréquentation et le nombre d'utilisateurs uniques par jour.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📚 Articles (Viewing)</span>
+        <p>Détail de consultation par article. Quel contenu a généré le plus d'intérêt ? Combien de personnes ont ouvert la dernière note de service ?</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🛠️ Usage</span>
+        <p>Analyse des actions effectuées sur le site (créations d'articles, commentaires, clics sur les applications). Permet de mesurer l'interactivité globale.</p>
+    </div>
+
+</div>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-4 doc-page" id="doc4">
+<div class="page-break"></div>
+
+
+<h1>Spécifications Techniques : Projet Infocite</h1>
+
+<p>Ce document est conçu pour accompagner tout développeur chargé de la maintenance d'Infocite, même sans expérience préalable en programmation orientée objet (POO) ou avec le framework Laravel.</p>
+
+<hr>
+
+<h2>1. La "Grande Image" : Comprendre comment ça marche</h2>
+
+<h3>1.1 La métaphore du Restaurant (Le modèle MVC)</h3>
+<p>Dans un développement PHP "classique" (sans framework), on a souvent un fichier <code>.php</code> par page. C'est comme si vous alliez dans une cuisine et que vous deviez tout faire vous-même pour chaque client.</p>
+
+<p>Laravel utilise une organisation appelée <strong>MVC</strong> (Modèle-Vue-Contrôleur). Imaginez un restaurant :</p>
+
+<ol>
+    <li><strong>Le Client (L'Utilisateur)</strong> : Il arrive sur le site et demande une page (ex: "Je veux voir l'article n°5").</li>
+    <li><strong>Le Menu (Les Routes)</strong> : C'est la liste de tout ce que le restaurant sait faire. Le client pointe une ligne du menu.</li>
+    <li><strong>Le Serveur (Le Contrôleur / Livewire)</strong> : Il prend la commande. Il ne cuisine pas lui-même, mais il sait qui appeler.</li>
+    <li><strong>Le Chef Cuisinier (Le Modèle)</strong> : C'est lui qui a accès au garde-manger (<strong>La Base de Données</strong>). Le serveur lui dit : "Donne-moi les infos du Post n°5". Le Chef prépare les données brutes.</li>
+    <li><strong>Le Dressage (La Vue)</strong> : Le serveur prend les données du Chef et les met dans une jolie assiette. C'est le code HTML que l'utilisateur voit enfin à l'écran.</li>
+</ol>
+
+<h3>1.2 Qu'est-ce qu'un Framework (Laravel) ?</h3>
+<p>Considérez Laravel comme une <strong>boîte à outils géante</strong>. Au lieu de fabriquer vos propres vis, vos propres marteaux et vos propres plans à chaque fois, Laravel vous fournit tout le nécessaire de base (gestion de la connexion, sécurité, envoi d'emails, etc.).<br>
+Votre travail consiste à assembler ces outils pour construire la maison "Infocite".</p>
+
+<hr>
+
+<h2>2. Le Lexique Infocite : Parler la même langue</h2>
+
+<p>Pour bien maintenir Infocite, il faut comprendre ces termes qui reviennent partout dans le code :</p>
+
+<ul>
+    <li><strong>Rubrique (Rubric)</strong> : C'est une catégorie de navigation. Elles peuvent être parentes (ex: "Actualités", "RH") ou enfants (ex: "Événements", "Vidéos").</li>
+    <li><strong>Article (Post)</strong> : C'est le contenu textuel principal. Un article appartient toujours à une rubrique.</li>
+    <li><strong>Application (App)</strong> : Un lien externe. Il y a des apps "institutionnelles" (pour tout le monde) et "personnelles" (propres à chaque utilisateur).</li>
+    <li><strong>Rôle (Role)</strong> : Le niveau de pouvoir d'un utilisateur sur un élément (Lecteur, Éditeur, Modérateur, Administrateur).</li>
+    <li><strong>Droit (Right)</strong> : La règle qui définit quel profil a quel rôle sur quel objet.</li>
+    <li><strong>Organigramme (OrgChart)</strong> : La structure hiérarchique de l'établissement, gérée de façon dynamique.</li>
+    <li><strong>Livewire</strong> : La technologie qui permet de rendre le site "vivant" (ex: quand on clique sur un bouton, la page se met à jour sans se recharger totalement).</li>
+</ul>
+
+<hr>
+
+<h2>3. Guide pratique : "Où se cache le code ?"</h2>
+
+<p>Dans Infocite, le code n'est pas tout au même endroit. Voici un tableau d'orientation pour savoir où intervenir selon votre besoin :</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Si vous voulez...</th>
+            <th>Allez dans ce dossier...</th>
+            <th>Type de fichiers</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Modifier un texte fixe, une couleur ou la structure visuelle</strong></td>
+            <td><code>resources/views/</code></td>
+            <td><code>.blade.php</code> (HTML + PHP)</td>
+        </tr>
+        <tr>
+            <td><strong>Modifier le comportement d'un bouton ou d'un formulaire</strong></td>
+            <td><code>app/Http/Livewire/</code></td>
+            <td><code>.php</code> (Logique interactive)</td>
+        </tr>
+        <tr>
+            <td><strong>Changer une règle d'accès (qui a le droit de voir quoi)</strong></td>
+            <td><code>app/Policies/</code></td>
+            <td><code>.php</code> (Règles de sécurité)</td>
+        </tr>
+        <tr>
+            <td><strong>Ajouter ou modifier une information en base de données</strong></td>
+            <td><code>database/migrations/</code> et <code>app/Models/</code></td>
+            <td><code>.php</code></td>
+        </tr>
+        <tr>
+            <td><strong>Modifier les constantes de l'application (ex: noms des rubriques, couleurs par défaut)</strong></td>
+            <td><code>app/CustomFacades/AP.php</code></td>
+            <td><code>.php</code> (Paramètres centraux)</td>
+        </tr>
+        <tr>
+            <td><strong>Gérer l'envoi des notifications Firebase</strong></td>
+            <td><code>app/Notifications/</code></td>
+            <td><code>.php</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>3.1 Un exemple concret : Changer le titre d'une page</h3>
+<p>Si vous voulez changer la façon dont le titre s'affiche sur la page "À la Une" :</p>
+<ol>
+    <li>Le visuel est dans <code>resources/views/livewire/usage/posts-manager.blade.php</code>.</li>
+    <li>La logique qui décide quel titre afficher est dans <code>app/Http/Livewire/Usage/PostsManager.php</code>.</li>
+</ol>
+
+<hr>
+
+<h2>4. Les Mécanismes Clés (Sans jargon)</h2>
+
+<h3>4.1 Le système de Droits (La tour de contrôle)</h3>
+<p>Infocite utilise un système de droits très précis. Tout est centralisé dans un fichier appelé <strong><code>AP.php</code></strong> (dans <code>app/CustomFacades/</code>).<br>
+C'est ici que l'on définit quels modèles (Utilisateurs, Articles, etc.) sont gérés dans quels tableaux de bord et avec quels rôles par défaut.</p>
+
+<p>Le code vérifie ensuite ces règles dans les dossiers <strong><code>Policies</code></strong>. Un fichier "Policy" contient des questions simples : "L'utilisateur peut-il créer un article ?", "L'utilisateur peut-il supprimer ce commentaire ?".</p>
+
+<h3>4.2 L'organisation des Rubriques (L'arborescence)</h3>
+<p>Les rubriques sont comme des dossiers dans votre ordinateur. Elles peuvent contenir des sous-rubriques ou des articles.</p>
+<ul>
+    <li>Elles ont une <strong>position</strong> (Barre de navigation ou Pied de page).</li>
+    <li>Elles ont un <strong>segment</strong> (l'identifiant utilisé dans l'adresse URL).</li>
+</ul>
+
+<h3>4.3 Les Notifications Firebase</h3>
+<p>Lorsqu'un article est publié, Infocite "envoie un signal" à Google Firebase, qui se charge de faire apparaître une petite bulle sur le bureau ou le téléphone des utilisateurs. L'activation de cet envoi est pilotée globalement par la variable <code>FCM_NOTIFICATIONS_ENABLED</code> dans le fichier <code>.env</code>.</p>
+
+<h3>4.4 La Base de Données (Le Garde-Manger)</h3>
+<p>La base de données MySQL d'Infocite est organisée de manière logique. Voici les relations principales à comprendre :</p>
+<ul>
+    <li><strong>Users</strong> : Contient tous les utilisateurs. Un utilisateur est lié soit à un <strong>Employee</strong> (personnel), soit à un <strong>Learner</strong> (élève).</li>
+    <li><strong>Posts (Articles)</strong> : Chaque article est lié à une <strong>Rubric</strong> (Rubrique) et possède un <strong>User</strong> comme auteur.</li>
+    <li><strong>Interactions</strong> : C'est ici que l'on enregistre qui a lu quel article et à quel moment. Cela permet de calculer les statistiques de consultation.</li>
+    <li><strong>Groups</strong> : Les utilisateurs sont regroupés dans des classes, des services ou des équipes. Cela sert à donner des droits d'accès massifs.</li>
+</ul>
+
+<h3>4.5 Le Cycle de vie d'un Article</h3>
+<p>Un article ne naît pas "publié". Il suit un cheminement :</p>
+<ol>
+    <li><strong>Création</strong> : L'auteur rédige l'article. Par défaut, il n'est pas encore visible.</li>
+    <li><strong>Date de parution</strong> : On peut programmer une date future. L'article ne s'affichera qu'à ce moment-là.</li>
+    <li><strong>Épinglage</strong> : On peut décider qu'un article doit rester en haut de la page "À la Une".</li>
+    <li><strong>Archivage/Expiration</strong> : On peut définir une date de fin. L'article disparaîtra de la vue publique mais restera en base de données.</li>
+</ol>
+
+<h3>4.6 L'Organigramme Dynamique</h3>
+<p>L'organigramme n'est pas une image fixe. Il est construit à partir de plusieurs briques :</p>
+<ul>
+    <li><strong>Chartnodes</strong> : Les "cases" du schéma. Elles sont liées à un code fonction (YParéo).</li>
+    <li><strong>Groupes (Processus)</strong> : Les utilisateurs sont rattachés aux cases via leur appartenance à un groupe correspondant au code fonction de la case.</li>
+    <li><strong>Formats</strong> : Les styles visuels (couleurs, bordures) de chaque case.</li>
+    <li><strong>Labels</strong> : Les titres des fonctions (ex: "Directeur", "Formateur").</li>
+</ul>
+
+<h3>4.7 Module Galerie Photos (Médias)</h3>
+<p>Ce module permet d'associer un album d'images à un article. L'implémentation repose sur des principes de performance et de légèreté :</p>
+<ul>
+    <li><strong>Stockage JSON</strong> : Contrairement aux fichiers classiques, les chemins et l'ordre des images sont stockés dans une colonne <code>JSON</code> de la table <code>galleries</code>. Cela simplifie les requêtes et évite les tables de liaison complexes.</li>
+    <li><strong>Gestion Asynchrone</strong> : Lors de l'édition d'un article, les images sont stockées temporairement dans la session PHP (Cache serveur) tant que l'article n'est pas sauvegardé. Cela évite d'encombrer le serveur avec des fichiers "orphelins".</li>
+    <li><strong>Rendu Hybride Intelligent</strong> :
+        <ul>
+            <li><em>Mobile</em> : Présentation en mosaïque carrée (1:1) avec calcul dynamique des arrondis de coins.</li>
+            <li><em>Desktop</em> : Bande horizontale de vignettes normées (155px × 155px) pour une intégration visuelle premium.</li>
+        </ul>
+    </li>
+    <li><strong>Visionneuse (GLightbox)</strong> : Les galeries utilisent la bibliothèque <code>GLightbox</code> pour offrir un défilement fluide, le support tactile et une navigation optimisée.</li>
+</ul>
+
+<h3>4.8 Sécurité et Validation des Formulaires</h3>
+<p>Une attention particulière doit être portée à la validation des champs booléens dans les formulaires Livewire (ex: <code>EditPostManager</code>).<br>
+<strong>Règle d'or :</strong> Toujours forcer l'initialisation des drapeaux (flags) à <code>false</code> ou <code>true</code> avant l'appel à <code>validate()</code> pour éviter que Laravel ne retourne une erreur sur une valeur <code>NULL</code> inattendue lors de la création.</p>
+
+<h3>4.9 Système de Modèles d'Articles (Templates)</h3>
+<p>Ce système permet aux rédacteurs de gagner en productivité en réutilisant des structures d'articles types. L'implémentation repose sur une ségrégation stricte :</p>
+<ul>
+    <li><strong>Scope Eloquent <code>notTemplates()</code></strong> : Présent sur le modèle <code>Post</code>, ce scope doit être systématiquement appliqué (via <code>PostsManager</code> et <code>WithFilterPosts</code>) pour exclure les modèles des flux de lecture publics.</li>
+    <li><strong>Interface de Gestion</strong> : Une section dédiée en bas de page (visible uniquement en mode édition) permet de gérer les modèles. Elle utilise des modales spécifiques :
+        <ul>
+            <li><code>ApplyTemplateManager</code> : Pour injecter le contenu d'un modèle dans l'éditeur.</li>
+            <li><code>ExtractTemplateManager</code> : Pour transformer un article existant en modèle.</li>
+            <li><code>PostTemplatesManager</code> : Pour la gestion (CRUD) globale des modèles d'une rubrique.</li>
+        </ul>
+    </li>
+    <li><strong>Clonage de Contenu</strong> : Lors de la création d'un article à partir d'un modèle, le système effectue une copie du titre, de l'icône et du contenu HTML, tout en préservant l'article original.</li>
+</ul>
+
+<h3>4.10 Moteur d'Édition Avancé (TinyMCE)</h3>
+<p>L'éditeur d'articles a été optimisé pour offrir une expérience de structuration "par blocs" fluide et robuste. Les spécificités techniques sont :</p>
+<ul>
+    <li><strong>Logique d'Aspiration Universelle</strong> : Contrairement aux fonctions d'insertion natives, le script <code>tiny_editor_SC.js</code> utilise une détection de sélection intelligente. Il identifie les nœuds de départ et d'arrivée pour capturer l'intégralité des structures HTML (outerHTML) et les injecter dans les nouveaux conteneurs sans perte de formatage.</li>
+    <li><strong>Découplage des Contrôles (Unwrap)</strong> : Une fonction chirurgicale permet de supprimer les balises de décoration (classes <code>block-note-*</code> ou <code>block-frame-*</code>) tout en réinjectant le contenu directement dans le flux parent, préservant ainsi l'intégrité sémantique du document.</li>
+    <li><strong>Gardes-fous Sémantiques</strong> : Utilisation de l'API <code>notificationManager</code> pour bloquer les actions invalides (ex: insertion de listes ou multi-sélections dans des titres) avant qu'elles ne corrompent la structure du DOM.</li>
+    <li><strong>Persistance Multimédia</strong> : La fonction <code>GetContent</code> de TinyMCE a été surchargée pour garantir que les balises <code>IFRAME</code>, <code>VIDEO</code>, <code>IMG</code> et <code>TABLE</code> ne soient jamais considérées comme du contenu vide et supprimées par erreur lors du nettoyage automatique.</li>
+    <li><strong>Intégration Google Drive</strong> : Implémentation d'un <code>media_url_resolver</code> qui transforme automatiquement les liens de partage Google Drive (<code>/view</code>) en liens intégrables (<code>/preview</code>). Ce mécanisme permet d'utiliser l'outil "Média" natif de TinyMCE pour insérer des vidéos institutionnelles sans avoir à manipuler manuellement le code HTML de l'iframe.</li>
+</ul>
+
+<hr>
+
+<h2>5. Fiches Recettes (Pas-à-pas)</h2>
+
+<h3>5.1 Recette n°1 : Créer une nouvelle rubrique</h3>
+<ol>
+    <li><strong>Interface d'administration</strong> : Connectez-vous avec un compte administrateur et allez dans le tableau de bord Admin -> Rubriques. Cliquez sur "Ajouter".</li>
+    <li><strong>Configuration</strong> :
+        <ul>
+            <li>Choisissez un <strong>Nom</strong>.</li>
+            <li>Définissez un <strong>Segment</strong> (sans espaces ni accents, ex: <code>ma-nouvelle-page</code>).</li>
+            <li>Choisissez la <strong>Position</strong> (Navigation ou Pied de page).</li>
+        </ul>
+    </li>
+    <li><strong>Résultat</strong> : La rubrique apparaîtra automatiquement dans le menu correspondant.</li>
+</ol>
+
+<h3>5.2 Recette n°2 : Modifier un libellé ou un texte fixe</h3>
+<ol>
+    <li>Si le texte est dans une page, utilisez le "Guide pratique (Section 3)" pour trouver le fichier <code>.blade.php</code>.</li>
+    <li>Cherchez le texte entre les balises HTML et remplacez-le.</li>
+    <li><strong>Avertissement</strong> : Ne touchez pas aux éléments entre <code>{{ ... }}</code> ou <code>@if</code>, ce sont des variables dynamiques.</li>
+</ol>
+
+<h3>5.3 Recette n°3 : Gérer les droits d'un administrateur</h3>
+<ol>
+    <li>Allez dans Admin -> Droits.</li>
+    <li>Ici, vous pouvez attribuer des rôles à des utilisateurs ou des groupes sur des objets précis.</li>
+    <li>Pour ajouter un accès global à un nouveau module, cela se passe dans <code>app/CustomFacades/AP.php</code> (demandez l'aide d'un développeur confirmé pour cette partie).</li>
+</ol>
+
+<hr>
+
+<h2>6. L'Environnement de Travail (Local)</h2>
+
+<p>Pour travailler sur Infocite sur votre poste, vous utilisez probablement <strong>Laragon</strong> ou <strong>WAMP</strong>.</p>
+
+<ol>
+    <li><strong>Le dossier du projet</strong> : <code>C:\laragon\www\infocite</code></li>
+    <li><strong>L'adresse locale</strong> : <code>http://infocite.test</code></li>
+    <li><strong>Fichier <code>.env</code></strong> : C'est le fichier qui contient vos codes secrets locaux (mots de passe de base de données, clés API). <strong>Ne le partagez jamais !</strong></li>
+</ol>
+
+<h3>6.1 Compiler les changements visuels</h3>
+<p>Si vous modifiez les styles CSS (dans <code>resources/sass</code>), vous devez "compiler" votre travail pour qu'il soit visible :</p>
+<ol>
+    <li>Ouvrez un terminal dans le dossier du projet.</li>
+    <li>Tapez : <code>npm run dev</code>.</li>
+</ol>
+
+<hr>
+
+<h2>7. Schéma récapitulatif : Le flux d'une page</h2>
+
+<p>Voici comment Infocite traite une demande utilisateur étape par étape :</p>
+
+<table style="width: 100%; border: none; border-spacing: 0 10px; border-collapse: separate;">
+    <tr>
+        <td style="width: 30%; background-color: #3498db; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            1. ACTION UTILISATEUR
+        </td>
+        <td style="width: 70%; padding: 15px; border: 1px solid #3498db; border-left: none; border-radius: 0 8px 8px 0;">
+            Le client clique sur un lien ou un bouton (ex: "Voir un article").
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #2ecc71; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            2. LE MENU (Routes)
+        </td>
+        <td style="padding: 15px; border: 1px solid #2ecc71; border-left: none; border-radius: 0 8px 8px 0;">
+            Le fichier <code>routes/web.php</code> analyse l'URL et appelle le bon composant.
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #f1c40f; color: black; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            3. LE SERVEUR (Livewire)
+        </td>
+        <td style="padding: 15px; border: 1px solid #f1c40f; border-left: none; border-radius: 0 8px 8px 0;">
+            Le composant PHP (dans <code>app/Http/Livewire</code>) exécute la logique métier.
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #e67e22; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            4. LA CUISINE (Modèle/BDD)
+        </td>
+        <td style="padding: 15px; border: 1px solid #e67e22; border-left: none; border-radius: 0 8px 8px 0;">
+            Laravel va chercher les données dans les tables (ex: <code>posts</code>, <code>users</code>).
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #9b59b6; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            5. LE DRESSAGE (Vue)
+        </td>
+        <td style="padding: 15px; border: 1px solid #9b59b6; border-left: none; border-radius: 0 8px 8px 0;">
+            Le fichier HTML final (<code>.blade.php</code>) est généré et envoyé au navigateur.
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<h2>8. Maintenance et Outils de secours</h2>
+
+<h3>8.1 Commandes de secours (Artisan)</h3>
+<p>Laravel propose des commandes pour nettoyer le système si celui-ci devient lent ou si les changements ne s'affichent pas :</p>
+<ul>
+    <li><code>php artisan cache:clear</code> : Vide la mémoire temporaire.</li>
+    <li><code>php artisan route:clear</code> : Réinitialise la liste des adresses URL.</li>
+    <li><code>php artisan view:clear</code> : Force la mise à jour des fichiers visuels.</li>
+</ul>
+
+<h3>8.2 Maintenance des notifications</h3>
+<p>Si les notifications Firebase ne partent plus :</p>
+<ol>
+    <li>Vérifiez que <code>FCM_NOTIFICATIONS_ENABLED</code> est à <code>true</code> dans le fichier <code>.env</code> (indispensable en production).</li>
+    <li>Vérifiez les clés Firebase dans le fichier <code>.env</code>.</li>
+    <li>Lancez la commande <code>php artisan fcm:purge</code> pour nettoyer les anciens jetons de connexion périmés.</li>
+</ol>
+
+<h3>8.3 Compilation pour la Production</h3>
+<p>Avant de mettre le site en ligne (sur le serveur réel), utilisez toujours :<br>
+<code>npm run prod</code><br>
+Cela compresse tous les fichiers pour que le site soit le plus rapide possible pour les utilisateurs.</p>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-5 doc-page" id="doc5">
+<div class="page-break"></div>
+
+
+<h1>Dictionnaire de Données : Infocite</h1>
+
+<p>Ce document décrit la structure de la base de données MySQL d'Infocite. Il est organisé par pôles fonctionnels.</p>
+
+<hr>
+
+<h2>1. Pôle Utilisateurs et Identités</h2>
+
+<h3>Table <code>users</code></h3>
+<p>Table centrale des comptes utilisateurs.</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
+    <tr><td>identity</td><td>string</td><td>Nom complet (Prénom Nom)</td></tr>
+    <tr><td>email</td><td>string</td><td>Email de connexion (ou Google Account)</td></tr>
+    <tr><td>login</td><td>string</td><td>Login YParéo</td></tr>
+    <tr><td>code_ypareo</td><td>string</td><td>Identifiant unique YParéo</td></tr>
+    <tr><td>avatar</td><td>string</td><td>URL ou chemin de la photo de profil</td></tr>
+</table>
+
+<h3>Table <code>learners</code> / <code>employees</code></h3>
+<p>Extensions des données utilisateurs pour les apprenants et les salariés.</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="fk">user_id</td><td>bigint</td><td>Lien vers la table users</td></tr>
+    <tr><td>birthday</td><td>date</td><td>Date de naissance (Apprenants)</td></tr>
+    <tr><td>position</td><td>string</td><td>Poste occupé (Salariés)</td></tr>
+    <tr><td>building / office</td><td>string</td><td>Localisation physique (Salariés)</td></tr>
+</table>
+
+<hr>
+
+<h2>2. Pôle Contenus et Rubriques</h2>
+
+<h3>Table <code>rubrics</code></h3>
+<p>Structure de navigation du site.</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
+    <tr><td>name</td><td>string</td><td>Nom affiché</td></tr>
+    <tr><td>segment</td><td>string</td><td>Partie de l'URL (slug)</td></tr>
+    <tr><td>icon</td><td>string</td><td>Code icône Material Design</td></tr>
+    <tr><td class="fk">parent_id</td><td>bigint</td><td>Lien vers la rubrique parente (hiérarchie)</td></tr>
+</table>
+
+<h3>Table <code>posts</code></h3>
+<p>Contenu des articles.</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
+    <tr><td class="fk">rubric_id</td><td>bigint</td><td>Lien vers la rubrique parente</td></tr>
+    <tr><td>title</td><td>string</td><td>Titre de l'article</td></tr>
+    <tr><td>content</td><td>text</td><td>Contenu HTML de l'article</td></tr>
+    <tr><td>published</td><td>boolean</td><td>État de publication</td></tr>
+    <tr><td>is_acknowledgment_required</td><td>boolean</td><td>Si l'accusé de lecture est activé</td></tr>
+    <tr><td>is_rating_enabled</td><td>boolean</td><td>Si la notation est activée</td></tr>
+    <tr><td>is_pinned</td><td>boolean</td><td>Si l'article est "À la Une"</td></tr>
+    <tr><td>is_template</td><td>boolean</td><td>Si l'article sert de modèle (exclu des flux publics)</td></tr>
+    <tr><td class="fk">author_id</td><td>bigint</td><td>Lien vers le rédacteur (User)</td></tr>
+    <tr><td>published_at</td><td>datetime</td><td>Date de mise en ligne prévue</td></tr>
+    <tr><td>expired_at</td><td>datetime</td><td>Date d'archivage automatique</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Pôle Organigramme</h2>
+
+<h3>Table <code>chartnodes</code></h3>
+<p>Les cases de l'organigramme.</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
+    <tr><td>name</td><td>string</td><td>Nom de la case (ex: Direction)</td></tr>
+    <tr><td>code_fonction</td><td>string</td><td>Lien avec le code fonction YParéo</td></tr>
+    <tr><td class="fk">parent_id</td><td>bigint</td><td>Hiérarchie des cases</td></tr>
+    <tr><td class="fk">format_id</td><td>bigint</td><td>Lien vers les styles visuels</td></tr>
+</table>
+
+<hr>
+
+<h2>4. Pôle Droits et Permissions</h2>
+
+<h3>Table <code>rights</code> / <code>rightables</code></h3>
+<p>Gestion fine des permissions.</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td>name</td><td>string</td><td>Nom du droit (ex: manage-posts)</td></tr>
+    <tr><td>dashboard_roles</td><td>integer</td><td>Masque binaire des rôles administratifs</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Pôle Technique et Statistiques</h2>
+
+<h3>Table <code>interactions</code></h3>
+<p>Journal complet des actions utilisateurs (très volumineuse).</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td>user_id</td><td>bigint</td><td>Qui a fait l'action</td></tr>
+    <tr><td>type</td><td>string</td><td>Type d'action (view, click, auth)</td></tr>
+    <tr><td>interactable_type / id</td><td>string/bigint</td><td>Sur quel objet (Post, App, etc.)</td></tr>
+    <tr><td>occurred_at</td><td>datetime</td><td>Horodatage</td></tr>
+</table>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-6 doc-page" id="doc6">
+<div class="page-break"></div>
+
+
+<h1>Dépendances Externes et APIs</h1>
+
+<p>Infocite n'est pas un système isolé. Il communique avec plusieurs services tiers pour fonctionner. Ce document liste ces points de contact critiques.</p>
+
+<div class="service-card">
+    <div class="service-title">1. Google Cloud Platform (OAuth 2.0)</div>
+    <p><strong>Rôle</strong> : Permet aux utilisateurs de se connecter avec leur compte Google professionnel.</p>
+    <ul>
+        <li><strong>Console</strong> : <a href="https://console.cloud.google.com/">Google Cloud Console</a></li>
+        <li><strong>Identifiants</strong> : Client ID et Client Secret (stockés dans le <code>.env</code>).</li>
+        <li><strong>Risque</strong> : Si les identifiants expirent, plus personne ne pourra se connecter.</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">2. Firebase (Cloud Messaging - FCM)</div>
+    <p><strong>Rôle</strong> : Envoi des notifications de bureau en temps réel.</p>
+    <ul>
+        <li><strong>Console</strong> : <a href="https://console.firebase.google.com/">Firebase Console</a></li>
+        <li><strong>Configuration</strong> : Fichier <code>firebase-messaging-sw.js</code> à la racine et clés de serveur dans le <code>.env</code>.</li>
+        <li><strong>Vérification</strong> : Le certificat VAPID doit être valide pour que les navigateurs acceptent les notifications.</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">3. Liaison YParéo</div>
+    <p><strong>Rôle</strong> : Synchronisation des identités, des classes et des fonctions.</p>
+    <ul>
+        <li><strong>Mécanisme</strong> : Import via base de données ou API (selon configuration locale).</li>
+        <li><strong>Champs clés</strong> : <code>code_ypareo</code>, <code>code_netypareo</code>, <code>login</code>.</li>
+        <li><strong>Obsolescence</strong> : Le système des "Acteurs" est obsolète au profit des codes fonctions YParéo.</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">4. Google Drive (Embed)</div>
+    <p><strong>Rôle</strong> : Hébergement et intégration des vidéos institutionnelles.</p>
+    <ul>
+        <li><strong>Mécanisme</strong> : Utilisation d'iframes <code>/preview</code> générées via un resolver d'URL automatique dans TinyMCE.</li>
+        <li><strong>Configuration</strong> : Les fichiers doivent être configurés en partage "Tous les utilisateurs de l'organisation disposant du lien".</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">5. Fontes et Médias</div>
+    <ul>
+        <li><strong>Google Fonts</strong> : Chargement des polices (Inter, Roboto, Material Icons).</li>
+        <li><strong>Boxicons</strong> : Bibliothèque d'icônes pour l'interface.</li>
+    </ul>
+</div>
+
+<p class="warning">IMPORTANT : En cas de changement de domaine (URL du site), toutes ces configurations (URL de redirection Google, domaine Firebase) doivent être mises à jour dans les consoles respectives.</p>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-7 doc-page" id="doc7">
+<div class="page-break"></div>
+
+
+<h1>Guide de Maintenance Serveur (SysAdmin)</h1>
+
+<p>Ce guide détaille les opérations techniques nécessaires pour maintenir, sauvegarder et mettre à jour le portail Infocite sur le serveur de production.</p>
+
+<hr>
+
+<h2>1. Environnement et Prérequis</h2>
+<ul>
+    <li><strong>Serveur Web</strong> : Apache ou Nginx.</li>
+    <li><strong>PHP</strong> : Version 8.0 minimum (avec extensions pdo, mbstring, openssl, xml, gd).</li>
+    <li><strong>Base de données</strong> : MySQL 5.7+ ou MariaDB.</li>
+    <li><strong>Node.js & NPM</strong> : Pour la compilation des assets (front-end).</li>
+</ul>
+
+<hr>
+
+<h2>2. Commandes de Maintenance Courantes</h2>
+<div class="terminal">
+    <span class="comment"># Vider les caches de l'application (en cas de bug d'affichage ou de route)</span><br>
+    <span class="cmd">php artisan optimize:clear</span><br><br>
+    
+    <span class="comment"># Nettoyer les jetons de notifications obsolètes (Firebase)</span><br>
+    <span class="cmd">php artisan fcm:purge</span><br><br>
+    
+    <span class="comment"># Recompiler les fichiers CSS/JS pour la production</span><br>
+    <span class="cmd">npm run prod</span>
+</div>
+
+<hr>
+
+<h2>3. Gestion des Sauvegardes (Backups)</h2>
+<div class="important">
+    <strong>Crucial</strong> : Une sauvegarde doit inclure à la fois la Base de Données et les Fichiers média.
+</div>
+
+<h3>3.1 Base de Données</h3>
+<p>Utilisez un dump SQL régulier (via Cron ou Plesk) :</p>
+<div class="terminal">
+    <span class="cmd">mysqldump -u [utilisateur] -p[mot_de_passe] infocite > backup_infocite.sql</span>
+</div>
+
+<h3>3.2 Fichiers Média</h3>
+<p>Tous les fichiers téléchargés par les utilisateurs (images, pièces jointes) se trouvent dans :<br>
+<code>/storage/app/public/</code></p>
+
+<hr>
+
+<h2>4. Sécurité et Mises à jour</h2>
+<ul>
+    <li><strong>Fichier .env</strong> : Ne JAMAIS rendre ce fichier public. Il contient toutes les clés secrètes.</li>
+    <li><strong>Notifications (FCM)</strong> : La variable <code>FCM_NOTIFICATIONS_ENABLED</code> doit être à <code>true</code> en production pour que les alertes de bureau arrivent aux utilisateurs.</li>
+    <li><strong>Permissions dossiers</strong> : Les dossiers <code>storage</code> et <code>bootstrap/cache</code> doivent être accessibles en écriture par le serveur web (www-data).</li>
+    <li><strong>Journal d'erreurs</strong> : Consultable dans <code>storage/logs/laravel.log</code>.</li>
+</ul>
+
+<hr>
+
+<h2>5. Tâches Planifiées (Task Scheduling)</h2>
+<p>Pour que l'archivage automatique des articles et les purges de notifications fonctionnent, une tâche Cron doit être configurée sur le serveur :</p>
+<div class="terminal">
+    <span class="cmd">* * * * * cd /chemin/vers/infocite && php artisan schedule:run >> /dev/null 2>&1</span>
+</div>
+
+<hr>
+
+<h2>6. Procédure de Mise à Jour Majeure (Mode Opératoire)</h2>
+<p>Lors d'une mise à jour majeure de la plateforme Infocité, le mode opératoire suivant doit être rigoureusement respecté sur l'environnement ciblé, qu'il s'agisse de la <strong>pré-production (echospheres)</strong> ou de la <strong>production (infocite)</strong> :</p>
+
+<ol>
+    <li>
+        <strong>Connexion au serveur Plesk</strong><br>
+        Se connecter à l'interface d'administration Plesk et sélectionner le domaine concerné : le domaine de pré-production (<code>echospheres</code>) ou de production (<code>infocite</code>).
+    </li>
+    <li>
+        <strong>Activation du mode maintenance</strong><br>
+        Mettre la plateforme hors-ligne le temps de la mise à jour via l'outil <strong>Laravel Toolkit</strong> &rarr; onglet <strong>'Tableau de bord'</strong> &rarr; activer le <strong>Mode maintenance</strong>.
+    </li>
+    <li>
+        <strong>Mise à jour du dépôt Git</strong><br>
+        Sur la plateforme <a href="https://github.com" target="_blank" style="color: #2980b9;">GitHub</a>, s'assurer que la visibilité du dépôt est bien configurée en <strong>publique</strong> (onglet 'Settings' &rarr; section 'Danger Zone' &rarr; bouton 'Change visibility'). Ensuite, sur Plesk Git, cliquer sur les boutons <strong>'Exécuter pull'</strong> puis <strong>'Déployer maintenant'</strong>. Une fois la synchronisation Plesk effectuée, penser à rebasculer la visibilité du dépôt en <strong>privé</strong> sur la plateforme <a href="https://github.com" target="_blank" style="color: #2980b9;">GitHub</a>.
+    </li>
+    <li>
+        <strong>Désactivation momentanée du mode production (Optionnel - Si migration nécessaire et domaine en production)</strong><br>
+        <div class="important" style="margin: 10px 0; padding: 10px;">
+            <strong>Note importante (Étapes 4 à 6 liées)</strong> : Les étapes 4, 5 et 6 sont étroitement liées et ne sont requises <strong>que si la mise à jour nécessite des migrations en base de données</strong>. Si aucune migration n'est requise, passez directement à l'étape 7.
+            <br><br>
+            <strong>Conditions d'application</strong> : Cette étape 4 s'applique systématiquement au domaine de production <code>infocite</code>. Sur le domaine de pré-production <code>echospheres</code>, la variable d'environnement <code>APP_ENV</code> est normalement déjà configurée sur <code>'local'</code>. Toutefois, si le domaine de pré-production est configuré avec <code>APP_ENV=production</code>, cette étape y devient également obligatoire car Laravel bloquera par sécurité l'exécution des migrations.
+        </div>
+        Accéder au <strong>Gestionnaire de fichiers</strong> du domaine, remonter d'un niveau pour afficher le répertoire principal, puis ouvrir le fichier <code>.env</code> en édition. Modifier temporairement la variable d'environnement <code>APP_ENV</code> en lui affectant la valeur <code>'local'</code>, puis enregistrer la modification.
+    </li>
+    <li>
+        <strong>Exécution des migrations de Base de Données (Optionnel)</strong><br>
+        Si des modifications de structure de données sont requises pour cette version, effectuer les migrations à l'aide de l'outil <strong>Laravel Toolkit</strong> &rarr; onglet <strong>'Artisan'</strong> &rarr; renseigner et exécuter la commande <code>migrate</code>.
+    </li>
+    <li>
+        <strong>Réactivation du mode production (Uniquement si l'étape 4 a été réalisée)</strong><br>
+        <div class="important" style="margin: 10px 0; padding: 10px;">
+            <strong>Attention</strong> : Cette étape s'applique exclusivement si vous avez modifié temporairement la variable <code>APP_ENV</code> à l'étape 4 (que ce soit sur la production ou sur la pré-production).
+        </div>
+        Retourner dans le gestionnaire de fichiers, ouvrir le fichier <code>.env</code> principal (comme décrit à l'étape 4) et réaffecter la valeur <code>'production'</code> à la variable d'environnement <code>APP_ENV</code>. Enregistrer la modification afin de remettre la plateforme dans son environnement sécurisé.
+    </li>
+    <li>
+        <strong>Mises à jour PHP Composer</strong><br>
+        Accéder à l'outil <strong>PHP Composer</strong>. <em>Pour le site de production uniquement :</em> veiller à modifier le dossier d'exécution pour qu'il pointe directement à la racine du domaine. Ensuite, dans la section <strong>'Dépendances des packs'</strong>, cliquer sur le bouton <strong>'Mise à jour'</strong>.
+    </li>
+    <li>
+        <strong>Remise en ligne de la plateforme</strong><br>
+        Retourner dans le <strong>Laravel Toolkit</strong> &rarr; onglet <strong>'Tableau de bord'</strong> &rarr; désactiver le <strong>Mode maintenance</strong> pour remettre la plateforme en mode normal.
+    </li>
+    <li>
+        <strong>Vérification et Diagnostic</strong><br>
+        Vérifier méticuleusement que toutes les fonctionnalités s'exécutent normalement. En cas de problème, reprendre pas à pas les différentes étapes précédentes. Si des difficultés majeures persistent :
+        <ul>
+            <li>Activer temporairement le mode debug au niveau du fichier <code>.env</code> en affectant la valeur <code>true</code> à la variable <code>APP_DEBUG</code> afin d'analyser les messages d'erreur détaillés.</li>
+            <li>Consulter les logs d'erreurs en accédant au dossier <code>storage/logs/</code> du domaine via le gestionnaire de fichiers.</li>
+        </ul>
+    </li>
+</ol>
+
+</div>
+<div class="doc-wrapper doc-wrapper-8 doc-page" id="doc8">
+<div class="page-break"></div>
+
+
+<h1>Cahier de Recette (Scénarios de Tests)</h1>
+
+<p>Ce document liste les tests manuels à effectuer pour valider le bon fonctionnement du portail Infocite après une mise à jour.</p>
+
+<table>
+    <tr>
+        <th>N°</th>
+        <th>Fonctionnalité</th>
+        <th>Action à réaliser</th>
+        <th>Résultat attendu</th>
+        <th>État</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Connexion Google</td>
+        <td>Cliquer sur le bouton "Se connecter"</td>
+        <td>Redirection vers Google, puis retour sur le portail identifié.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Création d'article</td>
+        <td>Rédaction d'un article test dans une rubrique</td>
+        <td>L'article apparaît bien dans le flux "À la Une".</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Notifications</td>
+        <td>Publier un article épinglé</td>
+        <td>Une bulle de notification apparaît sur le bureau (si activée).</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Favoris</td>
+        <td>Cliquer sur l'étoile d'un article</td>
+        <td>L'article apparaît bien dans l'onglet "Infos" > Favoris.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Organigramme</td>
+        <td>Cliquer sur une case de l'organigramme</td>
+        <td>Une fenêtre s'ouvre avec la liste des membres rattachés.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Recherche</td>
+        <td>Taper un mot-clé existant dans la loupe</td>
+        <td>Les articles et applications correspondants s'affichent.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>Commentaires</td>
+        <td>Déposer un commentaire sous un article</td>
+        <td>Le commentaire est posté et le compteur s'incrémente.</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>8</td>
+        <td>Insertion de blocs</td>
+        <td>Sélectionner du texte et insérer une Note</td>
+        <td>Le texte est aspiré à l'intérieur du bloc Note (Aspiration groupée).</td>
+        <td class="check">OK</td>
+    </tr>
+    <tr>
+        <td>9</td>
+        <td>Dégroupage (Unwrap)</td>
+        <td>Cliquer sur le bouton orange d'un bloc</td>
+        <td>Le cadre est supprimé mais le contenu (texte/médias) est conservé.</td>
+        <td class="check">OK</td>
+    </tr>
+</table>
+
+<p><i>Note : Ce cahier doit être complété à chaque ajout de nouvelle fonctionnalité majeure.</i></p>
+
+
+</div>
+<div class="doc-wrapper doc-wrapper-9 doc-page" id="doc9">
+<div class="page-break"></div>
+
+
+<h1>Journal des Modifications (Changelog)</h1>
+
+<div class="version">
+    <div class="version-title">Version 1.6.1 - Intégration Native Google Drive</div>
+    <div class="date">06 Mai 2026</div>
+    <ul>
+        <li><span class="tag tag-fix">FIX</span> Résolution de l'intégration des vidéos Google Drive dans TinyMCE via un resolver d'URL automatique (conversion <code>/view</code> vers <code>/preview</code>).</li>
+        <li><span class="tag tag-feat">FEAT</span> Support transparent des iframes Drive institutionnelles avec redimensionnement automatique.</li>
+    </ul>
+</div>
+ 
+  <div class="version">
+      <div class="version-title">Version 1.6 - Blocs Intelligents et Optimisations TinyMCE</div>
+      <div class="date">04 Mai 2026</div>
+      <ul>
+          <li><span class="tag tag-feat">FEAT</span> Système d'aspiration groupée (multi-blocs) lors de l'insertion.</li>
+          <li><span class="tag tag-feat">FEAT</span> Bouton "Dégrouper" (Unwrap) pour retirer les cadres sans perdre le contenu.</li>
+          <li><span class="tag tag-feat">FEAT</span> Sécurité sémantique et notifications pour les blocs de titres.</li>
+          <li><span class="tag tag-fix">FIX</span> Correction de la persistance des IFRAME et vidéos dans l'éditeur.</li>
+          <li><span class="tag tag-tech">TECH</span> Architecture DRY pour la gestion des définitions de blocs.</li>
+      </ul>
+  </div>
+
+  <div class="version">
+     <div class="version-title">Version 1.5 - Système de Modèles d'Articles</div>
+     <div class="date">22 Avril 2026</div>
+     <ul>
+         <li><span class="tag tag-feat">FEAT</span> Implémentation d'un système complet de modèles (templates) d'articles.</li>
+         <li><span class="tag tag-feat">FEAT</span> Section dédiée "Modèles disponibles" avec ségrégation visuelle et fonctionnelle.</li>
+         <li><span class="tag tag-feat">FEAT</span> Outils de productivité : "Extraire comme modèle" et "Appliquer un modèle".</li>
+         <li><span class="tag tag-tech">TECH</span> Sécurisation des flux via le scope Eloquent <code>notTemplates()</code>.</li>
+     </ul>
+ </div>
+
+<div class="version">
+    <div class="version-title">Version 1.4.1 - Sécurité des Notifications</div>
+    <div class="date">14 Avril 2026</div>
+    <ul>
+        <li><span class="tag tag-fix">FIX</span> Ajout de la variable <code>FCM_NOTIFICATIONS_ENABLED</code> pour piloter l'envoi des notifications.</li>
+        <li><span class="tag tag-fix">FIX</span> Sécurisation de l'environnement local pour éviter les envois accidentels vers le Firebase de production.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.4 - Médias et Correctifs Majeurs</div>
+    <div class="date">14 Avril 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Nouveau module de galerie photo asynchrone (Session & JSON).</li>
+        <li><span class="tag tag-feat">FEAT</span> Intégration de GLightbox (visionneuse haute performance).</li>
+        <li><span class="tag tag-feat">FEAT</span> Rendu hybride intelligent (Mosaïque mobile / Bande Desktop).</li>
+        <li><span class="tag tag-fix">FIX</span> Correction du bug critique de création d'article (validation booléenne).</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.3 - Interactivité et Engagement</div>
+    <div class="date">Début Avril 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Système d'acquittement de lecture "Lu et Approuvé".</li>
+        <li><span class="tag tag-feat">FEAT</span> Module de notation par étoiles (1 à 5).</li>
+        <li><span class="tag tag-fix">FIX</span> Refonte de la modale d'information des rubriques.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.2 - Pack de Documentation Étendu</div>
+    <div class="date">Mars 2026</div>
+    <ul>
+        <li><span class="tag tag-doc">DOC</span> Rédaction des guides utilisateurs et administrateurs exhaustifs.</li>
+        <li><span class="tag tag-doc">DOC</span> Création du dictionnaire de données et guide de maintenance serveur.</li>
+        <li><span class="tag tag-doc">DOC</span> Documentation des dépendances APIs (Google, Firebase).</li>
+        <li><span class="tag tag-feat">FEAT</span> Optimisation de l'affichage des schémas de flux pour Google Docs.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.1 - Modernisation et Corrections</div>
+    <div class="date">Février 2026</div>
+    <ul>
+        <li><span class="tag tag-fix">FIX</span> Correction de l'organigramme (abandon du module Acteurs au profit des codes fonctions).</li>
+        <li><span class="tag tag-feat">FEAT</span> Nouveau système de notifications de bureau avec vidéo d'aide intégrée.</li>
+        <li><span class="tag tag-fix">FIX</span> Amélioration de la synchronisation YParéo pour les nouveaux apprenants.</li>
+    </ul>
+</div>
+
+<div class="version">
+    <div class="version-title">Version 1.0 - Lancement initial</div>
+    <div class="date">2021-2023</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Création du portail Infocite (Laravel / Livewire).</li>
+        <li><span class="tag tag-feat">FEAT</span> Mise en place du catalogue d'articles et d'applications.</li>
+        <li><span class="tag tag-feat">FEAT</span> Intégration de l'authentification Google OAuth.</li>
+    </ul>
+</div>
+
+
+</div>
+
+</div>
+<div class="doc-wrapper doc-page" id="doc-etude-recherche">
+<div class="page-break"></div>
+
+<div class="container">
+    <h1 style="border-bottom-color: #e67e22;">Analyse &amp; Propositions : Amélioration du Moteur de Recherche d'Infocité</h1>
+
+    <div class="highlight">
+        Ce document présente une analyse technique et fonctionnelle visant à transformer le moteur de recherche actuel d'Infocité en un système de recherche approfondi et intelligent. Suite aux retours du COPIL et à la spécification de notre écosystème (<strong>Google for Education / Google Workspace</strong>), nous orientons l'architecture vers une intégration poussée des services Google.
+    </div>
+
+    <h2>1. Diagnostic de l'existant</h2>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Diagnostic</span> Fonctionnement actuel</h3>
+        <p>Actuellement, la recherche globale dans Infocité (gérée par <code>SearchResultManager</code>) utilise des requêtes SQL basiques basées sur l'opérateur <code>LIKE</code> :</p>
+        <p style="background: #eaf2f8; border: 1px solid #aed6f1; border-radius: 8px; padding: 15px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.9em;">
+            <code>'foundPosts' =&gt; Post::query()<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;-&gt;where('title', 'like', "%$this-&gt;searchedStr%")<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;-&gt;orWhere('content', 'like', "%$this-&gt;searchedStr%")</code>
+        </p>
+        <h4 style="color: #2c3e50;">Limites identifiées :</h4>
+        <ol>
+            <li><strong>Aucune tolérance aux fautes (typos)</strong> : Si l'utilisateur fait une faute de frappe ou cherche un singulier alors que le texte contient un pluriel, aucun résultat n'est trouvé.</li>
+            <li><strong>Absence de recherche sémantique</strong> : Impossible de trouver un article sur les "nouveaux arrivants" si l'utilisateur saisit le terme "onboarding" (à moins que le mot exact ne soit présent dans l'article).</li>
+            <li><strong>Contenu Google Drive invisible</strong> : De nombreux articles contiennent des liens (URLs) vers des documents stockés sur le Google Drive de l'établissement (Google Docs, Sheets, PDFs, etc.). Le contenu textuel de ces documents n'est actuellement pas indexé, ce qui limite considérablement la portée de la recherche.</li>
+        </ol>
+    </div>
+
+    <h2>2. Propositions d'amélioration du moteur interne</h2>
+
+    <div class="highlight" style="margin-bottom: 20px;">
+        Pour rendre la recherche la plus approfondie possible, nous proposons trois niveaux d'amélioration progressive du moteur de recherche interne.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Niveau 1</span> Recherche textuelle avancée (Full-Text Search)</h3>
+        <p><strong>Technologie proposée</strong> : Intégration de <strong>Laravel Scout</strong> couplé à <strong>Meilisearch</strong> (open-source, léger, extrêmement rapide et facile à déployer localement).</p>
+        <h4 style="color: #2c3e50;">Fonctionnalités apportées :</h4>
+        <ul>
+            <li><strong>Tolérance aux fautes d'orthographe (typo-tolerance)</strong> : Gère automatiquement les fautes légères.</li>
+            <li><strong>Racinisation (stemming) et lemmatisation</strong> : Associe les mots dérivés (ex: chercher "gestion" trouvera "gérer", "gestionnaire").</li>
+            <li><strong>Pondération des champs</strong> : Attribuer plus d'importance aux mots trouvés dans le titre qu'à ceux trouvés dans le corps du texte.</li>
+            <li><strong>Recherche par expressions exactes ou exclusion</strong> (ex: <code>"sécurité informatique" -externe</code>).</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Niveau 2</span> Recherche sémantique par vecteurs (Vector Search)</h3>
+        <p><strong>Technologie proposée</strong> : Vectorisation (embeddings) des articles via un modèle d'IA (ex: API Google Gemini Embeddings) stockés dans une base de données vectorielle (extension <code>pgvector</code> pour PostgreSQL, ou une base dédiée comme Qdrant/Chroma).</p>
+        <h4 style="color: #2c3e50;">Fonctionnalités apportées :</h4>
+        <ul>
+            <li><strong>Compréhension conceptuelle</strong> : Associe des concepts proches (ex: "télétravail" et "travail à distance" ou "onboarding" et "intégration").</li>
+            <li><strong>Recherche multilingue naturelle</strong>.</li>
+        </ul>
+    </div>
+
+    <h2>3. Analyse de la recherche dans le Google Drive de l'établissement</h2>
+
+    <div class="highlight" style="margin-bottom: 20px;">
+        Le COPIL souhaite étendre la recherche aux contenus des documents du Google Drive de l'établissement référencés via des URLs dans les articles. <strong>C'est tout à fait réalisable</strong>, et nous avons analysé deux grandes stratégies pour y parvenir.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Option A</span> L'indexation asynchrone (Pipeline classique d'indexation)</h3>
+        <p>Dans ce modèle, le système extrait et indexe le texte des documents Google Drive en tâche de fond.</p>
+        <h4 style="color: #2c3e50;">Fonctionnement technique :</h4>
+        <ol>
+            <li><strong>Extraction d'URLs</strong> : Lors de l'enregistrement d'un article, un <code>Observer</code> Eloquent ou un <code>Job</code> asynchrone scanne le contenu HTML pour identifier les liens vers <code>drive.google.com</code>.</li>
+            <li><strong>Extraction du contenu via API Google Drive</strong> : À l'aide de comptes de service sécurisés (API Google Drive), le serveur récupère les fichiers.
+                <ul>
+                    <li>Les documents de traitement de texte (Google Docs) et tableurs sont exportés au format texte brut via l'API Google Drive.</li>
+                    <li>Les fichiers PDF sont lus par des librairies d'extraction de texte (avec OCR si ce sont des PDFs scannés).</li>
+                </ul>
+            </li>
+            <li><strong>Indexation</strong> : Le contenu textuel extrait est stocké en base locale ou dans le moteur de recherche (Meilisearch), associé à l'article d'origine.</li>
+            <li><strong>Recherche</strong> : Lorsqu'un utilisateur effectue une recherche, le moteur cherche à la fois dans le corps de l'article et dans le texte des documents Google Drive associés.</li>
+        </ol>
+        <p><span class="improvement">Avantages :</span> Vitesse instantanée (&lt;100ms), pertinence unifiée.</p>
+        <p><strong>Inconvénients :</strong> Décalage de synchronisation si le fichier Drive est modifié (ré-indexation nécessaire via cron journalier ou webhook).</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Option B</span> L'Agent IA dédié à la recherche (Approche RAG dynamique)</h3>
+        <p>L'utilisation d'un <strong>Agent IA dédié</strong> est une approche extrêmement puissante qui apporte une dimension qualitative inédite.</p>
+        <h4 style="color: #2c3e50;">Fonctionnement technique :</h4>
+        <ol>
+            <li><strong>Interface conversationnelle</strong> : À côté de la barre de recherche classique, on propose un "Assistant IA d'établissement".</li>
+            <li><strong>Compréhension de la question</strong> : L'utilisateur pose une question en langage naturel.</li>
+            <li><strong>Recherche &amp; Récupération (RAG)</strong> : L'Agent IA fait une recherche sémantique, identifie les documents Drive liés, et les lit dynamiquement.</li>
+            <li><strong>Raisonnement &amp; Synthèse</strong> : L'Agent IA analyse l'ensemble et formule une réponse rédigée sur mesure avec citations précises des sources.</li>
+        </ol>
+        <p><span class="improvement">Avantages :</span> Intelligence supérieure (réponse synthétisée), fraîcheur des données (lecture en direct).</p>
+        <p><strong>Limites :</strong> Latence élevée (5 à 15 secondes), coûts de token potentiellement importants.</p>
+    </div>
+
+    <h2>4. Notre Recommandation : L'Architecture Hybride</h2>
+
+    <div class="highlight" style="margin-bottom: 20px;">
+        Pour concilier la <strong>vitesse</strong> de recherche et l'<strong>intelligence</strong> d'un Agent IA, nous recommandons une <strong>architecture en deux temps</strong>.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Volet 1</span> L'Indexation asynchrone pour la recherche instantanée (Meilisearch + API Google Drive)</h3>
+        <ul>
+            <li><strong>Pour qui</strong> : L'utilisateur qui tape rapidement un mot-clé dans la barre de recherche.</li>
+            <li><strong>Résultat</strong> : Des résultats instantanés (&lt;100ms) avec des articles, des applications, et les documents Google Drive liés qui contiennent le mot-clé, avec surbrillance des passages pertinents.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Volet 2</span> L'Assistant IA "Copilote" pour les recherches approfondies (Agent IA / RAG)</h3>
+        <ul>
+            <li><strong>Pour qui</strong> : L'utilisateur qui a une question complexe ou qui ne trouve pas facilement via la recherche classique.</li>
+            <li><strong>Résultat</strong> : Un chatbot d'établissement qui s'appuie sur la base d'indexation locale pour cibler les bons documents, puis utilise un LLM (comme Gemini) pour lire, analyser et rédiger une réponse synthétique parfaite.</li>
+        </ul>
+    </div>
+
+    <h2>5. Focus sur la Sécurité &amp; Habilitations (Le point critique)</h2>
+
+    <div style="background: #f8d7da; padding: 15px; border-radius: 5px; border-left: 5px solid #e74c3c; margin: 15px 0;">
+        <strong>⚠️ La sécurité est le défi majeur de cette fonctionnalité.</strong><br>
+        Si un article est public sur Infocité mais contient un lien vers un document Google Drive confidentiel, le moteur de recherche ne doit absolument pas divulguer le contenu de ce document aux utilisateurs non autorisés.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Sécurité</span> Validation de la stratégie OAuth existante</h3>
+        <p>L'analyse du code montre que l'<strong>authentification unique Google OAuth 2.0 est déjà intégrée à Infocité</strong>. Cela simplifie considérablement la mise en œuvre de la sécurité :</p>
+        
+        <ul>
+            <li><strong>Utilisateurs connectés via Google Workspace (Majorité)</strong> : Leur jeton d'accès (Access Token) actif en session sera utilisé pour interroger l'API Google Drive en temps réel. Si l'utilisateur n'a pas explicitement accès au document sur le Drive de l'établissement, celui-ci est écarté des résultats ou ignoré par l'Agent IA (sécurité maximale).</li>
+            <li><strong>Utilisateurs "classiques" (Compte/MDP - Connexion Ponctuelle/Externe)</strong> : N'ayant pas de jeton Google actif, le système adoptera une stratégie stricte de "Zero Trust" et masquera systématiquement tous les documents Google Drive de leurs résultats de recherche. Ils conserveront uniquement l'accès aux articles et applications internes d'Infocité selon la hiérarchie classique de droits.</li>
+        </ul>
+
+        <h4>Recommandation validée :</h4>
+        <p>Mise en place du <strong>filtrage dynamique par droits OAuth utilisateur</strong> pour les usagers Workspace, doublé d'une exclusion systématique pour les comptes classiques, assurant ainsi une étanchéité parfaite des informations confidentielles.</p>
+    </div>
+
+    <h2>6. Exploitation d'un double système de Tags (Taxonomie)</h2>
+
+    <div class="highlight" style="margin-bottom: 20px;">
+        Pour enrichir l'expérience de recherche et le ciblage des contenus, nous proposons d'exploiter un double mécanisme de classification par tags, combinant les besoins éditoriaux et l'organisation personnelle des usagers.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Tags Éditoriaux</span> Nuage de mots-clés de l'article (<code>posts.tags</code>)</h3>
+        <p><strong>Concept</strong> : Permettre à l'éditeur, lors de la création ou modification d'un article, d'associer un ensemble de mots-clés structurés (libellés courts).</p>
+        <ul>
+            <li><strong>Interfaçage côté usage</strong> : Intégration d'un composant moderne de saisie de tags (ex: <code>choices.js</code> ou composant Livewire réactif) sous l'éditeur d'article. L'auteur saisit un mot, appuie sur "Entrée" ou "Virgule" pour l'ajouter visuellement au nuage.</li>
+            <li><strong>Exploitation par le moteur de recherche</strong> :
+                <ul>
+                    <li>Ces tags sont enregistrés dans un champ <code>tags</code> de la table <code>posts</code>.</li>
+                    <li>Dans l'index de recherche (Meilisearch), le champ <code>tags</code> bénéficie d'une <strong>pondération prioritaire (boost)</strong>. Un mot-clé correspondant exactement à un tag fait immédiatement remonter l'article en tête de liste, avant même la recherche dans le titre ou le contenu.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Tags Personnels</span> Classification utilisateur (<code>post_user.tags</code>)</h3>
+        <p><strong>Concept</strong> : Exploiter le champ <code>tags</code> existant (mais actuellement inactif) de la table pivot <code>post_user</code> pour permettre au lecteur de classer les articles de son choix.</p>
+        <ul>
+            <li><strong>Interfaçage côté usage</strong> :
+                <ul>
+                    <li>Sur la fiche d'un article, à côté des boutons de favoris ou de notation, un bouton "Ajouter un libellé" ouvre une petite interface épurée permettant de saisir ou choisir un tag personnel.</li>
+                    <li>Un espace "Mon classeur" regroupe les articles par tags personnels.</li>
+                </ul>
+            </li>
+            <li><strong>Exploitation par le moteur de recherche</strong> :
+                <ul>
+                    <li>L'utilisateur peut filtrer ses requêtes de recherche spécifiquement au sein de ses propres tags (ex: recherche de mots-clés restreinte aux articles taggués).</li>
+                    <li>L'Agent IA s'appuie sur ces tags pour mieux cerner le contexte des requêtes de synthèse de l'utilisateur.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h2>7. Prochaines étapes suggérées pour la phase de spécification</h2>
+
+    <div class="audit-item" style="background: #eafaf1; border-color: #27ae60;">
+        <p>Suite aux validations techniques sur la sécurité et à l'introduction du double système de tags, voici les points restants à arbitrer :</p>
+        <ol>
+            <li><strong>Validation de l'interfaçage des tags</strong> : Valider l'ergonomie de l'édition du nuage de tags côté auteur, et le positionnement du bouton d'ajout de libellé côté lecteur.</li>
+            <li><strong>Choix de l'infrastructure IA</strong> : Souhaitez-vous utiliser des APIs cloud managées (ex: Google Cloud Vertex AI / Gemini, garantissant une confidentialité stricte des données d'établissement) ou une solution hébergée localement ?</li>
+        </ol>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="doc-wrapper doc-page" id="doc-reflexion-copil">
+<div class="page-break"></div>
+
+<div class="container">
+    <h1 style="border-bottom-color: #27ae60;">Note de Cadrage COPIL : Quelle stratégie pour notre moteur de recherche ?</h1>
+    <p style="text-align: center; color: #7f8c8d; font-size: 1rem; font-style: italic;">Document d'aide à la décision — Pour un moteur de recherche utile, sécurisé et maîtrisé financièrement</p>
+
+    <div style="background: #e8f8f5; border-left: 5px solid #2cc09c; padding: 20px; border-radius: 4px; margin: 20px 0;">
+        <strong>À l'attention des membres du COPIL :</strong> Ce document vulgarise les aspects techniques de l'évolution du moteur de recherche d'Infocité. Il détaille les scénarios possibles, l'impact sur vos services (Communication, RH, Comptabilité), la sécurité de vos données, et le budget prévisionnel (notamment sur l'usage de l'Intelligence Artificielle). Son but est de vous donner toutes les clés pour décider de la trajectoire du projet.
+    </div>
+
+    <h2>1. Quels bénéfices concrets pour vos services au quotidien ?</h2>
+    <p>Aujourd'hui, chercher une information sur Infocité oblige à connaître le mot exact employé dans l'article. De plus, tous les documents stockés sur le Google Drive de l'établissement et liés dans les articles sont invisibles pour le moteur de recherche. Voici ce que l'évolution va changer pour vous :</p>
+
+    <div class="audit-item">
+        <h3 style="color: #e67e22;">Service RH : Simplifier l'accueil et la vie des collaborateurs</h3>
+        <ul>
+            <li><strong>Aujourd'hui :</strong> Un nouvel arrivant cherche "intégration". Il ne trouve rien car l'article s'intitule "Livret d'onboarding". Les consignes de sécurité ou chartes liées en PDF sur le Drive sont introuvables via le site.</li>
+            <li><strong>Demain :</strong> Le moteur comprend les synonymes. En tapant "intégration", l'agent trouve le livret d'onboarding. Mieux, s'il cherche "mutuelle", le moteur ressort l'article Infocité mais va aussi chercher <strong>à l'intérieur du document PDF de la mutuelle</strong> lié sur le Google Drive pour lui indiquer les garanties.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3 style="color: #2980b9;">Service Communication : Valoriser le patrimoine d'information</h3>
+        <ul>
+            <li><strong>Aujourd'hui :</strong> Les articles rédigés avec soin sont rapidement oubliés car dès qu'ils quittent la page d'accueil, ils deviennent difficiles à retrouver.</li>
+            <li><strong>Demain :</strong> Grâce au double système de <strong>Tags (mots-clés)</strong>, vous pourrez associer des étiquettes thématiques lors de la rédaction. Le moteur les utilisera en priorité pour faire ressortir vos campagnes prioritaires (ex: tagguer un article "RSE" ou "Sécurité").</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3 style="color: #8e44ad;">Service Comptabilité &amp; Direction : Gestion documentaire personnelle</h3>
+        <ul>
+            <li><strong>Aujourd'hui :</strong> Vous consultez des guides de procédures financières ou des notes de cadrage régulières, mais vous ne pouvez pas les classer selon vos propres habitudes de travail.</li>
+            <li><strong>Demain :</strong> Vous pourrez ajouter vos propres <strong>Tags Personnels</strong> (ex: <i>"À valider"</i>, <i>"Procédures 2026"</i>) sur n'importe quel article. Vous pourrez alors faire des recherches rapides uniquement dans vos sélections d'articles ou demander à l'IA de vous résumer vos articles taggués.</li>
+        </ul>
+    </div>
+
+    <h2>2. Les 3 scénarios sur la table</h2>
+    <p>Pour répondre à la demande du COPIL, nous avons formalisé trois trajectoires de réalisation, de la plus simple à la plus intelligente.</p>
+
+    <div class="audit-item">
+        <h3>Scénario 1 : La Recherche Intelligente Interne (Sans Google Drive, Sans IA)</h3>
+        <p>On modernise uniquement le moteur interne d'Infocité. Le système devient tolérant aux fautes d'orthographe, gère les synonymes et propose des suggestions rapides.</p>
+        <p><strong>Bénéfice :</strong> Recherche interne parfaite et instantanée.</p>
+        <p><strong>Limite :</strong> Le Google Drive de l'établissement reste invisible.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3>Scénario 2 : L'Indexation Connectée (Avec Google Drive, Sans IA)</h3>
+        <p>En tâche de fond, Infocité va lire les documents Google Drive partagés dans les articles (Docs, PDF) et mémorise leur texte. La barre de recherche classique cherche dans les articles ET dans le texte de ces documents.</p>
+        <p><strong>Bénéfice :</strong> Recherche extrêmement approfondie sur tout le Drive lié, résultats instantanés.</p>
+        <p><strong>Limite :</strong> L'utilisateur obtient des listes de liens. C'est à lui d'ouvrir le document et de chercher la bonne ligne.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3>Scénario 3 : L'Assistant IA "Copilote" (Avec Google Drive + Intelligence Artificielle)</h3>
+        <p>En plus de la barre de recherche classique du Scénario 2, on ajoute un <strong>Agent IA conversationnel</strong> (un chatbot d'établissement). L'utilisateur pose sa question en langage naturel (ex: <i>"Quelles sont les démarches pour déclarer un accident de travail d'après nos guides RH ?"</i>). L'IA cherche les bons documents sur le Drive, les lit en temps réel, rédige une réponse de synthèse sur mesure et cite ses sources.</p>
+        <p><strong>Bénéfice :</strong> Un gain de temps exceptionnel pour les agents. Plus besoin d'ouvrir 5 PDF de 30 pages pour trouver une réponse, l'IA fait la synthèse.</p>
+        <p><strong>Limites :</strong> Temps de réponse de l'IA (5 à 10 secondes) et coûts de consommation liés à l'IA.</p>
+    </div>
+
+    <h2>3. Budget &amp; Coûts : Combien coûte réellement l'IA ?</h2>
+    <p>L'utilisation de l'Intelligence Artificielle professionnelle (Google Gemini API via Vertex AI) n'est pas gratuite, mais elle est très abordable si elle est maîtrisée. Contrairement à un abonnement fixe (comme ChatGPT Plus à 20€/mois par utilisateur), <strong>les APIs se payent à l'usage réel (au centime près)</strong>.</p>
+
+    <div style="background: #fef5e7; border-left: 5px solid #f39c12; padding: 20px; border-radius: 4px; margin: 20px 0;">
+        <h4>Estimation des coûts de consommation de l'IA (Gemini 1.5 Flash) :</h4>
+        <p>Gemini 1.5 Flash est le modèle d'IA de Google le plus adapté : ultra-rapide et extrêmement économique.</p>
+        <ul>
+            <li><strong>Coût moyen d'une question posée à l'IA :</strong> Environ <strong>0,0015 € à 0,003 €</strong> (selon la longueur des documents Drive analysés).</li>
+            <li><strong>Pour 1 000 questions posées par mois</strong> (50 questions par jour ouvré sur l'établissement) : Le coût sera d'environ <strong>1,50 € à 3,00 € par mois</strong>.</li>
+            <li><strong>Même dans un scénario de forte utilisation</strong> (5 000 questions/mois) : Le coût restera inférieur à <strong>15,00 € par mois</strong>.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3>Comparatif budgétaire des Scénarios :</h3>
+        <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+            <thead>
+                <tr style="background-color: #f8fafc;">
+                    <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Scénario</th>
+                    <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Développement initial</th>
+                    <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Fonctionnement mensuel</th>
+                    <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Complexité</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>1. Recherche Interne</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">Faible (1-2 sem.)</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>0 €</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">Très simple</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>2. Indexation Drive</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">Moyen (3-4 sem.)</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>0 €</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">Modérée</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>3. Assistant IA / RAG</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">Élevé (5-7 sem.)</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>~2 € à 15 € / mois</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">Élevée</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>4. Sécurité : Zéro risque de fuite d'information sensible</h2>
+    <p>Une question légitime de la part des services RH ou Comptabilité est : <i>"Si un document sensible (ex: grille de salaires ou budget confidentiel) est stocké sur le Drive, l'IA ou le moteur vont-ils le révéler aux élèves ou aux autres agents ?"</i></p>
+
+    <div style="background: #fdf2f2; border-left: 5px solid #ec5858; padding: 20px; border-radius: 4px; margin: 20px 0;">
+        <strong>La réponse est un NON catégorique grâce à notre architecture :</strong><br>
+        Infocité utilise déjà la connexion Google unique (OAuth) des usagers de la Cité des Formations. Notre moteur de recherche va hériter en temps réel de cette sécurité.
+        <ul>
+            <li>Si un agent fait une recherche, Infocité interroge le Drive <strong>avec le compte Google de cet agent</strong>.</li>
+            <li>Si l'agent n'a pas le droit d'ouvrir le fichier sur son Google Drive habituel, le moteur de recherche l'ignorera complètement et l'IA refusera de le lire pour lui répondre.</li>
+            <li><strong>Pour les comptes externes ou temporaires</strong> (se connectant par mot de passe classique sans compte Google d'établissement), l'accès aux fichiers du Drive est tout simplement <strong>bloqué à 100%</strong> par défaut.</li>
+        </ul>
+    </div>
+
+    <h2>5. Tableau comparatif pour décision</h2>
+    
+    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+        <thead>
+            <tr style="background-color: #f8fafc;">
+                <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Critère</th>
+                <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Scénario 1</th>
+                <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Scénario 2</th>
+                <th style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Scénario 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Bénéfice</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Recherche interne tolérante aux typos</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Recherche dans PDF/Docs liés</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">L'IA répond directement et synthétise</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Coût usage</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Gratuit</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Gratuit</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Très faible (<strong>&lt; 15 €/mois</strong>)</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Sécurité</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Absolue (interne)</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Garantie par Google OAuth</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Garantie par Google OAuth</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Recommandation</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Étape minimale</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Le meilleur rapport qualité/prix</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Objectif cible productivité</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #e8f8f5; border-left: 5px solid #2cc09c; padding: 20px; border-radius: 4px; margin-top: 30px;">
+        <h4>Notre recommandation de trajectoire : La méthode progressive</h4>
+        <p>Plutôt que de choisir un scénario figé, nous préconisons une <strong>approche progressive en 2 temps</strong> :</p>
+        <ol>
+            <li><strong>Temps 1 (Scénario 2 + Tags) :</strong> Mettre en place la recherche intelligente interne, l'indexation du Google Drive via OAuth sécurisé, et le double système de Tags (mots-clés éditoriaux et personnels). Cette étape apporte 90% de la valeur documentaire pour un coût de fonctionnement de 0 €.</li>
+            <li><strong>Temps 2 (Option IA - Scénario 3) :</strong> Lancer un groupe de test (RH / Direction) sur l'Assistant IA pour valider la pertinence des réponses et mesurer précisément la consommation réelle, avant de l'ouvrir globalement.</li>
+        </ol>
+    </div>
+
+</div>
+</div>
+
+<div class="no-print" style="text-align:center; padding: 20px; background:#f0f4f8; margin-top:50px; border-top:1px solid #ddd;">
+    <button onclick="window.print()" style="padding:15px 30px; font-size:1.2rem; background:#2980b9; color:white; border:none; border-radius: 5px; cursor: pointer;">🖨️ Imprimer / Sauvegarder en PDF</button>
+</div>
+
+</body>
+</html>

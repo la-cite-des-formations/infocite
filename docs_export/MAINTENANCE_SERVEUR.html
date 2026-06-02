@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Maintenance Serveur - Infocite</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; line-height: 1.6; color: #1a1a1a; max-width: 900px; margin: auto; padding: 20px; background-color: #fdfdfd; }
+        .terminal { background-color: #2b2b2b; color: #a9b7c6; padding: 20px; border-radius: 5px; font-family: Consolas, monospace; margin: 20px 0; }
+        h1 { color: #c0392b; text-align: center; border-bottom: 2px solid #c0392b; padding-bottom: 10px; }
+        h2 { color: #2980b9; border-left: 5px solid #2980b9; padding-left: 10px; margin-top: 40px; }
+        .cmd { color: #f1c40f; }
+        .comment { color: #7f8c8d; }
+        .important { background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 5px; color: #856404; }
+    </style>
+</head>
+<body>
+
+<h1>Guide de Maintenance Serveur (SysAdmin)</h1>
+
+<p>Ce guide détaille les opérations techniques nécessaires pour maintenir, sauvegarder et mettre à jour le portail Infocite sur le serveur de production.</p>
+
+<hr>
+
+<h2>1. Environnement et Prérequis</h2>
+<ul>
+    <li><strong>Serveur Web</strong> : Apache ou Nginx.</li>
+    <li><strong>PHP</strong> : Version 8.0 minimum (avec extensions pdo, mbstring, openssl, xml, gd).</li>
+    <li><strong>Base de données</strong> : MySQL 5.7+ ou MariaDB.</li>
+    <li><strong>Node.js & NPM</strong> : Pour la compilation des assets (front-end).</li>
+</ul>
+
+<hr>
+
+<h2>2. Commandes de Maintenance Courantes</h2>
+<div class="terminal">
+    <span class="comment"># Vider les caches de l'application (en cas de bug d'affichage ou de route)</span><br>
+    <span class="cmd">php artisan optimize:clear</span><br><br>
+    
+    <span class="comment"># Nettoyer les jetons de notifications obsolètes (Firebase)</span><br>
+    <span class="cmd">php artisan fcm:purge</span><br><br>
+    
+    <span class="comment"># Recompiler les fichiers CSS/JS pour la production</span><br>
+    <span class="cmd">npm run prod</span>
+</div>
+
+<hr>
+
+<h2>3. Gestion des Sauvegardes (Backups)</h2>
+<div class="important">
+    <strong>Crucial</strong> : Une sauvegarde doit inclure à la fois la Base de Données et les Fichiers média.
+</div>
+
+<h3>3.1 Base de Données</h3>
+<p>Utilisez un dump SQL régulier (via Cron ou Plesk) :</p>
+<div class="terminal">
+    <span class="cmd">mysqldump -u [utilisateur] -p[mot_de_passe] infocite > backup_infocite.sql</span>
+</div>
+
+<h3>3.2 Fichiers Média</h3>
+<p>Tous les fichiers téléchargés par les utilisateurs (images, pièces jointes) se trouvent dans :<br>
+<code>/storage/app/public/</code></p>
+
+<hr>
+
+<h2>4. Sécurité et Mises à jour</h2>
+<ul>
+    <li><strong>Fichier .env</strong> : Ne JAMAIS rendre ce fichier public. Il contient toutes les clés secrètes.</li>
+    <li><strong>Notifications (FCM)</strong> : La variable <code>FCM_NOTIFICATIONS_ENABLED</code> doit être à <code>true</code> en production pour que les alertes de bureau arrivent aux utilisateurs.</li>
+    <li><strong>Permissions dossiers</strong> : Les dossiers <code>storage</code> et <code>bootstrap/cache</code> doivent être accessibles en écriture par le serveur web (www-data).</li>
+    <li><strong>Journal d'erreurs</strong> : Consultable dans <code>storage/logs/laravel.log</code>.</li>
+</ul>
+
+<hr>
+
+<h2>5. Tâches Planifiées (Task Scheduling)</h2>
+<p>Pour que l'archivage automatique des articles et les purges de notifications fonctionnent, une tâche Cron doit être configurée sur le serveur :</p>
+<div class="terminal">
+    <span class="cmd">* * * * * cd /chemin/vers/infocite && php artisan schedule:run >> /dev/null 2>&1</span>
+</div>
+
+<hr>
+
+<h2>6. Procédure de Mise à Jour Majeure (Mode Opératoire)</h2>
+<p>Lors d'une mise à jour majeure de la plateforme Infocité, le mode opératoire suivant doit être rigoureusement respecté sur l'environnement ciblé, qu'il s'agisse de la <strong>pré-production (echospheres)</strong> ou de la <strong>production (infocite)</strong> :</p>
+
+<ol>
+    <li>
+        <strong>Connexion au serveur Plesk</strong><br>
+        Se connecter à l'interface d'administration Plesk et sélectionner le domaine concerné : le domaine de pré-production (<code>echospheres</code>) ou de production (<code>infocite</code>).
+    </li>
+    <li>
+        <strong>Activation du mode maintenance</strong><br>
+        Mettre la plateforme hors-ligne le temps de la mise à jour via l'outil <strong>Laravel Toolkit</strong> &rarr; onglet <strong>'Tableau de bord'</strong> &rarr; activer le <strong>Mode maintenance</strong>.
+    </li>
+    <li>
+        <strong>Mise à jour du dépôt Git</strong><br>
+        Sur la plateforme <a href="https://github.com" target="_blank" style="color: #2980b9;">GitHub</a>, s'assurer que la visibilité du dépôt est bien configurée en <strong>publique</strong> (onglet 'Settings' &rarr; section 'Danger Zone' &rarr; bouton 'Change visibility'). Ensuite, sur Plesk Git, cliquer sur les boutons <strong>'Exécuter pull'</strong> puis <strong>'Déployer maintenant'</strong>. Une fois la synchronisation Plesk effectuée, penser à rebasculer la visibilité du dépôt en <strong>privé</strong> sur la plateforme <a href="https://github.com" target="_blank" style="color: #2980b9;">GitHub</a>.
+    </li>
+    <li>
+        <strong>Désactivation momentanée du mode production (Optionnel - Si migration nécessaire et domaine en production)</strong><br>
+        <div class="important" style="margin: 10px 0; padding: 10px;">
+            <strong>Note importante (Étapes 4 à 6 liées)</strong> : Les étapes 4, 5 et 6 sont étroitement liées et ne sont requises <strong>que si la mise à jour nécessite des migrations en base de données</strong>. Si aucune migration n'est requise, passez directement à l'étape 7.
+            <br><br>
+            <strong>Conditions d'application</strong> : Cette étape 4 s'applique systématiquement au domaine de production <code>infocite</code>. Sur le domaine de pré-production <code>echospheres</code>, la variable d'environnement <code>APP_ENV</code> est normalement déjà configurée sur <code>'local'</code>. Toutefois, si le domaine de pré-production est configuré avec <code>APP_ENV=production</code>, cette étape y devient également obligatoire car Laravel bloquera par sécurité l'exécution des migrations.
+        </div>
+        Accéder au <strong>Gestionnaire de fichiers</strong> du domaine, remonter d'un niveau pour afficher le répertoire principal, puis ouvrir le fichier <code>.env</code> en édition. Modifier temporairement la variable d'environnement <code>APP_ENV</code> en lui affectant la valeur <code>'local'</code>, puis enregistrer la modification.
+    </li>
+    <li>
+        <strong>Exécution des migrations de Base de Données (Optionnel)</strong><br>
+        Si des modifications de structure de données sont requises pour cette version, effectuer les migrations à l'aide de l'outil <strong>Laravel Toolkit</strong> &rarr; onglet <strong>'Artisan'</strong> &rarr; renseigner et exécuter la commande <code>migrate</code>.
+    </li>
+    <li>
+        <strong>Réactivation du mode production (Uniquement si l'étape 4 a été réalisée)</strong><br>
+        <div class="important" style="margin: 10px 0; padding: 10px;">
+            <strong>Attention</strong> : Cette étape s'applique exclusivement si vous avez modifié temporairement la variable <code>APP_ENV</code> à l'étape 4 (que ce soit sur la production ou sur la pré-production).
+        </div>
+        Retourner dans le gestionnaire de fichiers, ouvrir le fichier <code>.env</code> principal (comme décrit à l'étape 4) et réaffecter la valeur <code>'production'</code> à la variable d'environnement <code>APP_ENV</code>. Enregistrer la modification afin de remettre la plateforme dans son environnement sécurisé.
+    </li>
+    <li>
+        <strong>Mises à jour PHP Composer</strong><br>
+        Accéder à l'outil <strong>PHP Composer</strong>. <em>Pour le site de production uniquement :</em> veiller à modifier le dossier d'exécution pour qu'il pointe directement à la racine du domaine. Ensuite, dans la section <strong>'Dépendances des packs'</strong>, cliquer sur le bouton <strong>'Mise à jour'</strong>.
+    </li>
+    <li>
+        <strong>Remise en ligne de la plateforme</strong><br>
+        Retourner dans le <strong>Laravel Toolkit</strong> &rarr; onglet <strong>'Tableau de bord'</strong> &rarr; désactiver le <strong>Mode maintenance</strong> pour remettre la plateforme en mode normal.
+    </li>
+    <li>
+        <strong>Vérification et Diagnostic</strong><br>
+        Vérifier méticuleusement que toutes les fonctionnalités s'exécutent normalement. En cas de problème, reprendre pas à pas les différentes étapes précédentes. Si des difficultés majeures persistent :
+        <ul>
+            <li>Activer temporairement le mode debug au niveau du fichier <code>.env</code> en affectant la valeur <code>true</code> à la variable <code>APP_DEBUG</code> afin d'analyser les messages d'erreur détaillés.</li>
+            <li>Consulter les logs d'erreurs en accédant au dossier <code>storage/logs/</code> du domaine via le gestionnaire de fichiers.</li>
+        </ul>
+    </li>
+</ol>
+
+</body>
+</html>
