@@ -14,7 +14,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "*",
         "kreait/firebase-php": "^7.18",
-        "laravel-lang/lang": "~6.1",
+        "laravel-lang/lang": "^12.0",
         "laravel/framework": "^9.0",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.0",
