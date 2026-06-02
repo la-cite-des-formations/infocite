@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Documentaire - Infocite</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --secondary: #8e44ad;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --bg: #f8f9fa;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .category {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+        .cat-gov { border-color: var(--secondary); }
+        .cat-guides { border-color: var(--primary); }
+        .cat-tech { border-color: var(--warning); }
+        .cat-maint { border-color: var(--success); }
+        .cat-master { 
+            border-color: var(--dark); 
+            grid-column: 1 / -1; /* Prend toute la largeur */
+            background: linear-gradient(135deg, white 0%, #f4f6f9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .master-content {
+            flex: 1;
+        }
+        .master-btn {
+            background-color: var(--dark);
+            color: white !important;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-left: 30px;
+        }
+        .master-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            background-color: #1a252f;
+        }
+        .master-btn span {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .category h2 {
+            margin-top: 0;
+            color: var(--dark);
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .category h2 span {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        .doc-link {
+            display: block;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: var(--bg);
+            border-radius: 6px;
+            text-decoration: none;
+            color: #444;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .doc-link:hover {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        .doc-link strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 1.1rem;
+        }
+        .doc-link p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📚 Portail Documentaire Infocite</h1>
+    <p>Index centralisé de la documentation technique et fonctionnelle du projet</p>
+</div>
+
+<div class="container">
+    <div class="grid">
+        
+        <!-- Document Maître PDF -->
+        <div class="category cat-master">
+            <div class="master-content">
+                <h2 style="border-bottom: none; margin-bottom: 5px;"><span>📕</span> Le Livre Blanc (Version Complète)</h2>
+                <p style="margin: 0; color: #555; font-size: 1.1rem;">L'intégralité du corpus documentaire fusionné dans un seul document optimisé pour l'impression.</p>
+            </div>
+            <a href="Documentation Complète Infocite - LIVRE BLANC.pdf" class="master-btn" target="_blank">
+                <span>⬇️</span> Télécharger le PDF
+            </a>
+        </div>
+        
+        <!-- Stratégie & Gouvernance -->
+        <div class="category cat-gov">
+            <h2><span>🎯</span> Stratégie & Bilan</h2>
+            <a href="SYNTHESE_RESPONSABLE.html" class="doc-link" target="_blank">
+                <strong>Synthèse pour la Direction</strong>
+                <p>Le résumé à haute valeur ajoutée du patrimoine documentaire.</p>
+            </a>
+            <a href="RAPPORT_EVOLUTIONS.html" class="doc-link" target="_blank">
+                <strong>Rapport d'Évolutions</strong>
+                <p>Audit technique, axes d'optimisation et roadmap future (SemVer).</p>
+            </a>
+            <a href="SUIVI_EVOLUTIONS.html" class="doc-link" target="_blank">
+                <strong>Suivi des Évolutions</strong>
+                <p>Journal calendaire des actions déployées et chantiers techniques résolus.</p>
+            </a>
+            <a href="ETUDE_MOTEUR_RECHERCHE_DRIVE.html" class="doc-link" target="_blank">
+                <strong>Étude : Moteur de Recherche &amp; Google Drive</strong>
+                <p>Analyse technique et propositions pour l'amélioration du moteur de recherche et l'intégration des contenus Google Drive.</p>
+            </a>
+            <a href="REFLEXION_COPIL_RECHERCHE.html" class="doc-link" target="_blank" style="border-left-color: #27ae60; background: #ebf5fb;">
+                <strong>Note Décisionnelle : Moteur de Recherche &amp; IA</strong>
+                <p><span style="color: #27ae60; font-weight: bold;">[Aide Décisionnelle]</span> Synthèse vulgarisée pour le COPIL (RH, Compta, Com) avec budgets IA détaillés.</p>
+            </a>
+        </div>
+
+        <!-- Guides Pratiques -->
+        <div class="category cat-guides">
+            <h2><span>📖</span> Guides Pratiques</h2>
+            <a href="GUIDE_UTILISATEUR.html" class="doc-link" target="_blank">
+                <strong>Guide Utilisateur</strong>
+                <p>Mode d'emploi détaillé pour les agents (Notifications, Favoris...).</p>
+            </a>
+            <a href="GUIDE_ADMINISTRATION.html" class="doc-link" target="_blank">
+                <strong>Guide d'Administration</strong>
+                <p>Pilotage du tableau de bord, droits et organigramme.</p>
+            </a>
+        </div>
+
+        <!-- Cœur Technique -->
+        <div class="category cat-tech">
+            <h2><span>🧱</span> Cœur Technique</h2>
+            <a href="SPECIFICATIONS_TECHNIQUES.html" class="doc-link" target="_blank">
+                <strong>Spécifications Techniques</strong>
+                <p>Architecture MVC, rôles et mécanismes clés de l'application.</p>
+            </a>
+            <a href="ANALYSE_DROITS_ARTICLES.html" class="doc-link" target="_blank">
+                <strong>Analyse des Droits (Articles)</strong>
+                <p>Logique binaire des permissions, hiérarchie RBAC et trait HasPermissions.</p>
+            </a>
+            <a href="DICTIONNAIRE_DONNEES.html" class="doc-link" target="_blank">
+                <strong>Dictionnaire de Données</strong>
+                <p>Structure de la base de données (tables, vues, relations).</p>
+            </a>
+            <a href="DEPENDANCES_EXTERNES.html" class="doc-link" target="_blank">
+                <strong>Dépendances Externes</strong>
+                <p>Liaisons avec Google Cloud, Firebase et le SI YParéo.</p>
+            </a>
+        </div>
+
+        <!-- Maintenance & Qualité -->
+        <div class="category cat-maint">
+            <h2><span>⚙️</span> Maintenance & Qualité</h2>
+            <a href="MAINTENANCE_SERVEUR.html" class="doc-link" target="_blank">
+                <strong>Guide de Déploiement</strong>
+                <p>Procédures SysAdmin, commandes Artisan et sauvegardes.</p>
+            </a>
+            <a href="CAHIER_RECETTE.html" class="doc-link" target="_blank">
+                <strong>Cahier de Recette</strong>
+                <p>Scénarios de tests à dérouler avant chaque mise en production.</p>
+            </a>
+            <a href="CHANGELOG.html" class="doc-link" target="_blank">
+                <strong>Journal des Modifications</strong>
+                <p>Historique des versions et évolutions du code (Changelog).</p>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<div class="footer">
+    Documentation générée en Mars 2026 - Projet Infocite
+</div>
+
+</body>
+</html>

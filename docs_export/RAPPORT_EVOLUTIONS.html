@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport d'Évolutions Techniques - Infocite</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 40px; background-color: #f8f9fa; }
+        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; }
+        h2 { color: #2980b9; margin-top: 40px; border-left: 5px solid #2980b9; padding-left: 15px; }
+        h3 { color: #16a085; margin-top: 25px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-right: 5px; }
+        .badge-tech { background-color: #ebf5fb; color: #2980b9; border: 1px solid #2980b9; }
+        .badge-func { background-color: #e8f8f5; color: #16a085; border: 1px solid #16a085; }
+        .audit-item { background: #fdfefe; border: 1px solid #e1e8ed; padding: 20px; border-radius: 8px; margin: 15px 0; }
+        .improvement { color: #27ae60; font-weight: bold; }
+        .roadmap { border-left: 2px dashed #bdc3c7; color: #7f8c8d; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 5px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Rapport d'Analyse : Évolutions et Optimisations</h1>
+
+    <div class="highlight">
+        Note : Ce document est une base de réflexion stratégique. Il souligne l'incroyable travail accompli en autodidacte sur Laravel et propose des pistes pour passer au "niveau supérieur" de maîtrise technologique.
+    </div>
+
+    <h2>1. Audit de l'Architecture Actuelle</h2>
+    
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Refactorisation des Modèles (Table de 1000 lignes)</h3>
+        <p>Le modèle <code>User.php</code> centralise actuellement toute la logique métier, ce qui le rend difficile à maintenir.</p>
+        <p><span class="improvement">Piste d'amélioration :</span> Extraire la logique de droits dans un <code>Trait</code> (ex: <code>HasPermissions</code>) ou utiliser des <strong>Service Classes</strong> pour les calculs complexes. Cela allègera le modèle pour ne garder que les relations Eloquent.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Performance</span> Optimisation des Requêtes SQL (Eloquent)</h3>
+        <p>De nombreux filtres (<code>Post::filter</code>) récupèrent d'abord toutes les données en PHP avant de les filtrer. Sur un gros volume (<code>interactions</code>), cela pourrait ralentir le serveur.</p>
+        <p><span class="improvement">Piste d'amélioration :</span> Utiliser les <strong>Local Scopes</strong> de Laravel pour que le filtrage se fasse directement dans la base de données (SQL <code>WHERE</code>) plutôt que dans la mémoire de PHP.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Découplage de la God Class "AP"</h3>
+        <p>La façade <code>AP</code> est le "cerceau" de l'application. Bien que pratique, elle crée une dépendance très forte.</p>
+        <p><span class="improvement">Piste d'amélioration stratégique (La Règle du Boy Scout) :</span> Sachant que la direction valorise le travail bien fait plutôt que la précipitation, il n'est pas nécessaire de tout bloquer pour faire une "grande refonte". <strong>L'approche suggérée :</strong> améliorer l'architecture au fil de l'eau. Par exemple, lors du développement du bouton "Info", profiter de ce moment ciblé sur une Rubrique pour optimiser en profondeur les requêtes SQL et logiques associées.</p>
+    </div>
+
+    <h2>2. Évolutions Fonctionnelles Suggestives</h2>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Fonctionnel</span> Centralisation des Notifications (Cloche Globale)</h3>
+        <p>Le système actuel possède déjà une cloche de notification interne, mais celle-ci est spécifique à certains composants (PostManager, Favoris). L'utilisateur doit se rendre sur une page précise pour voir s'il a des alertes.</p>
+        <p><span class="improvement">Piste d'amélioration :</span> Déplacer cette cloche dans la <strong>barre de navigation globale</strong> (en-tête). Ainsi, quel que soit l'endroit où se trouve l'usager, il est alerté en temps réel de nouveaux contenus, renforçant l'efficacité du système actuel.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Fonctionnel</span> Tableaux de Bord Personnalisés</h3>
+        <p>Permettre aux administrateurs de choisir quels widgets statistiques afficher en premier sur leur dashboard (Data Visualization).</p>
+    </div>
+
+    <h2>3. Stratégie de Versioning et Workflow</h2>
+    
+    <h3>Gestion des Versions (SemVer)</h3>
+    <p>Adopter le <strong>Semantic Versioning</strong> (X.Y.Z) :</p>
+    <ul>
+        <li><strong>X (Majeur)</strong> : Changement cassant ou refonte graphique totale.</li>
+        <li><strong>Y (Mineur)</strong> : Ajout d'une fonctionnalité (ex: nouveau menu Statistiques).</li>
+        <li><strong>Z (Patch)</strong> : Correction de bug ou petite retouche de texte.</li>
+    </ul>
+
+    <h3>Workflow Git (GitHub Flow)</h3>
+    <p>Pour la maintenance quotidienne :</p>
+    <ol>
+        <li><strong>Main branch</strong> : Toujours stable, correspond à la production.</li>
+        <li><strong>Feature branches</strong> : Chaque modification se fait sur une branche séparée avant d'être fusionnée après test.</li>
+    </ol>
+
+    <h2>4. Cahier des Charges - Nouveaux Modules</h2>
+    <div class="highlight" style="margin-bottom: 20px;">
+        Spécifications fonctionnelles et techniques pour les prochaines évolutions prioritaires du projet Infocité, validées pour développement.
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Modèles d'Articles</h3>
+        <p>Création d'un système de modèles (templates) permettant de pré-remplir la structure d'un article pour gagner du temps lors de la rédaction.</p>
+        <ul>
+            <li><strong>Droits d'accès :</strong>
+                <ul>
+                    <li><em>Lecteur</em> : Peut utiliser les modèles.</li>
+                    <li><em>Éditeur</em> : Peut créer et modifier des modèles.</li>
+                    <li><em>Administrateur</em> : Gère l'ensemble (création, modification, suppression).</li>
+                </ul>
+            </li>
+            <li><strong>Interface d'Utilisation :</strong> Ajout d'une liste déroulante "Modèles" dans l'éditeur (filtrée par la rubrique en cours + modèles génériques via Livewire). La sélection injecte le code du modèle <strong>en-dessous</strong> du contenu déjà saisi. Le menu n'est visible qu'en mode <em>Création</em>, pas en mode de <em>Modification</em>.</li>
+            <li><strong>Gestion (CRUD) :</strong> Bouton dédié "Gérer les modèles" à côté de la création d'article ouvrant un éditeur spécifique (titre, liste des modèles, contenu).</li>
+            <li><strong>Base de données (Table <code>articles</code>) :</strong>
+                <ul>
+                    <li><code>titre</code> (Obligatoire) : Nom du modèle.</li>
+                    <li><code>contenu</code> (Obligatoire) : Template HTML du modèle.</li>
+                    <li><code>rubrique</code> (Facultatif) : Restriction du modèle à une catégorie.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Module "Galeries Photos"</h3>
+        <p>Option permettant d'associer une mini-galerie d'images structurée à la fin d'un article.</p>
+        <ul>
+            <li><strong>Interface Auteur :</strong> Bloc "Galeries" sous l'éditeur avec un bouton pour uploader/sélectionner des images en masse. Visualisation par vignettes, sélection pour suppression, et ordre ajustable (glisser-déposer). L'accès est lié aux droits d'édition standards de l'article.</li>
+            <li><strong>Base de données (Nouvelle Table <code>galeries</code>) :</strong> <code>id_galerie</code> (PK), <code>id_article</code> (FK), et <code>datas</code> (colonne de type JSON stockant l'ordre, l'URL des médias, et les métadonnées de cadrage).</li>
+            <li><strong>Rendu Front-End (Grille dynamique) :</strong>
+                <ul>
+                    <li><em>1 photo</em> : 1 grande vignette pleine largeur.</li>
+                    <li><em>2 photos</em> : 2 vignettes côte à côte (50/50).</li>
+                    <li><em>3 photos</em> : 1 grande à gauche, 2 superposées à droite.</li>
+                    <li><em>4 photos</em> : Un carré strict 2x2.</li>
+                    <li><em>5 photos et plus</em> : Grille 2x2, mais la 4ème vignette est grisée avec un overlay texte "<code>+ X</code>" indiquant le reste des images masquer.</li>
+                </ul>
+            </li>
+            <li><strong>Comportement :</strong> Les images utilisent un rognage ("object-fit: cover") pour assurer des grilles parfaires. Au clic, ouverture d'une <strong>modale/lightbox</strong> permettant de naviguer (précédent/suivant/fermer).</li>
+            <li><strong>Point d'Ancrage de Vignette (Focal Point) :</strong> Possibilité pour le rédacteur de définir un point d'ancrage (coordonnées X/Y) sur la première photo de la galerie depuis l'interface d'édition. Ce point est enregistré dans la colonne JSON de la galerie et est appliqué via la propriété CSS <code>object-position</code> (ou <code>background-position</code>) lors de l'affichage en fond de tuile sur la page d'accueil, assurant un recadrage intelligent et esthétique de l'image.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Système d'Acquittement de Lecture</h3>
+        <p>Mise en place d'un mécanisme obligatoire de "Lu et Approuvé" pour les articles sensibles ou officiels.</p>
+        <ul>
+            <li><strong>Interface de Rédaction :</strong> Ajout d'une option "Lecture avec accusé de réception" (Admin/Public). Cette option n'est modifiable que par les utilisateurs disposant des droits de publication.</li>
+            <li><strong>Expérience Utilisateur :</strong>
+                <ul>
+                    <li>Affichage d'un bandeau d'alerte (Warning) en haut de l'article tant que l'acquittement n'est pas fait.</li>
+                    <li>Bouton d'action "J'ai pris connaissance de ce document" en bas d'article.</li>
+                    <li>Remplacement dynamique par un badge "Lu et approuvé le [date]" après validation.</li>
+                </ul>
+            </li>
+            <li><strong>Suivi des Éditeurs :</strong> Un bouton dédié (accessible via les droits d'édition) permet d'ouvrir une modale listant l'ensemble des utilisateurs ayant acquitté, avec horodatage précis.</li>
+            <li><strong>Architecture Technique (Table <code>interactions</code>) :</strong> Utilisation d'Interaction polymorphique de type <code>acknowledge</code>. Ce choix permet de ne pas surcharger la table pivot <code>post_user</code> et de bénéficier du système de log global.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Système d'Insertion Universelle de Blocs</h3>
+        <p>Refonte majeure du mécanisme d'insertion de blocs (Notes, Cadres, Titres) pour rendre l'éditeur plus intelligent, sémantique et productif.</p>
+        <ul>
+            <li><strong>Aspiration Groupée :</strong> Capacité à capturer l'intégralité des blocs sélectionnés (paragraphes, listes, images) pour les "emballer" dans un nouveau style sans aucune perte de données.</li>
+            <li><strong>Bouton "Dégrouper" :</strong> Nouvelle fonctionnalité ergonomique permettant de retirer uniquement l'enveloppe décorative (cadre ou note) tout en conservant le contenu textuel ou multimédia à sa place initiale.</li>
+            <li><strong>Restrictions Sémantiques :</strong> Système de protection interdisant l'insertion de structures complexes (listes, multi-blocs) dans des éléments de titre, accompagné de notifications utilisateurs en temps réel.</li>
+            <li><strong>Architecture DRY (Centralisée) :</strong> Refonte du code pour centraliser les définitions de blocs, facilitant l'ajout de nouveaux templates et la maintenance des raccourcis clavier.</li>
+            <li><strong>Protection des Médias :</strong> Sécurisation des balises <code>IFRAME</code> et <code>VIDEO</code> pour garantir leur persistance lors des sauvegardes et des changements de mode (aperçu/code).</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Maintenance</span> Correctif : Bug de Création d'Article</h3>
+        <p>Un bug bloquant empêchait la création d'articles lorsque certains champs optionnels (acquittement, notation) étaient nuls dans le formulaire.</p>
+        <p><span class="improvement">Résolution :</span> Initialisation forcée des valeurs booléennes dans <code>EditPostManager</code> avant la validation Laravel.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Refonte Ergonomique de la "Une"</h3>
+        <p>Optimisation de la page d'accueil pour une meilleure mise en avant des contenus récents et une gestion de l'espace plus efficace.</p>
+        <ul>
+            <li><strong>Structure Hybride :</strong> Mise en place d'une section "Hero" divisée en deux : Articles épinglés (choix éditorial) à gauche, et Articles récents (flux automatique) à droite.</li>
+            <li><strong>Valorisation Visuelle :</strong> Affichage des articles récents sous forme de tuiles avec images de fond extraites dynamiquement des galeries photos.</li>
+            <li><strong>Optimisation de l'Espace :</strong> Remontée des titres de rubriques et simplification de l'en-tête pour réduire le défilement nécessaire (scroll).</li>
+            <li><strong>Cohérence des Flux :</strong> Exclusion intelligente des articles mis en avant de la liste principale pour éviter la redondance.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Sécurité</span> Pilotage de l'envoi FCM en environnement local</h3>
+        <p>Afin d'éviter de notifier par erreur les utilisateurs réels lors de tests en local, l'envoi des notifications de bureau a été sécurisé.</p>
+        <p><span class="improvement">Résolution :</span> Introduction de la variable <code>FCM_NOTIFICATIONS_ENABLED</code>. La logique a été déplacée de <code>isLocal()</code> vers cette variable dédiée pour permettre une activation/désactivation granulaire quel que soit l'environnement (production ou développement).</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Resolver Médias Google Drive</h3>
+        <p>Problématique d'intégration des vidéos Drive qui généraient un code non fonctionnel (<code>source src="undefined"</code>) dans TinyMCE.</p>
+        <p><span class="improvement">Résolution :</span> Implémentation d'un <code>media_url_resolver</code> dans la configuration TinyMCE. Ce script intercepte les URLs de type <code>/file/d/.../view</code> et les transforme dynamiquement en iframes <code>/preview</code>, garantissant ainsi l'affichage immédiat et correct des vidéos stockées sur le Drive institutionnel.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Statistiques de Notation des Articles</h3>
+        <p>Mise en place de tableaux statistiques pour analyser et valoriser la participation des lecteurs via les notations.</p>
+        <ul>
+            <li><strong>Statistiques Utilisateurs :</strong> Identification et affichage sous forme de classement des utilisateurs qui attribuent le plus de notes dans l'application.</li>
+            <li><strong>Statistiques Articles :</strong> Top 10 des articles les mieux notés de la plateforme, basé sur la moyenne des notes obtenues, excluant les articles n'ayant pas reçu de note.</li>
+            <li><strong>Interface d'Administration :</strong> Ajout d'une section dédiée dans le dashboard des statistiques, avec des graphiques clairs et des tableaux de données exportables.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Filtre de Rubriques Multi-sélection pour les Statistiques</h3>
+        <p>Amélioration ergonomique globale des filtres de rubriques sur l'ensemble des modules statistiques pour offrir des analyses croisées plus poussées.</p>
+        <ul>
+            <li><strong>Multi-sélection :</strong> Remplacement du filtre à choix unique par un sélecteur multi-choix dynamique (dropdown avec cases à cocher ou tag-inputs Livewire).</li>
+            <li><strong>Héritage par Rubrique Parente :</strong> Possibilité de sélectionner une rubrique parente pour englober automatiquement toutes ses sous-rubriques (rubriques enfants) associées dans les résultats statistiques.</li>
+            <li><strong>Expérience Utilisateur :</strong> Arborescence visuelle simplifiée et réactivité en temps réel lors du changement de filtre.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Guide Interactif en Ligne</h3>
+        <p>Intégration d'un module d'aide et d'accompagnement interactif pas à pas pour former les utilisateurs directement au sein de l'application.</p>
+        <ul>
+            <li><strong>Parcours d'Onboarding :</strong> Guide guidé (tour interactif à base de popovers/infobulles dynamiques) pour la découverte des fonctionnalités clés (Favoris, Acquittements, Rédaction avec blocs).</li>
+            <li><strong>Accessibilité :</strong> Bouton "Besoin d'aide ?" persistant mais discret dans la barre de navigation ou le pied de page, permettant de relancer le guide à tout moment.</li>
+            <li><strong>Adaptabilité :</strong> Contenu du guide s'adaptant dynamiquement au rôle de l'utilisateur (Lecteur, Éditeur, Administrateur) pour ne présenter que les actions pertinentes.</li>
+        </ul>
+    </div>
+
+    <h2>5. Feuille de Route Stratégique (Priorisation)</h2>
+    <div class="highlight" style="margin-bottom: 30px;">
+        Note de priorisation : La gestion des développements s'inscrit dans une logique de qualité et de robustesse (pas de pression sur les délais stricts de la part de la direction). Les temps de traitement donnés ci-dessous sont des estimations "confortables" permettant de sécuriser le code (refactoring continu, tests) plutôt que de s'engager dans des <em>"Quick Wins"</em> précipités. L'objectif est d'alterner habilement fonctionnalités métiers et remboursement de la dette technique.
+    </div>
+    
+    <div class="roadmap">
+        <ul>
+            <li><strong>Phase 1 : Évolutions Fonctionnelles Majeures (Court terme - 1 à 2 mois)</strong>
+                <p><em>Charge estimée assumée qualitativement pour sécuriser les bases.</em></p>
+                <ul>
+                    <li><del>Bouton d'information (droits et éditeurs) sur les fiches de Rubrique.</del> ✅ <strong>Terminé</strong></li>
+                    <li><del>Système "Acquittement / Article Lu" avec horodatage.</del> ✅ <strong>Terminé (08/04/2026)</strong></li>
+                    <li><del>Module de notation par étoiles (1 à 5).</del> ✅ <strong>Terminé (08/04/2026)</strong></li>
+                    <li><del>Module "Galeries Photos" complet (upload, rendu hybride, GLightbox).</del> ✅ <strong>Terminé (14/04/2026)</strong></li>
+                    <li><del>Système avancé de Modèles d'Articles (Templates).</del> ✅ <strong>Terminé (22/04/2026)</strong></li>
+                    <li><del>Insertion Universelle de Blocs et Dégroupage.</del> ✅ <strong>Terminé (04/05/2026)</strong></li>
+                </ul>
+            </li>
+            
+            <li style="margin-top: 25px;"><strong>Phase 2 : Chantiers Intermédiaires (Moyen terme - 3 à 6 mois)</strong>
+                <p><em>Dépendances métiers et intégrations complexes.</em></p>
+                <ul>
+                    <li><del>Intégration institutionnelle Google Drive sur TinyMCE via iframe.</del> ✅ <strong>Terminé (06/05/2026)</strong></li>
+                    <li>Statistiques de notation : Profils des utilisateurs les plus actifs & Top 10 des articles les mieux notés. (<em>~1,5 semaine</em>)</li>
+                    <li>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques. (<em>~1 semaine</em>)</li>
+                    <li>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs. (<em>~1,5 semaine</em>)</li>
+                    <li>Point d'ancrage (focal point X/Y) sur la première photo de la galerie pour le recadrage optimal de l'image de fond des vignettes. (<em>~0,5 semaine</em>)</li>
+                    <li>Sous-rubrique 'Agenda' dans 'Événements' avec fonctionnalité Timeline. (<em>~1 semaine</em>)</li>
+                </ul>
+            </li>
+            
+            <li style="margin-top: 25px;"><strong>Phase 3 : Maintenance Préventive et Sécurité (Opérations de fond)</strong>
+                <p><em>Chantiers invisibles mais cruciaux nécessitant un environnement de développement stable.</em></p>
+                <ul>
+                    <li>Mise en place d'un journal d'audit (<strong>Log Activity System</strong>) global des éléments. (<em>~2 semaines</em>)</li>
+                    <li>Mise à jour majeure du framework (Migration vers Laravel 10/11) : requiert des tests de non-régression massifs. (<em>~3 semaines - idéal en basse saison usagers</em>)</li>
+                    <li>Optimisation des configurations ORM (mise entre quotes des noms de colonnes BDD). (<em>~1 semaine</em>)</li>
+                </ul>
+            </li>
+            
+            <li style="margin-top: 25px;"><strong>Backlog Stratégique (À valider en COPIL & Options à long terme)</strong>
+                <p><em>Éléments nécessitant une forte réflexion conceptuelle.</em></p>
+                <ul>
+                    <li>Amélioration poussée du Moteur de Recherche avec module "Nuage de Mots-Clés" (Voir l'étude dédiée : <a href="ETUDE_MOTEUR_RECHERCHE_DRIVE.html">ETUDE_MOTEUR_RECHERCHE_DRIVE.html</a>).</li>
+                    <li>Écosystème Ypareo : Passerelles de connexion lourdes (Agenda, Notes, Emploi du temps).</li>
+                    <li>Partage direct d'articles ciblé hors des logiques parents/enfants standards.</li>
+                    <li>Transformation du site en Progressive Web App (PWA) pour terminaux mobiles.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+</body>
+</html>

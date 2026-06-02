@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mode d'Emploi - Administration - Infocite</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 30px; background-color: #f4f7f6; }
+        .container { background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #27ae60; border-bottom: 4px solid #2ecc71; padding-bottom: 15px; text-align: center; }
+        h2 { color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 40px; background-color: #e8f5e9; padding: 10px; border-radius: 5px; }
+        h3 { color: #1b5e20; margin-top: 25px; border-left: 4px solid #2ecc71; padding-left: 10px; }
+        .info-box { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 15px; margin: 20px 0; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0; }
+        .menu-item { margin-bottom: 20px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        .menu-title { font-weight: bold; color: #2ecc71; font-size: 1.1em; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f1f8e9; }
+        code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Interface d'Administration : Guide Exhaustif</h1>
+
+    <p>Ce document détaille chaque module du tableau de bord administratif. Bien que la gestion des contenus puisse s'y faire, l'interface administrative est avant tout un outil de <strong>contrôle</strong>, de <strong>configuration globale</strong> et de <strong>supervision</strong>.</p>
+
+    <div class="info-box">
+        <strong>Note Importante</strong> : La création et la modification courante des articles se font plus naturellement via l'<strong>Interface d'Usage</strong> (en mode Édition). L'administration sert à intervenir de manière plus granulaire ou à corriger des erreurs.
+    </div>
+
+    <hr>
+
+    <h2>1. Pôle GESTION (Le cœur du système)</h2>
+    <p>Ce pôle regroupe les outils de gestion des accès et de la structure du site.</p>
+
+    <div class="menu-item">
+        <span class="menu-title">👥 Utilisateurs</span>
+        <p>Permet de rechercher parmi tous les usagers du portail. Vous pouvez modifier les informations de profil, voir le statut YParéo (Code Net, Login) et activer/désactiver manuellement un compte si nécessaire.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🖼️ Profils</span>
+        <p>Gestion des profils d'utilisateurs. Un profil définit un ensemble d'informations (avatar, identité) qui peut être rattaché à un compte système.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">👨‍👩‍👧‍👦 Groupes</span>
+        <p>Création et modification des groupes (Classes, Équipes, Services). C'est ici que l'on définit la typologie d'un groupe (ex: <code>P</code> pour Processus, <code>E</code> pour Équipe Pédagogique). Ces groupes servent ensuite de base pour l'attribution des droits.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📱 Applications</span>
+        <p>Gestion des liens externes institutionnels. Vous pouvez configurer l'URL, l'icône, et surtout le <strong>type d'authentification</strong> (Google OAuth, spécifique ou sans authentification).</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📂 Rubriques</span>
+        <p>C'est ici que vous construisez l'arborescence du site. Vous pouvez déplacer une rubrique, changer son icône, modifier son segment (URL) ou sa position (Menu principal ou Pied de page).</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📄 Contenus (Articles)</span>
+        <p>Liste exhaustive de tous les articles. Permet un contrôle rapide sur l'état de parution de tout le site. Utile pour retrouver un article expiré ou pour forcer une modification sur un article dont vous n'êtes pas l'auteur.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">💬 Commentaires</span>
+        <p>Modération globale. Vous pouvez voir tous les derniers commentaires déposés sur le site et les supprimer si leur contenu n'est pas approprié.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🔑 Droits (Permissions)</span>
+        <div class="warning-box"><strong>Attention</strong> : Module critique.</div>
+        <p>Définit les rôles de chaque utilisateur ou groupe sur chaque objet (Rubriques, Articles, etc.). Vous y gérez qui est <strong>Lecteur</strong>, <strong>Éditeur</strong>, <strong>Modérateur</strong> ou <strong>Administrateur</strong>.</p>
+    </div>
+
+    <hr>
+
+    <h2>2. Pôle ORGANIGRAMME (Structure visuelle)</h2>
+    <p>Ce pôle gère la construction dynamique de l'organigramme de l'établissement.</p>
+
+    <div class="menu-item">
+        <span class="menu-title">📏 Mise en forme (Formats)</span>
+        <p>Définit l'aspect visuel des cases de l'organigramme (couleurs, type de bordure continue ou pointillée).</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🔳 Nœuds (Chartnodes)</span>
+        <p>Création des "cases" de l'organigramme. Chaque nœud peut avoir un parent (pour créer la hiérarchie) et un format visuel spécifique.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🏷️ Libellés (Labels)</span>
+        <p>Gestion des fonctions et intitulés de postes officiels qui s'afficheront dans les cases.</p>
+    </div>
+
+    <hr>
+
+    <h2>3. Pôle STATISTIQUES (Audience et Usage)</h2>
+    <p>Outils d'analyse pour comprendre comment le portail est utilisé.</p>
+
+    <div class="menu-item">
+        <span class="menu-title">🌐 Connexions</span>
+        <p>Historique des accès au site. Permet de voir les pics de fréquentation et le nombre d'utilisateurs uniques par jour.</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">📚 Articles (Viewing)</span>
+        <p>Détail de consultation par article. Quel contenu a généré le plus d'intérêt ? Combien de personnes ont ouvert la dernière note de service ?</p>
+    </div>
+
+    <div class="menu-item">
+        <span class="menu-title">🛠️ Usage</span>
+        <p>Analyse des actions effectuées sur le site (créations d'articles, commentaires, clics sur les applications). Permet de mesurer l'interactivité globale.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

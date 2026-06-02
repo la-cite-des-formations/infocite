@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Analyse exhaustive — Droits sur les articles (Posts)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1100px; margin: 0 auto; padding: 2rem; color: #333; line-height: 1.6; }
+        h1 { color: #1a237e; border-bottom: 3px solid #1a237e; padding-bottom: 0.5rem; }
+        h2 { color: #283593; margin-top: 2rem; border-bottom: 2px solid #c5cae9; padding-bottom: 0.3rem; }
+        h3 { color: #3949ab; margin-top: 1.5rem; }
+        h4 { color: #5c6bc0; margin-top: 1rem; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+        th, td { border: 1px solid #c5cae9; padding: 0.5rem 0.75rem; text-align: left; }
+        th { background-color: #e8eaf6; color: #1a237e; }
+        tr:nth-child(even) { background-color: #fafafa; }
+        code { background-color: #f5f5f5; padding: 0.1rem 0.4rem; border-radius: 3px; font-family: 'Consolas', monospace; font-size: 0.9em; color: #d32f2f; }
+        pre { background-color: #263238; color: #eeffff; padding: 1rem; border-radius: 5px; overflow-x: auto; font-size: 0.85em; }
+        .note { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; }
+        .warning { background: #fff3e0; border-left: 4px solid #e65100; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; }
+        .important { background: #fce4ec; border-left: 4px solid #c62828; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; }
+        .success { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; }
+        .diagram { background: #fafafa; border: 1px solid #e0e0e0; padding: 1.5rem; margin: 1rem 0; border-radius: 5px; font-family: monospace; white-space: pre; line-height: 1.4; }
+        .file-ref { color: #1565c0; font-weight: 500; }
+        ul { margin: 0.5rem 0; }
+        li { margin: 0.3rem 0; }
+        .toc { background: #f5f5f5; padding: 1rem 2rem; border-radius: 5px; margin-bottom: 2rem; }
+        .toc a { text-decoration: none; color: #283593; }
+        .toc a:hover { text-decoration: underline; }
+        .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.8em; font-weight: bold; color: white; }
+        .badge-admin { background: #c62828; }
+        .badge-moder { background: #e65100; }
+        .badge-editr { background: #2e7d32; }
+        .badge-readr { background: #1565c0; }
+        footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e0e0e0; font-size: 0.85em; color: #757575; }
+    </style>
+</head>
+<body>
+
+<h1>Analyse exhaustive — Droits sur les articles (Posts)</h1>
+<p><strong>Application :</strong> Infocité — Portail intranet de La Cité des formations<br>
+<strong>Date :</strong> 25 mars 2026<br>
+<strong>Version :</strong> 1.0</p>
+
+<div class="toc">
+    <strong>Sommaire</strong>
+    <ol>
+        <li><a href="#s1">Vue d'ensemble du système de droits</a></li>
+        <li><a href="#s2">Architecture technique</a></li>
+        <li><a href="#s3">Les rôles binaires</a></li>
+        <li><a href="#s4">Le modèle de données des droits</a></li>
+        <li><a href="#s5">Les trois canaux d'attribution des droits</a></li>
+        <li><a href="#s6">Résolution des droits — méthode <code>hasRole()</code></a></li>
+        <li><a href="#s7">Accès aux rubriques — pré-requis aux articles</a></li>
+        <li><a href="#s8">Politique d'accès aux articles (<code>PostPolicy</code>)</a></li>
+        <li><a href="#s9">Interaction avec l'interface utilisateur</a></li>
+        <li><a href="#s10">Cas particuliers et subtilités</a></li>
+        <li><a href="#s11">Synthèse matricielle des droits</a></li>
+        <li><a href="#s12">Fichiers source impliqués</a></li>
+    </ol>
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s1">1. Vue d'ensemble du système de droits</h2>
+
+<p>Le système de droits d'Infocité repose sur un mécanisme <strong>personnalisé</strong> (non basé sur Spatie ou un package externe) utilisant des <strong>flags binaires</strong> (bitmask) pour coder les niveaux de permission. Les droits sont gérés via une table polymorphique <code>rightables</code> qui relie :</p>
+
+<ul>
+    <li>Un <strong>droit nommé</strong> (enregistrement dans <code>rights</code>, ex : <code>posts</code>, <code>rubrics</code>, <code>comments</code>)</li>
+    <li>Un <strong>détenteur</strong> (User, Group ou Profil — tous via polymorphisme)</li>
+    <li>Un <strong>rôle</strong> codé en bitmask (Lecteur, Éditeur, Modérateur, Administrateur)</li>
+    <li>Une <strong>ressource cible</strong> optionnelle (un article spécifique, une rubrique, etc.)</li>
+</ul>
+
+<div class="note">
+    <strong>Principe fondamental :</strong> Un utilisateur hérite de droits via trois canaux : ses <em>droits personnels</em>, les droits de ses <em>groupes</em>, et les droits de ses <em>profils</em>. Ces trois sources sont agrégées lors de la résolution.
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s2">2. Architecture technique</h2>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         COUCHE PRÉSENTATION                            │
+│  Blade (@can) ──► Laravel Gate ──► Policy (PostPolicy, RubricPolicy)   │
+└───────────────────────────────┬─────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         COUCHE LOGIQUE                                  │
+│  PostPolicy::read/create/edit/update/publish/delete/pin/clear           │
+│    │                                                                    │
+│    ├──► User::myRubrics()      → Accès à la rubrique (pré-requis)      │
+│    └──► User::hasRole()        → Vérification du rôle via bitmask      │
+│           │                                                             │
+│           └──► HasPermissions::getRightable()                          │
+│                  │                                                      │
+│                  ├── personalRights   (droits directs de l'utilisateur) │
+│                  ├── groupsRights()   (droits hérités des groupes)     │
+│                  └── profilesRights() (droits hérités des profils)     │
+└───────────────────────────────┬─────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         COUCHE DONNÉES                                  │
+│  Table rightables (polymorphique)                                       │
+│    ├── right_id         → FK vers rights.id                            │
+│    ├── rightable_type   → 'User' | 'Group'                            │
+│    ├── rightable_id     → ID du détenteur                              │
+│    ├── resource_type    → 'Post' | 'Rubric' | NULL (global)           │
+│    ├── resource_id      → ID de la ressource ciblée | NULL             │
+│    ├── roles            → Bitmask (int) des rôles accordés             │
+│    └── priority         → Priorité de résolution                       │
+└─────────────────────────────────────────────────────────────────────────┘
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s3">3. Les rôles binaires</h2>
+
+<p>Les rôles sont définis dans la classe <span class="file-ref">app/Models/Roles.php</span> sous forme de constantes binaires :</p>
+
+<table>
+    <tr>
+        <th>Constante</th>
+        <th>Valeur binaire</th>
+        <th>Valeur décimale</th>
+        <th>Libellé</th>
+        <th>Signification fonctionnelle (articles)</th>
+    </tr>
+    <tr>
+        <td><code>NONE</code></td>
+        <td><code>0b0000</code></td>
+        <td>0</td>
+        <td>Aucun droit</td>
+        <td>Aucun accès</td>
+    </tr>
+    <tr>
+        <td><code>IS_ADMIN</code></td>
+        <td><code>0b0001</code></td>
+        <td>1</td>
+        <td><span class="badge badge-admin">Administrateur</span></td>
+        <td>Suppression d'articles, gestion complète</td>
+    </tr>
+    <tr>
+        <td><code>IS_MODER</code></td>
+        <td><code>0b0010</code></td>
+        <td>2</td>
+        <td><span class="badge badge-moder">Modérateur</span></td>
+        <td>Publication / dépublication d'articles, épinglage</td>
+    </tr>
+    <tr>
+        <td><code>IS_EDITR</code></td>
+        <td><code>0b0100</code></td>
+        <td>4</td>
+        <td><span class="badge badge-editr">Éditeur</span></td>
+        <td>Création et modification de brouillons</td>
+    </tr>
+    <tr>
+        <td><code>IS_READR</code></td>
+        <td><code>0b1000</code></td>
+        <td>8</td>
+        <td><span class="badge badge-readr">Lecteur</span></td>
+        <td>Consultation des articles publiés</td>
+    </tr>
+    <tr>
+        <td><code>ALL</code></td>
+        <td><code>0b1111</code></td>
+        <td>15</td>
+        <td>Tous</td>
+        <td>Combinaison de tous les rôles</td>
+    </tr>
+</table>
+
+<div class="note">
+    <strong>Opérations bitmask :</strong> La vérification d'un rôle se fait par un <code>AND</code> binaire (<code>&amp;</code>). Par exemple, si un utilisateur a <code>roles = 0b0110</code> (Éditeur + Modérateur = 6), alors <code>6 &amp; IS_EDITR (4)</code> donne <code>4</code> (truthy) et <code>6 &amp; IS_ADMIN (1)</code> donne <code>0</code> (falsy).
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s4">4. Le modèle de données des droits</h2>
+
+<h3>4.1. Table <code>rights</code></h3>
+<p>Chaque enregistrement représente un <strong>type de droit</strong> (ex : <code>posts</code>, <code>rubrics</code>, <code>comments</code>, <code>apps</code>…).</p>
+
+<table>
+    <tr><th>Colonne</th><th>Description</th></tr>
+    <tr><td><code>id</code></td><td>Clé primaire</td></tr>
+    <tr><td><code>name</code></td><td>Identifiant du droit (ex : <code>posts</code>, <code>rubrics</code>)</td></tr>
+    <tr><td><code>description</code></td><td>Description du droit</td></tr>
+    <tr><td><code>rd_role</code>, <code>rd_description</code></td><td>Nom et description du rôle Lecteur pour ce droit</td></tr>
+    <tr><td><code>ed_role</code>, <code>ed_description</code></td><td>Nom et description du rôle Éditeur pour ce droit</td></tr>
+    <tr><td><code>md_role</code>, <code>md_description</code></td><td>Nom et description du rôle Modérateur pour ce droit</td></tr>
+    <tr><td><code>ad_role</code>, <code>ad_description</code></td><td>Nom et description du rôle Administrateur pour ce droit</td></tr>
+    <tr><td><code>default_roles</code></td><td>Bitmask des rôles accordés par défaut à tous</td></tr>
+    <tr><td><code>dashboard_roles</code></td><td>Bitmask des rôles nécessaires pour accéder au tableau de bord</td></tr>
+</table>
+
+<h3>4.2. Table <code>rightables</code> (polymorphique)</h3>
+<p>Table pivot reliant un droit à un détenteur et une ressource.</p>
+
+<table>
+    <tr><th>Colonne</th><th>Description</th></tr>
+    <tr><td><code>right_id</code></td><td>FK vers <code>rights.id</code></td></tr>
+    <tr><td><code>rightable_type</code></td><td>Type du détenteur : <code>'User'</code> ou <code>'Group'</code></td></tr>
+    <tr><td><code>rightable_id</code></td><td>ID du détenteur (utilisateur, profil ou groupe)</td></tr>
+    <tr><td><code>resource_type</code></td><td>Type de la ressource ciblée : <code>'Post'</code>, <code>'Rubric'</code> ou <code>NULL</code> (global)</td></tr>
+    <tr><td><code>resource_id</code></td><td>ID de la ressource ciblée ou <code>NULL</code> (toutes)</td></tr>
+    <tr><td><code>roles</code></td><td>Bitmask des rôles accordés</td></tr>
+    <tr><td><code>priority</code></td><td>Priorité (en cas de conflit, la plus haute l'emporte)</td></tr>
+</table>
+
+<div class="warning">
+    <strong>Distinction User vs Profil :</strong> Les profils sont aussi stockés dans la table <code>users</code>, mais avec <code>name = '@PROFILE'</code>. Le type <code>rightable_type</code> est toujours <code>'User'</code> pour les deux ; c'est le champ <code>name</code> qui les distingue.
+</div>
+
+<h3>4.3. Tables de liaisons complémentaires</h3>
+
+<table>
+    <tr><th>Table</th><th>Rôle</th></tr>
+    <tr><td><code>group_user</code></td><td>Liaison utilisateur ↔ groupe (BelongsToMany)</td></tr>
+    <tr><td><code>profile_user</code></td><td>Liaison utilisateur ↔ profil (User-to-User BelongsToMany)</td></tr>
+    <tr><td><code>group_rubric</code></td><td>Liaison groupe ↔ rubrique (accès à la rubrique)</td></tr>
+</table>
+
+<!-- ================================================================= -->
+<h2 id="s5">5. Les trois canaux d'attribution des droits</h2>
+
+<p>Un utilisateur peut recevoir des droits sur les articles via trois canaux distincts, tous agrégés par la méthode <code>allRights()</code> du trait <code>HasPermissions</code> :</p>
+
+<h3>5.1. Canal 1 — Droits personnels</h3>
+<p><span class="file-ref">HasPermissions::personalRights()</span></p>
+<p>Droits attribués directement à l'utilisateur dans <code>rightables</code> avec <code>rightable_type = 'User'</code> et <code>rightable_id = user.id</code>.</p>
+<div class="success">
+    <strong>Exemple :</strong> L'utilisateur Jean (id=5) possède le droit <code>posts</code> avec <code>roles = IS_EDITR (4)</code> sur <code>resource_type = 'Rubric'</code>, <code>resource_id = 3</code>. → Jean est Éditeur d'articles sur la rubrique 3.
+</div>
+
+<h3>5.2. Canal 2 — Droits hérités des groupes</h3>
+<p><span class="file-ref">HasPermissions::groupsRights()</span></p>
+<p>Pour chaque groupe auquel appartient l'utilisateur (table <code>group_user</code>), les droits du groupe (stockés dans <code>rightables</code> avec <code>rightable_type = 'Group'</code>) sont agrégés.</p>
+<div class="success">
+    <strong>Exemple :</strong> Le groupe « Communication » possède le droit <code>posts</code> avec <code>roles = IS_EDITR | IS_MODER (6)</code> de façon globale (<code>resource_type = NULL</code>). → Tous les membres de ce groupe sont Éditeurs + Modérateurs sur tous les articles.
+</div>
+
+<h3>5.3. Canal 3 — Droits hérités des profils</h3>
+<p><span class="file-ref">HasPermissions::profilesRights()</span> (via <code>allRights()</code>)</p>
+<p>Un profil est un utilisateur « fictif » (avec <code>name = '@PROFILE'</code>) auquel on attribue une configuration de droits standardisée. Les vrais utilisateurs liés à ce profil (table <code>profile_user</code>) héritent de <strong>tous ses droits</strong> (personnels + groupes) de manière récursive.</p>
+<div class="success">
+    <strong>Exemple :</strong> Le profil « Formateur » possède le droit <code>posts</code> avec <code>roles = IS_READR (8)</code> de façon globale. → Tous les utilisateurs liés à ce profil sont Lecteurs d'articles par défaut.
+</div>
+
+<div class="diagram">
+                 ┌──────────────┐
+                 │  Utilisateur  │
+                 └──────┬───────┘
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+          ▼             ▼             ▼
+   ┌─────────────┐ ┌─────────┐ ┌──────────┐
+   │   Droits    │ │ Groupes │ │ Profils  │
+   │ personnels  │ │         │ │ (@PROFILE│
+   └──────┬──────┘ └────┬────┘ └────┬─────┘
+          │              │           │
+          │         ┌────┴────┐ ┌───┴──────┐
+          │         │ Droits  │ │ allRights│
+          │         │ group   │ │  profil  │
+          │         └────┬────┘ └───┬──────┘
+          │              │          │
+          ▼              ▼          ▼
+     ┌─────────────────────────────────────┐
+     │     allRights() — union des 3       │
+     │     canaux de droits                │
+     └────────────────┬────────────────────┘
+                      │
+                      ▼
+     ┌─────────────────────────────────────┐
+     │     getRightable() — sélection      │
+     │     par droit + ressource           │
+     │     trié par priorité DESC          │
+     └────────────────┬────────────────────┘
+                      │
+                      ▼
+     ┌─────────────────────────────────────┐
+     │     hasRole() — test bitmask        │
+     │     rightable.roles &amp; role          │
+     └─────────────────────────────────────┘
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s6">6. Résolution des droits — méthode <code>hasRole()</code></h2>
+
+<p><span class="file-ref">app/Models/Traits/HasPermissions.php</span></p>
+
+<h3>6.1. Signature</h3>
+<pre>public function hasRole(
+    string $right,           // Nom du droit (ex : 'posts')
+    int $role,               // Bitmask du rôle recherché (ex : Roles::IS_EDITR)
+    ?string $resource_type,  // Type de ressource ciblée (ex : 'Rubric', 'Post', NULL)
+    ?int $resource_id,       // ID de la ressource (ex : 3, NULL)
+    bool $extended = TRUE    // Fallback vers le niveau global si non trouvé
+): ?int</pre>
+
+<h3>6.2. Algorithme de résolution</h3>
+<ol>
+    <li><strong>Agrégation :</strong> <code>allRights()</code> collecte les droits des 3 canaux (personnels, groupes, profils).</li>
+    <li><strong>Filtrage :</strong> <code>getRightable()</code> filtre par <code>name</code> (droit), <code>resource_type</code> et <code>resource_id</code>, puis trie par <code>priority DESC</code> et retourne le premier résultat.</li>
+    <li><strong>Test :</strong> <code>hasRole()</code> applique l'opération <code>rightable->roles &amp; $role</code>.</li>
+    <li><strong>Fallback (mode étendu) :</strong> Si aucun droit n'est trouvé pour la ressource spécifique <strong>et</strong> que <code>$extended = TRUE</code> (par défaut), la méthode rappelle <code>hasRole()</code> sans <code>resource_type</code>/<code>resource_id</code> pour chercher un droit <strong>global</strong>.</li>
+</ol>
+
+<div class="important">
+    <strong>Comportement du fallback :</strong> Quand <code>$extended = TRUE</code> (valeur par défaut, alias <code>AP::STRICTLY = FALSE</code>), si aucun droit spécifique n'est trouvé sur la ressource précise, le système recherche automatiquement un droit global (sans resource_type/resource_id). Quand <code>$extended = FALSE</code> (passé comme <code>AP::STRICTLY</code>), seul le droit spécifique à la ressource est vérifié et <code>NULL</code> est retourné si non trouvé.
+</div>
+
+<h3>6.3. Retour de <code>hasRole()</code></h3>
+<table>
+    <tr><th>Valeur retournée</th><th>Signification</th></tr>
+    <tr><td><code>int > 0</code> (truthy)</td><td>L'utilisateur possède le rôle demandé</td></tr>
+    <tr><td><code>0</code> (falsy)</td><td>L'utilisateur possède un droit mais pas le rôle demandé</td></tr>
+    <tr><td><code>NULL</code></td><td>Aucun droit trouvé (ni spécifique, ni global en mode étendu)</td></tr>
+</table>
+
+<div class="warning">
+    <strong>Subtilité <code>NULL</code> vs <code>0</code> :</strong> Cette distinction est exploitée par les policies via l'opérateur <code>??</code> (null coalescing). Un retour <code>NULL</code> d'un <code>hasRole()</code> strict permet au code appelant de tenter un fallback alternatif.
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s7">7. Accès aux rubriques — pré-requis aux articles</h2>
+
+<p><strong>Avant toute vérification de droit sur un article</strong>, l'utilisateur doit avoir accès à la rubrique contenant l'article. C'est le premier contrôle effectué par chaque méthode de <code>PostPolicy</code>.</p>
+
+<h3>7.1. <code>User::myRubrics()</code></h3>
+<p><span class="file-ref">app/Models/User.php</span> — Lignes 299-311</p>
+<p>Retourne l'ensemble des rubriques accessibles par l'utilisateur en agrégeant :</p>
+<ol>
+    <li>Les rubriques de chacun de ses <strong>groupes</strong> (table <code>group_rubric</code>)</li>
+    <li>Les rubriques de chacun de ses <strong>profils</strong> (récursivement via <code>$profile->myRubrics()</code>)</li>
+</ol>
+
+<pre>public function myRubrics() {
+    $myRubrics = new Collection();
+
+    $this->groups->each(function ($group) use (&$myRubrics) {
+        $myRubrics = $myRubrics->merge($group->rubrics);
+    });
+
+    $this->profiles->each(function ($profile) use (&$myRubrics) {
+        $myRubrics = $myRubrics->merge($profile->myRubrics());
+    });
+
+    return $myRubrics->unique();
+}</pre>
+
+<div class="note">
+    <strong>Conséquence :</strong> Si un utilisateur n'appartient à aucun groupe lié à une rubrique et n'hérite d'aucun profil donnant accès à cette rubrique, il ne pourra <strong>jamais</strong> accéder aux articles de cette rubrique, même s'il dispose de droits <code>posts</code> globaux.
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s8">8. Politique d'accès aux articles (<code>PostPolicy</code>)</h2>
+
+<p><span class="file-ref">app/Policies/PostPolicy.php</span></p>
+
+<p>Chaque méthode de la policy implémente la même structure en deux temps :</p>
+<ol>
+    <li><strong>Vérification d'accès à la rubrique</strong> : <code>$user->myRubrics()->contains('id', $rubricId)</code></li>
+    <li><strong>Vérification du rôle</strong> : <code>$user->hasRole('posts', Roles::IS_XXX, ...)</code></li>
+</ol>
+
+<h3>8.1. <code>read($user, $post)</code> — Lire un article</h3>
+
+<table>
+    <tr><th>Condition</th><th>Description</th></tr>
+    <tr><td>Accès rubrique</td><td><code>myRubrics()->contains('id', $post->rubric_id)</code></td></tr>
+    <tr><td>Article publié OU modifiable</td><td><code>$post->published || $this->update($user, $post)</code></td></tr>
+    <tr><td>Rôle Lecteur</td><td><code>hasRole('posts', IS_READR, 'Post', $post->id)</code></td></tr>
+</table>
+
+<div class="note">
+    <strong>Logique :</strong> Un article non publié (brouillon) n'est lisible que si l'utilisateur a aussi le droit de le modifier (update). Le droit Lecteur est vérifié avec le fallback global (mode étendu par défaut).
+</div>
+
+<h3>8.2. <code>create($user, $rubricId)</code> — Créer un article</h3>
+
+<table>
+    <tr><th>Condition</th><th>Description</th></tr>
+    <tr><td>Accès rubrique</td><td><code>myRubrics()->contains('id', $rubricId)</code></td></tr>
+    <tr><td>Rôle Éditeur (strict)</td><td><code>hasRole('posts', IS_EDITR, 'Rubric', $rubricId, AP::STRICTLY)</code></td></tr>
+    <tr><td>Fallback rubrique parente</td><td>Si NULL → <code>hasRole('posts', IS_EDITR, 'Rubric', $rootRubric->id)</code></td></tr>
+</table>
+
+<div class="important">
+    <strong>Héritage parent :</strong> Si aucun droit n'est trouvé strictement sur la rubrique enfant, le système vérifie les droits sur la <strong>rubrique parente</strong> (racine). Ce mécanisme d'héritage est propre à <code>create</code>, <code>publish</code> et <code>clear</code>.
+</div>
+
+<h3>8.3. <code>edit($user, $rubricId)</code> — Accéder à l'interface d'édition d'une rubrique</h3>
+
+<table>
+    <tr><th>Condition</th><th>Description</th></tr>
+    <tr><td>Accès rubrique</td><td><code>myRubrics()->contains('id', $rubricId)</code></td></tr>
+    <tr><td>Rubrique « Une »</td><td>Si <code>name == 'Une'</code> → vérification globale (resource_type/id = NULL)</td></tr>
+    <tr><td>Rôle suffisant</td><td><code>IS_EDITR</code> OU <code>IS_MODER</code> OU <code>IS_ADMIN</code> (l'un des trois suffit)</td></tr>
+</table>
+
+<div class="warning">
+    <strong>Cas spécial « Une » :</strong> La rubrique « Une » (page d'accueil) est traitée différemment : les vérifications de droits sont faites au niveau global (<code>resource_type = NULL</code>) plutôt que sur la rubrique spécifique.
+</div>
+
+<h3>8.4. <code>update($user, $post)</code> — Mettre à jour un article</h3>
+
+<p>Le comportement diffère selon que l'article est <strong>diffusé</strong> (<code>released</code>) ou non :</p>
+
+<h4>8.4.1. Article diffusé (<code>released = true</code>)</h4>
+<table>
+    <tr><th>Étape</th><th>Description</th></tr>
+    <tr><td>1. Strict sur l'article</td><td><code>hasRole('posts', IS_EDITR + IS_MODER, 'Post', $post->id, STRICTLY)</code></td></tr>
+    <tr><td>2. Fallback si NULL</td><td><code>create($rubricId) && publish($rubricId)</code> → nécessite Éditeur ET Modérateur sur la rubrique</td></tr>
+</table>
+
+<div class="important">
+    <strong>Double condition pour articles diffusés :</strong> Modifier un article déjà publié et en cours de diffusion nécessite à la fois le droit de créer (Éditeur) ET le droit de publier (Modérateur) sur la rubrique. Ceci évite qu'un simple éditeur modifie du contenu visible par tous.
+</div>
+
+<h4>8.4.2. Article non diffusé (brouillon)</h4>
+<table>
+    <tr><th>Étape</th><th>Description</th></tr>
+    <tr><td>1. Strict sur l'article</td><td><code>hasRole('posts', IS_EDITR, 'Post', $post->id, STRICTLY)</code></td></tr>
+    <tr><td>2. Fallback si NULL</td><td><code>create($rubricId)</code> → nécessite Éditeur sur la rubrique</td></tr>
+</table>
+
+<h3>8.5. <code>publish($user, $rubricId)</code> — Publier un article</h3>
+
+<table>
+    <tr><th>Condition</th><th>Description</th></tr>
+    <tr><td>Accès rubrique</td><td><code>myRubrics()->contains('id', $rubricId)</code></td></tr>
+    <tr><td>Rôle Modérateur (strict)</td><td><code>hasRole('posts', IS_MODER, 'Rubric', $rubricId, STRICTLY)</code></td></tr>
+    <tr><td>Fallback rubrique parente</td><td>Si NULL → <code>hasRole('posts', IS_MODER, 'Rubric', $rootRubric->id)</code></td></tr>
+</table>
+
+<h3>8.6. <code>clear($user, $rubricId)</code> — Supprimer tous les articles d'une rubrique</h3>
+
+<table>
+    <tr><th>Condition</th><th>Description</th></tr>
+    <tr><td>Accès rubrique</td><td><code>myRubrics()->contains('id', $rubricId)</code></td></tr>
+    <tr><td>Rôle Administrateur (strict)</td><td><code>hasRole('posts', IS_ADMIN, 'Rubric', $rubricId, STRICTLY)</code></td></tr>
+    <tr><td>Fallback rubrique parente</td><td>Si NULL → <code>hasRole('posts', IS_ADMIN, 'Rubric', $rootRubric->id)</code></td></tr>
+</table>
+
+<h3>8.7. <code>delete($user, $post)</code> — Supprimer un article spécifique</h3>
+
+<table>
+    <tr><th>Étape</th><th>Description</th></tr>
+    <tr><td>1. Strict sur l'article</td><td><code>hasRole('posts', IS_ADMIN, 'Post', $post->id, STRICTLY)</code></td></tr>
+    <tr><td>2. Fallback si NULL</td><td><code>clear($user, $post->rubric_id)</code> → droit Administrateur sur la rubrique</td></tr>
+</table>
+
+<h3>8.8. <code>pin($user, $post)</code> — Épingler un article à la Une</h3>
+
+<table>
+    <tr><th>Condition</th><th>Description</th></tr>
+    <tr><td>Rôle Modérateur global</td><td><code>hasRole('posts', IS_MODER)</code> — sans aucune ressource spécifique</td></tr>
+    <tr><td>Article diffusé</td><td><code>$post->released</code> (publié, non expiré, non programmé)</td></tr>
+</table>
+
+<div class="note">
+    <strong>Pas de vérification de rubrique :</strong> Contrairement aux autres méthodes, <code>pin</code> ne vérifie pas l'accès à la rubrique de l'article. Seul le rôle Modérateur global sur le droit <code>posts</code> est requis.
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s9">9. Interaction avec l'interface utilisateur</h2>
+
+<h3>9.1. Directives Blade <code>@can</code></h3>
+<p>L'interface utilise les directives Laravel <code>@can</code> pour conditionner l'affichage des éléments. Voici les principales vérifications effectuées dans les vues :</p>
+
+<table>
+    <tr><th>Vue</th><th>Directive</th><th>Action conditionnée</th></tr>
+    <tr><td><code>posts-manager.blade.php</code></td><td><code>@can('edit', ['Post', $rubric->id])</code></td><td>Affichage de la zone d'édition de la rubrique</td></tr>
+    <tr><td><code>posts-manager.blade.php</code></td><td><code>@can('create', ['Post', $rubric->id])</code></td><td>Bouton « Ajouter un article »</td></tr>
+    <tr><td><code>posts-manager.blade.php</code></td><td><code>@can('read', $post)</code></td><td>Affichage d'un article dans la liste</td></tr>
+    <tr><td><code>posts-manager.blade.php</code></td><td><code>@can('update', $post)</code></td><td>Bouton « Modifier »</td></tr>
+    <tr><td><code>posts-manager.blade.php</code></td><td><code>@can('pin', $post)</code></td><td>Bouton « Épingler à la Une »</td></tr>
+    <tr><td><code>posts-manager.blade.php</code></td><td><code>@can('delete', $post)</code></td><td>Bouton « Supprimer »</td></tr>
+    <tr><td><code>edit-post-manager.blade.php</code></td><td><code>@can('publish', ['Post', $rubric->id])</code></td><td>Cases à cocher « Publier »</td></tr>
+    <tr><td><code>post-manager.blade.php</code></td><td><code>@can('update', $post)</code></td><td>Lien d'édition de l'article</td></tr>
+    <tr><td><code>post-manager.blade.php</code></td><td><code>@can('delete', $post)</code></td><td>Bouton de suppression</td></tr>
+    <tr><td><code>nav.blade.php</code></td><td><code>@can('access', $rubric)</code></td><td>Affichage du lien de rubrique dans la navigation</td></tr>
+</table>
+
+<h3>9.2. Modale « Info rubrique » (<code>RubricInfo</code>)</h3>
+<p><span class="file-ref">app/Http/Livewire/Modals/Usage/RubricInfo.php</span></p>
+
+<p>Ce composant Livewire récupère et affiche les entités ayant des droits sur une rubrique donnée. Il distingue :</p>
+
+<h4>Droits de consultation (lecture)</h4>
+<ul>
+    <li><strong>Groupes :</strong> Groupes liés à la rubrique (table <code>group_rubric</code>) + groupes ayant le droit <code>rubrics</code> avec rôle Lecteur</li>
+    <li><strong>Profils :</strong> Profils ayant le droit <code>rubrics</code> avec rôle Lecteur</li>
+    <li><strong>Utilisateurs :</strong> Utilisateurs réels ayant le droit <code>rubrics</code> avec rôle Lecteur</li>
+</ul>
+
+<h4>Droits d'édition (articles)</h4>
+<ul>
+    <li><strong>Groupes :</strong> Groupes ayant le droit <code>posts</code> avec rôle Éditeur, Modérateur ou Administrateur</li>
+    <li><strong>Profils :</strong> Profils ayant le droit <code>posts</code></li>
+    <li><strong>Utilisateurs :</strong> Utilisateurs réels ayant le droit <code>posts</code></li>
+</ul>
+
+<div class="note">
+    <strong>Héritage rubrique parente :</strong> La modale RubricInfo prend en compte l'héritage parent : si la rubrique a un <code>parent_id</code>, les droits sont aussi recherchés sur la rubrique parente. Elle inclut aussi les droits globaux (où <code>resource_id</code> est NULL).
+</div>
+
+<!-- ================================================================= -->
+<h2 id="s10">10. Cas particuliers et subtilités</h2>
+
+<h3>10.1. Mode strict vs étendu (<code>AP::STRICTLY</code>)</h3>
+
+<p>La constante <code>AP::STRICTLY</code> vaut <code>FALSE</code>, ce qui est passé comme valeur de <code>$extended</code>. Quand elle est utilisée, la recherche est restreinte au niveau de ressource spécifié :</p>
+
+<pre>// Mode STRICT (AP::STRICTLY = FALSE → $extended = FALSE)
+// → Ne vérifie QUE le droit sur la ressource spécifiée
+$canCreatePosts = $user->hasRole('posts', IS_EDITR, 'Rubric', $rubricId, AP::STRICTLY);
+
+// Mode ÉTENDU (par défaut, $extended = TRUE)
+// → Si pas trouvé sur la ressource → fallback vers le niveau global
+$canRead = $user->hasRole('posts', IS_READR, 'Post', $post->id);</pre>
+
+<h3>10.2. Cascade de vérification (opérateur <code>??</code>)</h3>
+
+<p>Le pattern récurrent dans les policies exploite l'opérateur null coalescing <code>??</code> :</p>
+
+<pre>// 1. Vérifier STRICTEMENT sur la rubrique enfant
+$canCreatePosts = $user->hasRole('posts', IS_EDITR, 'Rubric', $rubricId, AP::STRICTLY);
+
+// 2. Si NULL (aucun droit spécifique trouvé) → fallback sur la rubrique parente
+return $canCreatePosts ?? $user->hasRole('posts', IS_EDITR, 'Rubric', $rootRubric->id);</pre>
+
+<p>Ce pattern crée une <strong>chaîne de résolution à 3 niveaux</strong> :</p>
+<ol>
+    <li><strong>Niveau article/rubrique spécifique</strong> (strict)</li>
+    <li><strong>Niveau rubrique parente</strong> (si enfant = NULL)</li>
+    <li><strong>Niveau global</strong> (si parente non trouvé, via le fallback étendu du 2e appel)</li>
+</ol>
+
+<h3>10.3. Différence entre article « publié » et « diffusé »</h3>
+
+<table>
+    <tr><th>Attribut</th><th>Champ(s)</th><th>Signification</th></tr>
+    <tr><td><code>published</code></td><td><code>posts.published</code></td><td>L'article a été marqué comme publié (flag booléen)</td></tr>
+    <tr><td><code>forthcoming</code></td><td><code>published_at > today</code></td><td>L'article est programmé pour une date future</td></tr>
+    <tr><td><code>expired</code></td><td><code>expired_at <= today</code></td><td>L'article a dépassé sa date d'expiration</td></tr>
+    <tr><td><code>released</code></td><td>Combinaison</td><td><code>published && !forthcoming && !expired</code> → actuellement visible</td></tr>
+    <tr><td><code>archived</code></td><td>Combinaison</td><td><code>published && expired && !auto_delete</code> → expiré mais conservé</td></tr>
+</table>
+
+<div class="warning">
+    <strong>Impact sur les droits :</strong> La méthode <code>update()</code> de <code>PostPolicy</code> applique des règles différentes selon que l'article est <code>released</code> ou non. Un article diffusé nécessite à la fois Éditeur ET Modérateur pour être modifié.
+</div>
+
+<h3>10.4. Droits sur les commentaires</h3>
+<p>Les commentaires ont leur propre droit (<code>comments</code>) mais sont liés aux articles. La méthode <code>Post::isCommentable()</code> vérifie :</p>
+<pre>auth()->user()->hasRole('comments', Roles::IS_EDITR, 'Post', $this->id);</pre>
+<p>Le blocage global des commentaires est géré via <code>Post::allCommentable()</code> qui exclut les articles où le groupe GLOBAL n'a pas le rôle Éditeur sur le droit <code>comments</code>.</p>
+
+<h3>10.5. Accès au tableau de bord d'administration</h3>
+<p>L'accès à la section d'administration des articles est contrôlé par le gate <code>manage-posts</code> défini dans <code>AuthServiceProvider</code> :</p>
+<pre>Gate::define("manage-posts", function ($user) {
+    $right = AP::getModelRight('posts');
+    return $user->hasRole($right->name, $right->roles);
+});</pre>
+<p>La valeur de <code>$right->roles</code> provient du champ <code>dashboard_roles</code> de l'enregistrement <code>rights</code> avec <code>name = 'posts'</code>.</p>
+
+<!-- ================================================================= -->
+<h2 id="s11">11. Synthèse matricielle des droits</h2>
+
+<h3>11.1. Matrice Action × Rôle requis</h3>
+
+<table>
+    <tr>
+        <th>Action</th>
+        <th><span class="badge badge-readr">Lecteur</span></th>
+        <th><span class="badge badge-editr">Éditeur</span></th>
+        <th><span class="badge badge-moder">Modérateur</span></th>
+        <th><span class="badge badge-admin">Administrateur</span></th>
+        <th>Portée</th>
+    </tr>
+    <tr>
+        <td>Lire un article publié</td>
+        <td>✅ Requis</td><td>—</td><td>—</td><td>—</td>
+        <td>Article (fallback global)</td>
+    </tr>
+    <tr>
+        <td>Lire un brouillon</td>
+        <td>✅ Requis</td><td>✅ Requis (via update)</td><td>—</td><td>—</td>
+        <td>Article + Rubrique</td>
+    </tr>
+    <tr>
+        <td>Créer un article</td>
+        <td>—</td><td>✅ Requis</td><td>—</td><td>—</td>
+        <td>Rubrique (strict → parente → global)</td>
+    </tr>
+    <tr>
+        <td>Accéder à l'éditeur de rubrique</td>
+        <td>—</td><td>✅ Suffit</td><td>✅ Suffit</td><td>✅ Suffit</td>
+        <td>Rubrique (fallback global)</td>
+    </tr>
+    <tr>
+        <td>Modifier un brouillon</td>
+        <td>—</td><td>✅ Requis</td><td>—</td><td>—</td>
+        <td>Article (strict) → Rubrique</td>
+    </tr>
+    <tr>
+        <td>Modifier un article diffusé</td>
+        <td>—</td><td>✅ Requis</td><td>✅ Requis</td><td>—</td>
+        <td>Article (strict, combiné) → Rubrique</td>
+    </tr>
+    <tr>
+        <td>Publier un article</td>
+        <td>—</td><td>—</td><td>✅ Requis</td><td>—</td>
+        <td>Rubrique (strict → parente → global)</td>
+    </tr>
+    <tr>
+        <td>Épingler à la Une</td>
+        <td>—</td><td>—</td><td>✅ Requis (global)</td><td>—</td>
+        <td>Global uniquement + article diffusé</td>
+    </tr>
+    <tr>
+        <td>Supprimer un article</td>
+        <td>—</td><td>—</td><td>—</td><td>✅ Requis</td>
+        <td>Article (strict) → Rubrique</td>
+    </tr>
+    <tr>
+        <td>Supprimer tous les articles (rubrique)</td>
+        <td>—</td><td>—</td><td>—</td><td>✅ Requis</td>
+        <td>Rubrique (strict → parente → global)</td>
+    </tr>
+    <tr>
+        <td>Commenter un article</td>
+        <td>—</td><td>✅ Requis (droit <code>comments</code>)</td><td>—</td><td>—</td>
+        <td>Article (fallback global)</td>
+    </tr>
+</table>
+
+<h3>11.2. Chaîne de résolution par action</h3>
+
+<table>
+    <tr>
+        <th>Action</th>
+        <th>Niveau 1 (strict)</th>
+        <th>Niveau 2 (fallback <code>??</code>)</th>
+        <th>Niveau 3 (fallback étendu)</th>
+    </tr>
+    <tr>
+        <td><code>read</code></td>
+        <td>Droit sur Post spécifique</td>
+        <td>—</td>
+        <td>Droit global <code>posts</code></td>
+    </tr>
+    <tr>
+        <td><code>create</code></td>
+        <td>Droit sur Rubrique spécifique (strict)</td>
+        <td>Droit sur Rubrique parente</td>
+        <td>Droit global <code>posts</code></td>
+    </tr>
+    <tr>
+        <td><code>edit</code></td>
+        <td>Droit sur Rubrique spécifique</td>
+        <td>—</td>
+        <td>Droit global <code>posts</code></td>
+    </tr>
+    <tr>
+        <td><code>update</code> (brouillon)</td>
+        <td>Droit sur Post spécifique (strict)</td>
+        <td>→ <code>create(rubricId)</code></td>
+        <td>→ chaîne de <code>create</code></td>
+    </tr>
+    <tr>
+        <td><code>update</code> (diffusé)</td>
+        <td>Droit sur Post (strict, EDITR+MODER)</td>
+        <td>→ <code>create(rubricId) && publish(rubricId)</code></td>
+        <td>→ chaînes respectives</td>
+    </tr>
+    <tr>
+        <td><code>publish</code></td>
+        <td>Droit sur Rubrique spécifique (strict)</td>
+        <td>Droit sur Rubrique parente</td>
+        <td>Droit global <code>posts</code></td>
+    </tr>
+    <tr>
+        <td><code>delete</code></td>
+        <td>Droit sur Post spécifique (strict)</td>
+        <td>→ <code>clear(rubricId)</code></td>
+        <td>→ chaîne de <code>clear</code></td>
+    </tr>
+    <tr>
+        <td><code>clear</code></td>
+        <td>Droit sur Rubrique spécifique (strict)</td>
+        <td>Droit sur Rubrique parente</td>
+        <td>Droit global <code>posts</code></td>
+    </tr>
+    <tr>
+        <td><code>pin</code></td>
+        <td>Droit global <code>posts</code></td>
+        <td>—</td>
+        <td>—</td>
+    </tr>
+</table>
+
+<!-- ================================================================= -->
+<h2 id="s12">12. Fichiers source impliqués</h2>
+
+<table>
+    <tr><th>Fichier</th><th>Rôle dans le système de droits</th></tr>
+    <tr><td><code>app/Policies/PostPolicy.php</code></td><td>Règles d'accès pour chaque action sur les articles</td></tr>
+    <tr><td><code>app/Policies/RubricPolicy.php</code></td><td>Règles d'accès aux rubriques (pré-requis articles)</td></tr>
+    <tr><td><code>app/Policies/RightPolicy.php</code></td><td>Règles pour l'administration des droits eux-mêmes</td></tr>
+    <tr><td><code>app/Providers/AuthServiceProvider.php</code></td><td>Enregistrement des policies et définition des Gates</td></tr>
+    <tr><td><code>app/Models/Traits/HasPermissions.php</code></td><td>Trait contenant <code>hasRole()</code>, <code>hasStrictRole()</code>, <code>allRights()</code>, etc.</td></tr>
+    <tr><td><code>app/Models/User.php</code></td><td>Modèle User utilisant <code>HasPermissions</code>, définissant <code>myRubrics()</code></td></tr>
+    <tr><td><code>app/Models/Post.php</code></td><td>Modèle Article avec accesseurs d'état et méthodes de droits spécifiques</td></tr>
+    <tr><td><code>app/Models/Rubric.php</code></td><td>Modèle Rubrique avec relations parent/enfant et droits associés</td></tr>
+    <tr><td><code>app/Models/Right.php</code></td><td>Modèle Droit avec relations polymorphiques vers users/groups</td></tr>
+    <tr><td><code>app/Models/Roles.php</code></td><td>Constantes binaires des rôles et utilitaires de filtrage</td></tr>
+    <tr><td><code>app/Models/Group.php</code></td><td>Modèle Groupe avec droits hérités et accès rubriques</td></tr>
+    <tr><td><code>app/CustomFacades/AP.php</code></td><td>Constantes de configuration (STRICTLY, PROFILE, DASHBOARD_MODELS_RIGHTS)</td></tr>
+    <tr><td><code>app/Http/Livewire/Modals/Usage/RubricInfo.php</code></td><td>Composant affichant les droits effectifs sur une rubrique</td></tr>
+</table>
+
+<footer>
+    <p>Document généré automatiquement par analyse statique du code source Infocité — 25 mars 2026</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Note Décisionnelle COPIL : Stratégie de Recherche &amp; IA - Infocite</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #2c3e50; max-width: 950px; margin: auto; padding: 40px; background-color: #f4f7f6; }
+        .container { background: white; padding: 45px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        h1 { color: #27ae60; border-bottom: 3px solid #27ae60; padding-bottom: 12px; text-align: center; font-size: 2.2rem; }
+        .meta-info { text-align: center; color: #7f8c8d; font-size: 1rem; margin-top: 5px; margin-bottom: 35px; font-style: italic; }
+        h2 { color: #2c3e50; margin-top: 40px; border-left: 5px solid #27ae60; padding-left: 15px; font-size: 1.5rem; }
+        h3 { color: #16a085; margin-top: 25px; font-size: 1.2rem; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 15px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-right: 5px; }
+        .badge-com { background-color: #ebf5fb; color: #2980b9; border: 1px solid #2980b9; }
+        .badge-rh { background-color: #fdf2e9; color: #e67e22; border: 1px solid #e67e22; }
+        .badge-compta { background-color: #f4ecf7; color: #8e44ad; border: 1px solid #8e44ad; }
+        .badge-budget { background-color: #fdedec; color: #e74c3c; border: 1px solid #e74c3c; }
+        .card { background: #fcfcfc; border: 1px solid #e2e8f0; padding: 22px; border-radius: 8px; margin: 20px 0; }
+        .highlight-green { background: #e8f8f5; border-left: 5px solid #2cc09c; padding: 20px; border-radius: 4px; margin: 20px 0; }
+        .highlight-orange { background: #fef5e7; border-left: 5px solid #f39c12; padding: 20px; border-radius: 4px; margin: 20px 0; }
+        .highlight-red { background: #fdf2f2; border-left: 5px solid #ec5858; padding: 20px; border-radius: 4px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 0.95rem; }
+        th, td { padding: 14px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; color: #334155; font-weight: bold; }
+        tr:hover { background-color: #f8fafc; }
+        .btn-print { text-align: center; margin-top: 40px; }
+        .print-only { display: none; }
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 0; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Note de Cadrage COPIL : Quelle stratégie pour notre moteur de recherche ?</h1>
+    <p class="meta-info">Document d'aide à la décision — Pour un moteur de recherche utile, sécurisé et maîtrisé financierement</p>
+
+    <div class="highlight-green">
+        <strong>À l'attention des membres du COPIL :</strong> Ce document vulgarise les aspects techniques de l'évolution du moteur de recherche d'Infocité. Il détaille les scénarios possibles, l'impact sur vos services (Communication, RH, Comptabilité), la sécurité de vos données, et le budget prévisionnel (notamment sur l'usage de l'Intelligence Artificielle). Son but est de vous donner toutes les clés pour décider de la trajectoire du projet.
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 1. LES ENJEUX PAR SERVICE                 -->
+    <!-- ========================================= -->
+    <h2>1. Quels bénéfices concrets pour vos services au quotidien ?</h2>
+    <p>Aujourd'hui, chercher une information sur Infocité oblige à connaître le mot exact employé dans l'article. De plus, tous les documents stockés sur le Google Drive de l'établissement et liés dans les articles sont invisibles pour le moteur de recherche. Voici ce que l'évolution va changer pour vous :</p>
+
+    <div class="card">
+        <h3><span class="badge badge-rh">Service RH</span> Simplifier l'accueil et la vie des collaborateurs</h3>
+        <ul>
+            <li><strong>Aujourd'hui :</strong> Un nouvel arrivant cherche "intégration". Il ne trouve rien car l'article s'intitule "Livret d'onboarding". Les consignes de sécurité ou chartes liées en PDF sur le Drive sont introuvables via le site.</li>
+            <li><strong>Demain :</strong> Le moteur comprend les synonymes. En tapant "intégration", l'agent trouve le livret d'onboarding. Mieux, s'il cherche "mutuelle", le moteur ressort l'article Infocité mais va aussi chercher <strong>à l'intérieur du document PDF de la mutuelle</strong> lié sur le Google Drive pour lui indiquer les garanties.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3><span class="badge badge-com">Service Communication</span> Valoriser le patrimoine d'information</h3>
+        <ul>
+            <li><strong>Aujourd'hui :</strong> Les articles rédigés avec soin sont rapidement oubliés car dès qu'ils quittent la page d'accueil, ils deviennent difficiles à retrouver si l'on ne se souvient pas du titre exact.</li>
+            <li><strong>Demain :</strong> Grâce au double système de <strong>Tags (mots-clés)</strong>, vous pourrez associer des étiquettes thématiques lors de la rédaction. Le moteur les utilisera en priorité pour faire ressortir vos campagnes prioritaires (ex: tagguer un article "RSE" ou "Sécurité").</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3><span class="badge badge-compta">Service Comptabilité &amp; Direction</span> Gestion documentaire personnelle</h3>
+        <ul>
+            <li><strong>Aujourd'hui :</strong> Vous consultez des guides de procédures financières ou des notes de cadrage régulières, mais vous ne pouvez pas les classer selon vos propres habitudes de travail.</li>
+            <li><strong>Demain :</strong> Vous pourrez ajouter vos propres <strong>Tags Personnels</strong> (ex: <i>"À valider"</i>, <i>"Procédures 2026"</i>) sur n'importe quel article. Vous pourrez alors faire des recherches rapides uniquement dans vos sélections d'articles ou demander à l'IA de vous résumer vos articles taggués.</li>
+        </ul>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 2. LES 3 SCÉNARIOS DÉCISIONNELS          -->
+    <!-- ========================================= -->
+    <h2>2. Les 3 scénarios sur la table</h2>
+    <p>Pour répondre à la demande du COPIL, nous avons formalisé trois trajectoires de réalisation, de la plus simple à la plus intelligente.</p>
+
+    <div class="card">
+        <h3>Scénario 1 : La Recherche Intelligente Interne (Sans Google Drive, Sans IA)</h3>
+        <p>On modernise uniquement le moteur interne d'Infocité. Le système devient tolérant aux fautes d'orthographe, gère les synonymes et propose des suggestions rapides.</p>
+        <p><strong>Bénéfice :</strong> Recherche interne parfaite et instantanée.</p>
+        <p><strong>Limite :</strong> Le Google Drive de l'établissement reste invisible.</p>
+    </div>
+
+    <div class="card">
+        <h3>Scénario 2 : L'Indexation Connectée (Avec Google Drive, Sans IA)</h3>
+        <p>En tâche de fond, Infocité va lire les documents Google Drive partagés dans les articles (Docs, PDF) et mémorise leur texte. La barre de recherche classique cherche dans les articles ET dans le texte de ces documents.</p>
+        <p><strong>Bénéfice :</strong> Recherche extrêmement approfondie sur tout le Drive lié, résultats instantanés.</p>
+        <p><strong>Limite :</strong> L'utilisateur obtient des listes de liens. C'est à lui d'ouvrir le document et de chercher la bonne ligne.</p>
+    </div>
+
+    <div class="card">
+        <h3>Scénario 3 : L'Assistant IA "Copilote" (Avec Google Drive + Intelligence Artificielle)</h3>
+        <p>En plus de la barre de recherche classique du Scénario 2, on ajoute un <strong>Agent IA conversationnel</strong> (un chatbot d'établissement). L'utilisateur pose sa question en langage naturel (ex: <i>"Quelles sont les démarches pour déclarer un accident de travail d'après nos guides RH ?"</i>). L'IA cherche les bons documents sur le Drive, les lit en temps réel, rédige une réponse de synthèse sur mesure et cite ses sources.</p>
+        <p><strong>Bénéfice :</strong> Un gain de temps exceptionnel pour les agents. Plus besoin d'ouvrir 5 PDF de 30 pages pour trouver une réponse, l'IA fait la synthèse.</p>
+        <p><strong>Limites :</strong> Temps de réponse de l'IA (5 à 10 secondes) et coûts de consommation liés à l'IA.</p>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 3. LE NERF DE LA GUERRE : LES COÛTS      -->
+    <!-- ========================================= -->
+    <h2>3. Budget &amp; Coûts : Combien coûte réellement l'IA ?</h2>
+    <p>L'utilisation de l'Intelligence Artificielle professionnelle (Google Gemini API via Vertex AI) n'est pas gratuite, mais elle est très abordable si elle est maîtrisée. Contrairement à un abonnement fixe (comme ChatGPT Plus à 20€/mois par utilisateur), <strong>les APIs se payent à l'usage réel (au centime près)</strong>.</p>
+
+    <div class="highlight-orange">
+        <h4>Estimation des coûts de consommation de l'IA (Gemini 1.5 Flash) :</h4>
+        <p>Gemini 1.5 Flash est le modèle d'IA de Google le plus adapté : ultra-rapide et extrêmement économique.</p>
+        <ul>
+            <li><strong>Coût moyen d'une question posée à l'IA :</strong> Environ <strong>0,0015 € à 0,003 €</strong> (selon la longueur des documents Drive que l'IA doit analyser pour répondre).</li>
+            <li><strong>Pour 1 000 questions posées par mois</strong> (soit environ 50 questions par jour ouvré sur tout l'établissement) : Le coût facturé par Google sera d'environ <strong>1,50 € à 3,00 € par mois</strong>.</li>
+            <li><strong>Même dans un scénario de forte utilisation</strong> (5 000 questions/mois) : Le coût restera inférieur à <strong>15,00 € par mois</strong>.</li>
+        </ul>
+        <p><em>Note : Google for Education offre parfois des crédits d'infrastructure Cloud qui peuvent couvrir ces coûts en totalité.</em></p>
+    </div>
+
+    <div class="card">
+        <h3>Comparatif budgétaire des Scénarios :</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scénario</th>
+                    <th>Coût de Développement initial</th>
+                    <th>Coût de fonctionnement mensuel</th>
+                    <th>Complexité technique</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. Recherche Interne</strong></td>
+                    <td>Faible (1 à 2 semaines)</td>
+                    <td><strong>0 €</strong> (Hébergement local gratuit)</td>
+                    <td>Très simple</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Indexation Google Drive</strong></td>
+                    <td>Moyen (3 à 4 semaines)</td>
+                    <td><strong>0 €</strong> (Inclus dans nos serveurs actuels)</td>
+                    <td>Modérée</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Assistant IA / RAG</strong></td>
+                    <td>Élevé (5 à 7 semaines)</td>
+                    <td><strong>~2 € à 15 € / mois</strong> (Facturation à l'usage de l'IA)</td>
+                    <td>Élevée (IA + Connecteurs)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 4. LA SÉCURITÉ DES DONNÉES               -->
+    <!-- ========================================= -->
+    <h2>4. Sécurité : Zéro risque de fuite d'information sensible</h2>
+    <p>Une question légitime de la part des services RH ou Comptabilité est : <i>"Si un document sensible (ex: grille de salaires ou budget confidentiel) est stocké sur le Drive, l'IA ou le moteur vont-ils le révéler aux élèves ou aux autres agents ?"</i></p>
+
+    <div class="highlight-red">
+        <strong>La réponse est un NON catégorique grâce à notre architecture :</strong><br>
+        Infocité utilise déjà la connexion Google unique (OAuth) des usagers de la Cité des Formations. Notre moteur de recherche va hériter en temps réel de cette sécurité.
+        <ul>
+            <li>Si un agent fait une recherche, Infocité interroge le Drive <strong>avec le compte Google de cet agent</strong>.</li>
+            <li>Si l'agent n'a pas le droit d'ouvrir le fichier sur son Google Drive habituel, le moteur de recherche l'ignorera complètement et l'IA refusera de le lire pour lui répondre.</li>
+            <li><strong>Pour les comptes externes ou temporaires</strong> (se connectant par mot de passe classique sans compte Google d'établissement), l'accès aux fichiers du Drive est tout simplement **bloqué à 100%** par défaut.</li>
+        </ul>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 5. SYNTHÈSE DÉCISIONNELLE                -->
+    <!-- ========================================= -->
+    <h2>5. Tableau comparatif pour décision</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critère</th>
+                <th>Scénario 1 : Recherche Interne</th>
+                <th>Scénario 2 : Recherche + Drive</th>
+                <th>Scénario 3 : Recherche + Drive + IA</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Bénéfice principal</strong></td>
+                <td>Recherche interne rapide et tolérante aux fautes</td>
+                <td>Recherche approfondie dans le contenu des PDF/Docs liés</td>
+                <td>L'IA répond directement aux questions en synthétisant les documents</td>
+            </tr>
+            <tr>
+                <td><strong>Expérience Utilisateur</strong></td>
+                <td>Classique (Liste d'articles)</td>
+                <td>Avancée (Articles + Documents Google)</td>
+                <td>Futuriste &amp; Efficace (Chatbot + Réponses rédigées)</td>
+            </tr>
+            <tr>
+                <td><strong>Coût à l'usage</strong></td>
+                <td><strong>Gratuit</strong></td>
+                <td><strong>Gratuit</strong></td>
+                <td>Très faible (<strong>&lt; 10 €/mois</strong> à l'usage)</td>
+            </tr>
+            <tr>
+                <td><strong>Sécurité</strong></td>
+                <td>Absolue (interne)</td>
+                <td>Garantie par Google OAuth</td>
+                <td>Garantie par Google OAuth</td>
+            </tr>
+            <tr>
+                <td><strong>Recommandation Technique</strong></td>
+                <td>Étape minimale indispensable</td>
+                <td><strong>Le meilleur rapport qualité/prix</strong> pour commencer</td>
+                <td><strong>L'objectif cible</strong> pour maximiser la productivité</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight-green" style="margin-top: 30px;">
+        <h4>Notre recommandation de trajectoire : La méthode progressive</h4>
+        <p>Plutôt que de choisir un scénario figé, nous préconisons une <strong>approche progressive en 2 temps</strong> :</p>
+        <ol>
+            <li><strong>Temps 1 (Scénario 2 + Tags) :</strong> Mettre en place la recherche intelligente interne, l'indexation du Google Drive via OAuth sécurisé, et le double système de Tags (mots-clés éditoriaux et personnels). Cette étape apporte 90% de la valeur documentaire pour un coût de fonctionnement de 0 €.</li>
+            <li><strong>Temps 2 (Option IA - Scénario 3) :</strong> Lancer un groupe de test (RH / Direction) sur l'Assistant IA pour valider la pertinence des réponses et mesurer précisément la consommation réelle des centimes d'IA, avant de l'ouvrir globalement.</li>
+        </ol>
+    </div>
+
+</div>
+
+<div class="btn-print" style="margin-top: 30px;">
+    <button onclick="window.print()" style="padding:12px 25px; font-size:1.1rem; background:#27ae60; color:white; border:none; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">🖨️ Imprimer la Note COPIL</button>
+</div>
+
+</body>
+</html>

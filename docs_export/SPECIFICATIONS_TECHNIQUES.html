@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Spécifications Techniques - Infocite</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        h2 { color: #16a085; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        h3 { color: #2980b9; }
+        code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: Courier, monospace; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; border: 1px solid #ddd; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 40px 0; }
+        .mermaid { color: #d35400; font-style: italic; background: #fff5e6; padding: 10px; border-left: 5px solid #d35400; }
+    </style>
+</head>
+<body>
+
+<h1>Spécifications Techniques : Projet Infocite</h1>
+
+<p>Ce document est conçu pour accompagner tout développeur chargé de la maintenance d'Infocite, même sans expérience préalable en programmation orientée objet (POO) ou avec le framework Laravel.</p>
+
+<hr>
+
+<h2>1. La "Grande Image" : Comprendre comment ça marche</h2>
+
+<h3>1.1 La métaphore du Restaurant (Le modèle MVC)</h3>
+<p>Dans un développement PHP "classique" (sans framework), on a souvent un fichier <code>.php</code> par page. C'est comme si vous alliez dans une cuisine et que vous deviez tout faire vous-même pour chaque client.</p>
+
+<p>Laravel utilise une organisation appelée <strong>MVC</strong> (Modèle-Vue-Contrôleur). Imaginez un restaurant :</p>
+
+<ol>
+    <li><strong>Le Client (L'Utilisateur)</strong> : Il arrive sur le site et demande une page (ex: "Je veux voir l'article n°5").</li>
+    <li><strong>Le Menu (Les Routes)</strong> : C'est la liste de tout ce que le restaurant sait faire. Le client pointe une ligne du menu.</li>
+    <li><strong>Le Serveur (Le Contrôleur / Livewire)</strong> : Il prend la commande. Il ne cuisine pas lui-même, mais il sait qui appeler.</li>
+    <li><strong>Le Chef Cuisinier (Le Modèle)</strong> : C'est lui qui a accès au garde-manger (<strong>La Base de Données</strong>). Le serveur lui dit : "Donne-moi les infos du Post n°5". Le Chef prépare les données brutes.</li>
+    <li><strong>Le Dressage (La Vue)</strong> : Le serveur prend les données du Chef et les met dans une jolie assiette. C'est le code HTML que l'utilisateur voit enfin à l'écran.</li>
+</ol>
+
+<h3>1.2 Qu'est-ce qu'un Framework (Laravel) ?</h3>
+<p>Considérez Laravel comme une <strong>boîte à outils géante</strong>. Au lieu de fabriquer vos propres vis, vos propres marteaux et vos propres plans à chaque fois, Laravel vous fournit tout le nécessaire de base (gestion de la connexion, sécurité, envoi d'emails, etc.).<br>
+Votre travail consiste à assembler ces outils pour construire la maison "Infocite".</p>
+
+<hr>
+
+<h2>2. Le Lexique Infocite : Parler la même langue</h2>
+
+<p>Pour bien maintenir Infocite, il faut comprendre ces termes qui reviennent partout dans le code :</p>
+
+<ul>
+    <li><strong>Rubrique (Rubric)</strong> : C'est une catégorie de navigation. Elles peuvent être parentes (ex: "Actualités", "RH") ou enfants (ex: "Événements", "Vidéos").</li>
+    <li><strong>Article (Post)</strong> : C'est le contenu textuel principal. Un article appartient toujours à une rubrique.</li>
+    <li><strong>Application (App)</strong> : Un lien externe. Il y a des apps "institutionnelles" (pour tout le monde) et "personnelles" (propres à chaque utilisateur).</li>
+    <li><strong>Rôle (Role)</strong> : Le niveau de pouvoir d'un utilisateur sur un élément (Lecteur, Éditeur, Modérateur, Administrateur).</li>
+    <li><strong>Droit (Right)</strong> : La règle qui définit quel profil a quel rôle sur quel objet.</li>
+    <li><strong>Organigramme (OrgChart)</strong> : La structure hiérarchique de l'établissement, gérée de façon dynamique.</li>
+    <li><strong>Livewire</strong> : La technologie qui permet de rendre le site "vivant" (ex: quand on clique sur un bouton, la page se met à jour sans se recharger totalement).</li>
+</ul>
+
+<hr>
+
+<h2>3. Guide pratique : "Où se cache le code ?"</h2>
+
+<p>Dans Infocite, le code n'est pas tout au même endroit. Voici un tableau d'orientation pour savoir où intervenir selon votre besoin :</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Si vous voulez...</th>
+            <th>Allez dans ce dossier...</th>
+            <th>Type de fichiers</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Modifier un texte fixe, une couleur ou la structure visuelle</strong></td>
+            <td><code>resources/views/</code></td>
+            <td><code>.blade.php</code> (HTML + PHP)</td>
+        </tr>
+        <tr>
+            <td><strong>Modifier le comportement d'un bouton ou d'un formulaire</strong></td>
+            <td><code>app/Http/Livewire/</code></td>
+            <td><code>.php</code> (Logique interactive)</td>
+        </tr>
+        <tr>
+            <td><strong>Changer une règle d'accès (qui a le droit de voir quoi)</strong></td>
+            <td><code>app/Policies/</code></td>
+            <td><code>.php</code> (Règles de sécurité)</td>
+        </tr>
+        <tr>
+            <td><strong>Ajouter ou modifier une information en base de données</strong></td>
+            <td><code>database/migrations/</code> et <code>app/Models/</code></td>
+            <td><code>.php</code></td>
+        </tr>
+        <tr>
+            <td><strong>Modifier les constantes de l'application (ex: noms des rubriques, couleurs par défaut)</strong></td>
+            <td><code>app/CustomFacades/AP.php</code></td>
+            <td><code>.php</code> (Paramètres centraux)</td>
+        </tr>
+        <tr>
+            <td><strong>Gérer l'envoi des notifications Firebase</strong></td>
+            <td><code>app/Notifications/</code></td>
+            <td><code>.php</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>3.1 Un exemple concret : Changer le titre d'une page</h3>
+<p>Si vous voulez changer la façon dont le titre s'affiche sur la page "À la Une" :</p>
+<ol>
+    <li>Le visuel est dans <code>resources/views/livewire/usage/posts-manager.blade.php</code>.</li>
+    <li>La logique qui décide quel titre afficher est dans <code>app/Http/Livewire/Usage/PostsManager.php</code>.</li>
+</ol>
+
+<hr>
+
+<h2>4. Les Mécanismes Clés (Sans jargon)</h2>
+
+<h3>4.1 Le système de Droits (La tour de contrôle)</h3>
+<p>Infocite utilise un système de droits très précis. Tout est centralisé dans un fichier appelé <strong><code>AP.php</code></strong> (dans <code>app/CustomFacades/</code>).<br>
+C'est ici que l'on définit quels modèles (Utilisateurs, Articles, etc.) sont gérés dans quels tableaux de bord et avec quels rôles par défaut.</p>
+
+<p>Le code vérifie ensuite ces règles dans les dossiers <strong><code>Policies</code></strong>. Un fichier "Policy" contient des questions simples : "L'utilisateur peut-il créer un article ?", "L'utilisateur peut-il supprimer ce commentaire ?".</p>
+
+<h3>4.2 L'organisation des Rubriques (L'arborescence)</h3>
+<p>Les rubriques sont comme des dossiers dans votre ordinateur. Elles peuvent contenir des sous-rubriques ou des articles.</p>
+<ul>
+    <li>Elles ont une <strong>position</strong> (Barre de navigation ou Pied de page).</li>
+    <li>Elles ont un <strong>segment</strong> (l'identifiant utilisé dans l'adresse URL).</li>
+</ul>
+
+<h3>4.3 Les Notifications Firebase</h3>
+<p>Lorsqu'un article est publié, Infocite "envoie un signal" à Google Firebase, qui se charge de faire apparaître une petite bulle sur le bureau ou le téléphone des utilisateurs. L'activation de cet envoi est pilotée globalement par la variable <code>FCM_NOTIFICATIONS_ENABLED</code> dans le fichier <code>.env</code>.</p>
+
+<h3>4.4 La Base de Données (Le Garde-Manger)</h3>
+<p>La base de données MySQL d'Infocite est organisée de manière logique. Voici les relations principales à comprendre :</p>
+<ul>
+    <li><strong>Users</strong> : Contient tous les utilisateurs. Un utilisateur est lié soit à un <strong>Employee</strong> (personnel), soit à un <strong>Learner</strong> (élève).</li>
+    <li><strong>Posts (Articles)</strong> : Chaque article est lié à une <strong>Rubric</strong> (Rubrique) et possède un <strong>User</strong> comme auteur.</li>
+    <li><strong>Interactions</strong> : C'est ici que l'on enregistre qui a lu quel article et à quel moment. Cela permet de calculer les statistiques de consultation.</li>
+    <li><strong>Groups</strong> : Les utilisateurs sont regroupés dans des classes, des services ou des équipes. Cela sert à donner des droits d'accès massifs.</li>
+</ul>
+
+<h3>4.5 Le Cycle de vie d'un Article</h3>
+<p>Un article ne naît pas "publié". Il suit un cheminement :</p>
+<ol>
+    <li><strong>Création</strong> : L'auteur rédige l'article. Par défaut, il n'est pas encore visible.</li>
+    <li><strong>Date de parution</strong> : On peut programmer une date future. L'article ne s'affichera qu'à ce moment-là.</li>
+    <li><strong>Épinglage</strong> : On peut décider qu'un article doit rester en haut de la page "À la Une".</li>
+    <li><strong>Archivage/Expiration</strong> : On peut définir une date de fin. L'article disparaîtra de la vue publique mais restera en base de données.</li>
+</ol>
+
+<h3>4.6 L'Organigramme Dynamique</h3>
+<p>L'organigramme n'est pas une image fixe. Il est construit à partir de plusieurs briques :</p>
+<ul>
+    <li><strong>Chartnodes</strong> : Les "cases" du schéma. Elles sont liées à un code fonction (YParéo).</li>
+    <li><strong>Groupes (Processus)</strong> : Les utilisateurs sont rattachés aux cases via leur appartenance à un groupe correspondant au code fonction de la case.</li>
+    <li><strong>Formats</strong> : Les styles visuels (couleurs, bordures) de chaque case.</li>
+    <li><strong>Labels</strong> : Les titres des fonctions (ex: "Directeur", "Formateur").</li>
+</ul>
+
+<h3>4.7 Module Galerie Photos (Médias)</h3>
+<p>Ce module permet d'associer un album d'images à un article. L'implémentation repose sur des principes de performance et de légèreté :</p>
+<ul>
+    <li><strong>Stockage JSON</strong> : Contrairement aux fichiers classiques, les chemins et l'ordre des images sont stockés dans une colonne <code>JSON</code> de la table <code>galleries</code>. Cela simplifie les requêtes et évite les tables de liaison complexes.</li>
+    <li><strong>Gestion Asynchrone</strong> : Lors de l'édition d'un article, les images sont stockées temporairement dans la session PHP (Cache serveur) tant que l'article n'est pas sauvegardé. Cela évite d'encombrer le serveur avec des fichiers "orphelins".</li>
+    <li><strong>Rendu Hybride Intelligent</strong> :
+        <ul>
+            <li><em>Mobile</em> : Présentation en mosaïque carrée (1:1) avec calcul dynamique des arrondis de coins.</li>
+            <li><em>Desktop</em> : Bande horizontale de vignettes normées (155px × 155px) pour une intégration visuelle premium.</li>
+        </ul>
+    </li>
+    <li><strong>Visionneuse (GLightbox)</strong> : Les galeries utilisent la bibliothèque <code>GLightbox</code> pour offrir un défilement fluide, le support tactile et une navigation optimisée.</li>
+</ul>
+
+<h3>4.8 Sécurité et Validation des Formulaires</h3>
+<p>Une attention particulière doit être portée à la validation des champs booléens dans les formulaires Livewire (ex: <code>EditPostManager</code>).<br>
+<strong>Règle d'or :</strong> Toujours forcer l'initialisation des drapeaux (flags) à <code>false</code> ou <code>true</code> avant l'appel à <code>validate()</code> pour éviter que Laravel ne retourne une erreur sur une valeur <code>NULL</code> inattendue lors de la création.</p>
+
+<h3>4.9 Système de Modèles d'Articles (Templates)</h3>
+<p>Ce système permet aux rédacteurs de gagner en productivité en réutilisant des structures d'articles types. L'implémentation repose sur une ségrégation stricte :</p>
+<ul>
+    <li><strong>Scope Eloquent <code>notTemplates()</code></strong> : Présent sur le modèle <code>Post</code>, ce scope doit être systématiquement appliqué (via <code>PostsManager</code> et <code>WithFilterPosts</code>) pour exclure les modèles des flux de lecture publics.</li>
+    <li><strong>Interface de Gestion</strong> : Une section dédiée en bas de page (visible uniquement en mode édition) permet de gérer les modèles. Elle utilise des modales spécifiques :
+        <ul>
+            <li><code>ApplyTemplateManager</code> : Pour injecter le contenu d'un modèle dans l'éditeur.</li>
+            <li><code>ExtractTemplateManager</code> : Pour transformer un article existant en modèle.</li>
+            <li><code>PostTemplatesManager</code> : Pour la gestion (CRUD) globale des modèles d'une rubrique.</li>
+        </ul>
+    </li>
+    <li><strong>Clonage de Contenu</strong> : Lors de la création d'un article à partir d'un modèle, le système effectue une copie du titre, de l'icône et du contenu HTML, tout en préservant l'article original.</li>
+</ul>
+
+<h3>4.10 Moteur d'Édition Avancé (TinyMCE)</h3>
+<p>L'éditeur d'articles a été optimisé pour offrir une expérience de structuration "par blocs" fluide et robuste. Les spécificités techniques sont :</p>
+<ul>
+    <li><strong>Logique d'Aspiration Universelle</strong> : Contrairement aux fonctions d'insertion natives, le script <code>tiny_editor_SC.js</code> utilise une détection de sélection intelligente. Il identifie les nœuds de départ et d'arrivée pour capturer l'intégralité des structures HTML (outerHTML) et les injecter dans les nouveaux conteneurs sans perte de formatage.</li>
+    <li><strong>Découplage des Contrôles (Unwrap)</strong> : Une fonction chirurgicale permet de supprimer les balises de décoration (classes <code>block-note-*</code> ou <code>block-frame-*</code>) tout en réinjectant le contenu directement dans le flux parent, préservant ainsi l'intégrité sémantique du document.</li>
+    <li><strong>Gardes-fous Sémantiques</strong> : Utilisation de l'API <code>notificationManager</code> pour bloquer les actions invalides (ex: insertion de listes ou multi-sélections dans des titres) avant qu'elles ne corrompent la structure du DOM.</li>
+    <li><strong>Persistance Multimédia</strong> : La fonction <code>GetContent</code> de TinyMCE a été surchargée pour garantir que les balises <code>IFRAME</code>, <code>VIDEO</code>, <code>IMG</code> et <code>TABLE</code> ne soient jamais considérées comme du contenu vide et supprimées par erreur lors du nettoyage automatique.</li>
+    <li><strong>Intégration Google Drive</strong> : Implémentation d'un <code>media_url_resolver</code> qui transforme automatiquement les liens de partage Google Drive (<code>/view</code>) en liens intégrables (<code>/preview</code>). Ce mécanisme permet d'utiliser l'outil "Média" natif de TinyMCE pour insérer des vidéos institutionnelles sans avoir à manipuler manuellement le code HTML de l'iframe.</li>
+</ul>
+
+<hr>
+
+<h2>5. Fiches Recettes (Pas-à-pas)</h2>
+
+<h3>5.1 Recette n°1 : Créer une nouvelle rubrique</h3>
+<ol>
+    <li><strong>Interface d'administration</strong> : Connectez-vous avec un compte administrateur et allez dans le tableau de bord Admin -> Rubriques. Cliquez sur "Ajouter".</li>
+    <li><strong>Configuration</strong> :
+        <ul>
+            <li>Choisissez un <strong>Nom</strong>.</li>
+            <li>Définissez un <strong>Segment</strong> (sans espaces ni accents, ex: <code>ma-nouvelle-page</code>).</li>
+            <li>Choisissez la <strong>Position</strong> (Navigation ou Pied de page).</li>
+        </ul>
+    </li>
+    <li><strong>Résultat</strong> : La rubrique apparaîtra automatiquement dans le menu correspondant.</li>
+</ol>
+
+<h3>5.2 Recette n°2 : Modifier un libellé ou un texte fixe</h3>
+<ol>
+    <li>Si le texte est dans une page, utilisez le "Guide pratique (Section 3)" pour trouver le fichier <code>.blade.php</code>.</li>
+    <li>Cherchez le texte entre les balises HTML et remplacez-le.</li>
+    <li><strong>Avertissement</strong> : Ne touchez pas aux éléments entre <code>{{ ... }}</code> ou <code>@if</code>, ce sont des variables dynamiques.</li>
+</ol>
+
+<h3>5.3 Recette n°3 : Gérer les droits d'un administrateur</h3>
+<ol>
+    <li>Allez dans Admin -> Droits.</li>
+    <li>Ici, vous pouvez attribuer des rôles à des utilisateurs ou des groupes sur des objets précis.</li>
+    <li>Pour ajouter un accès global à un nouveau module, cela se passe dans <code>app/CustomFacades/AP.php</code> (demandez l'aide d'un développeur confirmé pour cette partie).</li>
+</ol>
+
+<hr>
+
+<h2>6. L'Environnement de Travail (Local)</h2>
+
+<p>Pour travailler sur Infocite sur votre poste, vous utilisez probablement <strong>Laragon</strong> ou <strong>WAMP</strong>.</p>
+
+<ol>
+    <li><strong>Le dossier du projet</strong> : <code>C:\laragon\www\infocite</code></li>
+    <li><strong>L'adresse locale</strong> : <code>http://infocite.test</code></li>
+    <li><strong>Fichier <code>.env</code></strong> : C'est le fichier qui contient vos codes secrets locaux (mots de passe de base de données, clés API). <strong>Ne le partagez jamais !</strong></li>
+</ol>
+
+<h3>6.1 Compiler les changements visuels</h3>
+<p>Si vous modifiez les styles CSS (dans <code>resources/sass</code>), vous devez "compiler" votre travail pour qu'il soit visible :</p>
+<ol>
+    <li>Ouvrez un terminal dans le dossier du projet.</li>
+    <li>Tapez : <code>npm run dev</code>.</li>
+</ol>
+
+<hr>
+
+<h2>7. Schéma récapitulatif : Le flux d'une page</h2>
+
+<p>Voici comment Infocite traite une demande utilisateur étape par étape :</p>
+
+<table style="width: 100%; border: none; border-spacing: 0 10px; border-collapse: separate;">
+    <tr>
+        <td style="width: 30%; background-color: #3498db; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            1. ACTION UTILISATEUR
+        </td>
+        <td style="width: 70%; padding: 15px; border: 1px solid #3498db; border-left: none; border-radius: 0 8px 8px 0;">
+            Le client clique sur un lien ou un bouton (ex: "Voir un article").
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #2ecc71; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            2. LE MENU (Routes)
+        </td>
+        <td style="padding: 15px; border: 1px solid #2ecc71; border-left: none; border-radius: 0 8px 8px 0;">
+            Le fichier <code>routes/web.php</code> analyse l'URL et appelle le bon composant.
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #f1c40f; color: black; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            3. LE SERVEUR (Livewire)
+        </td>
+        <td style="padding: 15px; border: 1px solid #f1c40f; border-left: none; border-radius: 0 8px 8px 0;">
+            Le composant PHP (dans <code>app/Http/Livewire</code>) exécute la logique métier.
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #e67e22; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            4. LA CUISINE (Modèle/BDD)
+        </td>
+        <td style="padding: 15px; border: 1px solid #e67e22; border-left: none; border-radius: 0 8px 8px 0;">
+            Laravel va chercher les données dans les tables (ex: <code>posts</code>, <code>users</code>).
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; text-align: center; color: #7f8c8d; font-size: 20px;">⬇️</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td style="background-color: #9b59b6; color: white; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold;">
+            5. LE DRESSAGE (Vue)
+        </td>
+        <td style="padding: 15px; border: 1px solid #9b59b6; border-left: none; border-radius: 0 8px 8px 0;">
+            Le fichier HTML final (<code>.blade.php</code>) est généré et envoyé au navigateur.
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<h2>8. Maintenance et Outils de secours</h2>
+
+<h3>8.1 Commandes de secours (Artisan)</h3>
+<p>Laravel propose des commandes pour nettoyer le système si celui-ci devient lent ou si les changements ne s'affichent pas :</p>
+<ul>
+    <li><code>php artisan cache:clear</code> : Vide la mémoire temporaire.</li>
+    <li><code>php artisan route:clear</code> : Réinitialise la liste des adresses URL.</li>
+    <li><code>php artisan view:clear</code> : Force la mise à jour des fichiers visuels.</li>
+</ul>
+
+<h3>8.2 Maintenance des notifications</h3>
+<p>Si les notifications Firebase ne partent plus :</p>
+<ol>
+    <li>Vérifiez que <code>FCM_NOTIFICATIONS_ENABLED</code> est à <code>true</code> dans le fichier <code>.env</code> (indispensable en production).</li>
+    <li>Vérifiez les clés Firebase dans le fichier <code>.env</code>.</li>
+    <li>Lancez la commande <code>php artisan fcm:purge</code> pour nettoyer les anciens jetons de connexion périmés.</li>
+</ol>
+
+<h3>8.3 Compilation pour la Production</h3>
+<p>Avant de mettre le site en ligne (sur le serveur réel), utilisez toujours :<br>
+<code>npm run prod</code><br>
+Cela compresse tous les fichiers pour que le site soit le plus rapide possible pour les utilisateurs.</p>
+
+</body>
+</html>

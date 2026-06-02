@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dépendances Externes - Infocite</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: auto; padding: 20px; }
+        h1 { color: #8e44ad; text-align: center; border-bottom: 2px solid #8e44ad; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        .service-card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0; background-color: #fcfcfc; }
+        .service-title { font-weight: bold; font-size: 1.2em; color: #8e44ad; }
+        .warning { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>Dépendances Externes et APIs</h1>
+
+<p>Infocite n'est pas un système isolé. Il communique avec plusieurs services tiers pour fonctionner. Ce document liste ces points de contact critiques.</p>
+
+<div class="service-card">
+    <div class="service-title">1. Google Cloud Platform (OAuth 2.0)</div>
+    <p><strong>Rôle</strong> : Permet aux utilisateurs de se connecter avec leur compte Google professionnel.</p>
+    <ul>
+        <li><strong>Console</strong> : <a href="https://console.cloud.google.com/">Google Cloud Console</a></li>
+        <li><strong>Identifiants</strong> : Client ID et Client Secret (stockés dans le <code>.env</code>).</li>
+        <li><strong>Risque</strong> : Si les identifiants expirent, plus personne ne pourra se connecter.</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">2. Firebase (Cloud Messaging - FCM)</div>
+    <p><strong>Rôle</strong> : Envoi des notifications de bureau en temps réel.</p>
+    <ul>
+        <li><strong>Console</strong> : <a href="https://console.firebase.google.com/">Firebase Console</a></li>
+        <li><strong>Configuration</strong> : Fichier <code>firebase-messaging-sw.js</code> à la racine et clés de serveur dans le <code>.env</code>.</li>
+        <li><strong>Vérification</strong> : Le certificat VAPID doit être valide pour que les navigateurs acceptent les notifications.</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">3. Liaison YParéo</div>
+    <p><strong>Rôle</strong> : Synchronisation des identités, des classes et des fonctions.</p>
+    <ul>
+        <li><strong>Mécanisme</strong> : Import via base de données ou API (selon configuration locale).</li>
+        <li><strong>Champs clés</strong> : <code>code_ypareo</code>, <code>code_netypareo</code>, <code>login</code>.</li>
+        <li><strong>Obsolescence</strong> : Le système des "Acteurs" est obsolète au profit des codes fonctions YParéo.</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">4. Google Drive (Embed)</div>
+    <p><strong>Rôle</strong> : Hébergement et intégration des vidéos institutionnelles.</p>
+    <ul>
+        <li><strong>Mécanisme</strong> : Utilisation d'iframes <code>/preview</code> générées via un resolver d'URL automatique dans TinyMCE.</li>
+        <li><strong>Configuration</strong> : Les fichiers doivent être configurés en partage "Tous les utilisateurs de l'organisation disposant du lien".</li>
+    </ul>
+</div>
+
+<div class="service-card">
+    <div class="service-title">5. Fontes et Médias</div>
+    <ul>
+        <li><strong>Google Fonts</strong> : Chargement des polices (Inter, Roboto, Material Icons).</li>
+        <li><strong>Boxicons</strong> : Bibliothèque d'icônes pour l'interface.</li>
+    </ul>
+</div>
+
+<p class="warning">IMPORTANT : En cas de changement de domaine (URL du site), toutes ces configurations (URL de redirection Google, domaine Firebase) doivent être mises à jour dans les consoles respectives.</p>
+
+</body>
+</html>
