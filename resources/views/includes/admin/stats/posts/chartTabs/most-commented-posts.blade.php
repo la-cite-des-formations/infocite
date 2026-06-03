@@ -47,15 +47,57 @@
                             </div>
                         </div>
                         <div class='row mb-1'>
-                            <label for='mostCommentedPostsRubricIdFilter' class='col-4 pe-2 col-form-label text-end'>Rubrique :</label>
-                            <div class='col px-0'>
-                                <select id='mostCommentedPostsRubricIdFilter' wire:model='statsCollection.mostCommentedPosts.filter.rubricId'
-                                        class='form-select' aria-label='Filtrer les rubriques'>
-                                    <option label='Choisir une rubrique...'></option>
-                                  @foreach ($rubrics as $rubric)
-                                    <option value='{{ $rubric->id }}'>{{ $rubric->identity() }}</option>
-                                  @endforeach
-                                </select>
+                            <label class='col-4 pe-2 col-form-label text-end'>Rubrique :</label>
+                            <div class='col-8 px-0'>
+                                <div class="dropdown w-100" wire:ignore.self>
+                                    <button class="form-select w-100 text-start d-flex justify-content-between align-items-center bg-white text-dark" type="button" id="mostCommentedPostsRubricIdFilter" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" wire:ignore.self>
+                                        <span class="text-truncate">
+                                            @if(empty($statsCollection['mostCommentedPosts']['filter']['rubricId']))
+                                                Choisir des rubriques...
+                                            @else
+                                                {{ count($statsCollection['mostCommentedPosts']['filter']['rubricId']) }} rubrique(s)
+                                            @endif
+                                        </span>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-2" aria-labelledby="mostCommentedPostsRubricIdFilter" style="max-height: 300px; overflow-y: auto;" wire:ignore.self>
+                                        @php $hasOutput = false; @endphp
+                                        @foreach ($rubricFamilies as $parent)
+                                            @php
+                                                $childs = $parent->childs;
+                                                $hasChilds = $childs->isNotEmpty();
+                                            @endphp
+
+                                            @if($parent->contains_posts || $hasChilds)
+                                                @if($hasOutput)
+                                                    <hr class="my-1">
+                                                @endif
+                                                @php $hasOutput = true; @endphp
+                                            @endif
+
+                                            @if ($hasChilds)
+                                                <button type="button" wire:click="toggleParentRubric('mostCommentedPosts', {{ $parent->id }})" class="dropdown-item fw-bold btn-link text-start px-2 py-1 border-0 bg-transparent text-decoration-none" onclick="event.stopPropagation()">
+                                                    <i class="bi bi-folder-fill me-1"></i> {{ $parent->name }}
+                                                </button>
+                                                
+                                                @foreach ($childs as $child)
+                                                    <div class="form-check dropdown-item px-4 py-1" onclick="event.stopPropagation()">
+                                                        <input class="form-check-input ms-0 me-2" type="checkbox" value="{{ $child->id }}" id="rubric_commented_{{ $child->id }}" wire:model="statsCollection.mostCommentedPosts.filter.rubricId">
+                                                        <label class="form-check-label w-100" for="rubric_commented_{{ $child->id }}">
+                                                            {{ $child->name }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            @elseif ($parent->contains_posts)
+                                                <div class="form-check dropdown-item px-2 py-1" onclick="event.stopPropagation()">
+                                                    <input class="form-check-input ms-0 me-2" type="checkbox" value="{{ $parent->id }}" id="rubric_commented_{{ $parent->id }}" wire:model="statsCollection.mostCommentedPosts.filter.rubricId">
+                                                    <label class="form-check-label fw-bold w-100" for="rubric_commented_{{ $parent->id }}">
+                                                        <i class="bi bi-file-earmark-text me-1"></i> {{ $parent->name }}
+                                                    </label>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

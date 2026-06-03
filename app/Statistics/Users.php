@@ -91,7 +91,11 @@ class Users
                     'target',
                     [Post::class],
                     function ($q2) use ($rubricId) {
-                        $q2->where('rubric_id', $rubricId);
+                        if (is_array($rubricId)) {
+                            $q2->whereIn('rubric_id', $rubricId);
+                        } else {
+                            $q2->where('rubric_id', $rubricId);
+                        }
                     }
                 );
             }

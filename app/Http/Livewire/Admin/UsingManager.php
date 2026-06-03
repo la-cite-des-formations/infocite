@@ -39,7 +39,7 @@ class UsingManager extends Component
                 'schoolYear' => NULL,
                 'month' => NULL,
                 'editorType' => 'all',
-                'rubricId' => NULL,
+                'rubricId' => [],
             ],
             'charts' => [
                 'activeEditorsTop10' => [
@@ -285,7 +285,7 @@ class UsingManager extends Component
      */
     public function updatedStatsCollectionMostActiveEditorsFilterRubricId() {
         if (empty($this->statsCollection['mostActiveEditors']['filter']['rubricId'])) {
-            $this->statsCollection['mostActiveEditors']['filter']['rubricId'] = NULL;
+            $this->statsCollection['mostActiveEditors']['filter']['rubricId'] = [];
         }
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
@@ -293,6 +293,45 @@ class UsingManager extends Component
         );
 
         $this->resetPage('mostActiveEditorsPage');
+    }
+
+    /**
+     * Bascule la sélection de toutes les rubriques enfants d'une rubrique parente.
+     *
+     * @param string $collectionKey Nom de la collection ('mostActiveEditors')
+     * @param int $parentId Identifiant de la rubrique parente
+     */
+    public function toggleParentRubric($collectionKey, $parentId) {
+        $childIds = Rubric::where('parent_id', $parentId)
+            ->where('contains_posts', true)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($childIds)) {
+            return;
+        }
+
+        $currentSelected = $this->statsCollection[$collectionKey]['filter']['rubricId'] ?? [];
+
+        $allSelected = true;
+        foreach ($childIds as $id) {
+            if (!in_array($id, $currentSelected)) {
+                $allSelected = false;
+                break;
+            }
+        }
+
+        if ($allSelected) {
+            $this->statsCollection[$collectionKey]['filter']['rubricId'] = array_values(array_diff($currentSelected, $childIds));
+        } else {
+            $this->statsCollection[$collectionKey]['filter']['rubricId'] = array_values(array_unique(array_merge($currentSelected, $childIds)));
+        }
+
+        $this->drawCharts(
+            $this->statsCollection[$collectionKey]['charts'],
+            $this->statsCollection[$collectionKey]['filter']
+        );
+        $this->resetPage($collectionKey . 'Page');
     }
 
     /**
@@ -356,7 +395,14 @@ class UsingManager extends Component
         $personalAppsUsers = Users::personalAppsUsers($this->statsCollection['personalAppsUsers']['filter']);
 
         return view('livewire.admin.stats-viewer', [
-            'rubrics' => Rubric::allWithPosts(),
+            'rubricFamilies' => Rubric::with(['childs' => function($q) {
+                $q->where('contains_posts', true)->orderBy('rank');
+            }])
+            ->whereNull('parent_id')
+            ->where('name', '!=', 'Archives')
+            ->orderBy('position')
+            ->orderBy('rank')
+            ->get(),
             'gcColors' => AP::getGcColors(),
             'activeEditors' => $activeEditors->get(),
             'activeEditorsTop3' => $activeEditors->take(3)->get(),

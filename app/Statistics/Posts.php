@@ -38,7 +38,11 @@ class Posts
 
             // Filtre par rubrique
             if (!empty($filter['rubricId'])) {
-                $q->where('rubric_id', $filter['rubricId']);
+                if (is_array($filter['rubricId'])) {
+                    $q->whereIn('rubric_id', $filter['rubricId']);
+                } else {
+                    $q->where('rubric_id', $filter['rubricId']);
+                }
             }
         }])
         ->having('views_count', '>', 0)
@@ -78,7 +82,11 @@ class Posts
 
             // Filtre par rubrique
             if (!empty($filter['rubricId'])) {
-                $q->where('rubric_id', $filter['rubricId']);
+                if (is_array($filter['rubricId'])) {
+                    $q->whereIn('rubric_id', $filter['rubricId']);
+                } else {
+                    $q->where('rubric_id', $filter['rubricId']);
+                }
             }
         }])
         ->having('comments_count', '>', 0)
