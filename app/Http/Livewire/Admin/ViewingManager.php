@@ -40,7 +40,7 @@ class ViewingManager extends Component
                 'schoolYear' => NULL,
                 'month' => NULL,
                 'readerType' => 'all',
-                'rubricId' => NULL,
+                'rubricId' => [],
             ],
             'charts' => [
                 'viewedPostsTop10' => [
@@ -58,7 +58,7 @@ class ViewingManager extends Component
                 'schoolYear' => NULL,
                 'month' => NULL,
                 'readerType' => 'all',
-                'rubricId' => NULL,
+                'rubricId' => [],
             ],
             'charts' => [
                 'commentedPostsTop10' => [
@@ -227,8 +227,8 @@ class ViewingManager extends Component
      * Met à jour les graphiques lors du changement de rubrique du filtre articles lus.
      */
     public function updatedStatsCollectionMostViewedPostsFilterRubricId() {
-        if (empty($this->statsCollection['mostViewedPosts']['filter']['rubric_id'])) {
-            $this->statsCollection['mostViewedPosts']['filter']['rubric_id'] = NULL;
+        if (empty($this->statsCollection['mostViewedPosts']['filter']['rubricId'])) {
+            $this->statsCollection['mostViewedPosts']['filter']['rubricId'] = [];
         }
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -276,8 +276,8 @@ class ViewingManager extends Component
      * Met à jour les graphiques lors du changement de rubrique du filtre articles commentés.
      */
     public function updatedStatsCollectionMostCommentedPostsFilterRubricId() {
-        if (empty($this->statsCollection['mostCommentedPosts']['filter']['rubric_id'])) {
-            $this->statsCollection['mostCommentedPosts']['filter']['rubric_id'] = NULL;
+        if (empty($this->statsCollection['mostCommentedPosts']['filter']['rubricId'])) {
+            $this->statsCollection['mostCommentedPosts']['filter']['rubricId'] = [];
         }
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
@@ -285,6 +285,45 @@ class ViewingManager extends Component
         );
 
         $this->resetPage('mostCommentedPostsPage');
+    }
+
+    /**
+     * Bascule la sélection de toutes les rubriques enfants d'une rubrique parente.
+     *
+     * @param string $collectionKey Nom de la collection ('mostViewedPosts' ou 'mostCommentedPosts')
+     * @param int $parentId Identifiant de la rubrique parente
+     */
+    public function toggleParentRubric($collectionKey, $parentId) {
+        $childIds = Rubric::where('parent_id', $parentId)
+            ->where('contains_posts', true)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($childIds)) {
+            return;
+        }
+
+        $currentSelected = $this->statsCollection[$collectionKey]['filter']['rubricId'] ?? [];
+
+        $allSelected = true;
+        foreach ($childIds as $id) {
+            if (!in_array($id, $currentSelected)) {
+                $allSelected = false;
+                break;
+            }
+        }
+
+        if ($allSelected) {
+            $this->statsCollection[$collectionKey]['filter']['rubricId'] = array_values(array_diff($currentSelected, $childIds));
+        } else {
+            $this->statsCollection[$collectionKey]['filter']['rubricId'] = array_values(array_unique(array_merge($currentSelected, $childIds)));
+        }
+
+        $this->drawCharts(
+            $this->statsCollection[$collectionKey]['charts'],
+            $this->statsCollection[$collectionKey]['filter']
+        );
+        $this->resetPage($collectionKey . 'Page');
     }
 
     /**
@@ -299,7 +338,14 @@ class ViewingManager extends Component
         $commentedPosts = Posts::getCommented($this->statsCollection['mostCommentedPosts']['filter']);
 
         return view('livewire.admin.stats-viewer', [
-            'rubrics' => Rubric::allWithPosts(),
+            'rubricFamilies' => Rubric::with(['childs' => function($q) {
+                $q->where('contains_posts', true)->orderBy('rank');
+            }])
+            ->whereNull('parent_id')
+            ->where('name', '!=', 'Archives')
+            ->orderBy('position')
+            ->orderBy('rank')
+            ->get(),
             'gcColors' => AP::getGcColors(),
             'viewedPosts' => $viewedPosts->get(),
             'viewedPostsTop3' => $viewedPosts->take(3)->get(),
