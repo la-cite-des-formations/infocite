@@ -96,8 +96,8 @@ class Charts
         for ($i = 0; $i < 12; $i++) {
             $month = $start->copy()->addMonths($i);
 
-            $keyCurr = $month->format('Y-m');                // ex: 2024-09
-            $keyPrev = $month->copy()->subYear()->format('Y-m'); // ex: 2023-09
+            $keyCurr = $month->format('Y-m');
+            $keyPrev = $month->copy()->subYear()->format('Y-m');
 
             $monthName = ucfirst($month->locale('fr')->monthName);
 
@@ -205,6 +205,40 @@ class Charts
     }
 
     /**
+     * Top 10 des articles les mieux notés.
+     *
+     * Le graphique représente la note moyenne de chaque article (secteur proportionnel à ratings_avg).
+     * Le tooltip affiche également le nombre de notes reçues.
+     *
+     * @param array $filter
+     * @return array
+     */
+    public static function getRatedPostsTop10Chart($filter) {
+        // DB::raw retourne ratings_avg en string depuis MySQL — cast explicite en float
+        // requis par Google Charts PieChart (une string provoque un rendu silencieusement vide).
+        $posts = Posts::getRated($filter)->get()->each(function ($post) {
+            $post->ratings_avg = (float) $post->ratings_avg;
+        });
+
+        return self::buildTop10Chart(
+            $posts,
+            'ratings_avg',
+            function ($post, $rank) {
+                $avg = number_format($post->ratings_avg, 2);
+                return
+                    "<div class='w-100 m-3' style='max-width: 400px;'>
+                        <h6 class='fw-bold'>" . ($rank + 1) . " - {$post->title}</h6>
+                        <ul>
+                            <li>Rubrique - {$post->rubric->name}</li>
+                            <li>Note moyenne : {$avg} / 5</li>
+                            <li>{$post->ratings_count} note(s)</li>
+                        </ul>
+                    </div>";
+            }
+        );
+    }
+
+    /**
      * Top 10 des rédacteurs les plus actifs (nombre d'articles postés).
      *
      * @param array $filter
@@ -246,6 +280,35 @@ class Charts
                         <h6 class='fw-bold'>".($rank + 1)." - {$commentator->identity}</h6>
                         <ul>
                             <li>{$commentator->comments_count} commentaires</li>
+                        </ul>
+                    </div>";
+            }
+        );
+    }
+
+    /**
+     * Top 10 des utilisateurs notant le plus d'articles.
+     *
+     * Le graphique représente le nombre d'articles notés par utilisateur.
+     * Le tooltip affiche également la note moyenne donnée.
+     *
+     * @param array $filter
+     * @return array
+     */
+    public static function getActiveRatersTop10Chart($filter) {
+        $raters = Users::getActiveRaters($filter)->get();
+
+        return self::buildTop10Chart(
+            $raters,
+            'ratings_count',
+            function ($rater, $rank) {
+                $avg = number_format($rater->ratings_avg, 2);
+                return
+                    "<div class='w-100 m-3' style='max-width: 400px;'>
+                        <h6 class='fw-bold'>".($rank + 1)." - {$rater->identity}</h6>
+                        <ul>
+                            <li>{$rater->ratings_count} article(s) noté(s)</li>
+                            <li>Note moyenne donnée : {$avg} / 5</li>
                         </ul>
                     </div>";
             }
@@ -305,8 +368,10 @@ class Charts
 
             case 'viewedPostsTop10' :
             case 'commentedPostsTop10' :
+            case 'ratedPostsTop10' :
             case 'activeEditorsTop10' :
             case 'activeCommentatorsTop10' :
+            case 'activeRatersTop10' :
             case 'personalAppsUsersTop10' :
                 return [
                     'pieHole' => 0.4,
