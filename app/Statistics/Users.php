@@ -16,8 +16,6 @@ class Users
 {
     /**
      * Récupère les employés ayant désactivé les notifications de bureau.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function allRefuseDesktopNotifications() {
         return Employee::query()
@@ -26,8 +24,6 @@ class Users
 
     /**
      * Récupère les employés ayant activé toutes les notifications de bureau.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function allGrantAllDesktopNotifications() {
         return Employee::query()
@@ -37,8 +33,6 @@ class Users
 
     /**
      * Récupère les employés ayant activé les notifications de bureau uniquement pour les favoris.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function allGrantOnlyFavoritesDesktopNotifications() {
         return Employee::query()
@@ -49,12 +43,11 @@ class Users
     /**
      * Récupère les éditeurs les plus actifs (création/modification d'articles).
      *
-     * @param array $filter Filtres :
+     * @param array $filter
      *      - editorType: 'all' | 'authors' (create) | 'correctors' (update)
-     *      - schoolYear: int (Année de début)
+     *      - schoolYear: int
      *      - month: int
-     *      - rubricId: int
-     * @return \Illuminate\Database\Eloquent\Builder
+     *      - rubricId: int|array
      */
     public static function getActiveEditors(array $filter = []) {
         $schoolYear = $filter['schoolYear'] ?? NULL;
@@ -66,26 +59,22 @@ class Users
 
             $q->select(DB::raw('COUNT(DISTINCT(target_id))'));
 
-            // Filtre par année scolaire et mois
             if ($schoolYear) {
                 $start = Carbon::create($schoolYear, 9, 1)->startOfDay();
                 $end   = $start->copy()->addYear()->subSecond()->endOfDay();
                 $q->whereBetween('occurred_at', [$start, $end]);
 
-                // Filtre par mois uniquement si année scolaire précisée
                 if ($month) {
                     $q->whereMonth('occurred_at', $month);
                 }
             }
 
-            // Filtre par type d'éditeur
             if ($editorType === 'authors') {
                 $q->ofType('create');
             } elseif ($editorType === 'correctors') {
                 $q->ofType('update');
             }
 
-            // Filtre par rubrique
             if ($rubricId) {
                 $q->whereHasMorph(
                     'target',
@@ -109,11 +98,10 @@ class Users
     /**
      * Récupère les commentateurs les plus actifs.
      *
-     * @param array $filter Filtres :
+     * @param array $filter
      *      - commentatorType: 'all' | 'staff' | 'learners'
      *      - schoolYear: int
      *      - month: int
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function getActiveCommentators(array $filter = []) {
         $schoolYear      = $filter['schoolYear'] ?? NULL;
@@ -122,19 +110,16 @@ class Users
 
         return User::withCount(['postsCommentInteractions as comments_count' => function ($q) use ($schoolYear, $month, $commentatorType) {
 
-            // Filtre par année scolaire
             if ($schoolYear) {
                 $start = Carbon::create($schoolYear, 9, 1)->startOfDay();
                 $end   = $start->copy()->addYear()->subSecond()->endOfDay();
                 $q->whereBetween('occurred_at', [$start, $end]);
 
-                // Filtre par mois uniquement si année scolaire précisée
                 if ($month) {
                     $q->whereMonth('occurred_at', $month);
                 }
             }
 
-            // Filtre par type d'utilisateur
             if ($commentatorType) {
                 $q->byUserType($commentatorType);
             }
@@ -146,11 +131,54 @@ class Users
     }
 
     /**
+     * Récupère les utilisateurs notant le plus d'articles.
+     *
+     * Les notes sont stockées dans la table pivot post_user (colonne rating).
+     * Pas de filtre par date (les notes ne sont pas horodatées).
+     * Tri : nombre d'articles notés décroissant, puis nom/prénom alphabétique.
+     *
+     * Compatible MySQL ONLY_FULL_GROUP_BY : l'agrégation est faite dans une sous-requête
+     * sur post_user, puis jointe sur users pour récupérer le modèle complet.
+     *
+     * @param array $filter
+     *      - raterType: 'all' | 'staff' | 'learners'
+     */
+    public static function getActiveRaters(array $filter = []) {
+        $raterType = $filter['raterType'] ?? 'all';
+
+        // Sous-requête : agrégation sur post_user uniquement
+        $ratingsSubQuery = DB::table('post_user')
+            ->join('users as u', 'u.id', '=', 'post_user.user_id')
+            ->where('post_user.rating', '>', 0)
+            ->when($raterType && $raterType !== 'all', function ($q) use ($raterType) {
+                $q->where('u.is_staff', $raterType === 'staff');
+            })
+            ->select(
+                'post_user.user_id',
+                DB::raw('COUNT(post_user.post_id) as ratings_count'),
+                DB::raw('ROUND(AVG(post_user.rating), 2) as ratings_avg')
+            )
+            ->groupBy('post_user.user_id');
+
+        // Jointure avec le modèle User — pas de GROUP BY sur users
+        return User::query()
+            ->joinSub($ratingsSubQuery, 'ratings', function ($join) {
+                $join->on('users.id', '=', 'ratings.user_id');
+            })
+            ->when($raterType && $raterType !== 'all', function ($q) use ($raterType) {
+                $q->where('users.is_staff', $raterType === 'staff');
+            })
+            ->select('users.*', 'ratings.ratings_count', 'ratings.ratings_avg')
+            ->orderByDesc('ratings.ratings_count')
+            ->orderBy('users.name')
+            ->orderBy('users.first_name');
+    }
+
+    /**
      * Statistiques sur les utilisateurs créant des applications personnelles.
      *
-     * @param array $filter Filtres :
+     * @param array $filter
      *      - userType: 'all' | 'staff' | 'learners'
-     * @return \Illuminate\Database\Query\Builder
      */
     public static function personalAppsUsers($filter = []) {
         extract($filter);

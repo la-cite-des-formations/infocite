@@ -13,7 +13,8 @@ use App\Statistics\Posts;
 use Carbon\Carbon;
 
 /**
- * Composant Livewire pour la visualisation des statistiques de consultation (articles lus, articles commentés) dans l'interface d'administration.
+ * Composant Livewire pour la visualisation des statistiques de consultation
+ * (articles lus, articles commentés, articles les mieux notés) dans l'interface d'administration.
  */
 class ViewingManager extends Component
 {
@@ -28,8 +29,9 @@ class ViewingManager extends Component
      * @var string
      */
     public $statsPage = 'viewing';
+
     /**
-     * Configuration des collections de statistiques de consultation (lus, commentés).
+     * Configuration des collections de statistiques de consultation (lus, commentés, notés).
      *
      * @var array
      */
@@ -70,7 +72,25 @@ class ViewingManager extends Component
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
+        'mostRatedPosts' => [
+            'bladeFilePath' => 'posts.most-rated-posts',
+            'filter' => [
+                // Pas de filtre date : les notes ne sont pas horodatées
+                'readerType' => 'all',
+                'rubricId' => [],
+            ],
+            'charts' => [
+                'ratedPostsTop10' => [
+                    'target' => 'ratedPostsTop10Chart',
+                    'event' => 'drawRingChart',
+                ],
+            ],
+            'buttonLabel' => 'Détailler...',
+            'perPageOptions' => [10, 15, 25],
+            'perPage' => 10,
+        ],
     ];
+
     /**
      * Liste des années scolaires.
      *
@@ -97,6 +117,7 @@ class ViewingManager extends Component
         'Juillet'   => 7,
         'Août'      => 8,
     ];
+
     /**
      * Configuration des onglets.
      *
@@ -118,6 +139,11 @@ class ViewingManager extends Component
                 'title' => "Articles commentés",
                 'hidden' => FALSE,
             ],
+            'most-rated-posts' => [
+                'icon' => 'star',
+                'title' => "Articles notés",
+                'hidden' => FALSE,
+            ],
         ],
     ];
 
@@ -126,7 +152,6 @@ class ViewingManager extends Component
      * Se base sur la date de la plus ancienne interaction sur un article.
      */
     protected function initSchoolYears() {
-        // Récupérer la plus ancienne interaction
         $oldestOccurredAt = Interaction::where('target_type', Post::class)
             ->orderBy('occurred_at')
             ->value('occurred_at');
@@ -144,14 +169,10 @@ class ViewingManager extends Component
             }
         }
         else {
-            // Au moins l'année en cours si aucune interaction
             $this->schoolYears[] = $currentStartYear;
         }
     }
 
-    /**
-     * Initialisation du composant.
-     */
     /**
      * Initialisation du composant.
      */
@@ -176,7 +197,6 @@ class ViewingManager extends Component
                     $this->statsCollection['mostViewedPosts']['charts'],
                     $this->statsCollection['mostViewedPosts']['filter']
                 );
-
                 $this->resetPage('mostViewedPostsPage');
             break;
             case 'most-commented-posts':
@@ -184,14 +204,22 @@ class ViewingManager extends Component
                     $this->statsCollection['mostCommentedPosts']['charts'],
                     $this->statsCollection['mostCommentedPosts']['filter']
                 );
-
                 $this->resetPage('mostCommentedPostsPage');
+            break;
+            case 'most-rated-posts':
+                $this->drawCharts(
+                    $this->statsCollection['mostRatedPosts']['charts'],
+                    $this->statsCollection['mostRatedPosts']['filter']
+                );
+                $this->resetPage('mostRatedPostsPage');
         }
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de l'année scolaire du filtre articles lus.
-     */
+    // -------------------------------------------------------------------------
+    // Articles lus
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement de l'année scolaire du filtre articles lus. */
     public function updatedStatsCollectionMostViewedPostsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -200,9 +228,7 @@ class ViewingManager extends Component
         $this->resetPage('mostViewedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du mois du filtre articles lus.
-     */
+    /** Met à jour les graphiques lors du changement du mois du filtre articles lus. */
     public function updatedStatsCollectionMostViewedPostsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
@@ -211,21 +237,16 @@ class ViewingManager extends Component
         $this->resetPage('mostViewedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du type de lecteur du filtre articles lus.
-     */
+    /** Met à jour les graphiques lors du changement du type de lecteur du filtre articles lus. */
     public function updatedStatsCollectionMostViewedPostsFilterReaderType() {
         $this->drawCharts(
             $this->statsCollection['mostViewedPosts']['charts'],
             $this->statsCollection['mostViewedPosts']['filter']
         );
-
         $this->resetPage('mostViewedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de rubrique du filtre articles lus.
-     */
+    /** Met à jour les graphiques lors du changement de rubrique du filtre articles lus. */
     public function updatedStatsCollectionMostViewedPostsFilterRubricId() {
         if (empty($this->statsCollection['mostViewedPosts']['filter']['rubricId'])) {
             $this->statsCollection['mostViewedPosts']['filter']['rubricId'] = [];
@@ -234,13 +255,14 @@ class ViewingManager extends Component
             $this->statsCollection['mostViewedPosts']['charts'],
             $this->statsCollection['mostViewedPosts']['filter']
         );
-
         $this->resetPage('mostViewedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de l'année scolaire du filtre articles commentés.
-     */
+    // -------------------------------------------------------------------------
+    // Articles commentés
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement de l'année scolaire du filtre articles commentés. */
     public function updatedStatsCollectionMostCommentedPostsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
@@ -249,9 +271,7 @@ class ViewingManager extends Component
         $this->resetPage('mostCommentedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du mois du filtre articles commentés.
-     */
+    /** Met à jour les graphiques lors du changement du mois du filtre articles commentés. */
     public function updatedStatsCollectionMostCommentedPostsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
@@ -260,21 +280,16 @@ class ViewingManager extends Component
         $this->resetPage('mostCommentedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du type de lecteur du filtre articles commentés.
-     */
+    /** Met à jour les graphiques lors du changement du type de lecteur du filtre articles commentés. */
     public function updatedStatsCollectionMostCommentedPostsFilterReaderType() {
         $this->drawCharts(
             $this->statsCollection['mostCommentedPosts']['charts'],
             $this->statsCollection['mostCommentedPosts']['filter']
         );
-
         $this->resetPage('mostCommentedPostsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de rubrique du filtre articles commentés.
-     */
+    /** Met à jour les graphiques lors du changement de rubrique du filtre articles commentés. */
     public function updatedStatsCollectionMostCommentedPostsFilterRubricId() {
         if (empty($this->statsCollection['mostCommentedPosts']['filter']['rubricId'])) {
             $this->statsCollection['mostCommentedPosts']['filter']['rubricId'] = [];
@@ -283,14 +298,42 @@ class ViewingManager extends Component
             $this->statsCollection['mostCommentedPosts']['charts'],
             $this->statsCollection['mostCommentedPosts']['filter']
         );
-
         $this->resetPage('mostCommentedPostsPage');
     }
+
+    // -------------------------------------------------------------------------
+    // Articles notés (pas de filtre date)
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement du type de lecteur du filtre articles notés. */
+    public function updatedStatsCollectionMostRatedPostsFilterReaderType() {
+        $this->drawCharts(
+            $this->statsCollection['mostRatedPosts']['charts'],
+            $this->statsCollection['mostRatedPosts']['filter']
+        );
+        $this->resetPage('mostRatedPostsPage');
+    }
+
+    /** Met à jour les graphiques lors du changement de rubrique du filtre articles notés. */
+    public function updatedStatsCollectionMostRatedPostsFilterRubricId() {
+        if (empty($this->statsCollection['mostRatedPosts']['filter']['rubricId'])) {
+            $this->statsCollection['mostRatedPosts']['filter']['rubricId'] = [];
+        }
+        $this->drawCharts(
+            $this->statsCollection['mostRatedPosts']['charts'],
+            $this->statsCollection['mostRatedPosts']['filter']
+        );
+        $this->resetPage('mostRatedPostsPage');
+    }
+
+    // -------------------------------------------------------------------------
+    // Toggle rubriques parentes (toutes collections)
+    // -------------------------------------------------------------------------
 
     /**
      * Bascule la sélection de toutes les rubriques enfants d'une rubrique parente.
      *
-     * @param string $collectionKey Nom de la collection ('mostViewedPosts' ou 'mostCommentedPosts')
+     * @param string $collectionKey 'mostViewedPosts' | 'mostCommentedPosts' | 'mostRatedPosts'
      * @param int $parentId Identifiant de la rubrique parente
      */
     public function toggleParentRubric($collectionKey, $parentId) {
@@ -328,14 +371,15 @@ class ViewingManager extends Component
 
     /**
      * Rendu du composant.
-     * Calcule les statistiques de consultation (lus et commentés) pour la vue.
+     * Calcule les statistiques de consultation (lus, commentés, notés) pour la vue.
      *
      * @return \Illuminate\View\View
      */
     public function render()
     {
-        $viewedPosts = Posts::getViewed($this->statsCollection['mostViewedPosts']['filter']);
+        $viewedPosts    = Posts::getViewed($this->statsCollection['mostViewedPosts']['filter']);
         $commentedPosts = Posts::getCommented($this->statsCollection['mostCommentedPosts']['filter']);
+        $ratedPosts     = Posts::getRated($this->statsCollection['mostRatedPosts']['filter']);
 
         return view('livewire.admin.stats-viewer', [
             'rubricFamilies' => Rubric::with(['childs' => function($q) {
@@ -346,14 +390,20 @@ class ViewingManager extends Component
             ->orderBy('position')
             ->orderBy('rank')
             ->get(),
-            'gcColors' => AP::getGcColors(),
-            'viewedPosts' => $viewedPosts->get(),
-            'viewedPostsTop3' => $viewedPosts->take(3)->get(),
-            'mostViewedPosts' => $viewedPosts->paginate($this->statsCollection['mostViewedPosts']['perPage'], ['*'], 'mostViewedPostsPage'),
-            'commentedPosts' => $commentedPosts->get(),
+            'gcColors'           => AP::getGcColors(),
+            // Articles lus
+            'viewedPosts'        => $viewedPosts->get(),
+            'viewedPostsTop3'    => $viewedPosts->take(3)->get(),
+            'mostViewedPosts'    => $viewedPosts->paginate($this->statsCollection['mostViewedPosts']['perPage'], ['*'], 'mostViewedPostsPage'),
+            // Articles commentés
+            'commentedPosts'     => $commentedPosts->get(),
             'commentedPostsTop3' => $commentedPosts->take(3)->get(),
             'mostCommentedPosts' => $commentedPosts->paginate($this->statsCollection['mostCommentedPosts']['perPage'], ['*'], 'mostCommentedPostsPage'),
-            'dashboard' => 'stats',
+            // Articles notés
+            'ratedPosts'         => $ratedPosts->get(),
+            'ratedPostsTop3'     => $ratedPosts->take(3)->get(),
+            'mostRatedPosts'     => $ratedPosts->paginate($this->statsCollection['mostRatedPosts']['perPage'], ['*'], 'mostRatedPostsPage'),
+            'dashboard'          => 'stats',
         ]);
     }
 }
