@@ -13,7 +13,8 @@ use App\Statistics\Users;
 use Carbon\Carbon;
 
 /**
- * Composant Livewire pour la visualisation des statistiques d'usage (éditeurs, commentateurs, applications personnelles) dans l'interface d'administration.
+ * Composant Livewire pour la visualisation des statistiques d'usage
+ * (éditeurs, commentateurs, notateurs, applications personnelles) dans l'interface d'administration.
  */
 class UsingManager extends Component
 {
@@ -28,6 +29,7 @@ class UsingManager extends Component
      * @var string
      */
     public $statsPage = 'using';
+
     /**
      * Configuration des collections de statistiques d'usage.
      *
@@ -67,6 +69,21 @@ class UsingManager extends Component
             'perPageOptions' => [10, 15, 25],
             'perPage' => 10,
         ],
+        'mostActiveRaters' => [
+            'filter' => [
+                // Pas de filtre date : les notes ne sont pas horodatées
+                'raterType' => 'all',
+            ],
+            'charts' => [
+                'activeRatersTop10' => [
+                    'target' => 'activeRatersTop10Chart',
+                    'event' => 'drawRingChart',
+                ],
+            ],
+            'buttonLabel' => 'Détailler...',
+            'perPageOptions' => [10, 15, 25],
+            'perPage' => 10,
+        ],
         'personalAppsUsers' => [
             'filter' => [
                 'userType' => 'all',
@@ -91,6 +108,7 @@ class UsingManager extends Component
             ],
         ],
     ];
+
     /**
      * Liste des années scolaires.
      *
@@ -128,6 +146,7 @@ class UsingManager extends Component
         'authors' => 'auteurs',
         'correctors' => 'correcteurs',
     ];
+
     /**
      * Configuration des onglets de graphiques.
      *
@@ -149,6 +168,11 @@ class UsingManager extends Component
                 'title' => "Commentateurs",
                 'hidden' => FALSE,
             ],
+            'most-active-raters' => [
+                'icon' => 'star_rate',
+                'title' => "Notateurs",
+                'hidden' => FALSE,
+            ],
             'personal-apps-users' => [
                 'icon' => 'apps',
                 'title' => "applications personnelles",
@@ -164,10 +188,8 @@ class UsingManager extends Component
 
     /**
      * Initialise la liste des années scolaires disponibles pour les statistiques.
-     * Se base sur la date de la plus ancienne interaction enregistrée.
      */
     protected function initSchoolYears() {
-        // Récupérer la plus ancienne interaction
         $oldestOccurredAt = Interaction::where('target_type', Post::class)
             ->orderBy('occurred_at')
             ->value('occurred_at');
@@ -185,14 +207,10 @@ class UsingManager extends Component
             }
         }
         else {
-            // Au moins l'année en cours si aucune interaction
             $this->schoolYears[] = $currentStartYear;
         }
     }
 
-    /**
-     * Initialisation du composant.
-     */
     /**
      * Initialisation du composant.
      */
@@ -217,7 +235,6 @@ class UsingManager extends Component
                     $this->statsCollection['mostActiveEditors']['charts'],
                     $this->statsCollection['mostActiveEditors']['filter']
                 );
-
                 $this->resetPage('mostActiveEditorsPage');
             break;
             case 'most-active-commentators':
@@ -225,15 +242,20 @@ class UsingManager extends Component
                     $this->statsCollection['mostActiveCommentators']['charts'],
                     $this->statsCollection['mostActiveCommentators']['filter']
                 );
-
                 $this->resetPage('mostActiveCommentatorsPage');
+            break;
+            case 'most-active-raters':
+                $this->drawCharts(
+                    $this->statsCollection['mostActiveRaters']['charts'],
+                    $this->statsCollection['mostActiveRaters']['filter']
+                );
+                $this->resetPage('mostActiveRatersPage');
             break;
             case 'personal-apps-users':
                 $this->drawCharts(
                     $this->statsCollection['personalAppsUsers']['charts'],
                     $this->statsCollection['personalAppsUsers']['filter']
                 );
-
                 $this->resetPage('personalAppsUsersPage');
             break;
             case 'notifications-use':
@@ -244,45 +266,38 @@ class UsingManager extends Component
         }
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de l'année scolaire du filtre éditeurs.
-     */
+    // -------------------------------------------------------------------------
+    // Éditeurs
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement de l'année scolaire du filtre éditeurs. */
     public function updatedStatsCollectionMostActiveEditorsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
             $this->statsCollection['mostActiveEditors']['filter']
         );
-
         $this->resetPage('mostActiveEditorsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du mois du filtre éditeurs.
-     */
+    /** Met à jour les graphiques lors du changement du mois du filtre éditeurs. */
     public function updatedStatsCollectionMostActiveEditorsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
             $this->statsCollection['mostActiveEditors']['filter']
         );
-
         $this->resetPage('mostActiveEditorsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du type d'éditeur.
-     */
+    /** Met à jour les graphiques lors du changement du type d'éditeur. */
     public function updatedStatsCollectionMostActiveEditorsFilterEditorType() {
         $this->drawCharts(
             $this->statsCollection['mostActiveEditors']['charts'],
             $this->statsCollection['mostActiveEditors']['filter']
         );
-
         $this->resetPage('mostActiveEditorsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de la rubrique du filtre éditeurs.
-     */
+    /** Met à jour les graphiques lors du changement de la rubrique du filtre éditeurs. */
     public function updatedStatsCollectionMostActiveEditorsFilterRubricId() {
         if (empty($this->statsCollection['mostActiveEditors']['filter']['rubricId'])) {
             $this->statsCollection['mostActiveEditors']['filter']['rubricId'] = [];
@@ -291,7 +306,6 @@ class UsingManager extends Component
             $this->statsCollection['mostActiveEditors']['charts'],
             $this->statsCollection['mostActiveEditors']['filter']
         );
-
         $this->resetPage('mostActiveEditorsPage');
     }
 
@@ -334,64 +348,74 @@ class UsingManager extends Component
         $this->resetPage($collectionKey . 'Page');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement de l'année scolaire du filtre commentateurs.
-     */
+    // -------------------------------------------------------------------------
+    // Commentateurs
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement de l'année scolaire du filtre commentateurs. */
     public function updatedStatsCollectionMostActiveCommentatorsFilterSchoolYear() {
         $this->drawCharts(
             $this->statsCollection['mostActiveCommentators']['charts'],
             $this->statsCollection['mostActiveCommentators']['filter']
         );
-
         $this->resetPage('mostActiveCommentatorsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du mois du filtre commentateurs.
-     */
+    /** Met à jour les graphiques lors du changement du mois du filtre commentateurs. */
     public function updatedStatsCollectionMostActiveCommentatorsFilterMonth() {
         $this->drawCharts(
             $this->statsCollection['mostActiveCommentators']['charts'],
             $this->statsCollection['mostActiveCommentators']['filter']
         );
-
         $this->resetPage('mostActiveCommentatorsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du type de commentateur.
-     */
+    /** Met à jour les graphiques lors du changement du type de commentateur. */
     public function updatedStatsCollectionMostActiveCommentatorsFilterCommentatorType() {
         $this->drawCharts(
             $this->statsCollection['mostActiveCommentators']['charts'],
             $this->statsCollection['mostActiveCommentators']['filter']
         );
-
         $this->resetPage('mostActiveCommentatorsPage');
     }
 
-    /**
-     * Met à jour les graphiques lors du changement du type d'utilisateur pour les applications personnelles.
-     */
+    // -------------------------------------------------------------------------
+    // Notateurs (pas de filtre date)
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement du type de notateur. */
+    public function updatedStatsCollectionMostActiveRatersFilterRaterType() {
+        $this->drawCharts(
+            $this->statsCollection['mostActiveRaters']['charts'],
+            $this->statsCollection['mostActiveRaters']['filter']
+        );
+        $this->resetPage('mostActiveRatersPage');
+    }
+
+    // -------------------------------------------------------------------------
+    // Applications personnelles
+    // -------------------------------------------------------------------------
+
+    /** Met à jour les graphiques lors du changement du type d'utilisateur pour les applications personnelles. */
     public function updatedStatsCollectionPersonalAppsUsersFilterUserType() {
         $this->drawCharts(
             $this->statsCollection['personalAppsUsers']['charts'],
             $this->statsCollection['personalAppsUsers']['filter']
         );
-
         $this->resetPage('personalAppsUsersPage');
     }
 
     /**
      * Rendu du composant.
-     * Calcule les statistiques d'éditeurs, commentateurs et utilisateurs d'apps pour la vue.
+     * Calcule les statistiques d'éditeurs, commentateurs, notateurs et utilisateurs d'apps pour la vue.
      *
      * @return \Illuminate\View\View
      */
     public function render()
     {
-        $activeEditors = Users::getActiveEditors($this->statsCollection['mostActiveEditors']['filter']);
+        $activeEditors     = Users::getActiveEditors($this->statsCollection['mostActiveEditors']['filter']);
         $activeCommentators = Users::getActiveCommentators($this->statsCollection['mostActiveCommentators']['filter']);
+        $activeRaters      = Users::getActiveRaters($this->statsCollection['mostActiveRaters']['filter']);
         $personalAppsUsers = Users::personalAppsUsers($this->statsCollection['personalAppsUsers']['filter']);
 
         return view('livewire.admin.stats-viewer', [
@@ -403,17 +427,24 @@ class UsingManager extends Component
             ->orderBy('position')
             ->orderBy('rank')
             ->get(),
-            'gcColors' => AP::getGcColors(),
-            'activeEditors' => $activeEditors->get(),
-            'activeEditorsTop3' => $activeEditors->take(3)->get(),
-            'mostActiveEditors' => $activeEditors->paginate($this->statsCollection['mostActiveEditors']['perPage'], ['*'], 'mostActiveEditorsPage'),
-            'activeCommentators' => $activeCommentators->get(),
+            'gcColors'              => AP::getGcColors(),
+            // Éditeurs
+            'activeEditors'         => $activeEditors->get(),
+            'activeEditorsTop3'     => $activeEditors->take(3)->get(),
+            'mostActiveEditors'     => $activeEditors->paginate($this->statsCollection['mostActiveEditors']['perPage'], ['*'], 'mostActiveEditorsPage'),
+            // Commentateurs
+            'activeCommentators'    => $activeCommentators->get(),
             'activeCommentatorsTop3' => $activeCommentators->take(3)->get(),
             'mostActiveCommentators' => $activeCommentators->paginate($this->statsCollection['mostActiveCommentators']['perPage'], ['*'], 'mostActiveCommentatorsPage'),
+            // Notateurs
+            'activeRaters'          => $activeRaters->get(),
+            'activeRatersTop3'      => $activeRaters->take(3)->get(),
+            'mostActiveRaters'      => $activeRaters->paginate($this->statsCollection['mostActiveRaters']['perPage'], ['*'], 'mostActiveRatersPage'),
+            // Applications personnelles
             'allPersonnalAppsUsers' => $personalAppsUsers->get(),
             'personalAppsUsersTop3' => $personalAppsUsers->take(3)->get(),
-            'personalAppsUsers' => $personalAppsUsers->paginate($this->statsCollection['personalAppsUsers']['perPage'], ['*'], 'personalAppsUsersPage'),
-            'dashboard' => 'stats',
+            'personalAppsUsers'     => $personalAppsUsers->paginate($this->statsCollection['personalAppsUsers']['perPage'], ['*'], 'personalAppsUsersPage'),
+            'dashboard'             => 'stats',
         ]);
     }
 }
