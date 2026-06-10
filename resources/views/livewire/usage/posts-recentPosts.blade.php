@@ -6,13 +6,16 @@
 
                 @php
                     $bgImage = '/img/default-post-bg.png';
+                    $bgPosition = 'center';
+
                     if ($post->gallery && $post->gallery->imagesCount() > 0) {
                         $bgImage = $post->gallery->sortedImages()->first()['path'];
+                        $bgPosition = $post->gallery->focalPointCss();
                     }
                 @endphp
 
                 <div class="position-relative recent-post-box icon-box d-flex flex-column"
-                    style="background-image: url('{!! addslashes(asset($bgImage)) !!}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                    style="background-image: url('{!! addslashes(asset($bgImage)) !!}'); background-size: cover; background-position: {{ $bgPosition }}; background-repeat: no-repeat;">
 
                     <div class="overlay"></div>
                     <div class="ribbon-new">NOUVEAU</div>
@@ -61,7 +64,7 @@
                                     'btn-success' => $post->is_pinned,
                                     'btn-secondary' => !$post->is_pinned,
                                 ])
-                                    title="@if ($post->is_pinned) Désépingler @else Épingler @endif"
+                                    title="@if ($post->is_pinned) Épingler @else Épingler @endif"
                                     wire:click="switchPinnedPost({{ $post->id }})" type="button">
                                     <i class='bx bx-pin'></i>
                                 </button>
@@ -89,9 +92,9 @@
                     <div class="content mt-auto z-index-2">
                         <h4 class="mb-1">
                             <i class="material-icons fs-5 align-middle me-1">{{ $post->icon }}</i>
-                            <a>{{ AP::strLimiter($post->title, 50) }}</a>
+                            <a>{{ $post->previewTitle() }}</a>
                         </h4>
-                        <p class="small mb-1">{!! AP::strLimiter(strip_tags($post->content), 80) !!}</p>
+                        <p class="small mb-1">{{ $post->preview() }}</p>
                     </div>
                 </div>
             </div>
