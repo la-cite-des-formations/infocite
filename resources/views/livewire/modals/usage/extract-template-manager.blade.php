@@ -3,7 +3,7 @@
 @section('modal-title', "Extraction d'un modèle")
 
 @section('modal-body')
-    <link rel="stylesheet" href="{{ asset('css/tinymce-templates.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/tinymce-templates.css') }}?v={{ filemtime(public_path('css/tinymce-templates.css')) }}">
     <div class="mb-3">
         <p>
             Vous êtes sur le point de créer un nouveau modèle d'article à partir de ce contenu.

@@ -50,7 +50,7 @@
 <script src="{{ asset('vendor/php-email-form/validate.js') }}" defer></script>
 
 <!-- New Tab Redirection JS File -->
-<script src="{{ asset('js/new-tab-redirection.js') }}" defer></script>
+<script src="{{ asset('js/new-tab-redirection.js') }}?v={{ filemtime(public_path('js/new-tab-redirection.js')) }}" defer></script>
 
 <!--auth-->
 @if(isset(auth()->user()->id) )
@@ -58,9 +58,9 @@
 @endif
 
 <!-- Template Main JS File -->
-<script src="{{ asset('js/main.js') }}" defer></script>
+<script src="{{ asset('js/main.js') }}?v={{ filemtime(public_path('js/main.js')) }}" defer></script>
 
 @livewireScripts(['nonce' => csp_nonce()])
 
 <!-- Modal JS File -->
-<script src="{{ asset('js/modalManager.js') }}"></script>
+<script src="{{ asset('js/modalManager.js') }}?v={{ filemtime(public_path('js/modalManager.js')) }}"></script>

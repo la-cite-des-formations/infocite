@@ -28,9 +28,9 @@
 <link href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="{{ asset('css/style.css') }}" rel="stylesheet">
-<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-<link href="{{ asset('css/tinymce-templates.css') }}" rel="stylesheet">
+<link href="{{ asset('css/style.css') }}?v={{ filemtime(public_path('css/style.css')) }}" rel="stylesheet">
+<link href="{{ asset('css/custom.css') }}?v={{ filemtime(public_path('css/custom.css')) }}" rel="stylesheet">
+<link href="{{ asset('css/tinymce-templates.css') }}?v={{ filemtime(public_path('css/tinymce-templates.css')) }}" rel="stylesheet">
 
 <!-- =======================================================
 * Template Name: Arsha - v2.3.1
