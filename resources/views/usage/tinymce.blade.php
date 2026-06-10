@@ -16,5 +16,5 @@
 @section('addJSFiles')
     <!-- tinyMCE JS Files -->
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
-    <script src="{{ asset('js/tinymceConfig.js') }}" defer></script>
+    <script src="{{ asset('js/tinymceConfig.js') }}?v={{ filemtime(public_path('js/tinymceConfig.js')) }}" defer></script>
 @endsection
