@@ -258,6 +258,16 @@
         </ul>
     </div>
 
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Sécurité</span> Vérification des Autorisations Google Drive</h3>
+        <p>Système de contrôle automatique des droits d'accès pour les ressources externes issues du Drive d'entreprise insérées dans les articles.</p>
+        <ul>
+            <li><strong>Fonctionnement :</strong> Avant d'enregistrer ou lors de l'insertion dans TinyMCE (liens, iframes vidéos, images), interrogation de l'API Google Drive pour vérifier les droits de partage de la ressource.</li>
+            <li><strong>Contrôle de Cohérence :</strong> Comparaison des autorisations Google Drive avec le profil d'accès public/cible de l'article Infocite.</li>
+            <li><strong>Avertissement :</strong> Alerte interactive immédiate pour l'éditeur au sein de l'éditeur en cas d'incohérence détectée (ex: document privé dans un article public).</li>
+        </ul>
+    </div>
+
     <h2>5. Feuille de Route Stratégique (Priorisation)</h2>
     <div class="highlight" style="margin-bottom: 30px;">
         Note de priorisation : La gestion des développements s'inscrit dans une logique de qualité et de robustesse (pas de pression sur les délais stricts de la part de la direction). Les temps de traitement donnés ci-dessous sont des estimations "confortables" permettant de sécuriser le code (refactoring continu, tests) plutôt que de s'engager dans des <em>"Quick Wins"</em> précipités. L'objectif est d'alterner habilement fonctionnalités métiers et remboursement de la dette technique.
@@ -282,13 +292,14 @@
                 <ul>
                     <li><del>Intégration institutionnelle Google Drive sur TinyMCE via iframe.</del> ✅ <strong>Terminé (06/05/2026)</strong></li>
                     <li><del>Point d'ancrage (focal point X/Y) sur la première photo de la galerie pour le recadrage optimal de l'image de fond des vignettes.</del> ✅ <strong>Terminé (10/06/2026)</strong></li>
-                    <li>Statistiques de notation : Profils des utilisateurs les plus actifs & Top 10 des articles les mieux notés. (<em>~1,5 semaine</em>)</li>
-                    <li>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques. (<em>~1 semaine</em>)</li>
+                    <li><del>Statistiques de notation : Profils des utilisateurs les plus actifs & Top 10 des articles les mieux notés.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
+                    <li><del>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
                     <li>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs. (<em>~1,5 semaine</em>)</li>
                     <li>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur. (<em>~0,2 semaine</em>)</li>
                     <li>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE. (<em>~0,3 semaine</em>)</li>
                     <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
                     <li>Mise à jour dynamique de la cloche de notification à la fermeture de sa modale. (<em>~0,3 semaine</em>)</li>
+                    <li>Vérification des droits d'accès Google Drive par rapport à l'audience de l'article avec alerte éditeur. (<em>~1,5 semaine</em>)</li>
                     <li>Sous-rubrique 'Agenda' dans 'Événements' avec fonctionnalité Timeline. (<em>~1 semaine</em>)</li>
                 </ul>
             </li>
