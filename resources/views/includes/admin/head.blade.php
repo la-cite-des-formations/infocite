@@ -22,5 +22,5 @@
 
 <!-- Vendor CSS Files + Styles -->
 <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+<link href="{{ asset('css/custom.css') }}?v={{ filemtime(public_path('css/custom.css')) }}" rel="stylesheet">
 <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">

@@ -3,7 +3,7 @@
 @section('modal-title', "Prévisualisation et application d'un modèle")
 
 @section('modal-body')
-    <link rel="stylesheet" href="{{ asset('css/tinymce-templates.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/tinymce-templates.css') }}?v={{ filemtime(public_path('css/tinymce-templates.css')) }}">
     <div class="mb-3">
         <label class="form-label fw-bold" for="template-select">Modèle</label>
         <select id="template-select" wire:model="selectedTemplateId" class="form-select border-primary border-opacity-25">

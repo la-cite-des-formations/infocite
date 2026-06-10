@@ -70,6 +70,10 @@ trait WithModal
                 $component = "usage.duplicate-template-manager";
                 break;
 
+            case 'focal-point-picker':
+                $component = "focal-point-picker";
+                break;
+
             default :
                 $component = "admin.{$this->models}.$modal";
         }
