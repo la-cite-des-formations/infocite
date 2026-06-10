@@ -12,23 +12,30 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Composant Livewire pour la gestion de la galerie photos d'un article.
- * Gère l'upload multiple, la suppression et le réordonnancement des images.
+ * Gère l'upload multiple, la suppression, le réordonnancement et le point focal.
  */
 class PostGallery extends Component
 {
     use WithFileUploads;
 
     public $postId;
-    public $newImages = [];
+    public $newImages  = [];
     public $tempImages = [];
     public $sessionToken;
 
-    protected $listeners = ['gallerySaved' => '$refresh'];
+    /** Point focal de la première image (0–100). */
+    public float $focalX = 50.0;
+    public float $focalY = 50.0;
+
+    protected $listeners = [
+        'gallerySaved'      => '$refresh',
+        'focalPointUpdated' => 'applyFocalPoint',
+    ];
 
     protected function rules()
     {
         return [
-            'newImages.*' => 'image|max:10240', // 10 Mo max par image
+            'newImages.*' => 'image|max:10240',
         ];
     }
 
@@ -40,33 +47,55 @@ class PostGallery extends Component
     public function mount($postId = null)
     {
         $this->postId = $postId;
-        
-        // On génère un jeton unique par démarrage du composant et on le pousse en Session
-        // pour que EditPostManager puisse le lire lors du Save global.
+
         $this->sessionToken = (string) \Illuminate\Support\Str::uuid();
         session(['post_gallery_token' => $this->sessionToken]);
 
         if ($this->postId) {
             $gallery = Gallery::where('post_id', $this->postId)->first();
             if ($gallery) {
-                $this->tempImages = collect($gallery->images)->sortBy('order')->values()->toArray();
-            } else {
-                $this->tempImages = [];
+                $this->tempImages = collect($gallery->images)
+                    ->filter(fn($v) => is_array($v) && isset($v['path'])) // exclure focal_x/focal_y
+                    ->sortBy('order')
+                    ->values()
+                    ->toArray();
+
+                $fp = $gallery->getFocalPoint();
+                $this->focalX = $fp['x'];
+                $this->focalY = $fp['y'];
             }
-        } else {
-            $this->tempImages = [];
         }
 
         $this->syncMemory();
     }
 
     /**
-     * Sauvegarde l'état du tableau RAM vers le Cache serveur avec péremption d'1 Heure
-     * Le cache est utilisé car la requête du formulaire principal du Post sera asynchrone par rapport à ce composant.
+     * Sauvegarde l'état (images + focal point) dans le cache serveur.
      */
-    private function syncMemory()
+    private function syncMemory(): void
     {
-        \Illuminate\Support\Facades\Cache::put("gallery_temp_{$this->sessionToken}", $this->tempImages, 3600);
+        \Illuminate\Support\Facades\Cache::put(
+            "gallery_temp_{$this->sessionToken}",
+            [
+                'images'  => $this->tempImages,
+                'focal_x' => $this->focalX,
+                'focal_y' => $this->focalY,
+            ],
+            3600
+        );
+    }
+
+    /**
+     * Récepteur de l'événement émis par la modale FocalPointPicker.
+     *
+     * @param float $x
+     * @param float $y
+     */
+    public function applyFocalPoint(float $x, float $y): void
+    {
+        $this->focalX = round(max(0, min(100, $x)), 2);
+        $this->focalY = round(max(0, min(100, $y)), 2);
+        $this->syncMemory();
     }
 
     public function updatedNewImages()
@@ -75,47 +104,41 @@ class PostGallery extends Component
         $this->saveNewImages();
     }
 
-    private function saveNewImages()
+    private function saveNewImages(): void
     {
         if (empty($this->newImages)) return;
 
-        $manager = new ImageManager(new Driver());
-        // Les nouveaux ajouts sont systématiquement isolés en brouillon
+        $manager    = new ImageManager(new Driver());
         $folderName = "temp_{$this->sessionToken}";
 
         foreach ($this->newImages as $image) {
             $filename = time() . '_' . $image->getClientOriginalName();
-            
-            $path = $image->storeAs("galleries/{$folderName}", $filename, 'public');
+            $path     = $image->storeAs("galleries/{$folderName}", $filename, 'public');
             $fullPath = storage_path('app/public/' . $path);
 
             $img = $manager->read($fullPath);
             $img->scaleDown(1024, 1024);
             $img->save($fullPath, quality: 80);
 
-            // Stockage de la vignette en RAM locale
             $this->tempImages[] = [
-                'path' => '/storage/' . $path,
+                'path'     => '/storage/' . $path,
                 'filename' => $image->getClientOriginalName(),
-                'order' => count($this->tempImages) + 1,
+                'order'    => count($this->tempImages) + 1,
             ];
         }
 
         $this->syncMemory();
-        $this->newImages = []; // Flush temp files
+        $this->newImages = [];
     }
 
-    public function removeImage(string $path)
+    public function removeImage(string $path): void
     {
-        // Nettoyage disque immédiat SEULEMENT SI le fichier est dans le brouillon actuel !
         if (str_contains($path, "temp_{$this->sessionToken}")) {
             $storagePath = str_replace('/storage/', '', $path);
             Storage::disk('public')->delete($storagePath);
         }
 
-        // Pour les images préexistantes ou brouillon, retrait de l'état mémoire
-        $images = collect($this->tempImages);
-        $this->tempImages = $images
+        $this->tempImages = collect($this->tempImages)
             ->reject(fn ($img) => $img['path'] === $path)
             ->values()
             ->map(fn ($img, $index) => array_merge($img, ['order' => $index + 1]))
@@ -124,87 +147,108 @@ class PostGallery extends Component
         $this->syncMemory();
     }
 
-    public function moveUp(int $currentOrder)
+    public function moveUp(int $currentOrder): void
     {
         $this->reorder($currentOrder, $currentOrder - 1);
     }
 
-    public function moveDown(int $currentOrder)
+    public function moveDown(int $currentOrder): void
     {
         $this->reorder($currentOrder, $currentOrder + 1);
     }
 
-    private function reorder(int $from, int $to)
+    private function reorder(int $from, int $to): void
     {
         $images = collect($this->tempImages)->sortBy('order')->values();
 
         $fromIndex = $from - 1;
-        $toIndex = $to - 1;
+        $toIndex   = $to - 1;
 
         if ($toIndex < 0 || $toIndex >= $images->count()) return;
 
-        $temp = $images[$fromIndex];
+        $temp              = $images[$fromIndex];
         $images[$fromIndex] = $images[$toIndex];
-        $images[$toIndex] = $temp;
+        $images[$toIndex]  = $temp;
 
-        $this->tempImages = $images->map(fn ($img, $i) => array_merge($img, ['order' => $i + 1]))->toArray();
+        $this->tempImages = $images
+            ->map(fn ($img, $i) => array_merge($img, ['order' => $i + 1]))
+            ->toArray();
+
         $this->syncMemory();
     }
 
     /**
-     * PROCESSUS DE SYNCHRONISATION GLOBAL DÉCLENCHÉ DEPUIS LE BOUTON 'ENREGISTRER' DU PARENT
-     * Réconcilie l'état mis en Cache au niveau physique et SQL.
+     * PROCESSUS DE SYNCHRONISATION GLOBAL
+     * Réconcilie le cache (images + focal point) avec le disque et la BDD.
      */
-    public static function processTempGallery($postId, $sessionToken)
+    public static function processTempGallery($postId, $sessionToken): void
     {
         if (!$sessionToken) return;
-        $tempImages = \Illuminate\Support\Facades\Cache::get("gallery_temp_{$sessionToken}");
-        
-        // S'il n'y a pas d'état en cache parcequ'aucune instance Galerie n'était ouverte
-        // ou cas d'expiration très long
-        if ($tempImages === null) return;
 
-        $gallery = Gallery::firstOrCreate(['post_id' => $postId], ['images' => []]);
-        $existingPaths = collect($gallery->images)->pluck('path')->toArray();
-        $newPaths = collect($tempImages)->pluck('path')->toArray();
+        $cached = \Illuminate\Support\Facades\Cache::get("gallery_temp_{$sessionToken}");
+        if ($cached === null) return;
 
-        // 1. Suppression physique des vieilles images évacuées de l'état
-        $deletedPaths = array_diff($existingPaths, $newPaths);
-        foreach ($deletedPaths as $dPath) {
-             Storage::disk('public')->delete(str_replace('/storage/', '', $dPath));
+        // Rétrocompatibilité : ancien cache = tableau plat d'images
+        if (isset($cached[0]) || (is_array($cached) && !isset($cached['images']))) {
+            $tempImages = $cached;
+            $focalX     = 50.0;
+            $focalY     = 50.0;
+        } else {
+            $tempImages = $cached['images']  ?? [];
+            $focalX     = (float) ($cached['focal_x'] ?? 50.0);
+            $focalY     = (float) ($cached['focal_y'] ?? 50.0);
         }
 
-        // 2. Déplacement physique et réécriture chemins des nouvelles images brouillon
+        $gallery      = Gallery::firstOrCreate(['post_id' => $postId], ['images' => []]);
+        $existingPaths = collect($gallery->images ?? [])
+            ->pluck('path')
+            ->toArray();
+        $newPaths = collect($tempImages)->pluck('path')->toArray();
+
+        // 1. Suppression physique des images retirées
+        $deletedPaths = array_diff($existingPaths, $newPaths);
+        foreach ($deletedPaths as $dPath) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $dPath));
+        }
+
+        // 2. Déplacement physique des images brouillon vers le dossier définitif
         $finalImages = array_map(function ($img) use ($postId, $sessionToken) {
             if (str_contains($img['path'], "galleries/temp_{$sessionToken}")) {
                 $oldStorage = str_replace('/storage/', '', $img['path']);
-                $newStorage = str_replace("galleries/temp_{$sessionToken}", "galleries/{$postId}", $oldStorage);
-                
+                $newStorage = str_replace(
+                    "galleries/temp_{$sessionToken}",
+                    "galleries/{$postId}",
+                    $oldStorage
+                );
+
                 if (!Storage::disk('public')->exists("galleries/{$postId}")) {
                     Storage::disk('public')->makeDirectory("galleries/{$postId}");
                 }
                 if (Storage::disk('public')->exists($oldStorage)) {
                     Storage::disk('public')->move($oldStorage, $newStorage);
                 }
-                
+
                 return [
-                    'path' => '/storage/' . $newStorage,
+                    'path'     => '/storage/' . $newStorage,
                     'filename' => $img['filename'],
-                    'order' => $img['order'],
+                    'order'    => $img['order'],
                 ];
             }
             return $img;
         }, $tempImages);
 
-        // 3. Persistance de la vérité SQL
-        $gallery->update(['images' => $finalImages]);
+        // 3. Persistance — images et focal point dans deux colonnes séparées
+        $gallery->update([
+            'images'      => array_values($finalImages),
+            'focal_point' => ['x' => round($focalX, 2), 'y' => round($focalY, 2)],
+        ]);
 
-        // Nettoyage hygiénique du résidu temp_XYZ
+        // 4. Nettoyage du dossier temp
         if (Storage::disk('public')->exists("galleries/temp_{$sessionToken}")) {
             Storage::disk('public')->deleteDirectory("galleries/temp_{$sessionToken}");
         }
 
-        // Vider la galerie si elle est à sec pour ne pas encombrer les requêtes DB
+        // 5. Suppression de la galerie si vide
         if (count($finalImages) === 0) {
             $gallery->delete();
         }
@@ -218,7 +262,7 @@ class PostGallery extends Component
         $images = collect($this->tempImages)->sortBy('order')->values()->all();
 
         return view('livewire.usage.post-gallery', [
-            'hasImages' => count($images) > 0,
+            'hasImages'  => count($images) > 0,
             'imagesList' => $images,
         ]);
     }

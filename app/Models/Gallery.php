@@ -7,31 +7,20 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Représente une galerie de photos associée à un article (relation 1:1).
- * Les images sont stockées sous forme de tableau JSON [{path, filename, order}].
+ *
+ * Colonnes :
+ *   - images      JSON  : tableau [{path, filename, order}]
+ *   - focal_point JSON  : {x: float, y: float} — point de cadrage de la 1ère image (0–100)
  */
 class Gallery extends Model
 {
-    /**
-     * Les attributs qui peuvent être assignés en masse.
-     *
-     * @var array<string>
-     */
-    protected $fillable = ['post_id', 'images'];
+    protected $fillable = ['post_id', 'images', 'focal_point'];
 
-    /**
-     * Les attributs qui doivent être castés.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'images' => 'array',
+        'images'      => 'array',
+        'focal_point' => 'array',
     ];
 
-    /**
-     * Relation vers l'article parent.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function post()
     {
         return $this->belongsTo(Post::class);
@@ -39,18 +28,14 @@ class Gallery extends Model
 
     /**
      * Retourne les images triées par ordre.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function sortedImages()
     {
-        return collect($this->images)->sortBy('order')->values();
+        return collect($this->images ?? [])->sortBy('order')->values();
     }
 
     /**
      * Retourne le nombre d'images dans la galerie.
-     *
-     * @return int
      */
     public function imagesCount(): int
     {
@@ -58,43 +43,50 @@ class Gallery extends Model
     }
 
     /**
-     * Ajoute une image à la galerie.
+     * Retourne le point focal. Défaut : 50/50 (centre).
      *
-     * @param string $path  Chemin public de l'image.
-     * @param string $filename  Nom original du fichier.
-     * @return void
+     * @return array{x: float, y: float}
      */
-    public function addImage(string $path, string $filename): void
+    public function getFocalPoint(): array
     {
-        $images = $this->images ?? [];
-        $maxOrder = collect($images)->max('order') ?? 0;
-
-        $images[] = [
-            'path'     => $path,
-            'filename' => $filename,
-            'order'    => $maxOrder + 1,
+        $fp = $this->focal_point;
+        return [
+            'x' => isset($fp['x']) ? (float) $fp['x'] : 50.0,
+            'y' => isset($fp['y']) ? (float) $fp['y'] : 50.0,
         ];
+    }
 
-        $this->images = $images;
-        $this->save();
+    /**
+     * Persiste le point focal.
+     */
+    public function setFocalPoint(float $x, float $y): void
+    {
+        $this->update([
+            'focal_point' => [
+                'x' => round(max(0, min(100, $x)), 2),
+                'y' => round(max(0, min(100, $y)), 2),
+            ]
+        ]);
+    }
+
+    /**
+     * Retourne la valeur CSS background-position prête à l'emploi.
+     * Ex. "42.5% 30%"
+     */
+    public function focalPointCss(): string
+    {
+        $fp = $this->getFocalPoint();
+        return "{$fp['x']}% {$fp['y']}%";
     }
 
     /**
      * Retire une image de la galerie par son chemin et supprime le fichier physique.
-     *
-     * @param string $path  Chemin de l'image à retirer.
-     * @return void
      */
     public function removeImage(string $path): void
     {
-        $images = collect($this->images ?? []);
+        Storage::disk('public')->delete(str_replace('/storage/', '', $path));
 
-        // Suppression du fichier physique sur le disk public
-        $storagePath = str_replace('/storage/', '', $path);
-        Storage::disk('public')->delete($storagePath);
-
-        // Retrait de l'image du tableau et ré-indexation de l'ordre
-        $newImages = $images
+        $newImages = collect($this->images ?? [])
             ->reject(fn ($img) => $img['path'] === $path)
             ->values()
             ->map(fn ($img, $index) => array_merge($img, ['order' => $index + 1]))
@@ -105,27 +97,20 @@ class Gallery extends Model
 
     /**
      * Supprime l'ensemble des fichiers physiques de la galerie.
-     * À appeler avant la suppression du modèle.
-     *
-     * @return void
      */
     public function deleteAllFiles(): void
     {
         foreach ($this->images ?? [] as $image) {
-            $storagePath = str_replace('/storage/', '', $image['path']);
-            Storage::disk('public')->delete($storagePath);
+            if (!isset($image['path'])) continue;
+            Storage::disk('public')->delete(str_replace('/storage/', '', $image['path']));
         }
     }
 
-    /**
-     * Événement de suppression : nettoie les fichiers physiques et le répertoire.
-     */
     protected static function booted()
     {
         static::deleting(function (Gallery $gallery) {
             $gallery->deleteAllFiles();
 
-            // Suppression du répertoire dédié à l'article
             $dir = "galleries/{$gallery->post_id}";
             if (Storage::disk('public')->exists($dir)) {
                 Storage::disk('public')->deleteDirectory($dir);
