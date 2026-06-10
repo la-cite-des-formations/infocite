@@ -192,8 +192,6 @@
             <li><strong>Interface d'Administration :</strong> Ajout d'une section dédiée dans le dashboard des statistiques, avec des graphiques clairs et des tableaux de données exportables.</li>
         </ul>
     </div>
-
-    <div class="audit-item">
         <h3><span class="badge badge-func">Évolution</span> Filtre de Rubriques Multi-sélection pour les Statistiques</h3>
         <p>Amélioration ergonomique globale des filtres de rubriques sur l'ensemble des modules statistiques pour offrir des analyses croisées plus poussées.</p>
         <ul>
@@ -204,12 +202,59 @@
     </div>
 
     <div class="audit-item">
-        <h3><span class="badge badge-func">Évolution</span> Guide Interactif en Ligne</h3>
-        <p>Intégration d'un module d'aide et d'accompagnement interactif pas à pas pour former les utilisateurs directement au sein de l'application.</p>
+        <h3><span class="badge badge-tech">Évolution</span> Invalidation de Cache Automatique (Cache Busting)</h3>
+        <p>Mécanisme forçant le navigateur à recharger les versions les plus récentes des fichiers CSS et JS lors d'une mise à jour de l'application.</p>
         <ul>
-            <li><strong>Parcours d'Onboarding :</strong> Guide guidé (tour interactif à base de popovers/infobulles dynamiques) pour la découverte des fonctionnalités clés (Favoris, Acquittements, Rédaction avec blocs).</li>
-            <li><strong>Accessibilité :</strong> Bouton "Besoin d'aide ?" persistant mais discret dans la barre de navigation ou le pied de page, permettant de relancer le guide à tout moment.</li>
-            <li><strong>Adaptabilité :</strong> Contenu du guide s'adaptant dynamiquement au rôle de l'utilisateur (Lecteur, Éditeur, Administrateur) pour ne présenter que les actions pertinentes.</li>
+            <li><strong>Fonctionnement :</strong> Ajout du timestamp de modification du fichier (<code>?v={{ filemtime(...) }}</code>) aux URL générées.</li>
+            <li><strong>Portée :</strong> Appliqué sur l'ensemble des fichiers CSS et JS personnalisés de l'application (layouts public et administration).</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Accès Boite à Idées dans le Menu Compte</h3>
+        <p>Amélioration de l'accès à la Boite à Idées en dupliquant son lien dans le menu déroulant du compte de l'utilisateur.</p>
+        <ul>
+            <li><strong>Emplacement :</strong> Menu utilisateur contenant déjà "Mes infos" et "Déconnexion".</li>
+            <li><strong>Comportement :</strong> Lien direct vers la rubrique dédiée avec respect des droits de consultation.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Bloc "Citation" (TinyMCE)</h3>
+        <p>Ajout d'un nouveau modèle sémantique de bloc pour l'éditeur TinyMCE via le gestionnaire de Blocs.</p>
+        <ul>
+            <li><strong>Design :</strong> Mise en forme spécifique avec des guillemets stylisés et écriture en italique.</li>
+            <li><strong>Comportement :</strong> Intégration dans la palette existante avec support de l'aspiration et du dégroupage.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Performance</span> Latence et Chargement des Graphiques de Stats</h3>
+        <p>Optimisation du chargement des dashboards statistiques pour réduire les temps de réponse initiaux de l'application.</p>
+        <ul>
+            <li><strong>Optimisation BDD :</strong> Optimisation des requêtes Eloquent (sélections limitées, réduction des jointures inutiles).</li>
+            <li><strong>Chargement Paresseux (Lazy Loading) :</strong> Chargement unique et dynamique des données à visualiser uniquement pour l'onglet actif.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Optimisation des Filtres et du Tri sur la Une</h3>
+        <p>Amélioration fonctionnelle et ergonomique du filtrage et du tri des articles sur la page d'accueil de la Une.</p>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Cloche de Notification & Modale</h3>
+        <p>Revue de la synchronisation de l'état de lecture des notifications.</p>
+        <ul>
+            <li><strong>Comportement :</strong> Mise à jour en temps réel du compteur et de l'icône de la cloche globale dès la fermeture de la modale des notifications.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-tech">Architecture</span> Encapsulation Strict des Composants Livewire</h3>
+        <p>Audit et correction de sécurité pour assurer la robustesse du rendu asynchrone.</p>
+        <ul>
+            <li><strong>Règle d'or :</strong> Vérification de l'ensemble des fichiers de vues Livewire afin de garantir que 100% du code html est encapsulé entre une unique balise parente (balise ouvrante et fermante enveloppant tout le fichier).</li>
         </ul>
     </div>
 
@@ -236,17 +281,24 @@
                 <p><em>Dépendances métiers et intégrations complexes.</em></p>
                 <ul>
                     <li><del>Intégration institutionnelle Google Drive sur TinyMCE via iframe.</del> ✅ <strong>Terminé (06/05/2026)</strong></li>
+                    <li><del>Point d'ancrage (focal point X/Y) sur la première photo de la galerie pour le recadrage optimal de l'image de fond des vignettes.</del> ✅ <strong>Terminé (10/06/2026)</strong></li>
                     <li>Statistiques de notation : Profils des utilisateurs les plus actifs & Top 10 des articles les mieux notés. (<em>~1,5 semaine</em>)</li>
                     <li>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques. (<em>~1 semaine</em>)</li>
                     <li>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs. (<em>~1,5 semaine</em>)</li>
-                    <li>Point d'ancrage (focal point X/Y) sur la première photo de la galerie pour le recadrage optimal de l'image de fond des vignettes. (<em>~0,5 semaine</em>)</li>
+                    <li>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur. (<em>~0,2 semaine</em>)</li>
+                    <li>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE. (<em>~0,3 semaine</em>)</li>
+                    <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
+                    <li>Mise à jour dynamique de la cloche de notification à la fermeture de sa modale. (<em>~0,3 semaine</em>)</li>
                     <li>Sous-rubrique 'Agenda' dans 'Événements' avec fonctionnalité Timeline. (<em>~1 semaine</em>)</li>
                 </ul>
             </li>
             
-            <li style="margin-top: 25px;"><strong>Phase 3 : Maintenance Préventive et Sécurité (Opérations de fond)</strong>
+            <li style="margin-top: 25px;"><strong>Phase 3 : Maintenance Préventive, Performance et Sécurité</strong>
                 <p><em>Chantiers invisibles mais cruciaux nécessitant un environnement de développement stable.</em></p>
                 <ul>
+                    <li><del>Invalidation automatique du cache navigateur (Query String Versioning via filemtime).</del> ✅ <strong>Terminé (10/06/2026)</strong></li>
+                    <li>Optimisation des graphiques de statistiques (latence des requêtes et chargement à la demande par onglet actif). (<em>~0,5 semaine</em>)</li>
+                    <li>Audit et encapsulation stricte des vues Livewire (balise parente unique). (<em>~0,5 semaine</em>)</li>
                     <li>Mise en place d'un journal d'audit (<strong>Log Activity System</strong>) global des éléments. (<em>~2 semaines</em>)</li>
                     <li>Mise à jour majeure du framework (Migration vers Laravel 10/11) : requiert des tests de non-régression massifs. (<em>~3 semaines - idéal en basse saison usagers</em>)</li>
                     <li>Optimisation des configurations ORM (mise entre quotes des noms de colonnes BDD). (<em>~1 semaine</em>)</li>
