@@ -12,29 +12,24 @@
         Faites glisser le cadre pour choisir la zone visible sur la vignette.
     </p>
 
-    {{--
-        Conteneur image.
-        Position relative : le masque et les zones sombres s'y positionnent en absolu.
-        overflow: hidden : les débordements du masque (impossible ici, mais sécurité) sont masqués.
-        cursor move : signal visuel que tout est draggable.
-    --}}
-    <div id="fpp-container"
-         class="position-relative w-100"
-         style="user-select: none; cursor: move;">
+    {{-- Wrapper centrant — pleine largeur, aligne le container sur l'image --}}
+    <div style="text-align: center; line-height: 0; user-select: none;">
 
-        {{-- Image source affichée en pleine largeur --}}
+    {{-- Container qui épouse exactement les dimensions de l'image rendue.
+         inline-block : sa largeur suit celle de l'image, pas du parent.
+         Les bandes et le masque sont positionnés par rapport à ce container. --}}
+    <div id="fpp-container"
+         class="position-relative"
+         style="display: inline-block; cursor: move; line-height: 0;">
+
+        {{-- Image source --}}
         <img id="fpp-image"
              src="{{ dirname($imagePath) . '/' . rawurlencode(basename($imagePath)) }}"
              alt="Image à cadrer"
-             class="img-fluid w-100 d-block"
-             style="max-height: 380px; object-fit: contain;">
+             class="d-block"
+             style="max-width: 100%; max-height: 420px; width: auto; height: auto;">
 
-        {{--
-            Calque d'assombrissement global (sous le masque).
-            Il couvre toute l'image ; le masque "découpe" sa zone via clip-path en JS.
-            Alternative plus simple : 4 bandes sombres autour du masque, gérées en JS.
-            On choisit l'approche 4 bandes (top/right/bottom/left) car plus compatible.
-        --}}
+        {{-- 4 bandes de grisage positionnées par rapport au container (= par rapport à l'image) --}}
         <div id="fpp-shade-top"    style="position:absolute;left:0;right:0;top:0;    background:rgba(0,0,0,0.55);pointer-events:none;"></div>
         <div id="fpp-shade-bottom" style="position:absolute;left:0;right:0;bottom:0; background:rgba(0,0,0,0.55);pointer-events:none;"></div>
         <div id="fpp-shade-left"   style="position:absolute;top:0;bottom:0;left:0;   background:rgba(0,0,0,0.55);pointer-events:none;"></div>
@@ -71,6 +66,7 @@
             </div>
         </div>
     </div>
+    </div> {{-- fin wrapper centrant --}}
 
     <div class="text-muted small mt-2">
         <i class="bx bx-info-circle me-1"></i>
