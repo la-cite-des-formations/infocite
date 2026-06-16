@@ -72,6 +72,19 @@
                         Mes infos
                     </a>
                 </li>
+                @php
+                    $ideaBoxRubric = \App\Models\Rubric::firstWhere('segment', 'boite-idées');
+                @endphp
+                @if ($ideaBoxRubric)
+                    @can('access', $ideaBoxRubric)
+                        <li>
+                            <a href="{{ $ideaBoxRubric->route() }}" class="dropdown-item justify-content-start">
+                                <span class="material-icons-outlined fs-5 ms-0 me-1">{{ $ideaBoxRubric->icon }}</span>
+                                {{ $ideaBoxRubric->name }}
+                            </a>
+                        </li>
+                    @endcan
+                @endif
                 {{-- <li>
                     <a href="/favoris" class="dropdown-item justify-content-start">
                         <span class="material-icons fs-5 ms-0 me-1">star_border</span>
