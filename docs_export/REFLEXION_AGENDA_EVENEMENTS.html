@@ -38,8 +38,8 @@
             padding-bottom: 5px;
         }
 
-        /* Mockup 1: Google Charts Timeline */
-        .chart-mockup {
+        /* Mockup 1: FullCalendar Scheduler Timeline View */
+        .fc-mockup {
             background: #ffffff;
             border: 1px solid #dfe4ea;
             padding: 20px;
@@ -48,56 +48,70 @@
             margin: 15px 0;
             overflow-x: auto;
         }
-        .chart-grid {
-            display: flex;
-            flex-direction: column;
-            border-left: 2px solid #ccc;
-            border-bottom: 2px solid #ccc;
-            position: relative;
-            padding: 10px 0 30px 0;
-        }
-        .chart-row {
-            display: flex;
-            align-items: center;
-            height: 40px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        .chart-label {
-            width: 120px;
-            font-size: 12px;
-            color: #666;
-            text-align: right;
-            padding-right: 15px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-        .chart-bar {
-            height: 24px;
-            border-radius: 3px;
-            color: white;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            padding-left: 10px;
-            font-weight: bold;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-            position: absolute;
-        }
-        .bar-blue { background-color: #4285f4; left: 140px; width: 200px; }
-        .bar-red { background-color: #db4437; left: 280px; width: 320px; }
-        .bar-yellow { background-color: #f4b400; left: 180px; width: 150px; color: #333; }
-        .chart-timeline-axis {
-            position: absolute;
-            bottom: 0;
-            left: 120px;
-            right: 0;
+        .fc-header {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
-            color: #999;
-            padding-top: 5px;
-            border-top: 1px solid #ddd;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .fc-nav-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .fc-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #1e293b;
+        }
+        .fc-grid {
+            display: grid;
+            grid-template-columns: 150px 1fr 1fr 1fr;
+            border: 1px solid #cbd5e1;
+            font-size: 12px;
+        }
+        .fc-cell-header {
+            background: #f8fafc;
+            font-weight: bold;
+            padding: 8px;
+            border-right: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+            text-align: center;
+        }
+        .fc-row-label {
+            background: #f8fafc;
+            font-weight: bold;
+            padding: 10px 8px;
+            border-right: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+        }
+        .fc-event-container {
+            position: relative;
+            background: #fff;
+            border-bottom: 1px solid #cbd5e1;
+            border-right: 1px solid #cbd5e1;
+            height: 40px;
+        }
+        .fc-event-bar {
+            position: absolute;
+            top: 8px;
+            height: 24px;
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-weight: bold;
+            font-size: 11px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         /* Mockup 2: Custom HTML Timeline */
@@ -142,14 +156,6 @@
             z-index: 1;
             box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.2);
         }
-        .timeline-item:nth-child(2) .timeline-icon-dot {
-            background-color: #e67e22;
-            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
-        }
-        .timeline-item:nth-child(3) .timeline-icon-dot {
-            background-color: #2ecc71;
-            box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.2);
-        }
         .timeline-card {
             padding: 20px;
             background-color: white;
@@ -164,6 +170,21 @@
             box-shadow: 0 10px 15px rgba(0,0,0,0.08);
             border-color: #cbd5e1;
         }
+        .timeline-card-body {
+            display: flex;
+            gap: 15px;
+        }
+        .timeline-thumb {
+            width: 90px;
+            height: 90px;
+            border-radius: 6px;
+            object-fit: cover;
+            background-color: #ddd;
+            flex-shrink: 0;
+        }
+        .timeline-card-content {
+            flex-grow: 1;
+        }
         .timeline-date-badge {
             display: inline-block;
             background: #ebf5fb;
@@ -175,16 +196,18 @@
             margin-bottom: 10px;
             text-transform: uppercase;
         }
-        .timeline-item:nth-child(2) .timeline-date-badge {
-            background: #fdf2e9;
-            color: #e67e22;
-        }
-        .timeline-item:nth-child(3) .timeline-date-badge {
-            background: #e8f8f5;
-            color: #2ecc71;
+        .timeline-type-tag {
+            display: inline-block;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            text-transform: uppercase;
         }
         .timeline-card-title {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             font-size: 1.15rem;
             color: #2c3e50;
         }
@@ -192,6 +215,7 @@
             margin: 0 0 15px 0;
             font-size: 0.9rem;
             color: #64748b;
+            line-height: 1.4;
         }
         .timeline-card-footer {
             display: flex;
@@ -202,8 +226,8 @@
             padding-top: 12px;
             color: #94a3b8;
         }
-        .timeline-category {
-            font-weight: 600;
+        .timeline-location {
+            font-weight: 500;
             color: #475569;
         }
         .timeline-link {
@@ -224,185 +248,204 @@
 
 <div class="container">
     <h1>Note de Cadrage : Sous-rubrique 'Agenda'</h1>
-    <p class="meta-info">Document d'aide à la décision — À l'attention du Responsable Technique</p>
+    <p class="meta-info">Document d'aide à la décision — Synthèse révisée intégrant les retours du Responsable Technique</p>
 
     <div class="highlight-blue">
-        <strong>Contexte :</strong> L'objectif est d'ajouter une sous-rubrique "Agenda" au sein de la rubrique principale "Événements". Cette page présentera une ligne du temps (timeline) chronologique des événements futurs. Ce document étudie les scénarios d'architecture de base de données à adopter, la cinématique d'intégration et propose deux approches visuelles afin d'aider à la prise de décision.
+        <strong>Contexte :</strong> L'objectif est d'ajouter une sous-rubrique "Agenda" au sein de la rubrique principale "Événements". Cette page présentera une ligne du temps (timeline) chronologique des événements futurs. Cette note détaille les choix techniques arrêtés, les évolutions de base de données validées, les fonctionnalités additionnelles retenues et l'analyse comparative visuelle.
     </div>
 
     <!-- ========================================= -->
     <!-- 1. MODELISATION DE LA BASE DE DONNEES     -->
     <!-- ========================================= -->
-    <h2>1. Options d'Architecture pour la Base de Données (BDD)</h2>
-    <p>Trois options principales se présentent pour repérer et stocker les dates des événements associés aux articles :</p>
+    <h2>1. Architecture Base de Données (Option B retenue)</h2>
+    <p>Conformément aux validations, l'architecture s'appuie sur une structure relationnelle à deux tables afin de garantir une modularité maximale.</p>
     
-    <div class="card">
-        <h3>Option A : Ajout de colonnes de dates sur la table <code>posts</code></h3>
-        <p>Ajout des champs <code>event_start_at</code> (datetime, nullable) et <code>event_end_at</code> (datetime, nullable) directement sur la table existante des articles.</p>
-        <ul>
-            <li><strong>Avantages :</strong> Implémentation très simple et rapide. Pas de nouvelle table à joindre. Formulaire d'édition de posts directement étendu.</li>
-            <li><strong>Inconvénients :</strong> L'article (le post) ne peut avoir qu'une seule et unique plage de dates. S'il s'agit d'un événement récurrent ou d'un atelier étalé sur plusieurs jours séparés, il faut dupliquer l'article complet en BDD. De plus, cela "pollue" la table <code>posts</code> avec des colonnes qui resteront vides pour 95% des articles classiques.</li>
-        </ul>
+    <div class="highlight-green">
+        <strong>Avantages :</strong> Permet d'associer un nombre illimité de dates (sessions) à un même article éditorial sans duplication de contenu. Elle sépare proprement la partie éditoriale des informations temporelles d'événement et permet de catégoriser les événements avec une couleur dédiée.
     </div>
 
-    <div class="card">
-        <h3>Option B (Recommandation technique) : Création d'une table dédiée <code>events</code></h3>
-        <p>Création d'une table relationnelle distincte reliée par clé étrangère à la table <code>posts</code>.</p>
-        <ul>
-            <li><strong>Avantages :</strong> Modèle de données propre et normalisé. Permet d'associer <strong>plusieurs dates/sessions</strong> (événements récurrents ou multi-dates) à un seul et unique article éditorial. Évite toute duplication de texte.</li>
-            <li><strong>Inconvénients :</strong> Complexité d'intégration légèrement accrue (jointure de table, gestion des formulaires d'édition multi-relations).</li>
-        </ul>
-        
-        <div class="highlight-green">
-            <strong>Exemple d'implémentation pour l'Option B :</strong>
-            
-            <p><strong>Migration de la table :</strong></p>
-            <pre>
+    <h3>Migration de la table <code>event_types</code> (Types d'événements)</h3>
+    <pre>
+Schema::create(<span class="string">'event_types'</span>, <span class="keyword">function</span> (<span class="type">Blueprint</span> $table) {
+    $table->increments(<span class="string">'id'</span>);
+    $table->string(<span class="string">'name'</span>, 100);
+    $table->string(<span class="string">'color'</span>, 7); <span class="comment">// Code hexadécimal (ex: #E67E22)</span>
+    $table->timestamps();
+});</pre>
+
+    <h3>Migration de la table <code>events</code></h3>
+    <pre>
 Schema::create(<span class="string">'events'</span>, <span class="keyword">function</span> (<span class="type">Blueprint</span> $table) {
     $table->increments(<span class="string">'id'</span>);
     $table->unsignedInteger(<span class="string">'post_id'</span>)->index();
-    $table->dateTime(<span class="string">'start_date'</span>);
-    $table->dateTime(<span class="string">'end_date'</span>)->nullable();
-    $table->string(<span class="string">'location'</span>)->nullable();
+    $table->unsignedInteger(<span class="string">'event_type_id'</span>)->index();
+    
+    <span class="comment">// Dates et heures séparées pour une flexibilité totale</span>
+    $table->date(<span class="string">'start_date'</span>);
+    $table->time(<span class="string">'start_time'</span>)->nullable();
+    $table->date(<span class="string">'end_date'</span>)->nullable();
+    $table->time(<span class="string">'end_time'</span>)->nullable();
+    
+    <span class="comment">// Lieu physique ou virtuel</span>
+    $table->string(<span class="string">'location'</span>, 150)->nullable();
     $table->timestamps();
 
     $table->foreign(<span class="string">'post_id'</span>)->references(<span class="string">'id'</span>)->on(<span class="string">'posts'</span>)->onDelete(<span class="string">'cascade'</span>);
+    $table->foreign(<span class="string">'event_type_id'</span>)->references(<span class="string">'id'</span>)->on(<span class="string">'event_types'</span>);
 });</pre>
 
-            <p><strong>Relations dans les Models :</strong></p>
-            <p>Dans <code>App\Models\Post.php</code> :</p>
-            <pre>
-<span class="keyword">public function</span> events() {
-    <span class="keyword">return</span> $this->hasMany(<span class="type">Event</span>::class);
-}</pre>
-        </div>
+    <!-- ========================================= -->
+    <!-- 2. NOUVELLES FONCTIONNALITES RETENUES     -->
+    <!-- ========================================= -->
+    <h2>2. Fonctionnalités Additionnelles Validées</h2>
+    
+    <div class="card">
+        <h3>Illustration par vignette (Thumbnail)</h3>
+        <p>Lorsqu'un événement est rendu sur la timeline, le système cherche la galerie photo associée à l'article (<code>$post->gallery</code>). Si elle existe, la <strong>première image</strong> (triée par le champ <code>order</code>) est récupérée et affichée sous forme de vignette (90x90px) à gauche du descriptif.</p>
+        <p><em>Code d'accès :</em> <code>$thumbnailPath = $post->gallery ? $post->gallery->sortedImages()->first()['path'] : null;</code></p>
     </div>
 
     <div class="card">
-        <h3>Option C : Utilisation d'une convention sur les dates existantes</h3>
-        <p>Utiliser la date de publication <code>published_at</code> ou la date d'expiration <code>expired_at</code> de l'article pour déterminer la date de l'événement.</p>
-        <ul>
-            <li><strong>Avantages :</strong> Aucune modification de structure BDD ni de formulaire.</li>
-            <li><strong>Inconvénients :</strong> Approche extrêmement rigide. Un article d'événement ne pourrait pas être publié ou notifié aux utilisateurs plusieurs semaines à l'avance, car sa date de publication en BDD devrait être celle du jour de l'événement. De plus, cela empêche l'archivage propre des contenus.</li>
-        </ul>
+        <h3>Puces de couleur dynamiques & Administration</h3>
+        <p>Chaque type d'événement configuré en base de données dispose d'une couleur. La timeline affichera la puce ou l'icône de l'événement avec cette teinte.</p>
+        <p><strong>Liste initiale des types d'événements à injecter :</strong></p>
+        <table style="font-size: 0.85rem; margin-top: 10px;">
+            <tr>
+                <td>• Événement interne</td>
+                <td>• Événement externe</td>
+                <td>• Concours</td>
+                <td>• Salon & forums</td>
+            </tr>
+            <tr>
+                <td>• Conférence</td>
+                <td>• Portes ouvertes</td>
+                <td>• Remise des diplômes</td>
+                <td>• Jobs dating / Info</td>
+            </tr>
+            <tr>
+                <td>• Afterworks</td>
+                <td>• Séminaire</td>
+                <td>• Réunions institutionnelles</td>
+                <td>• Rencontres professionnelles</td>
+            </tr>
+        </table>
+        <p>Une interface d'administration simplifiée sera intégrée dans le back-office pour permettre d'ajouter/éditer ces types et d'y associer leur couleur à l'aide d'un sélecteur HTML5 (ColorPicker).</p>
     </div>
 
     <!-- ========================================= -->
-    <!-- 2. ROUTAGE ET INTEGRATION                 -->
+    <!-- 3. ANALYSE DES SOLUTIONS VISUELLES        -->
     <!-- ========================================= -->
-    <h2>2. Routage et Templating</h2>
-    <p>L'intégration s'appuie sur la logique de template dynamique déjà en place dans le portail :</p>
-    <ul>
-        <li>La sous-rubrique <strong>Agenda</strong> possédera la valeur <code>'agenda'</code> dans sa colonne <code>view</code> en BDD.</li>
-        <li>Le <code>ViewController</code> résoudra automatiquement le template de la rubrique via <code>$viewBag->template = $rubric->view</code>.</li>
-        <li>La vue principale chargera dynamiquement le composant Livewire associé : <code>@livewire("usage.agenda-manager", ['viewBag' => $viewBag])</code>.</li>
-    </ul>
+    <h2>3. Analyse comparative : FullCalendar vs Bootstrap Timeline</h2>
 
-    <!-- ========================================= -->
-    <!-- 3. COMPARATIF ET RENDUS VISUELS           -->
-    <!-- ========================================= -->
-    <h2>3. Comparatif des solutions visuelles</h2>
-    
+    <div class="highlight-orange">
+        <strong>Licence FullCalendar :</strong> L'association de loi 1901 pouvant bénéficier de la licence académique/non-commerciale gratuite pour les modules premium Scheduler, nous utiliserons la clé suivante dans le code :<br>
+        <code>schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'</code>
+    </div>
+
     <table>
         <thead>
             <tr>
                 <th>Critère</th>
-                <th>Scénario 1 : Google Charts (Timeline)</th>
-                <th>Scénario 2 : Timeline Bootstrap HTML (Conseillé)</th>
+                <th>FullCalendar Timeline View (Scheduler)</th>
+                <th>Timeline Bootstrap Verticale (Recommandé)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><strong>Description</strong></td>
-                <td>Graphe de planification horizontal (style Gantt).</td>
-                <td>Ligne du temps verticale avec des cartes d'information riches.</td>
+                <td><strong>Type de vue</strong></td>
+                <td>Grille horizontale orientée planning / ressources.</td>
+                <td>Flux chronologique de cartes d'actualités illustrées.</td>
             </tr>
             <tr>
-                <td><strong>Responsive / Mobile</strong></td>
-                <td>❌ Mauvais. Nécessite un scroll horizontal important.</td>
-                <td>✅ Excellent. S'adapte parfaitement sur smartphone.</td>
+                <td><strong>Lisibilité Mobile</strong></td>
+                <td>❌ Difficile (conçu pour écran de bureau / desktop).</td>
+                <td>✅ Excellente (responsive natif à 100%).</td>
             </tr>
             <tr>
-                <td><strong>Esthétique & Design</strong></td>
-                <td>Rigide, géométrique et difficilement personnalisable.</td>
-                <td>Moderne, aéré, s'intègre au thème premium du site.</td>
+                <td><strong>Intégration d'images</strong></td>
+                <td>❌ Peu pratique (espace restreint dans les barres).</td>
+                <td>✅ Native (vignettes de galerie photo).</td>
             </tr>
             <tr>
-                <td><strong>Lien vers l'article</strong></td>
-                <td>Limité aux infobulles par défaut du graphique.</td>
-                <td>Intégration naturelle d'un lien d'accès direct.</td>
+                <td><strong>Cas d'usage optimal</strong></td>
+                <td>Gestion interne d'occupation des salles, du matériel, ou plannings d'intervenants.</td>
+                <td>Communication externe/interne pour lister et valoriser les événements à venir.</td>
             </tr>
         </tbody>
     </table>
 
-    <div class="mockup-title">Scénario 1 : Exemple de rendu Google Charts (Horizontal)</div>
-    <div class="chart-mockup">
-        <div class="chart-grid">
-            <div class="chart-row">
-                <div class="chart-label">Amphithéâtre</div>
-                <div class="chart-bar bar-blue" style="left: 150px; width: 180px;">Conférence RSE</div>
+    <div class="mockup-title">Scénario A : Rendu FullCalendar Scheduler (Horizontal / Planning)</div>
+    <div class="fc-mockup">
+        <div class="fc-header">
+            <button class="fc-nav-btn">◀</button>
+            <span class="fc-title">Juin 2026</span>
+            <button class="fc-nav-btn">▶</button>
+        </div>
+        <div class="fc-grid">
+            <div class="fc-cell-header">Ressources / Lieux</div>
+            <div class="fc-cell-header">Lun 22</div>
+            <div class="fc-cell-header">Mar 23</div>
+            <div class="fc-cell-header">Mer 24</div>
+            
+            <div class="fc-row-label">Amphithéâtre</div>
+            <div class="fc-event-container"></div>
+            <div class="fc-event-container">
+                <div class="fc-event-bar" style="background-color: #2980b9; left: 10px; width: 80%;">Conférence RSE</div>
             </div>
-            <div class="chart-row">
-                <div class="chart-label">Salle Multimédia</div>
-                <div class="chart-bar bar-yellow" style="left: 210px; width: 200px;">Atelier Recrutement</div>
-            </div>
-            <div class="chart-row">
-                <div class="chart-label">Hall Principal</div>
-                <div class="chart-bar bar-red" style="left: 350px; width: 250px;">Salon des Métiers</div>
-            </div>
-            <div class="chart-timeline-axis">
-                <span>08:00</span>
-                <span>10:00</span>
-                <span>12:00</span>
-                <span>14:00</span>
-                <span>16:00</span>
-                <span>18:00</span>
+            <div class="fc-event-container"></div>
+            
+            <div class="fc-row-label">Salle Multimédia</div>
+            <div class="fc-event-container"></div>
+            <div class="fc-event-container"></div>
+            <div class="fc-event-container">
+                <div class="fc-event-bar" style="background-color: #e67e22; left: 5px; width: 90%;">Atelier Simulation</div>
             </div>
         </div>
     </div>
 
-    <div class="mockup-title">Scénario 2 : Exemple de rendu HTML/CSS sur-mesure (Vertical - Conseillé)</div>
+    <div class="mockup-title">Scénario B : Rendu Timeline Bootstrap (Vertical / Illustré - Recommandé pour l'Agenda)</div>
     <div class="html-mockup">
         <div class="timeline-vertical">
             
             <!-- Item 1 -->
             <div class="timeline-item">
-                <div class="timeline-icon-dot"></div>
+                <!-- Point de couleur vert (#2ecc71) pour Conférence -->
+                <div class="timeline-icon-dot" style="background-color: #2ecc71; box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.2);"></div>
                 <div class="timeline-card">
-                    <span class="timeline-date-badge">Mardi 23 Juin - 09:00</span>
-                    <h4 class="timeline-card-title">Conférence RSE & Développement Durable</h4>
-                    <p class="timeline-card-desc">Découvrez nos engagements écoresponsables pour l'année scolaire 2026-2027.</p>
+                    <div class="timeline-card-body">
+                        <!-- Vignette issue de la galerie photo de l'article -->
+                        <div class="timeline-thumb" style="background: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%232980b9%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22>Photo RSE</text></svg>') no-repeat center center; background-size: cover;"></div>
+                        <div class="timeline-card-content">
+                            <span class="timeline-date-badge">Mardi 23 Juin - 09:00</span>
+                            <span class="timeline-type-tag" style="background-color: #2ecc71;">Conférence</span>
+                            <h4 class="timeline-card-title">Conférence RSE & Développement Durable</h4>
+                            <p class="timeline-card-desc">Découvrez nos engagements écoresponsables pour l'année scolaire 2026-2027 à travers des tables rondes.</p>
+                        </div>
+                    </div>
                     <div class="timeline-card-footer">
-                        <span class="timeline-category">📍 Amphithéâtre (Conférences)</span>
-                        <a href="#" class="timeline-link">Lire l'article →</a>
+                        <span class="timeline-location">📍 Lieu : Amphithéâtre</span>
+                        <a href="#" class="timeline-link">Voir l'article →</a>
                     </div>
                 </div>
             </div>
 
             <!-- Item 2 -->
             <div class="timeline-item">
-                <div class="timeline-icon-dot"></div>
+                <!-- Point de couleur orange (#e67e22) pour Jobs Dating / Info -->
+                <div class="timeline-icon-dot" style="background-color: #e67e22; box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);"></div>
                 <div class="timeline-card">
-                    <span class="timeline-date-badge">Jeudi 25 Juin - 14:00</span>
-                    <h4 class="timeline-card-title">Atelier Recrutement & Simulation d'Entretiens</h4>
-                    <p class="timeline-card-desc">Le service RH propose des sessions d'entraînement aux entretiens d'embauche.</p>
-                    <div class="timeline-card-footer">
-                        <span class="timeline-category">📍 Salle Multimédia (RH)</span>
-                        <a href="#" class="timeline-link">Lire l'article →</a>
+                    <div class="timeline-card-body">
+                        <div class="timeline-thumb" style="background: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e67e22%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2210%22>Photo Jobs</text></svg>') no-repeat center center; background-size: cover;"></div>
+                        <div class="timeline-card-content">
+                            <span class="timeline-date-badge">Jeudi 25 Juin - 14:00 à 17:00</span>
+                            <span class="timeline-type-tag" style="background-color: #e67e22;">Jobs dating</span>
+                            <h4 class="timeline-card-title">Atelier simulation d'entretiens</h4>
+                            <p class="timeline-card-desc">Simulation d'entretiens d'embauche avec des conseillers pour vous préparer aux rencontres professionnelles.</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="timeline-item">
-                <div class="timeline-icon-dot"></div>
-                <div class="timeline-card">
-                    <span class="timeline-date-badge">Vendredi 26 Juin - 10:00</span>
-                    <h4 class="timeline-card-title">Salon des Métiers et de l'Alternance</h4>
-                    <p class="timeline-card-desc">Rencontrez nos entreprises partenaires et trouvez votre future alternance.</p>
                     <div class="timeline-card-footer">
-                        <span class="timeline-category">📍 Hall Principal (Événements Externes)</span>
-                        <a href="#" class="timeline-link">Lire l'article →</a>
+                        <span class="timeline-location">📍 Lieu : Salle Multimédia</span>
+                        <a href="#" class="timeline-link">Voir l'article →</a>
                     </div>
                 </div>
             </div>
@@ -410,18 +453,12 @@ Schema::create(<span class="string">'events'</span>, <span class="keyword">funct
         </div>
     </div>
 
-    <!-- ========================================= -->
-    <!-- 4. RECOMMANDATIONS ET INTEGRATION         -->
-    <!-- ========================================= -->
-    <h2>4. Recommandations et Fonctionnalités Clés</h2>
-    <ul>
-        <li><strong>Filtres dynamiques Livewire</strong> : Permettre à l'utilisateur de filtrer les événements par sous-rubrique ou par lieu en temps réel.</li>
-        <li><strong>Export de Calendrier</strong> : Intégrer un bouton permettant d'exporter l'événement au format <code>.ics</code> (compatible Outlook/Apple Calendar) et Google Calendar.</li>
-        <li><strong>Administration simplifiée</strong> : Lors de la création d'un article, si la rubrique sélectionnée est rattachée à "Événements", afficher un champ dynamique permettant d'ajouter une ou plusieurs dates d'événements.</li>
-    </ul>
+    <h3>Recommandation d'intégration</h3>
+    <p>Nous recommandons l'utilisation de la <strong>Timeline Bootstrap Verticale comme vue par défaut de l'Agenda</strong> (Scénario B) car elle valorise parfaitement le contenu éditorial, les images des articles et s'affiche à la perfection sur mobile.</p>
+    <p>Cependant, pour satisfaire le besoin d'une vision synthétique de type calendrier, nous proposons d'intégrer dans un onglet secondaire ou via un bouton de bascule un calendrier mensuel standard via la version gratuite de <strong>FullCalendar</strong>.</p>
 
     <div class="footer">
-        Note de Cadrage rédigée le 16 Juin 2026 - Pôle Développement Infocite
+        Note de Cadrage révisée le 16 Juin 2026 - Pôle Développement Infocite
     </div>
 </div>
 
