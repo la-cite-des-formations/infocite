@@ -57,6 +57,14 @@ class EditPostManager extends Component
      */
     public $post;
 
+    public $attach_to_agenda = false;
+    public $event_type_id;
+    public $start_date;
+    public $start_time;
+    public $end_date;
+    public $end_time;
+    public $location;
+
     /**
      * Indique si les commentaires sont bloqués pour cet article.
      *
@@ -77,7 +85,7 @@ class EditPostManager extends Component
      * @var array
      */
     protected function rules() {
-        return [
+        $rules = [
             'post.title'                      => 'required|string|max:255',
             'post.icon'                       => 'required|string|max:255',
             'post.content'                    => 'required|string',
@@ -91,6 +99,17 @@ class EditPostManager extends Component
             'post.is_rating_enabled'          => 'boolean',
             'post.is_template'                => 'boolean',
         ];
+
+        if ($this->attach_to_agenda) {
+            $rules['event_type_id'] = 'required|integer|exists:event_types,id';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'nullable';
+            $rules['end_date'] = 'nullable|date|after_or_equal:start_date';
+            $rules['end_time'] = 'nullable';
+            $rules['location'] = 'nullable|string|max:150';
+        }
+
+        return $rules;
     }
 
     /**
@@ -122,6 +141,33 @@ class EditPostManager extends Component
             }
         }
 
+        if ($this->post->exists && $this->post->event) {
+            $this->attach_to_agenda = true;
+            $this->event_type_id = $this->post->event->event_type_id;
+            $this->start_date = $this->post->event->start_date ? $this->post->event->start_date->format('Y-m-d') : null;
+            $this->start_time = $this->post->event->start_time ? substr($this->post->event->start_time, 0, 5) : null;
+            $this->end_date = $this->post->event->end_date ? $this->post->event->end_date->format('Y-m-d') : null;
+            $this->end_time = $this->post->event->end_time ? substr($this->post->event->end_time, 0, 5) : null;
+            $this->location = $this->post->event->location;
+        } else {
+            $this->attach_to_agenda = false;
+            $this->event_type_id = null;
+            $this->start_date = null;
+            $this->start_time = null;
+            $this->end_date = null;
+            $this->end_time = null;
+            $this->location = null;
+
+            if ($this->post->rubric_id) {
+                $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+                $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+                $rubric = Rubric::find($this->post->rubric_id);
+                if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                    $this->attach_to_agenda = true;
+                }
+            }
+        }
+
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
         $this->initTinymceContent('post.content');
     }
@@ -143,6 +189,22 @@ class EditPostManager extends Component
         }
         $this->post->expired_at = NULL;
     }
+
+    public function updatedPostRubricId($value) {
+        if ($value) {
+            $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+            $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+            $rubric = Rubric::find($value);
+            if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                $this->attach_to_agenda = true;
+            } else {
+                $this->attach_to_agenda = false;
+            }
+        } else {
+            $this->attach_to_agenda = false;
+        }
+    }
+
 
     /**
      * Enregistre l'article (création ou modification).
@@ -183,6 +245,19 @@ class EditPostManager extends Component
 
         // sauvegarde
         $this->post->save();
+
+        if ($this->attach_to_agenda) {
+            $this->post->event()->updateOrCreate([], [
+                'event_type_id' => $this->event_type_id,
+                'start_date' => $this->start_date,
+                'start_time' => $this->start_time ?: null,
+                'end_date' => $this->end_date ?: null,
+                'end_time' => $this->end_time ?: null,
+                'location' => $this->location ?: null,
+            ]);
+        } else {
+            $this->post->event()->delete();
+        }
 
         // Pour les modèles : pas de galerie, droits, interactions ni notifications
         if ($this->post->is_template) {
@@ -436,6 +511,7 @@ class EditPostManager extends Component
                           ->orWhere('rubric_id', $this->currentRubric->id);
                 })
                 ->get(),
+            'eventTypes' => \App\Models\EventType::orderBy('name', 'ASC')->get(),
         ]);
     }
 }
