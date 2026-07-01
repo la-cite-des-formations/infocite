@@ -13,11 +13,9 @@ use Livewire\Component;
 class AgendaManager extends Component
 {
     /**
-     * Sac de données (ViewBag) passé par le ViewController.
-     *
-     * @var object
+     * rubrique de l'agenda
      */
-    protected $viewBag;
+    public $agendaRubric;
 
     /**
      * Récupère les paramètres passés au composant lors du Livewire::mount().
@@ -27,7 +25,7 @@ class AgendaManager extends Component
      */
     public function mount($viewBag)
     {
-        $this->viewBag = $viewBag;
+        $this->agendaRubric = $viewBag->rubric;
     }
 
     /**
