@@ -45,26 +45,48 @@ class Edit extends Component
      */
     public $formTabs;
 
+    public $attach_to_agenda = false;
+    public $event_type_id;
+    public $start_date;
+    public $start_time;
+    public $end_date;
+    public $end_time;
+    public $location;
+
     /**
      * Écouteurs d'événements.
      *
      * @var array
      */
     protected $listeners = ['render', 'contentChange'];
+
     /**
-     * Règles de validation pour l'article.
+     * Règles de validation pour l'article et l'événement.
      *
-     * @var array
+     * @return array
      */
-    protected $rules = [
-        'post.title'                      => 'required|string|max:255',
-        'post.icon'                       => 'required|string|max:255',
-        'post.content'                    => 'required|string',
-        'post.rubric_id'                  => 'required',
-        'post.published'                  => 'required|boolean',
-        'post.is_acknowledgment_required' => 'boolean',
-        'post.is_rating_enabled'          => 'boolean',
-    ];
+    protected function rules() {
+        $rules = [
+            'post.title'                      => 'required|string|max:255',
+            'post.icon'                       => 'required|string|max:255',
+            'post.content'                    => 'required|string',
+            'post.rubric_id'                  => 'required',
+            'post.published'                  => 'required|boolean',
+            'post.is_acknowledgment_required' => 'boolean',
+            'post.is_rating_enabled'          => 'boolean',
+        ];
+
+        if ($this->attach_to_agenda) {
+            $rules['event_type_id'] = 'required|integer|exists:event_types,id';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'nullable';
+            $rules['end_date'] = 'nullable|date|after_or_equal:start_date';
+            $rules['end_time'] = 'nullable';
+            $rules['location'] = 'nullable|string|max:150';
+        }
+
+        return $rules;
+    }
 
     /**
      * Met à jour le contenu de l'article lors d'un changement dans l'éditeur.
@@ -73,6 +95,21 @@ class Edit extends Component
      */
     public function contentChange($content) {
         $this->post->content = $content;
+    }
+
+    public function updatedPostRubricId($value) {
+        if ($value) {
+            $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+            $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+            $rubric = Rubric::find($value);
+            if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                $this->attach_to_agenda = true;
+            } else {
+                $this->attach_to_agenda = false;
+            }
+        } else {
+            $this->attach_to_agenda = false;
+        }
     }
 
     /**
@@ -91,6 +128,33 @@ class Edit extends Component
             $this->post->published = FALSE;
             $this->post->is_acknowledgment_required = FALSE;
             $this->post->is_rating_enabled = FALSE;
+        }
+
+        if ($this->post->exists && $this->post->event) {
+            $this->attach_to_agenda = true;
+            $this->event_type_id = $this->post->event->event_type_id;
+            $this->start_date = $this->post->event->start_date ? $this->post->event->start_date->format('Y-m-d') : null;
+            $this->start_time = $this->post->event->start_time ? substr($this->post->event->start_time, 0, 5) : null;
+            $this->end_date = $this->post->event->end_date ? $this->post->event->end_date->format('Y-m-d') : null;
+            $this->end_time = $this->post->event->end_time ? substr($this->post->event->end_time, 0, 5) : null;
+            $this->location = $this->post->event->location;
+        } else {
+            $this->attach_to_agenda = false;
+            $this->event_type_id = null;
+            $this->start_date = null;
+            $this->start_time = null;
+            $this->end_date = null;
+            $this->end_time = null;
+            $this->location = null;
+
+            if ($this->post->rubric_id) {
+                $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+                $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+                $rubric = Rubric::find($this->post->rubric_id);
+                if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                    $this->attach_to_agenda = true;
+                }
+            }
         }
 
         $this->initTinymce();
@@ -197,6 +261,19 @@ class Edit extends Component
         $this->post
             ->save();
 
+        if ($this->attach_to_agenda) {
+            $this->post->event()->updateOrCreate([], [
+                'event_type_id' => $this->event_type_id,
+                'start_date' => $this->start_date,
+                'start_time' => $this->start_time ?: null,
+                'end_date' => $this->end_date ?: null,
+                'end_time' => $this->end_time ?: null,
+                'location' => $this->location ?: null,
+            ]);
+        } else {
+            $this->post->event()->delete();
+        }
+
         $this->emit('saveGallery');
     }
 
@@ -225,6 +302,7 @@ class Edit extends Component
                 'modalSize' => 'modal-xl',
                 'haveTiny' => TRUE,
                 'icons' => $this->getMiCodes(),
+                'eventTypes' => \App\Models\EventType::orderBy('name', 'ASC')->get(),
             ]);
     }
 }

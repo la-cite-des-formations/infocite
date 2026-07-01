@@ -52,6 +52,7 @@ class AP // Application Parameters
             'data' => ['name' => 'data'],
             'groups' => ['name' => 'groups'],
             'posts' => ['name' => 'posts'],
+            'event-types' => ['name' => 'posts'],
             'comments' => ['name' => 'comments'],
             'profiles' => ['name' => 'profiles'],
             'rights' => [
@@ -373,6 +374,15 @@ class AP // Application Parameters
                 'color' => 'teal',
                 'gate' => 'manage-rubrics',
                 'route' => ['name' => 'admin.rubrics.index', 'parameters' => NULL]
+            ],
+            'event-types' => [
+                'title' => "Événements",
+                'table_title' => "Gestion des types d'événements",
+                'description' => "Gérer les types d'événements",
+                'icon_name' => 'event',
+                'color' => 'teal',
+                'gate' => 'manage-event-types',
+                'route' => ['name' => 'admin.event-types.index', 'parameters' => NULL]
             ],
             'posts' => [
                 'title' => 'Contenus',
