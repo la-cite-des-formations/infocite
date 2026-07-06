@@ -29,6 +29,26 @@
         Ce document récapitule de manière synthétique les modifications et chantiers techniques réalisés, en lien direct avec le Rapport d'Évolutions et la Feuille de Route générale.
     </div>
 
+    <h2>Juillet 2026</h2>
+
+    <div class="month-section">
+        <h3><span class="date-label">06 Juillet 2026</span> - Agenda Événementiel (Timeline & Calendrier FullCalendar)</h3>
+        <p><strong>Contexte :</strong> Ajout d'une sous-rubrique "Agenda" sous "Événements" pour récapituler de manière chronologique et visuelle les manifestations futures de l'établissement.</p>
+        <p><strong>Réalisations :</strong></p>
+        <ul>
+            <li><strong>Base de données :</strong> Création des tables <code>events</code> et <code>event_types</code>, peuplement des 12 types d'événements initiaux, et liaison 1:1 polymorphique/directe sur le modèle <code>Post</code>.</li>
+            <li><strong>Administration back-office :</strong> Ajout du gestionnaire <code>EventTypesManager</code> avec possibilité de créer, modifier et supprimer les types d'événements, incluant un sélecteur de couleur HTML5 (ColorPicker).</li>
+            <li><strong>Rattachement dynamique :</strong> Intégration d'une case à cocher sur les formulaires d'édition d'articles (Admin et Portail public) pré-cochée pour la rubrique "Événements", dépliant les champs requis (Type, Lieu, Date/Heure de début et de fin).</li>
+            <li><strong>Double Rendu Public :</strong> Développement de la vue de l'agenda avec bouton de bascule dynamique :
+                <ul>
+                    <li><em>Timeline</em> : Ligne du temps verticale responsive stylisée en CSS, affichant les vignettes extraites des galeries d'articles.</li>
+                    <li><em>Calendrier</em> : Vue calendrier mensuelle propulsée par <code>FullCalendar v6</code> avec affichage des couleurs de catégories, tooltips personnalisés au survol et liens directs vers les articles.</li>
+                </ul>
+            </li>
+        </ul>
+        <p><strong>Statut Feuille de route :</strong> ✅ Chantier de l'agenda finalisé et livré.</p>
+    </div>
+
     <h2>Juin 2026</h2>
 
     <div class="month-section">
