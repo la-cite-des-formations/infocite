@@ -23,6 +23,17 @@
 <h1>Journal des Modifications (Changelog)</h1>
 
 <div class="version">
+    <div class="version-title">Version 1.8 - Agenda Événementiel (Ligne du Temps & Calendrier)</div>
+    <div class="date">06 Juillet 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Ajout de l'agenda événementiel avec double vue : Ligne du Temps (Timeline) Bootstrap verticale et Calendrier mensuel (FullCalendar v6).</li>
+        <li><span class="tag tag-feat">FEAT</span> Ajout de l'administration des types d'événements dans le back-office avec sélecteur de couleurs HTML5.</li>
+        <li><span class="tag tag-feat">FEAT</span> Intégration de la zone de rattachement à l'agenda sur les formulaires d'édition d'articles (Admin et Portail public), avec activation automatique dynamique pour les rubriques sous 'Événements'.</li>
+        <li><span class="tag tag-tech">TECH</span> Création des tables de base de données <code>events</code> et <code>event_types</code>, du modèle Eloquent correspondant, et liaison 1:1 polymorphique/directe sur <code>Post</code>.</li>
+    </ul>
+</div>
+
+<div class="version">
     <div class="version-title">Version 1.7.1 - Duplication Accès Boite à Idées</div>
     <div class="date">16 Juin 2026</div>
     <ul>
