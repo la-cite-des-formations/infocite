@@ -8,6 +8,7 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithPinnedHandling;
+use App\Models\Guideline;
 use App\Models\Notification as PostNotification;
 use App\Models\Post;
 use App\Models\Group;
@@ -71,6 +72,35 @@ class EditPostManager extends Component
      * @var bool
      */
     public $blockComments;
+
+    /**
+     * Clé de contexte du guide en ligne associé à cet article.
+     * Uniquement applicable si l'article appartient à la rubrique "Guide en ligne".
+     *
+     * @var string|null
+     */
+    public $guidelineContextKey;
+
+    /**
+     * Sélecteur CSS de l'élément cible pour la mise en surbrillance.
+     *
+     * @var string|null
+     */
+    public $guidelineCssSelector;
+
+    /**
+     * Clé du contexte du guide de l'étape suivante (parcours guidé).
+     *
+     * @var string|null
+     */
+    public $guidelineNextContextKey;
+
+    /**
+     * Ouverture automatique du guide à la première visite.
+     *
+     * @var bool
+     */
+    public $guidelineAutoOpen = false;
 
     /**
      * Écouteurs d'événements.
@@ -170,6 +200,19 @@ class EditPostManager extends Component
 
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
         $this->initTinymceContent('post.content');
+
+        // Chargement des données de guideline si l'article est un guide en ligne
+        if ($this->post->exists) {
+            $guideline = $this->post->guideline;
+            if ($guideline) {
+                $this->guidelineContextKey     = $guideline->context_key;
+                $this->guidelineCssSelector    = $guideline->css_selector;
+                $this->guidelineNextContextKey = $guideline->next_context_key;
+                $this->guidelineAutoOpen       = $guideline->auto_open;
+            }
+        }
+
+        $this->autoOpenGuideline('edit-post');
     }
 
     /**
@@ -257,6 +300,19 @@ class EditPostManager extends Component
             ]);
         } else {
             $this->post->event()->delete();
+        }
+
+        // Sauvegarde du contexte de guide en ligne (si une context_key est définie)
+        if ($this->guidelineContextKey && $this->post->rubric?->segment === 'guide-en-ligne') {
+            Guideline::updateOrCreate(
+                ['post_id' => $this->post->id],
+                [
+                    'context_key'       => $this->guidelineContextKey,
+                    'css_selector'      => $this->guidelineCssSelector ?: null,
+                    'next_context_key'  => $this->guidelineNextContextKey ?: null,
+                    'auto_open'         => $this->guidelineAutoOpen ?? false,
+                ]
+            );
         }
 
         // Pour les modèles : pas de galerie, droits, interactions ni notifications
@@ -498,6 +554,11 @@ class EditPostManager extends Component
      * @return \Illuminate\View\View
      */
     public function render() {
+        // Rubrique sélectionnée (peut avoir changé depuis le dernier rendu)
+        $selectedRubric = $this->post->rubric_id
+            ? Rubric::find($this->post->rubric_id)
+            : $this->currentRubric;
+
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()
                 ->where('contains_posts', TRUE)
@@ -512,6 +573,7 @@ class EditPostManager extends Component
                 })
                 ->get(),
             'eventTypes' => \App\Models\EventType::orderBy('name', 'ASC')->get(),
+            'isGuidelineRubric' => $selectedRubric?->segment === 'guide-en-ligne',
         ]);
     }
 }

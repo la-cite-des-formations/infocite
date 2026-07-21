@@ -54,6 +54,18 @@ class Post extends Model
     }
 
     /**
+     * Relation vers le contexte de guide en ligne associé à cet article.
+     * Permet de savoir si un article est un guide contextuel et d'accéder à ses paramètres
+     * (context_key, css_selector, next_context_key, auto_open).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function guideline()
+    {
+        return $this->hasOne('App\Models\Guideline');
+    }
+
+    /**
      * Relation vers l'utilisateur ayant corrigé/mis à jour l'article.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -164,55 +164,153 @@
                 <div class="col-8">
                     <div class="card p-3 border-0 shadow-sm" style="background-color: #f8fafc; border-radius: 8px;">
                         <div class="form-check mb-2">
-                            <input id="attach-to-agenda" wire:model="attach_to_agenda" type="checkbox" class="form-check-input">
-                            <label class="fw-bold form-check-label" for="attach-to-agenda">Rattacher l'article à l'agenda événementiel</label>
+                            <input id="attach-to-agenda" wire:model="attach_to_agenda" type="checkbox"
+                                class="form-check-input">
+                            <label class="fw-bold form-check-label" for="attach-to-agenda">Rattacher l'article à l'agenda
+                                événementiel</label>
                         </div>
-                        
+
                         @if ($attach_to_agenda)
                             <div class="row g-3 mt-1">
                                 <div class="col-md-6">
-                                    <label for="event-type-id" class="form-label small fw-bold text-dark">Type d'événement <span class="text-danger">*</span></label>
-                                    <select id="event-type-id" wire:model="event_type_id" class="form-select form-select-sm">
+                                    <label for="event-type-id" class="form-label small fw-bold text-dark">Type d'événement
+                                        <span class="text-danger">*</span></label>
+                                    <select id="event-type-id" wire:model="event_type_id"
+                                        class="form-select form-select-sm">
                                         <option value="">Choisir un type...</option>
                                         @foreach ($eventTypes as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('event_type_id') <span class="text-danger small">{{ $message }}</span> @enderror
+                                    @error('event_type_id')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label for="event-location" class="form-label small fw-bold text-dark">Lieu</label>
-                                    <input id="event-location" wire:model="location" type="text" class="form-control form-control-sm" placeholder="Ex: Salle de conférence, Zoom, etc.">
-                                    @error('location') <span class="text-danger small">{{ $message }}</span> @enderror
+                                    <input id="event-location" wire:model="location" type="text"
+                                        class="form-control form-control-sm"
+                                        placeholder="Ex: Salle de conférence, Zoom, etc.">
+                                    @error('location')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
                                 </div>
-                                
+
                                 <div class="col-md-3">
-                                    <label for="event-start-date" class="form-label small fw-bold text-dark">Date de début <span class="text-danger">*</span></label>
-                                    <input id="event-start-date" wire:model="start_date" type="date" class="form-control form-control-sm">
-                                    @error('start_date') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="event-start-time" class="form-label small fw-bold text-dark">Heure de début</label>
-                                    <input id="event-start-time" wire:model="start_time" type="time" class="form-control form-control-sm">
-                                    @error('start_time') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="event-end-date" class="form-label small fw-bold text-dark">Date de fin</label>
-                                    <input id="event-end-date" wire:model="end_date" type="date" class="form-control form-control-sm">
-                                    @error('end_date') <span class="text-danger small">{{ $message }}</span> @enderror
+                                    <label for="event-start-date" class="form-label small fw-bold text-dark">Date de début
+                                        <span class="text-danger">*</span></label>
+                                    <input id="event-start-date" wire:model="start_date" type="date"
+                                        class="form-control form-control-sm">
+                                    @error('start_date')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="event-end-time" class="form-label small fw-bold text-dark">Heure de fin</label>
-                                    <input id="event-end-time" wire:model="end_time" type="time" class="form-control form-control-sm">
-                                    @error('end_time') <span class="text-danger small">{{ $message }}</span> @enderror
+                                    <label for="event-start-time" class="form-label small fw-bold text-dark">Heure de
+                                        début</label>
+                                    <input id="event-start-time" wire:model="start_time" type="time"
+                                        class="form-control form-control-sm">
+                                    @error('start_time')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="event-end-date" class="form-label small fw-bold text-dark">Date de
+                                        fin</label>
+                                    <input id="event-end-date" wire:model="end_date" type="date"
+                                        class="form-control form-control-sm">
+                                    @error('end_date')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="event-end-time" class="form-label small fw-bold text-dark">Heure de
+                                        fin</label>
+                                    <input id="event-end-time" wire:model="end_time" type="time"
+                                        class="form-control form-control-sm">
+                                    @error('end_time')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         @endif
                     </div>
                 </div>
             </div>
+            {{-- ===== CHAMPS GUIDE EN LIGNE ===== --}}
+            @if ($isGuidelineRubric)
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <div class="alert alert-info" role="alert">
+                            <div class="d-flex mb-3">
+                                <span class="material-icons mt-0 ms-0 me-1">menu_book</span>
+                                <div>
+                                    <strong>Article de guide en ligne</strong><br>
+                                    <small>Renseignez les paramètres du contexte d'aide pour cet article.</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-2 fw-bold text-end mt-2" for="guideline-context-key">Clé de
+                                    contexte</label>
+                                <div class="col-8">
+                                    <input id="guideline-context-key" wire:model="guidelineContextKey" type="text"
+                                        class="form-control font-monospace" placeholder="ex: desktop-notifications">
+                                    <div class="form-text">
+                                        Identifiant unique (slug) permettant de lier cet article à un contexte spécifique de
+                                        l'interface.
+                                        Utilisé par le bouton <code>&lt;x-help-button context-key="..."&gt;</code>.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-2 fw-bold text-end mt-2" for="guideline-css-selector">Sélecteur
+                                    CSS</label>
+                                <div class="col-8">
+                                    <input id="guideline-css-selector" wire:model="guidelineCssSelector" type="text"
+                                        class="form-control font-monospace" placeholder="ex: #nav-notifs, .btn-favoris">
+                                    <div class="form-text">
+                                        Optionnel. Sélecteur CSS de l'élément à mettre en surbrillance lors de l'ouverture
+                                        de ce
+                                        guide.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-2 fw-bold text-end mt-2" for="guideline-next-context-key">Étape
+                                    suivante</label>
+                                <div class="col-8">
+                                    <input id="guideline-next-context-key" wire:model="guidelineNextContextKey"
+                                        type="text" class="form-control font-monospace"
+                                        placeholder="ex: post-edition">
+                                    <div class="form-text">
+                                        Optionnel. Clé de contexte du guide de l'étape suivante (parcours guidé
+                                        multi-étapes).
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-2"></div>
+                                <div class="col-8">
+                                    <div class="form-check form-switch">
+                                        <input id="guideline-auto-open" wire:model="guidelineAutoOpen" type="checkbox"
+                                            role="switch" class="form-check-input">
+                                        <label class="form-check-label fw-bold" for="guideline-auto-open">
+                                            Ouverture automatique (onboarding)
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        Si activé, la modale de ce guide s'ouvrira automatiquement à la première visite
+                                        d'un utilisateur sur la page associée, s'il n'a pas encore lu cet article.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         @endunless
-        <div class="row mt-5">
+        <div class="row">
             <div class="col-10 d-flex justify-content-end">
                 <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1"
                     title="Revenir à la page précédente sans enregistrer">

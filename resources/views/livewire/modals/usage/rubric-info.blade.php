@@ -2,7 +2,8 @@
 
 @section('modal-size', 'modal-lg')
 @section('modal-title')
-    <span class="material-icons me-2">info</span> Rubrique « {{ $rubric->parent->name . ' > ' . $rubric->name }} »
+    <span class="material-icons me-2">info</span> Rubrique «
+    {{ ($rubric->parent ? $rubric->parent->name . ' > ' : '') . $rubric->name }} »
 @endsection
 
 @section('modal-body')
