@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int         $id
  * @property int         $post_id           Référence vers l'article de guide.
  * @property string      $context_key       Identifiant unique du contexte (ex: 'desktop-notifications').
- * @property string|null $css_selector      Sélecteur CSS de l'élément cible pour mise en surbrillance.
  * @property string|null $next_context_key  Clé du contexte du guide de l'étape suivante (parcours guidé).
  * @property bool        $auto_open         Ouverture automatique à la première lecture.
  */
@@ -27,7 +26,6 @@ class Guideline extends Model
     protected $fillable = [
         'post_id',
         'context_key',
-        'css_selector',
         'next_context_key',
         'auto_open',
     ];

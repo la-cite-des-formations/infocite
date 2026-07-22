@@ -82,13 +82,6 @@ class EditPostManager extends Component
     public $guidelineContextKey;
 
     /**
-     * Sélecteur CSS de l'élément cible pour la mise en surbrillance.
-     *
-     * @var string|null
-     */
-    public $guidelineCssSelector;
-
-    /**
      * Clé du contexte du guide de l'étape suivante (parcours guidé).
      *
      * @var string|null
@@ -206,7 +199,6 @@ class EditPostManager extends Component
             $guideline = $this->post->guideline;
             if ($guideline) {
                 $this->guidelineContextKey     = $guideline->context_key;
-                $this->guidelineCssSelector    = $guideline->css_selector;
                 $this->guidelineNextContextKey = $guideline->next_context_key;
                 $this->guidelineAutoOpen       = $guideline->auto_open;
             }
@@ -308,7 +300,6 @@ class EditPostManager extends Component
                 ['post_id' => $this->post->id],
                 [
                     'context_key'       => $this->guidelineContextKey,
-                    'css_selector'      => $this->guidelineCssSelector ?: null,
                     'next_context_key'  => $this->guidelineNextContextKey ?: null,
                     'auto_open'         => $this->guidelineAutoOpen ?? false,
                 ]

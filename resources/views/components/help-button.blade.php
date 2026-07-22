@@ -10,19 +10,18 @@
         <x-help-button context-key="desktop-notifications" />
         <x-help-button context-key="post-edition" label="Aide sur l'édition d'articles" />
 --}}
-@props([
-    'contextKey',
-    'label' => "Afficher l'aide",
-])
+@props(['contextKey', 'label' => "Afficher l'aide"])
 
-<button
-    type="button"
-    id="help-btn-{{ $contextKey }}"
-    aria-label="{{ $label }}"
-    title="{{ $label }}"
-    wire:click="$emitTo('modal-manager', 'show', { component: 'usage.guideline-post-modal', data: { contextKey: '{{ $contextKey }}' } })"
-    class="btn btn-sm btn-outline-secondary help-button d-inline-flex align-items-center justify-content-center"
-    style="width: 28px; height: 28px; border-radius: 50%; padding: 0; font-weight: bold;"
->
-    <span class="material-icons" style="font-size: 16px;" aria-hidden="true">help_outline</span>
+<button type="button" id="help-btn-{{ $contextKey }}" aria-label="{{ $label }}" title="{{ $label }}"
+    onclick="Livewire.emitTo('modal-manager', 'show', { component: 'usage.guidelines-manager', data: { contextKey: '{{ $contextKey }}' } })"
+    class="btn help-button p-0 border-0 background-transparent d-inline-flex align-items-center justify-content-center align-self-center ms-1"
+    style="vertical-align: middle; margin-top: -3px;">
+    <span class="material-icons help-icon"
+        style="font-size: 24px; color: var(--select-color-1, #b32428); transition: color 0.2s ease;"
+        aria-hidden="true">help_outline</span>
 </button>
+<style>
+    .help-button:hover .help-icon {
+        color: var(--select-color-2, #8b1c1f) !important;
+    }
+</style>

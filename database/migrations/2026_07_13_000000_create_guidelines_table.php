@@ -23,9 +23,6 @@ return new class extends Migration
             // Identifiant unique du contexte d'interface (ex: 'desktop-notifications')
             $table->string('context_key')->unique();
 
-            // Sélecteur CSS optionnel pour la mise en surbrillance de l'élément cible
-            $table->string('css_selector')->nullable()->default(null);
-
             // Clé du contexte de l'étape suivante pour les parcours guidés
             $table->string('next_context_key')->nullable()->default(null);
 

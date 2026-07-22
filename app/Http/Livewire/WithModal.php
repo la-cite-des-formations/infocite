@@ -86,6 +86,13 @@ trait WithModal
     }
 
     /**
+     * Clé de contexte du guide à ouvrir automatiquement au chargement.
+     *
+     * @var string|null
+     */
+    public $autoOpenContextKey = null;
+
+    /**
      * Tente d'ouvrir automatiquement la modale de guide pour un contexte donné
      * si configuré en auto_open et non encore lu par l'utilisateur.
      *
@@ -96,14 +103,8 @@ trait WithModal
 
         $guideline = \App\Models\Guideline::forContext($contextKey);
         if ($guideline && $guideline->auto_open && $guideline->post) {
-            $user = auth()->user();
-            $isRead = $guideline->post->readers()
-                ->where('user_id', $user->id)
-                ->where('post_user.is_read', true)
-                ->exists();
-
-            if (!$isRead) {
-                $this->showModal('guideline-post', ['contextKey' => $contextKey]);
+            if (!$guideline->post->isRead()) {
+                $this->autoOpenContextKey = $contextKey;
             }
         }
     }

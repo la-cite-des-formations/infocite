@@ -54,3 +54,15 @@ window.addEventListener('mark-needs-refresh', () => {
 
 window.addEventListener('close-modal', closeModal);
 window.addEventListener('hideModal', closeModal);
+
+window.addEventListener('autoOpenGuideline', event => {
+    console.log('[autoOpenGuideline] Événement navigateur reçu:', event.detail);
+    const contextKey = event.detail ? event.detail.contextKey : null;
+    if (contextKey) {
+        console.log('[autoOpenGuideline] Émission Livewire.emitTo pour contextKey:', contextKey);
+        Livewire.emitTo('modal-manager', 'show', {
+            component: 'usage.guidelines-manager',
+            data: { contextKey: contextKey }
+        });
+    }
+});

@@ -13,15 +13,6 @@
 
 @section('modal-body')
     @if ($guideline && $guideline->post)
-        {{-- Déclenchement de la mise en surbrillance CSS si un sélecteur est configuré --}}
-        @if ($cssSelector)
-            <div x-data x-init="$nextTick(() => {
-                window.dispatchEvent(new CustomEvent('guideline-highlight', {
-                    detail: { selector: @js($cssSelector) }
-                }));
-            });">
-            </div>
-        @endif
         <h3><span class="material-icons">{{ $guideline->post->icon ?? 'help_outline' }}</span>
             {{ $guideline->post->title }}</h3>
         <div class="guideline-post-content">

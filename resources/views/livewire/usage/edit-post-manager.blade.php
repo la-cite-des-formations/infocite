@@ -264,19 +264,6 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label class="col-2 fw-bold text-end mt-2" for="guideline-css-selector">Sélecteur
-                                    CSS</label>
-                                <div class="col-8">
-                                    <input id="guideline-css-selector" wire:model="guidelineCssSelector" type="text"
-                                        class="form-control font-monospace" placeholder="ex: #nav-notifs, .btn-favoris">
-                                    <div class="form-text">
-                                        Optionnel. Sélecteur CSS de l'élément à mettre en surbrillance lors de l'ouverture
-                                        de ce
-                                        guide.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
                                 <label class="col-2 fw-bold text-end mt-2" for="guideline-next-context-key">Étape
                                     suivante</label>
                                 <div class="col-8">

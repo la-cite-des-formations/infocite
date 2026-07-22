@@ -69,7 +69,3 @@
 
 <!-- Modal JS File -->
 <script src="{{ asset('js/modalManager.js') }}?v={{ filemtime(public_path('js/modalManager.js')) }}"></script>
-
-<!-- Guidelines JS File -->
-<script src="{{ asset('js/guideline-spotlight.js') }}?v={{ filemtime(public_path('js/guideline-spotlight.js')) }}">
-</script>

@@ -22,13 +22,6 @@ class GuidelinesManager extends Component
     public ?Guideline $guideline = null;
 
     /**
-     * Sélecteur CSS à mettre en surbrillance lors de l'ouverture.
-     *
-     * @var string|null
-     */
-    public ?string $cssSelector = null;
-
-    /**
      * Clé du contexte du guide suivant (pour les parcours guidés).
      *
      * @var string|null
@@ -53,8 +46,9 @@ class GuidelinesManager extends Component
         }
 
         if ($this->guideline) {
-            $this->cssSelector    = $this->guideline->css_selector;
             $this->nextContextKey = $this->guideline->next_context_key;
+
+            $this->markAsRead();
         }
     }
 
@@ -90,11 +84,13 @@ class GuidelinesManager extends Component
      */
     public function openNextStep()
     {
+        $this->markAsRead();
+
         if ($this->nextContextKey) {
-            $this->emit('show', [
+            $this->emitTo('modal-manager', 'show', [
                 'component' => 'usage.guidelines-manager',
                 'data'      => ['contextKey' => $this->nextContextKey],
-            ])->to('modal-manager');
+            ]);
         }
     }
 

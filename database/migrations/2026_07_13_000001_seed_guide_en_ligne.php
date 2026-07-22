@@ -54,8 +54,7 @@ return new class extends Migration
         }
 
         // 3. Insertion de l'article "Notifications de bureau"
-        $adminUser = DB::table('users')->where('is_admin', true)->orWhereRaw("roles & 4")->first();
-        $authorId = $adminUser?->id ?? DB::table('users')->first()?->id;
+        $authorId = 97;
 
         $postContent = <<<'HTML'
 <p>À la fermeture de ce message, une pop-up vous invitant à afficher les notifications apparaîtra. SVP, autorisez-les.</p>
@@ -102,7 +101,6 @@ HTML;
             DB::table('guidelines')->insert([
                 'post_id'           => $postId,
                 'context_key'       => 'desktop-notifications',
-                'css_selector'      => null,
                 'next_context_key'  => null,
                 'auto_open'         => true,
                 'created_at'        => now(),
