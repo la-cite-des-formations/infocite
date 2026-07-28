@@ -123,6 +123,17 @@
     <tr><td>location</td><td>string</td><td>Lieu physique ou virtuel</td></tr>
 </table>
 
+<h3>Table <code>guidelines</code></h3>
+<p>Gestion de l'aide contextuelle et des parcours guidés (Guide en ligne).</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>int</td><td>Clé primaire</td></tr>
+    <tr><td class="fk">post_id</td><td>int</td><td>Lien vers l'article du guide en ligne (Cascade)</td></tr>
+    <tr><td>context_key</td><td>string</td><td>Identifiant unique de contexte (slug ex: 'desktop-notifications')</td></tr>
+    <tr><td>next_context_key</td><td>string</td><td>Clé du contexte suivant pour les parcours guidés ("Étape suivante")</td></tr>
+    <tr><td>auto_open</td><td>boolean</td><td>Ouverture automatique lors du premier chargement de la page (Onboarding)</td></tr>
+</table>
+
 <hr>
 
 <h2>3. Pôle Organigramme</h2>

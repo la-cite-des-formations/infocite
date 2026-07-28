@@ -23,6 +23,17 @@
 <h1>Journal des Modifications (Changelog)</h1>
 
 <div class="version">
+    <div class="version-title">Version 1.9 - Guide en Ligne & Aide Contextuelle</div>
+    <div class="date">22 Juillet 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Module d'Aide Contextuelle avec composant Blade réutilisable <code>&lt;x-help-button context-key="..."&gt;</code> utilisable aussi bien dans du HTML statique que dans les composants Livewire.</li>
+        <li><span class="tag tag-feat">FEAT</span> Parcours guidés ("Étape suivante") permettant de passer d'un guide à un autre de manière fluide avec suivi automatique de l'état de lecture par utilisateur (<code>post_user.is_read</code>).</li>
+        <li><span class="tag tag-feat">FEAT</span> Ouverture automatique (Onboarding) pour les guides configurés avec <code>auto_open = true</code> s'exécutant au chargement de la page via <code>livewire:load</code>.</li>
+        <li><span class="tag tag-tech">TECH</span> Création du modèle et de la table <code>guidelines</code> reliant les articles de la rubrique "Guide en ligne" aux clés de contexte de l'application.</li>
+    </ul>
+</div>
+
+<div class="version">
     <div class="version-title">Version 1.8 - Agenda Événementiel (Ligne du Temps & Calendrier)</div>
     <div class="date">06 Juillet 2026</div>
     <ul>
