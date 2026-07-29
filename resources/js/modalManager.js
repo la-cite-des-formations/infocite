@@ -1,10 +1,9 @@
 window.addEventListener('showModal', event => {
     const modalElement = document.getElementById('modal');
     if (!modalElement) return;
-    if (!modalElement.classList.contains('show')) {
-        let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-        modalInstance.show();
-    }
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    modalInstance.show();
 })
 
 window.addEventListener('autoOpenGuideline', event => {
