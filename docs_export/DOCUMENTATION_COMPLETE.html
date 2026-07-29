@@ -1340,6 +1340,17 @@ Cela compresse tous les fichiers pour que le site soit le plus rapide possible p
     <tr><td>location</td><td>string</td><td>Lieu physique ou virtuel</td></tr>
 </table>
 
+<h3>Table <code>guidelines</code></h3>
+<p>Gestion des parcours d'aide contextuelle et de l'accompagnement guidé (Guide en Ligne).</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
+    <tr><td class="fk">post_id</td><td>bigint</td><td>Lien vers l'article servant de contenu pour le guide</td></tr>
+    <tr><td>context_key</td><td>string</td><td>Clé unique d'identification du contexte d'aide (ex: onboarding-posts)</td></tr>
+    <tr><td>next_context_key</td><td>string</td><td>Clé du chapitre suivant pour la navigation guidée (facultatif)</td></tr>
+    <tr><td>auto_open</td><td>boolean</td><td>Ouverture automatique au chargement si l'article n'a pas été lu</td></tr>
+</table>
+
 <hr>
 
 <h2>3. Pôle Organigramme</h2>
@@ -1642,6 +1653,17 @@ Cela compresse tous les fichiers pour que le site soit le plus rapide possible p
 
 
 <h1>Journal des Modifications (Changelog)</h1>
+
+<div class="version">
+    <div class="version-title">Version 1.9 - Guide en Ligne & Aide Contextuelle</div>
+    <div class="date">22 Juillet 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Ajout du composant réutilisable <code>&lt;x-help-button&gt;</code> pour déclencher les guides contextuels dans l'application.</li>
+        <li><span class="tag tag-feat">FEAT</span> Navigation séquentielle "Étape suivante" guidée à travers les articles/chapitres d'un guide via <code>next_context_key</code>.</li>
+        <li><span class="tag tag-feat">FEAT</span> Système d'onboarding automatique à l'ouverture de page (<code>auto_open</code>) lors de la première connexion.</li>
+        <li><span class="tag tag-tech">TECH</span> Création de la table de base de données <code>guidelines</code> pour la gestion des parcours d'aide contextuels et suivi de lecture dans <code>post_user</code>.</li>
+    </ul>
+</div>
 
 <div class="version">
     <div class="version-title">Version 1.8 - Agenda Événementiel (Ligne du Temps & Calendrier)</div>
