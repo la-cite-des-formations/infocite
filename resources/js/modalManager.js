@@ -1,6 +1,10 @@
 window.addEventListener('showModal', event => {
-    $('#modal').modal('show')
-    $('#modal').on('hidden.bs.modal', () => Livewire.emitTo('modal-manager', 'unload'))
+    const modalElement = document.getElementById('modal');
+    if (!modalElement) return;
+    if (!modalElement.classList.contains('show')) {
+        let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        modalInstance.show();
+    }
 })
 
 window.addEventListener('autoOpenGuideline', event => {

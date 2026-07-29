@@ -22,13 +22,17 @@ window.addEventListener('showModal', () => {
     const modalElement = document.getElementById('modal');
     if (!modalElement) return;
 
+    const isAlreadyOpen = modalElement.classList.contains('show');
+
     // Récupérer l'instance existante ou en créer une nouvelle
     let modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (!modalInstance) {
         modalInstance = new bootstrap.Modal(modalElement);
     }
 
-    modalInstance.show();
+    if (!isAlreadyOpen) {
+        modalInstance.show();
+    }
 
     if (!modalElement.dataset.listenerAdded) {
         modalElement.addEventListener('hidden.bs.modal', () => {
