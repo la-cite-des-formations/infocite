@@ -15,7 +15,7 @@
         <div class="section-title">
             <h2 class="title-icon">
                 <i class="material-icons md-36 me-1">apps</i>Mes applications
-                <x-help-button context-key="guide-applis" label="Aide sur les applications" />
+                <x-help-button context-key="guideline-applications-favorites" label="Aide sur les applications" />
             </h2>
             <p>Toutes les applications auxquelles vous pouvez vous connecter depuis l'intranet de la Cité des Formations
             </p>
