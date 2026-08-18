@@ -68,7 +68,7 @@ document.addEventListener('livewire:load', function () {
         // Si la permission est encore par défaut, afficher la modale pour informer l'utilisateur
         console.log("Permission en état 'default'")
 
-        Livewire.emit('showModal', 'guidelines', { contextKey: 'desktop-notifications' })
+        Livewire.emit('showModal', 'guidelines', { contextKey: 'guideline-notifications-de-bureau' })
     }
 
     if (Notification.permission === 'granted') {
@@ -88,7 +88,7 @@ document.addEventListener('livewire:load', function () {
     Livewire.on('guidelinesRead', subject => {
         console.log("Sujet des directives : ", subject)
 
-        if (subject === 'desktop-notifications') {
+        if (subject === 'guideline-notifications-de-bureau') {
             askNotificationPermission()
         }
     })

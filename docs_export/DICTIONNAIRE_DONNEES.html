@@ -1,179 +1,526 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Dictionnaire de Données - Infocite</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 20px; }
-        h1 { color: #2c3e50; border-bottom: 3px solid #2c3e50; padding-bottom: 10px; text-align: center; }
-        h2 { color: #2980b9; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 30px; }
-        h3 { color: #16a085; margin-top: 20px; }
-        table { border-collapse: collapse; width: 100%; margin: 15px 0; font-size: 0.9em; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #f2f2f2; font-weight: bold; }
-        .pk { color: #d35400; font-weight: bold; }
-        .fk { color: #2980b9; font-style: italic; }
-        .desc { color: #666; font-style: italic; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #2980b9;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #16a085;
+            margin-top: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .pk {
+            color: #d35400;
+            font-weight: bold;
+        }
+
+        .fk {
+            color: #2980b9;
+            font-style: italic;
+        }
+
+        .desc {
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
+
 <body>
 
-<h1>Dictionnaire de Données : Infocite</h1>
+    <h1>Dictionnaire de Données : Infocite</h1>
 
-<p>Ce document décrit la structure de la base de données MySQL d'Infocite. Il est organisé par pôles fonctionnels.</p>
+    <p>Ce document décrit la structure de la base de données MySQL d'Infocite. Il est organisé par pôles fonctionnels.
+    </p>
 
-<hr>
+    <hr>
 
-<h2>1. Pôle Utilisateurs et Identités</h2>
+    <h2>1. Pôle Utilisateurs et Identités</h2>
 
-<h3>Table <code>users</code></h3>
-<p>Table centrale des comptes utilisateurs.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
-    <tr><td>identity</td><td>string</td><td>Nom complet (Prénom Nom)</td></tr>
-    <tr><td>email</td><td>string</td><td>Email de connexion (ou Google Account)</td></tr>
-    <tr><td>login</td><td>string</td><td>Login YParéo</td></tr>
-    <tr><td>code_ypareo</td><td>string</td><td>Identifiant unique YParéo</td></tr>
-    <tr><td>avatar</td><td>string</td><td>URL ou chemin de la photo de profil</td></tr>
-</table>
+    <h3>Table <code>users</code></h3>
+    <p>Table centrale des comptes utilisateurs.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>bigint</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td>identity</td>
+            <td>string</td>
+            <td>Nom complet (Prénom Nom)</td>
+        </tr>
+        <tr>
+            <td>email</td>
+            <td>string</td>
+            <td>Email de connexion (ou Google Account)</td>
+        </tr>
+        <tr>
+            <td>login</td>
+            <td>string</td>
+            <td>Login YParéo</td>
+        </tr>
+        <tr>
+            <td>code_ypareo</td>
+            <td>string</td>
+            <td>Identifiant unique YParéo</td>
+        </tr>
+        <tr>
+            <td>avatar</td>
+            <td>string</td>
+            <td>URL ou chemin de la photo de profil</td>
+        </tr>
+    </table>
 
-<h3>Table <code>learners</code> / <code>employees</code></h3>
-<p>Extensions des données utilisateurs pour les apprenants et les salariés.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="fk">user_id</td><td>bigint</td><td>Lien vers la table users</td></tr>
-    <tr><td>birthday</td><td>date</td><td>Date de naissance (Apprenants)</td></tr>
-    <tr><td>position</td><td>string</td><td>Poste occupé (Salariés)</td></tr>
-    <tr><td>building / office</td><td>string</td><td>Localisation physique (Salariés)</td></tr>
-</table>
+    <h3>Table <code>learners</code> / <code>employees</code></h3>
+    <p>Extensions des données utilisateurs pour les apprenants et les salariés.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="fk">user_id</td>
+            <td>bigint</td>
+            <td>Lien vers la table users</td>
+        </tr>
+        <tr>
+            <td>birthday</td>
+            <td>date</td>
+            <td>Date de naissance (Apprenants)</td>
+        </tr>
+        <tr>
+            <td>position</td>
+            <td>string</td>
+            <td>Poste occupé (Salariés)</td>
+        </tr>
+        <tr>
+            <td>building / office</td>
+            <td>string</td>
+            <td>Localisation physique (Salariés)</td>
+        </tr>
+    </table>
 
-<hr>
+    <hr>
 
-<h2>2. Pôle Contenus et Rubriques</h2>
+    <h2>2. Pôle Contenus et Rubriques</h2>
 
-<h3>Table <code>rubrics</code></h3>
-<p>Structure de navigation du site.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
-    <tr><td>name</td><td>string</td><td>Nom affiché</td></tr>
-    <tr><td>segment</td><td>string</td><td>Partie de l'URL (slug)</td></tr>
-    <tr><td>icon</td><td>string</td><td>Code icône Material Design</td></tr>
-    <tr><td class="fk">parent_id</td><td>bigint</td><td>Lien vers la rubrique parente (hiérarchie)</td></tr>
-</table>
+    <h3>Table <code>rubrics</code></h3>
+    <p>Structure de navigation du site.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>bigint</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Nom affiché</td>
+        </tr>
+        <tr>
+            <td>segment</td>
+            <td>string</td>
+            <td>Partie de l'URL (slug)</td>
+        </tr>
+        <tr>
+            <td>icon</td>
+            <td>string</td>
+            <td>Code icône Material Design</td>
+        </tr>
+        <tr>
+            <td class="fk">parent_id</td>
+            <td>bigint</td>
+            <td>Lien vers la rubrique parente (hiérarchie)</td>
+        </tr>
+    </table>
 
-<h3>Table <code>posts</code></h3>
-<p>Contenu des articles.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
-    <tr><td class="fk">rubric_id</td><td>bigint</td><td>Lien vers la rubrique parente</td></tr>
-    <tr><td>title</td><td>string</td><td>Titre de l'article</td></tr>
-    <tr><td>content</td><td>text</td><td>Contenu HTML de l'article</td></tr>
-    <tr><td>published</td><td>boolean</td><td>État de publication</td></tr>
-    <tr><td>is_acknowledgment_required</td><td>boolean</td><td>Si l'accusé de lecture est activé</td></tr>
-    <tr><td>is_rating_enabled</td><td>boolean</td><td>Si la notation est activée</td></tr>
-    <tr><td>is_pinned</td><td>boolean</td><td>Si l'article est "À la Une"</td></tr>
-    <tr><td>is_template</td><td>boolean</td><td>Si l'article sert de modèle (exclu des flux publics)</td></tr>
-    <tr><td class="fk">author_id</td><td>bigint</td><td>Lien vers le rédacteur (User)</td></tr>
-    <tr><td>published_at</td><td>datetime</td><td>Date de mise en ligne prévue</td></tr>
-    <tr><td>expired_at</td><td>datetime</td><td>Date d'archivage automatique</td></tr>
-</table>
+    <h3>Table <code>posts</code></h3>
+    <p>Contenu des articles.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>bigint</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td class="fk">rubric_id</td>
+            <td>bigint</td>
+            <td>Lien vers la rubrique parente</td>
+        </tr>
+        <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>Titre de l'article</td>
+        </tr>
+        <tr>
+            <td>content</td>
+            <td>text</td>
+            <td>Contenu HTML de l'article</td>
+        </tr>
+        <tr>
+            <td>published</td>
+            <td>boolean</td>
+            <td>État de publication</td>
+        </tr>
+        <tr>
+            <td>is_acknowledgment_required</td>
+            <td>boolean</td>
+            <td>Si l'accusé de lecture est activé</td>
+        </tr>
+        <tr>
+            <td>is_rating_enabled</td>
+            <td>boolean</td>
+            <td>Si la notation est activée</td>
+        </tr>
+        <tr>
+            <td>is_pinned</td>
+            <td>boolean</td>
+            <td>Si l'article est "À la Une"</td>
+        </tr>
+        <tr>
+            <td>is_template</td>
+            <td>boolean</td>
+            <td>Si l'article sert de modèle (exclu des flux publics)</td>
+        </tr>
+        <tr>
+            <td class="fk">author_id</td>
+            <td>bigint</td>
+            <td>Lien vers le rédacteur (User)</td>
+        </tr>
+        <tr>
+            <td>published_at</td>
+            <td>datetime</td>
+            <td>Date de mise en ligne prévue</td>
+        </tr>
+        <tr>
+            <td>expired_at</td>
+            <td>datetime</td>
+            <td>Date d'archivage automatique</td>
+        </tr>
+    </table>
 
-<h3>Table <code>post_user</code> (Pivot)</h3>
-<p>Lien entre utilisateurs et articles pour le suivi personnalisé.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="fk">user_id</td><td>bigint</td><td>Clé étrangère vers users</td></tr>
-    <tr><td class="fk">post_id</td><td>bigint</td><td>Clé étrangère vers posts</td></tr>
-    <tr><td>is_read</td><td>boolean</td><td>État de lecture individuelle</td></tr>
-    <tr><td>rating</td><td>integer</td><td>Note attribuée (1 à 5)</td></tr>
-</table>
+    <h3>Table <code>post_user</code> (Pivot)</h3>
+    <p>Lien entre utilisateurs et articles pour le suivi personnalisé.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="fk">user_id</td>
+            <td>bigint</td>
+            <td>Clé étrangère vers users</td>
+        </tr>
+        <tr>
+            <td class="fk">post_id</td>
+            <td>bigint</td>
+            <td>Clé étrangère vers posts</td>
+        </tr>
+        <tr>
+            <td>is_read</td>
+            <td>boolean</td>
+            <td>État de lecture individuelle</td>
+        </tr>
+        <tr>
+            <td>rating</td>
+            <td>integer</td>
+            <td>Note attribuée (1 à 5)</td>
+        </tr>
+    </table>
 
-<h3>Table <code>galleries</code></h3>
-<p>Albums photos associés aux articles.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
-    <tr><td class="fk">post_id</td><td>bigint</td><td>Lien vers l'article (relation 1:1)</td></tr>
-    <tr><td>images</td><td>json</td><td>Données structurées (ordre, chemins, noms)</td></tr>
-</table>
+    <h3>Table <code>galleries</code></h3>
+    <p>Albums photos associés aux articles.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>bigint</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td class="fk">post_id</td>
+            <td>bigint</td>
+            <td>Lien vers l'article (relation 1:1)</td>
+        </tr>
+        <tr>
+            <td>images</td>
+            <td>json</td>
+            <td>Données structurées (ordre, chemins, noms)</td>
+        </tr>
+    </table>
 
-<h3>Table <code>event_types</code></h3>
-<p>Catégories d'événements pour l'agenda.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>integer</td><td>Clé primaire</td></tr>
-    <tr><td>name</td><td>string</td><td>Nom du type d'événement (ex: Conférence)</td></tr>
-    <tr><td>color</td><td>string</td><td>Couleur au format hexadécimal (ex: #e74c3c)</td></tr>
-</table>
+    <h3>Table <code>event_types</code></h3>
+    <p>Catégories d'événements pour l'agenda.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>integer</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Nom du type d'événement (ex: Conférence)</td>
+        </tr>
+        <tr>
+            <td>color</td>
+            <td>string</td>
+            <td>Couleur au format hexadécimal (ex: #e74c3c)</td>
+        </tr>
+    </table>
 
-<h3>Table <code>events</code></h3>
-<p>Détails de planification temporelle et spatiale associés aux articles.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>integer</td><td>Clé primaire</td></tr>
-    <tr><td class="fk">post_id</td><td>integer</td><td>Lien vers l'article (table posts, cascade delete)</td></tr>
-    <tr><td class="fk">event_type_id</td><td>integer</td><td>Lien vers le type d'événement (table event_types)</td></tr>
-    <tr><td>start_date</td><td>date</td><td>Date de début de l'événement</td></tr>
-    <tr><td>start_time</td><td>time</td><td>Heure de début (facultatif)</td></tr>
-    <tr><td>end_date</td><td>date</td><td>Date de fin (facultatif)</td></tr>
-    <tr><td>end_time</td><td>time</td><td>Heure de fin (facultatif)</td></tr>
-    <tr><td>location</td><td>string</td><td>Lieu physique ou virtuel</td></tr>
-</table>
+    <h3>Table <code>events</code></h3>
+    <p>Détails de planification temporelle et spatiale associés aux articles.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>integer</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td class="fk">post_id</td>
+            <td>integer</td>
+            <td>Lien vers l'article (table posts, cascade delete)</td>
+        </tr>
+        <tr>
+            <td class="fk">event_type_id</td>
+            <td>integer</td>
+            <td>Lien vers le type d'événement (table event_types)</td>
+        </tr>
+        <tr>
+            <td>start_date</td>
+            <td>date</td>
+            <td>Date de début de l'événement</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>time</td>
+            <td>Heure de début (facultatif)</td>
+        </tr>
+        <tr>
+            <td>end_date</td>
+            <td>date</td>
+            <td>Date de fin (facultatif)</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>time</td>
+            <td>Heure de fin (facultatif)</td>
+        </tr>
+        <tr>
+            <td>location</td>
+            <td>string</td>
+            <td>Lieu physique ou virtuel</td>
+        </tr>
+    </table>
 
-<h3>Table <code>guidelines</code></h3>
-<p>Gestion de l'aide contextuelle et des parcours guidés (Guide en ligne).</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>int</td><td>Clé primaire</td></tr>
-    <tr><td class="fk">post_id</td><td>int</td><td>Lien vers l'article du guide en ligne (Cascade)</td></tr>
-    <tr><td>context_key</td><td>string</td><td>Identifiant unique de contexte (slug ex: 'desktop-notifications')</td></tr>
-    <tr><td>next_context_key</td><td>string</td><td>Clé du contexte suivant pour les parcours guidés ("Étape suivante")</td></tr>
-    <tr><td>auto_open</td><td>boolean</td><td>Ouverture automatique lors du premier chargement de la page (Onboarding)</td></tr>
-</table>
+    <h3>Table <code>guidelines</code></h3>
+    <p>Gestion de l'aide contextuelle et des parcours guidés (Guide en ligne).</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>int</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td class="fk">post_id</td>
+            <td>int</td>
+            <td>Lien vers l'article du guide en ligne (Cascade)</td>
+        </tr>
+        <tr>
+            <td>context_key</td>
+            <td>string</td>
+            <td>Identifiant unique de contexte (slug ex: 'guideline-notifications-de-bureau')</td>
+        </tr>
+        <tr>
+            <td>next_context_key</td>
+            <td>string</td>
+            <td>Clé du contexte suivant pour les parcours guidés ("Étape suivante")</td>
+        </tr>
+        <tr>
+            <td>auto_open</td>
+            <td>boolean</td>
+            <td>Ouverture automatique lors du premier chargement de la page (Onboarding)</td>
+        </tr>
+    </table>
 
-<hr>
+    <hr>
 
-<h2>3. Pôle Organigramme</h2>
+    <h2>3. Pôle Organigramme</h2>
 
-<h3>Table <code>chartnodes</code></h3>
-<p>Les cases de l'organigramme.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
-    <tr><td>name</td><td>string</td><td>Nom de la case (ex: Direction)</td></tr>
-    <tr><td>code_fonction</td><td>string</td><td>Lien avec le code fonction YParéo</td></tr>
-    <tr><td class="fk">parent_id</td><td>bigint</td><td>Hiérarchie des cases</td></tr>
-    <tr><td class="fk">format_id</td><td>bigint</td><td>Lien vers les styles visuels</td></tr>
-</table>
+    <h3>Table <code>chartnodes</code></h3>
+    <p>Les cases de l'organigramme.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="pk">id</td>
+            <td>bigint</td>
+            <td>Clé primaire</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Nom de la case (ex: Direction)</td>
+        </tr>
+        <tr>
+            <td>code_fonction</td>
+            <td>string</td>
+            <td>Lien avec le code fonction YParéo</td>
+        </tr>
+        <tr>
+            <td class="fk">parent_id</td>
+            <td>bigint</td>
+            <td>Hiérarchie des cases</td>
+        </tr>
+        <tr>
+            <td class="fk">format_id</td>
+            <td>bigint</td>
+            <td>Lien vers les styles visuels</td>
+        </tr>
+    </table>
 
-<hr>
+    <hr>
 
-<h2>4. Pôle Droits et Permissions</h2>
+    <h2>4. Pôle Droits et Permissions</h2>
 
-<h3>Table <code>rights</code> / <code>rightables</code></h3>
-<p>Gestion fine des permissions.</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td>name</td><td>string</td><td>Nom du droit (ex: manage-posts)</td></tr>
-    <tr><td>dashboard_roles</td><td>integer</td><td>Masque binaire des rôles administratifs</td></tr>
-</table>
+    <h3>Table <code>rights</code> / <code>rightables</code></h3>
+    <p>Gestion fine des permissions.</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Nom du droit (ex: manage-posts)</td>
+        </tr>
+        <tr>
+            <td>dashboard_roles</td>
+            <td>integer</td>
+            <td>Masque binaire des rôles administratifs</td>
+        </tr>
+    </table>
 
-<hr>
+    <hr>
 
-<h2>5. Pôle Technique et Statistiques</h2>
+    <h2>5. Pôle Technique et Statistiques</h2>
 
-<h3>Table <code>interactions</code></h3>
-<p>Journal complet des actions utilisateurs (très volumineuse).</p>
-<table>
-    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
-    <tr><td>user_id</td><td>bigint</td><td>Qui a fait l'action</td></tr>
-    <tr><td>type</td><td>string</td><td>Type d'action (view, click, auth)</td></tr>
-    <tr><td>interactable_type / id</td><td>string/bigint</td><td>Sur quel objet (Post, App, etc.)</td></tr>
-    <tr><td>occurred_at</td><td>datetime</td><td>Horodatage</td></tr>
-</table>
+    <h3>Table <code>interactions</code></h3>
+    <p>Journal complet des actions utilisateurs (très volumineuse).</p>
+    <table>
+        <tr>
+            <th>Champ</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>user_id</td>
+            <td>bigint</td>
+            <td>Qui a fait l'action</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>string</td>
+            <td>Type d'action (view, click, auth)</td>
+        </tr>
+        <tr>
+            <td>interactable_type / id</td>
+            <td>string/bigint</td>
+            <td>Sur quel objet (Post, App, etc.)</td>
+        </tr>
+        <tr>
+            <td>occurred_at</td>
+            <td>datetime</td>
+            <td>Horodatage</td>
+        </tr>
+    </table>
 
 </body>
+
 </html>

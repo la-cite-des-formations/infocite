@@ -1,267 +1,443 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Suivi Calendaire des Évolutions - Infocite</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 40px; background-color: #f8f9fa; }
-        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; }
-        h2 { color: #2980b9; margin-top: 40px; border-left: 5px solid #2980b9; padding-left: 15px; }
-        h3 { color: #16a085; margin-top: 25px; }
-        .month-section { background: #fdfefe; border: 1px solid #e1e8ed; padding: 20px; border-radius: 8px; margin: 15px 0; }
-        .date-label { color: #7f8c8d; font-weight: bold; font-family: monospace; font-size: 1.1em; }
-        .highlight { background: #fff3cd; padding: 10px; border-radius: 5px; font-style: italic; }
-        ul { margin-top: 10px; margin-bottom: 20px; }
-        li { margin-bottom: 8px; }
-        .btn-back { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
-        .btn-back:hover { background: #2980b9; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 40px;
+            border-left: 5px solid #2980b9;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #16a085;
+            margin-top: 25px;
+        }
+
+        .month-section {
+            background: #fdfefe;
+            border: 1px solid #e1e8ed;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .date-label {
+            color: #7f8c8d;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        ul {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn-back:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <a href="index.html" class="btn-back">← Retour à l'index documentaire</a>
+    <div class="container">
+        <a href="index.html" class="btn-back">← Retour à l'index documentaire</a>
 
-    <h1>Suivi Calendaire des Évolutions</h1>
+        <h1>Suivi Calendaire des Évolutions</h1>
 
-    <div class="highlight mb-4">
-        Ce document récapitule de manière synthétique les modifications et chantiers techniques réalisés, en lien direct avec le Rapport d'Évolutions et la Feuille de Route générale.
+        <div class="highlight mb-4">
+            Ce document récapitule de manière synthétique les modifications et chantiers techniques réalisés, en lien
+            direct avec le Rapport d'Évolutions et la Feuille de Route générale.
+        </div>
+
+        <h2>Juillet 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">21-22 Juillet 2026</span> - Module Guide en Ligne & Aide Contextuelle</h3>
+            <p><strong>Contexte :</strong> Mise en place d'un système d'aide contextuelle dynamique pour orienter les
+                utilisateurs et guider les nouveaux arrivants (onboarding).</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Base de données :</strong> Création de la table <code>guidelines</code> reliant un article
+                    de guide en ligne (rubrique <code>guide-en-ligne</code>) à une clé de contexte (ex:
+                    <code>guideline-notifications-de-bureau</code>, <code>une</code>, <code>guide-applis</code>).</li>
+                <li><strong>Bouton d'aide réutilisable :</strong> Composant Blade
+                    <code>&lt;x-help-button context-key="..."&gt;</code> utilisable à la fois dans le HTML statique et
+                    dans les composants Livewire, déclenchant la modale du guide via
+                    <code>Livewire.emitTo('modal-manager', 'show', ...)</code>.</li>
+                <li><strong>Parcours guidés ("Étape suivante") :</strong> Navigation fluide d'un chapitre de guide à un
+                    autre via la propriété <code>next_context_key</code> avec suivi de lecture utilisateur automatique
+                    (<code>post_user.is_read</code>).</li>
+                <li><strong>Ouverture automatique (Onboarding) :</strong> Ouverture automatique de la modale d'accueil
+                    pour les guides non encore lus par l'utilisateur connecté via l'événement
+                    <code>livewire:load</code>.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Module d'aide contextuelle et guide en ligne finalisé et
+                livré.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">06 Juillet 2026</span> - Agenda Événementiel (Timeline & Calendrier
+                FullCalendar)</h3>
+            <p><strong>Contexte :</strong> Ajout d'une sous-rubrique "Agenda" sous "Événements" pour récapituler de
+                manière chronologique et visuelle les manifestations futures de l'établissement.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Base de données :</strong> Création des tables <code>events</code> et
+                    <code>event_types</code>, peuplement des 12 types d'événements initiaux, et liaison 1:1
+                    polymorphique/directe sur le modèle <code>Post</code>.</li>
+                <li><strong>Administration back-office :</strong> Ajout du gestionnaire <code>EventTypesManager</code>
+                    avec possibilité de créer, modifier et supprimer les types d'événements, incluant un sélecteur de
+                    couleur HTML5 (ColorPicker).</li>
+                <li><strong>Rattachement dynamique :</strong> Intégration d'une case à cocher sur les formulaires
+                    d'édition d'articles (Admin et Portail public) pré-cochée pour la rubrique "Événements", dépliant
+                    les champs requis (Type, Lieu, Date/Heure de début et de fin).</li>
+                <li><strong>Double Rendu Public :</strong> Développement de la vue de l'agenda avec bouton de bascule
+                    dynamique :
+                    <ul>
+                        <li><em>Timeline</em> : Ligne du temps verticale responsive stylisée en CSS, affichant les
+                            vignettes extraites des galeries d'articles.</li>
+                        <li><em>Calendrier</em> : Vue calendrier mensuelle propulsée par <code>FullCalendar v6</code>
+                            avec affichage des couleurs de catégories, tooltips personnalisés au survol et liens directs
+                            vers les articles.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Chantier de l'agenda finalisé et livré.</p>
+        </div>
+
+        <h2>Juin 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">16 Juin 2026</span> - Duplication de l'accès à la "Boite à idées" dans le menu
+                utilisateur</h3>
+            <p><strong>Contexte :</strong> Amélioration de l'ergonomie et de la visibilité pour encourager la
+                participation à la boîte à idées.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Intégration Menu :</strong> Ajout d'un lien vers la rubrique "Boite à idées" directement
+                    dans le menu de compte de l'utilisateur (en-tête globale).</li>
+                <li><strong>Contrôle des droits :</strong> Affichage conditionnel basé sur la politique d'accès
+                    (<code>@can('access', $rubric)</code>) afin de respecter la confidentialité configurée en base de
+                    données.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Action de la Phase 2 finalisée.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">03 Juin 2026</span> - Statistiques de Notation & Filtre de Rubriques
+                Multi-sélection</h3>
+            <p><strong>Contexte :</strong> Amélioration des analyses de notation et de l'ergonomie des filtres
+                statistiques.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Stats de Notation :</strong> Classement des utilisateurs les plus actifs et Top 10 des
+                    articles les mieux notés (excluant les articles non notés).</li>
+                <li><strong>Filtre Multi-sélection :</strong> Remplacement du filtre simple par un sélecteur à cases à
+                    cocher avec inclusion récursive automatique des sous-rubriques enfants.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Tâches de la Phase 2 terminées.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">10 Juin 2026</span> - Cadrage Intelligent des Vignettes de Galerie (Focal
+                Point)</h3>
+            <p><strong>Contexte :</strong> Amélioration de l'esthétique de la page d'accueil en permettant aux
+                rédacteurs de définir un point d'ancrage (X/Y) sur la première photo de la galerie.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Modale de Sélection :</strong> Création d'une modale interactive Livewire
+                    <code>FocalPointPicker</code> permettant de cliquer sur l'image pour positionner graphiquement le
+                    point focal.</li>
+                <li><strong>Intégration BDD :</strong> Sauvegarde des coordonnées (0-100%) dans la base de données
+                    (migration table <code>galleries</code>).</li>
+                <li><strong>Rendu Dynamique :</strong> Application automatique des coordonnées CSS
+                    (<code>background-position</code>) sur les tuiles d'images de fond sur la page d'accueil.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Option de la Phase 2 anticipée et finalisée.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">10 Juin 2026</span> - Invalidation Automatique du Cache Navigateur (Cache
+                Busting)</h3>
+            <p><strong>Contexte :</strong> Éviter l'obligation pour les utilisateurs de faire Ctrl+F5 à chaque
+                modification de style CSS ou de scripts JS.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Query String Dynamique :</strong> Ajout du timestamp de dernière modification du fichier
+                    dans l'URL (<code>?v={{ filemtime(...) }}</code>).</li>
+                <li><strong>Couverture Globale :</strong> Implémentation sur tous les layouts publics et
+                    d'administration (8 fichiers de templates mis à jour).</li>
+            </ul>
+            <p><strong>Statut :</strong> ✅ Fichiers CSS/JS invalidés en temps réel lors des mises à jour.</p>
+        </div>
+
+        <h2>Mai 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">06 Mai 2026</span> - Intégration Native des Vidéos Google Drive</h3>
+            <p><strong>Contexte :</strong> Simplification de l'insertion de médias institutionnels stockés sur le Drive
+                de l'entreprise.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Resolver d'URL :</strong> Développement d'un script <code>media_url_resolver</code>
+                    interceptant les liens Google Drive classiques (<code>/view</code>).</li>
+                <li><strong>Conversion Automatique :</strong> Transformation transparente du lien en iframe
+                    <code>/preview</code>, permettant une lecture directe dans les articles sans manipulation technique
+                    de la part des rédacteurs.</li>
+                <li><strong>Cohérence UI :</strong> Alignement du rendu sur les standards YouTube/Vimeo (format 560x314,
+                    mode responsive).</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Chantier Phase 2 finalisé en avance.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">04 Mai 2026</span> - Refonte Ergonomique de la "Une" (En cours)</h3>
+            <p><strong>Contexte :</strong> Amélioration de l'attractivité de la page d'accueil et optimisation de
+                l'espace vertical.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Zonage hybride :</strong> Création d'une zone Hero composée de 4 épinglés (gauche) et 4
+                    articles récents (droite).</li>
+                <li><strong>Flux Dynamique :</strong> Automatisation de la remontée des derniers articles avec
+                    récupération de visuels issus des galeries.</li>
+                <li><strong>Nettoyage UI :</strong> Suppression de la description redondante et repositionnement des
+                    indicateurs de filtres.</li>
+            </ul>
+            <p><strong>Statut :</strong> 🚧 Développement de la structure Blade et de la logique d'exclusion Livewire.
+            </p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">04 Mai 2026</span> - Refonte de l'Insertion de Blocs et Optimisations TinyMCE
+            </h3>
+            <p><strong>Contexte :</strong> Chantier visant à transformer l'éditeur de blocs en un outil sémantique,
+                non-destructif et hautement productif.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Aspiration Groupée :</strong> Développement d'une logique capable d'identifier les bornes
+                    d'une sélection (start/end) pour déplacer l'intégralité des blocs concernés (outerHTML) dans un
+                    nouveau template.</li>
+                <li><strong>Bouton "Dégrouper" (Unwrap) :</strong> Ajout d'une fonctionnalité permettant de supprimer la
+                    "coquille" d'un bloc tout en injectant son contenu (texte, listes, images) à sa place dans le DOM.
+                </li>
+                <li><strong>Sécurité Sémantique :</strong> Mise en place de gardes-fous empêchant l'insertion de
+                    structures complexes dans les titres, avec feedback utilisateur via l'API
+                    <code>notificationManager</code> de TinyMCE.</li>
+                <li><strong>Architecture DRY :</strong> Centralisation de la configuration des blocs (Templates, Icônes,
+                    Raccourcis) dans un objet JavaScript unique (<code>BLOCK_DEFINITIONS</code>).</li>
+                <li><strong>Correction Médias :</strong> Résolution du bug de disparition des IFRAME/Vidéo lors des
+                    changements de mode de l'éditeur.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Optimisation de l'expérience de rédaction finalisée.</p>
+        </div>
+
+        <h2>Avril 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">21 au 22 Avril 2026</span> - Système de Modèles d'Articles</h3>
+            <p><strong>Contexte :</strong> Chantier de la Phase 2 visant à améliorer la productivité des rédacteurs en
+                permettant la réutilisation de structures d'articles types.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Base de données :</strong> Ajout du flag <code>is_template</code> sur la table
+                    <code>posts</code> via une migration dédiée.</li>
+                <li><strong>Ségrégation complète :</strong> Mise en place du scope Eloquent <code>notTemplates()</code>
+                    et modification de <code>PostsManager</code> pour exclure les modèles des flux publics (Une,
+                    Archives, Rubriques, Filtres).</li>
+                <li><strong>Interface Dédiée :</strong> Ajout d'un bloc "Modèles disponibles" en bas de page (visible
+                    uniquement en mode édition), avec vignettes interactives et boutons d'actions rapides (Créer,
+                    Éditer, Supprimer).</li>
+                <li><strong>Outils de Productivité :</strong>
+                    <ul>
+                        <li><em>Application :</em> Injection du contenu d'un modèle dans l'éditeur TinyMCE avec
+                            prévisualisation.</li>
+                        <li><em>Extraction :</em> Création instantanée d'un modèle à partir d'un article existant.</li>
+                    </ul>
+                </li>
+                <li><strong>Harmonisation UI :</strong> Intégration visuelle respectant la charte graphique globale
+                    (lift 5px au survol, boutons <code>small-action-btn</code>).</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Chantier Modèles finalisé et livré sur branche
+                <code>feature/article-templates</code>.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">13 Avril 2026</span> - Module Galeries Photos</h3>
+            <p><strong>Contexte :</strong> Dernière fonctionnalité de la Phase 1 du rapport d'évolutions. Permet
+                d'associer une mini-galerie d'images structurée à un article.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Base de données :</strong> Création de la table <code>galleries</code> avec relation 1:1 et
+                    colonne JSON <code>images</code>.</li>
+                <li><strong>Composant Livewire :</strong> Gestion asynchrone des photos (session cache) et
+                    réordonnancement par glisser-déposer (conceptuel) ou boutons.</li>
+                <li><strong>Rendu Hybride :</strong> Mosaïque carrée (1:1) optimisée pour mobile et bande de vignettes
+                    horizontale (155px) pour desktop.</li>
+                <li><strong>Visionneuse :</strong> Intégration de la bibliothèque <code>GLightbox</code> avec navigation
+                    cyclique et support tactile.</li>
+                <li><strong>Administration :</strong> Intégration du module dans le formulaire d'édition admin et
+                    affichage du compteur de photos dans la fiche de visualisation.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Phase 1 intégralement complétée.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">14 Avril 2026</span> - Pilotage des notifications FCM</h3>
+            <p><strong>Contexte :</strong> Sécurisation de l'envoi des notifications Push pour éviter les envois
+                accidentels aux utilisateurs de production depuis un environnement local.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Configuration :</strong> Ajout de la variable <code>FCM_NOTIFICATIONS_ENABLED</code> dans le
+                    fichier <code>.env</code> et dans la configuration Firebase.</li>
+                <li><strong>Sécurité :</strong> Modification de la classe <code>AppNotification</code> pour utiliser ce
+                    flag global au lieu d'un auto-check basé sur l'environnement, offrant ainsi une flexibilité totale.
+                </li>
+            </ul>
+            <p><strong>Statut :</strong> ✅ Environnement local sécurisé.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">14 Avril 2026</span> - Correction du bug de création d'article</h3>
+            <p><strong>Contexte :</strong> Blocage de la sauvegarde lors de la création d'un nouvel article.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li>Identification d'un échec de validation Laravel dû aux champs booléens non initialisés (NULL).</li>
+                <li>Correction par initialisation forcée dans <code>EditPostManager</code> avant validation.</li>
+            </ul>
+            <p><strong>Statut :</strong> ✅ Création à nouveau opérationnelle.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">08 Avril 2026</span> - Module de Notation par Étoiles</h3>
+            <p><strong>Contexte :</strong> Besoin d'interactivité et de feedback lecteurs (Phase 1 du rapport
+                d'évolutions).</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Base de données :</strong> Extension de la table pivot <code>post_user</code> (colonne
+                    <code>rating</code>) et ajout d'un flag d'activation <code>is_rating_enabled</code> sur le modèle
+                    <code>Post</code>.</li>
+                <li><strong>Moteur de notation :</strong> Développement d'une logique de pondération (1 à 5 étoiles)
+                    intégrée au système de pivot existant.</li>
+                <li><strong>Composant Livewire :</strong> Création d'une interface réactive <code>PostRating</code>
+                    (Boxicons) avec gestion des survols et affichage en temps réel de la moyenne (excluant les articles
+                    non notés).</li>
+                <li><strong>Administration :</strong> Ajout du contrôle d'activation par article dans le gestionnaire
+                    d'édition (<code>EditPostManager</code>).</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Système de notation par étoiles opérationnel.</p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">01 au 08 Avril 2026</span> - Système d'Acquittement de Lecture</h3>
+            <p><strong>Contexte :</strong> Besoin de traçabilité pour les articles officiels (Phase 1 du rapport
+                d'évolutions).</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Formulaires :</strong> Intégration de l'option "Lecture avec accusé de réception" dans les
+                    interfaces Admin et Public.</li>
+                <li><strong>Moteur d'interactions :</strong> Développement de la logique d'acquittement basée sur le
+                    système polymorphique <code>interactions</code> (type <code>acknowledge</code>).</li>
+                <li><strong>Expérience Utilisateur :</strong> Mise en place d'alertes visuelles (Warning) et de boutons
+                    d'action dynamiques s'adaptant à l'état de lecture.</li>
+                <li><strong>Suivi Éditeur :</strong> Création d'une modale dédiée (<code>PostAcknowledgers</code>)
+                    permettant de visualiser la liste nominative et l'horodatage des lectures validées.</li>
+                <li><strong>Refactoring :</strong> Correction de régressions sur le système de favoris (abandon de la
+                    table pivot obsolète <code>post_user</code> au profit de <code>favorites</code>).</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Système d'acquittement de lecture complet et opérationnel.
+            </p>
+        </div>
+
+        <div class="month-section">
+            <h3><span class="date-label">01 Avril 2026</span> - Modale d'Information des Rubriques</h3>
+            <p><strong>Contexte :</strong> Demande métier issue de la Phase 1 du rapport d'évolutions.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li>Intégration d'un bouton contextuel d'information (<code>RubricInfo</code>) sur la navigation des
+                    rubriques (masqué sur la globale "Une" et "Archives").</li>
+                <li>Ajout d'une notion de libellé <code>public</code> (orienté utilisateur) sur le modèle des Groupes.
+                </li>
+                <li>Séparation assumée des logiques de droits temporels : la <strong>Consultation</strong> n'hérite plus
+                    des parents (vision stricte des droits explicitement donnés sur la rubrique), tandis que
+                    l'<strong>Édition</strong> respecte l'héritage normal des permissions et l'arbre des décideurs.</li>
+                <li>Restructuration visuelle complète de la modale d'affichage (clarté Bootstrap).</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Modale d'information "Droits et Éditeurs" traitée.</p>
+        </div>
+
+        <h2>Mars 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">25 au 30 Mars 2026</span> - Audits et Sécurisation Architecturale</h3>
+            <p><strong>Contexte :</strong> Chantiers de fond correspondants à la stratégie de découplage de la phase 3
+                ("Maintenance Préventive").</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Droits d'Accès :</strong> Rétro-ingénierie et documentation complète du système
+                    d'autorisation binaire et du fonctionnement exhaustif des vues <code>HasPermissions</code>.</li>
+                <li><strong>API Ypareo :</strong> Réalisation d'un audit de consommation réseau pour anticiper les
+                    nouveaux schémas de facturations Ymag (N+1 query issues).</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> Aide au découplage de la God Class <code>User</code> et
+                renforcement continu du code existant.</p>
+        </div>
+
+
+
     </div>
-
-    <h2>Juillet 2026</h2>
-
-    <div class="month-section">
-        <h3><span class="date-label">21-22 Juillet 2026</span> - Module Guide en Ligne & Aide Contextuelle</h3>
-        <p><strong>Contexte :</strong> Mise en place d'un système d'aide contextuelle dynamique pour orienter les utilisateurs et guider les nouveaux arrivants (onboarding).</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Base de données :</strong> Création de la table <code>guidelines</code> reliant un article de guide en ligne (rubrique <code>guide-en-ligne</code>) à une clé de contexte (ex: <code>desktop-notifications</code>, <code>une</code>, <code>guide-applis</code>).</li>
-            <li><strong>Bouton d'aide réutilisable :</strong> Composant Blade <code>&lt;x-help-button context-key="..."&gt;</code> utilisable à la fois dans le HTML statique et dans les composants Livewire, déclenchant la modale du guide via <code>Livewire.emitTo('modal-manager', 'show', ...)</code>.</li>
-            <li><strong>Parcours guidés ("Étape suivante") :</strong> Navigation fluide d'un chapitre de guide à un autre via la propriété <code>next_context_key</code> avec suivi de lecture utilisateur automatique (<code>post_user.is_read</code>).</li>
-            <li><strong>Ouverture automatique (Onboarding) :</strong> Ouverture automatique de la modale d'accueil pour les guides non encore lus par l'utilisateur connecté via l'événement <code>livewire:load</code>.</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Module d'aide contextuelle et guide en ligne finalisé et livré.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">06 Juillet 2026</span> - Agenda Événementiel (Timeline & Calendrier FullCalendar)</h3>
-        <p><strong>Contexte :</strong> Ajout d'une sous-rubrique "Agenda" sous "Événements" pour récapituler de manière chronologique et visuelle les manifestations futures de l'établissement.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Base de données :</strong> Création des tables <code>events</code> et <code>event_types</code>, peuplement des 12 types d'événements initiaux, et liaison 1:1 polymorphique/directe sur le modèle <code>Post</code>.</li>
-            <li><strong>Administration back-office :</strong> Ajout du gestionnaire <code>EventTypesManager</code> avec possibilité de créer, modifier et supprimer les types d'événements, incluant un sélecteur de couleur HTML5 (ColorPicker).</li>
-            <li><strong>Rattachement dynamique :</strong> Intégration d'une case à cocher sur les formulaires d'édition d'articles (Admin et Portail public) pré-cochée pour la rubrique "Événements", dépliant les champs requis (Type, Lieu, Date/Heure de début et de fin).</li>
-            <li><strong>Double Rendu Public :</strong> Développement de la vue de l'agenda avec bouton de bascule dynamique :
-                <ul>
-                    <li><em>Timeline</em> : Ligne du temps verticale responsive stylisée en CSS, affichant les vignettes extraites des galeries d'articles.</li>
-                    <li><em>Calendrier</em> : Vue calendrier mensuelle propulsée par <code>FullCalendar v6</code> avec affichage des couleurs de catégories, tooltips personnalisés au survol et liens directs vers les articles.</li>
-                </ul>
-            </li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Chantier de l'agenda finalisé et livré.</p>
-    </div>
-
-    <h2>Juin 2026</h2>
-
-    <div class="month-section">
-        <h3><span class="date-label">16 Juin 2026</span> - Duplication de l'accès à la "Boite à idées" dans le menu utilisateur</h3>
-        <p><strong>Contexte :</strong> Amélioration de l'ergonomie et de la visibilité pour encourager la participation à la boîte à idées.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Intégration Menu :</strong> Ajout d'un lien vers la rubrique "Boite à idées" directement dans le menu de compte de l'utilisateur (en-tête globale).</li>
-            <li><strong>Contrôle des droits :</strong> Affichage conditionnel basé sur la politique d'accès (<code>@can('access', $rubric)</code>) afin de respecter la confidentialité configurée en base de données.</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Action de la Phase 2 finalisée.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">03 Juin 2026</span> - Statistiques de Notation & Filtre de Rubriques Multi-sélection</h3>
-        <p><strong>Contexte :</strong> Amélioration des analyses de notation et de l'ergonomie des filtres statistiques.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Stats de Notation :</strong> Classement des utilisateurs les plus actifs et Top 10 des articles les mieux notés (excluant les articles non notés).</li>
-            <li><strong>Filtre Multi-sélection :</strong> Remplacement du filtre simple par un sélecteur à cases à cocher avec inclusion récursive automatique des sous-rubriques enfants.</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Tâches de la Phase 2 terminées.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">10 Juin 2026</span> - Cadrage Intelligent des Vignettes de Galerie (Focal Point)</h3>
-        <p><strong>Contexte :</strong> Amélioration de l'esthétique de la page d'accueil en permettant aux rédacteurs de définir un point d'ancrage (X/Y) sur la première photo de la galerie.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Modale de Sélection :</strong> Création d'une modale interactive Livewire <code>FocalPointPicker</code> permettant de cliquer sur l'image pour positionner graphiquement le point focal.</li>
-            <li><strong>Intégration BDD :</strong> Sauvegarde des coordonnées (0-100%) dans la base de données (migration table <code>galleries</code>).</li>
-            <li><strong>Rendu Dynamique :</strong> Application automatique des coordonnées CSS (<code>background-position</code>) sur les tuiles d'images de fond sur la page d'accueil.</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Option de la Phase 2 anticipée et finalisée.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">10 Juin 2026</span> - Invalidation Automatique du Cache Navigateur (Cache Busting)</h3>
-        <p><strong>Contexte :</strong> Éviter l'obligation pour les utilisateurs de faire Ctrl+F5 à chaque modification de style CSS ou de scripts JS.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Query String Dynamique :</strong> Ajout du timestamp de dernière modification du fichier dans l'URL (<code>?v={{ filemtime(...) }}</code>).</li>
-            <li><strong>Couverture Globale :</strong> Implémentation sur tous les layouts publics et d'administration (8 fichiers de templates mis à jour).</li>
-        </ul>
-        <p><strong>Statut :</strong> ✅ Fichiers CSS/JS invalidés en temps réel lors des mises à jour.</p>
-    </div>
-
-    <h2>Mai 2026</h2>
-
-    <div class="month-section">
-        <h3><span class="date-label">06 Mai 2026</span> - Intégration Native des Vidéos Google Drive</h3>
-        <p><strong>Contexte :</strong> Simplification de l'insertion de médias institutionnels stockés sur le Drive de l'entreprise.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Resolver d'URL :</strong> Développement d'un script <code>media_url_resolver</code> interceptant les liens Google Drive classiques (<code>/view</code>).</li>
-            <li><strong>Conversion Automatique :</strong> Transformation transparente du lien en iframe <code>/preview</code>, permettant une lecture directe dans les articles sans manipulation technique de la part des rédacteurs.</li>
-            <li><strong>Cohérence UI :</strong> Alignement du rendu sur les standards YouTube/Vimeo (format 560x314, mode responsive).</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Chantier Phase 2 finalisé en avance.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">04 Mai 2026</span> - Refonte Ergonomique de la "Une" (En cours)</h3>
-        <p><strong>Contexte :</strong> Amélioration de l'attractivité de la page d'accueil et optimisation de l'espace vertical.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Zonage hybride :</strong> Création d'une zone Hero composée de 4 épinglés (gauche) et 4 articles récents (droite).</li>
-            <li><strong>Flux Dynamique :</strong> Automatisation de la remontée des derniers articles avec récupération de visuels issus des galeries.</li>
-            <li><strong>Nettoyage UI :</strong> Suppression de la description redondante et repositionnement des indicateurs de filtres.</li>
-        </ul>
-        <p><strong>Statut :</strong> 🚧 Développement de la structure Blade et de la logique d'exclusion Livewire.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">04 Mai 2026</span> - Refonte de l'Insertion de Blocs et Optimisations TinyMCE</h3>
-        <p><strong>Contexte :</strong> Chantier visant à transformer l'éditeur de blocs en un outil sémantique, non-destructif et hautement productif.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Aspiration Groupée :</strong> Développement d'une logique capable d'identifier les bornes d'une sélection (start/end) pour déplacer l'intégralité des blocs concernés (outerHTML) dans un nouveau template.</li>
-            <li><strong>Bouton "Dégrouper" (Unwrap) :</strong> Ajout d'une fonctionnalité permettant de supprimer la "coquille" d'un bloc tout en injectant son contenu (texte, listes, images) à sa place dans le DOM.</li>
-            <li><strong>Sécurité Sémantique :</strong> Mise en place de gardes-fous empêchant l'insertion de structures complexes dans les titres, avec feedback utilisateur via l'API <code>notificationManager</code> de TinyMCE.</li>
-            <li><strong>Architecture DRY :</strong> Centralisation de la configuration des blocs (Templates, Icônes, Raccourcis) dans un objet JavaScript unique (<code>BLOCK_DEFINITIONS</code>).</li>
-            <li><strong>Correction Médias :</strong> Résolution du bug de disparition des IFRAME/Vidéo lors des changements de mode de l'éditeur.</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Optimisation de l'expérience de rédaction finalisée.</p>
-    </div>
-
-    <h2>Avril 2026</h2>
- 
-    <div class="month-section">
-        <h3><span class="date-label">21 au 22 Avril 2026</span> - Système de Modèles d'Articles</h3>
-        <p><strong>Contexte :</strong> Chantier de la Phase 2 visant à améliorer la productivité des rédacteurs en permettant la réutilisation de structures d'articles types.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Base de données :</strong> Ajout du flag <code>is_template</code> sur la table <code>posts</code> via une migration dédiée.</li>
-            <li><strong>Ségrégation complète :</strong> Mise en place du scope Eloquent <code>notTemplates()</code> et modification de <code>PostsManager</code> pour exclure les modèles des flux publics (Une, Archives, Rubriques, Filtres).</li>
-            <li><strong>Interface Dédiée :</strong> Ajout d'un bloc "Modèles disponibles" en bas de page (visible uniquement en mode édition), avec vignettes interactives et boutons d'actions rapides (Créer, Éditer, Supprimer).</li>
-            <li><strong>Outils de Productivité :</strong> 
-                <ul>
-                    <li><em>Application :</em> Injection du contenu d'un modèle dans l'éditeur TinyMCE avec prévisualisation.</li>
-                    <li><em>Extraction :</em> Création instantanée d'un modèle à partir d'un article existant.</li>
-                </ul>
-            </li>
-            <li><strong>Harmonisation UI :</strong> Intégration visuelle respectant la charte graphique globale (lift 5px au survol, boutons <code>small-action-btn</code>).</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Chantier Modèles finalisé et livré sur branche <code>feature/article-templates</code>.</p>
-    </div>
- 
-    <div class="month-section">
-        <h3><span class="date-label">13 Avril 2026</span> - Module Galeries Photos</h3>
-        <p><strong>Contexte :</strong> Dernière fonctionnalité de la Phase 1 du rapport d'évolutions. Permet d'associer une mini-galerie d'images structurée à un article.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Base de données :</strong> Création de la table <code>galleries</code> avec relation 1:1 et colonne JSON <code>images</code>.</li>
-            <li><strong>Composant Livewire :</strong> Gestion asynchrone des photos (session cache) et réordonnancement par glisser-déposer (conceptuel) ou boutons.</li>
-            <li><strong>Rendu Hybride :</strong> Mosaïque carrée (1:1) optimisée pour mobile et bande de vignettes horizontale (155px) pour desktop.</li>
-            <li><strong>Visionneuse :</strong> Intégration de la bibliothèque <code>GLightbox</code> avec navigation cyclique et support tactile.</li>
-            <li><strong>Administration :</strong> Intégration du module dans le formulaire d'édition admin et affichage du compteur de photos dans la fiche de visualisation.</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Phase 1 intégralement complétée.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">14 Avril 2026</span> - Pilotage des notifications FCM</h3>
-        <p><strong>Contexte :</strong> Sécurisation de l'envoi des notifications Push pour éviter les envois accidentels aux utilisateurs de production depuis un environnement local.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Configuration :</strong> Ajout de la variable <code>FCM_NOTIFICATIONS_ENABLED</code> dans le fichier <code>.env</code> et dans la configuration Firebase.</li>
-            <li><strong>Sécurité :</strong> Modification de la classe <code>AppNotification</code> pour utiliser ce flag global au lieu d'un auto-check basé sur l'environnement, offrant ainsi une flexibilité totale.</li>
-        </ul>
-        <p><strong>Statut :</strong> ✅ Environnement local sécurisé.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">14 Avril 2026</span> - Correction du bug de création d'article</h3>
-        <p><strong>Contexte :</strong> Blocage de la sauvegarde lors de la création d'un nouvel article.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li>Identification d'un échec de validation Laravel dû aux champs booléens non initialisés (NULL).</li>
-            <li>Correction par initialisation forcée dans <code>EditPostManager</code> avant validation.</li>
-        </ul>
-        <p><strong>Statut :</strong> ✅ Création à nouveau opérationnelle.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">08 Avril 2026</span> - Module de Notation par Étoiles</h3>
-        <p><strong>Contexte :</strong> Besoin d'interactivité et de feedback lecteurs (Phase 1 du rapport d'évolutions).</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Base de données :</strong> Extension de la table pivot <code>post_user</code> (colonne <code>rating</code>) et ajout d'un flag d'activation <code>is_rating_enabled</code> sur le modèle <code>Post</code>.</li>
-            <li><strong>Moteur de notation :</strong> Développement d'une logique de pondération (1 à 5 étoiles) intégrée au système de pivot existant.</li>
-            <li><strong>Composant Livewire :</strong> Création d'une interface réactive <code>PostRating</code> (Boxicons) avec gestion des survols et affichage en temps réel de la moyenne (excluant les articles non notés).</li>
-            <li><strong>Administration :</strong> Ajout du contrôle d'activation par article dans le gestionnaire d'édition (<code>EditPostManager</code>).</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Système de notation par étoiles opérationnel.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">01 au 08 Avril 2026</span> - Système d'Acquittement de Lecture</h3>
-        <p><strong>Contexte :</strong> Besoin de traçabilité pour les articles officiels (Phase 1 du rapport d'évolutions).</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Formulaires :</strong> Intégration de l'option "Lecture avec accusé de réception" dans les interfaces Admin et Public.</li>
-            <li><strong>Moteur d'interactions :</strong> Développement de la logique d'acquittement basée sur le système polymorphique <code>interactions</code> (type <code>acknowledge</code>).</li>
-            <li><strong>Expérience Utilisateur :</strong> Mise en place d'alertes visuelles (Warning) et de boutons d'action dynamiques s'adaptant à l'état de lecture.</li>
-            <li><strong>Suivi Éditeur :</strong> Création d'une modale dédiée (<code>PostAcknowledgers</code>) permettant de visualiser la liste nominative et l'horodatage des lectures validées.</li>
-            <li><strong>Refactoring :</strong> Correction de régressions sur le système de favoris (abandon de la table pivot obsolète <code>post_user</code> au profit de <code>favorites</code>).</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Système d'acquittement de lecture complet et opérationnel.</p>
-    </div>
-
-    <div class="month-section">
-        <h3><span class="date-label">01 Avril 2026</span> - Modale d'Information des Rubriques</h3>
-        <p><strong>Contexte :</strong> Demande métier issue de la Phase 1 du rapport d'évolutions.</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li>Intégration d'un bouton contextuel d'information (<code>RubricInfo</code>) sur la navigation des rubriques (masqué sur la globale "Une" et "Archives").</li>
-            <li>Ajout d'une notion de libellé <code>public</code> (orienté utilisateur) sur le modèle des Groupes.</li>
-            <li>Séparation assumée des logiques de droits temporels : la <strong>Consultation</strong> n'hérite plus des parents (vision stricte des droits explicitement donnés sur la rubrique), tandis que l'<strong>Édition</strong> respecte l'héritage normal des permissions et l'arbre des décideurs.</li>
-            <li>Restructuration visuelle complète de la modale d'affichage (clarté Bootstrap).</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> ✅ Modale d'information "Droits et Éditeurs" traitée.</p>
-    </div>
-
-    <h2>Mars 2026</h2>
-
-    <div class="month-section">
-        <h3><span class="date-label">25 au 30 Mars 2026</span> - Audits et Sécurisation Architecturale</h3>
-        <p><strong>Contexte :</strong> Chantiers de fond correspondants à la stratégie de découplage de la phase 3 ("Maintenance Préventive").</p>
-        <p><strong>Réalisations :</strong></p>
-        <ul>
-            <li><strong>Droits d'Accès :</strong> Rétro-ingénierie et documentation complète du système d'autorisation binaire et du fonctionnement exhaustif des vues <code>HasPermissions</code>.</li>
-            <li><strong>API Ypareo :</strong> Réalisation d'un audit de consommation réseau pour anticiper les nouveaux schémas de facturations Ymag (N+1 query issues).</li>
-        </ul>
-        <p><strong>Statut Feuille de route :</strong> Aide au découplage de la God Class <code>User</code> et renforcement continu du code existant.</p>
-    </div>
-
-
-
-</div>
 
 </body>
+
 </html>

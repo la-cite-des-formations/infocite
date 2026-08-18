@@ -36,7 +36,7 @@ class FcmNotifsSwClientManager extends Component
      * Signale que les guides d'utilisation ont été lus.
      */
     public function guidelinesRead() {
-        $this->emit('guidelinesRead', 'desktop-notifications');
+        $this->emit('guidelinesRead', 'guideline-notifications-de-bureau');
     }
 
     /**
