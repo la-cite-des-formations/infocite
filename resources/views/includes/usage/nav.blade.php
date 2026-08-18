@@ -1,62 +1,60 @@
 <nav id="navbar" class="navbar">
     <ul>
-      @foreach ($rubrics as $rubric)
-       @can('access', $rubric)
-        <li @if ($rubric->hasChilds()) class="dropdown" role="button" @endif>
-          @if ($rubric->hasChilds())
-            <a href="#">
-                <div class="d-flex flex-wrap justify-content-around">
-                    <span class="material-icons">{{ $rubric->icon }}</span>
-                    <span class="mx-1">{{ $rubric->name }}</span>
-                </div>
-                <i class="bi bi-chevron-down"></i>
-            </a>
-          @else
-            <a @if ($currentRoute == $rubric->route())
-                href="#{{ $viewBag->template }}" class="nav-link scrollto"
+        @foreach ($rubrics as $rubric)
+            @can('access', $rubric)
+                <li @if ($rubric->hasChilds()) class="dropdown" role="button" @endif>
+                    @if ($rubric->hasChilds())
+                        <a href="#">
+                            <div class="d-flex flex-wrap justify-content-around">
+                                <span class="material-icons">{{ $rubric->icon }}</span>
+                                <span class="mx-1">{{ $rubric->name }}</span>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                    @else
+                        <a
+                            @if ($currentRoute == $rubric->route()) href="#{{ $viewBag->template }}" class="nav-link scrollto"
               @else
-                href="{{ $rubric->route() }}" class="nav-link"
-              @endif>
-                <div class="d-flex flex-wrap justify-content-around">
-                    <span class="material-icons">{{ $rubric->icon }}</span>
-                    <span class="mx-1">{{ $rubric->name }}</span>
-                </div>
-            </a>
-          @endif
-          @if ($rubric->hasChilds())
-            <ul>
-              @foreach ($rubric->childs as $childRubric)
-               @can('access', $childRubric)
-                <li>
-                    <a class="justify-content-start"
-                      @if ($currentRoute == $childRubric->route())
-                        href="#{{ $viewBag->template }}" class="nav-link scrollto"
+                href="{{ $rubric->route() }}" class="nav-link" @endif>
+                            <div class="d-flex flex-wrap justify-content-around">
+                                <span class="material-icons">{{ $rubric->icon }}</span>
+                                <span class="mx-1">{{ $rubric->name }}</span>
+                            </div>
+                        </a>
+                    @endif
+                    @if ($rubric->hasChilds())
+                        <ul>
+                            @foreach ($rubric->childs as $childRubric)
+                                @can('access', $childRubric)
+                                    <li>
+                                        <a class="justify-content-start"
+                                            @if ($currentRoute == $childRubric->route()) href="#{{ $viewBag->template }}" class="nav-link scrollto"
                       @else
-                        href="{{ $childRubric->route() }}" class="nav-link"
-                      @endif>
-                        <span class="material-icons fs-5 ms-0 me-1">{{ $childRubric->icon }}</span>
-                        {{ $childRubric->name }}
-                    </a>
+                        href="{{ $childRubric->route() }}" class="nav-link" @endif>
+                                            <span class="material-icons fs-5 ms-0 me-1">{{ $childRubric->icon }}</span>
+                                            {{ $childRubric->name }}
+                                        </a>
+                                    </li>
+                                @endcan
+                            @endforeach
+                        </ul>
+                    @endif
                 </li>
-               @endcan
-              @endforeach
-            </ul>
-          @endif
-        </li>
-       @endcan
-      @endforeach
+            @endcan
+        @endforeach
         <!-- A laisser en dur à la fin du menu -->
-       @can('viewAny', 'App\\Models\\App')
+        @can('viewAny', 'App\\Models\\App')
+            <li>
+                <a href="#apps" class="nav-link scrollto" title="Mes applications">
+                    <div class="myapps">
+                        <span class="material-icons me-1">apps</span>Mes applis
+                    </div>
+                </a>
+            </li>
+        @endcan
         <li>
-            <a href="#apps" class="nav-link scrollto" title="Mes applications">
-                <div class="myapps">
-                    <span class="material-icons me-1">apps</span>Mes applis
-                </div>
-            </a>
-        </li>
-       @endcan
-        <li>
-            <a onclick="document.getElementById('searchInput').focus()" href="#search" class="nav-link scrollto" title="Rechercher...">
+            <a onclick="document.getElementById('searchInput').focus()" href="#search" class="nav-link scrollto"
+                title="Rechercher...">
                 <span class="bx bx-search-alt fs-1"></span>
             </a>
         </li>
@@ -72,6 +70,19 @@
                         Mes infos
                     </a>
                 </li>
+                @php
+                    $guidelineRubric = \App\Models\Rubric::firstWhere('segment', 'guide-en-ligne');
+                @endphp
+                @if ($guidelineRubric)
+                    @can('access', $guidelineRubric)
+                        <li>
+                            <a href="{{ $guidelineRubric->route() }}" class="dropdown-item justify-content-start">
+                                <span class="material-icons-outlined fs-5 ms-0 me-1">{{ $guidelineRubric->icon }}</span>
+                                {{ $guidelineRubric->name }}
+                            </a>
+                        </li>
+                    @endcan
+                @endif
                 @php
                     $ideaBoxRubric = \App\Models\Rubric::firstWhere('segment', 'boite-idées');
                 @endphp

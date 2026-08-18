@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { getMessaging, getToken, onMessage } from "firebase/messaging"
 
-document.addEventListener('livewire:load', function() {
+document.addEventListener('livewire:load', function () {
     const firebaseConfig = {
         apiKey: "AIzaSyDZg55jzD_cg4b3CIlT90E_HAgGBDFsreU",
         authDomain: "notifs-ic.firebaseapp.com",
@@ -68,7 +68,7 @@ document.addEventListener('livewire:load', function() {
         // Si la permission est encore par défaut, afficher la modale pour informer l'utilisateur
         console.log("Permission en état 'default'")
 
-        Livewire.emit('showModal', 'guidelines', { subject: 'desktop-notifications' })
+        Livewire.emit('showModal', 'guidelines', { contextKey: 'desktop-notifications' })
     }
 
     if (Notification.permission === 'granted') {
@@ -115,7 +115,7 @@ document.addEventListener('livewire:load', function() {
                 }
             })
 
-            notif.onclick = function(event) {
+            notif.onclick = function (event) {
                 event.preventDefault() // Empêche l'action de clic par défaut
 
                 if (notif.data.link) {

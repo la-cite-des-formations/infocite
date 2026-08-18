@@ -88,6 +88,8 @@ class PostManager extends Component
         $this->isFavoriteRubric = $this->rubric->isFavorite;
         $this->isFavoritePost = $this->post->isFavorite;
         $this->setNotifications();
+
+        $this->autoOpenGuideline('read-post');
     }
 
     /**

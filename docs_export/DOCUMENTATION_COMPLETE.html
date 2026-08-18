@@ -525,6 +525,17 @@
     </div>
 
     <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Guide en Ligne & Aide Contextuelle</h3>
+        <p>Mise en place d'un module d'aide contextuelle permettant d'orienter les utilisateurs via des guides accessibles depuis des boutons d'aide (<code>?</code>) intégrés dans l'interface, ou ouverts automatiquement lors du premier chargement (onboarding).</p>
+        <ul>
+            <li><strong>Bouton d'aide réutilisable :</strong> Composant Blade <code>&lt;x-help-button context-key="..."&gt;</code> déclenchant la modale du guide correspondant, fonctionnel dans tout contexte (HTML statique ou composant Livewire).</li>
+            <li><strong>Parcours guidés :</strong> Navigation séquentielle entre chapitres de guide via la propriété <code>next_context_key</code>, avec bouton "Étape suivante" et suivi automatique de lecture par utilisateur.</li>
+            <li><strong>Onboarding automatique :</strong> Les guides configurés avec <code>auto_open = true</code> s'ouvrent au premier chargement de la page si non encore lus par l'utilisateur, via l'événement <code>livewire:load</code>.</li>
+            <li><strong>Marquage de lecture :</strong> Chaque guide affiché est automatiquement marqué comme lu pour l'utilisateur connecté (<code>post_user.is_read</code>).</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
         <h3><span class="badge badge-tech">Évolution</span> Invalidation de Cache Automatique (Cache Busting)</h3>
         <p>Mécanisme forçant le navigateur à recharger les versions les plus récentes des fichiers CSS et JS lors d'une mise à jour de l'application.</p>
         <ul>
@@ -617,7 +628,7 @@
                     <li><del>Point d'ancrage (focal point X/Y) sur la première photo de la galerie pour le recadrage optimal de l'image de fond des vignettes.</del> ✅ <strong>Terminé (10/06/2026)</strong></li>
                     <li><del>Statistiques de notation : Profils des utilisateurs les plus actifs & Top 10 des articles les mieux notés.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
                     <li><del>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
-                    <li>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs. (<em>~1,5 semaine</em>)</li>
+                    <li><del>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs.</del> ✅ <strong>Terminé (22/07/2026)</strong></li>
                     <li><del>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur.</del> ✅ <strong>Terminé (16/06/2026)</strong></li>
                     <li>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE. (<em>~0,3 semaine</em>)</li>
                     <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
@@ -706,6 +717,9 @@
 
     <h3>1.3 La Recherche Globale</h3>
     <p>Utilisez la loupe en haut à droite pour rechercher un mot-clé. Les résultats affichent à la fois les <strong>articles</strong> et les <strong>applications</strong> correspondantes.</p>
+
+    <h3>1.4 Guide en Ligne & Boutons d'Aide (?)</h3>
+    <p>Des icônes d'aide (<strong>?</strong>) rouges sont disposées dans l'interface aux endroits clés. Cliquez dessus à tout moment pour ouvrir un guide pas-à-pas interactif réexpliquant le fonctionnement de la page ou du module en cours. Certains guides s'ouvriront automatiquement à votre première visite.</p>
 
     <hr>
 
@@ -1340,6 +1354,17 @@ Cela compresse tous les fichiers pour que le site soit le plus rapide possible p
     <tr><td>location</td><td>string</td><td>Lieu physique ou virtuel</td></tr>
 </table>
 
+<h3>Table <code>guidelines</code></h3>
+<p>Gestion des parcours d'aide contextuelle et de l'accompagnement guidé (Guide en Ligne).</p>
+<table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td class="pk">id</td><td>bigint</td><td>Clé primaire</td></tr>
+    <tr><td class="fk">post_id</td><td>bigint</td><td>Lien vers l'article servant de contenu pour le guide</td></tr>
+    <tr><td>context_key</td><td>string</td><td>Clé unique d'identification du contexte d'aide (ex: onboarding-posts)</td></tr>
+    <tr><td>next_context_key</td><td>string</td><td>Clé du chapitre suivant pour la navigation guidée (facultatif)</td></tr>
+    <tr><td>auto_open</td><td>boolean</td><td>Ouverture automatique au chargement si l'article n'a pas été lu</td></tr>
+</table>
+
 <hr>
 
 <h2>3. Pôle Organigramme</h2>
@@ -1642,6 +1667,17 @@ Cela compresse tous les fichiers pour que le site soit le plus rapide possible p
 
 
 <h1>Journal des Modifications (Changelog)</h1>
+
+<div class="version">
+    <div class="version-title">Version 1.9 - Guide en Ligne & Aide Contextuelle</div>
+    <div class="date">22 Juillet 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Ajout du composant réutilisable <code>&lt;x-help-button&gt;</code> pour déclencher les guides contextuels dans l'application.</li>
+        <li><span class="tag tag-feat">FEAT</span> Navigation séquentielle "Étape suivante" guidée à travers les articles/chapitres d'un guide via <code>next_context_key</code>.</li>
+        <li><span class="tag tag-feat">FEAT</span> Système d'onboarding automatique à l'ouverture de page (<code>auto_open</code>) lors de la première connexion.</li>
+        <li><span class="tag tag-tech">TECH</span> Création de la table de base de données <code>guidelines</code> pour la gestion des parcours d'aide contextuels et suivi de lecture dans <code>post_user</code>.</li>
+    </ul>
+</div>
 
 <div class="version">
     <div class="version-title">Version 1.8 - Agenda Événementiel (Ligne du Temps & Calendrier)</div>

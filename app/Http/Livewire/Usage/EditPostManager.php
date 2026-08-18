@@ -8,6 +8,7 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithPinnedHandling;
+use App\Models\Guideline;
 use App\Models\Notification as PostNotification;
 use App\Models\Post;
 use App\Models\Group;
@@ -71,6 +72,28 @@ class EditPostManager extends Component
      * @var bool
      */
     public $blockComments;
+
+    /**
+     * Clé de contexte du guide en ligne associé à cet article.
+     * Uniquement applicable si l'article appartient à la rubrique "Guide en ligne".
+     *
+     * @var string|null
+     */
+    public $guidelineContextKey;
+
+    /**
+     * Clé du contexte du guide de l'étape suivante (parcours guidé).
+     *
+     * @var string|null
+     */
+    public $guidelineNextContextKey;
+
+    /**
+     * Ouverture automatique du guide à la première visite.
+     *
+     * @var bool
+     */
+    public $guidelineAutoOpen = false;
 
     /**
      * Écouteurs d'événements.
@@ -170,6 +193,28 @@ class EditPostManager extends Component
 
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
         $this->initTinymceContent('post.content');
+
+        // Rubrique sélectionnée
+        $selectedRubric = $this->post->rubric_id
+            ? Rubric::find($this->post->rubric_id)
+            : $this->currentRubric;
+
+        if ($selectedRubric?->segment === 'guide-en-ligne') {
+            $this->blockComments = true;
+            $this->attach_to_agenda = false;
+        }
+
+        // Chargement des données de guideline si l'article est un guide en ligne
+        if ($this->post->exists) {
+            $guideline = $this->post->guideline;
+            if ($guideline) {
+                $this->guidelineContextKey     = $guideline->context_key;
+                $this->guidelineNextContextKey = $guideline->next_context_key;
+                $this->guidelineAutoOpen       = $guideline->auto_open;
+            }
+        }
+
+        $this->autoOpenGuideline('edit-post');
     }
 
     /**
@@ -192,13 +237,18 @@ class EditPostManager extends Component
 
     public function updatedPostRubricId($value) {
         if ($value) {
-            $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
-            $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
             $rubric = Rubric::find($value);
-            if ($rubric && $rubric->parent_id == $eventsRubricId) {
-                $this->attach_to_agenda = true;
-            } else {
+            if ($rubric?->segment === 'guide-en-ligne') {
+                $this->blockComments = true;
                 $this->attach_to_agenda = false;
+            } else {
+                $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+                $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+                if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                    $this->attach_to_agenda = true;
+                } else {
+                    $this->attach_to_agenda = false;
+                }
             }
         } else {
             $this->attach_to_agenda = false;
@@ -220,6 +270,11 @@ class EditPostManager extends Component
         $this->post->is_rating_enabled = $this->post->is_rating_enabled ?? FALSE;
         $this->post->is_template = $this->post->is_template ?? FALSE;
         $this->post->published = $this->post->published ?? FALSE;
+
+        if ($this->post->rubric?->segment === 'guide-en-ligne') {
+            $this->blockComments = true;
+            $this->attach_to_agenda = false;
+        }
 
         $this->validate();
 
@@ -257,6 +312,21 @@ class EditPostManager extends Component
             ]);
         } else {
             $this->post->event()->delete();
+        }
+
+        // Sauvegarde du contexte de guide en ligne (génération automatique de context_key si absent)
+        if ($this->post->rubric?->segment === 'guide-en-ligne') {
+            $contextKey = $this->guidelineContextKey ?: ('guideline-' . (\Illuminate\Support\Str::slug($this->post->title) ?: $this->post->id));
+            $this->guidelineContextKey = $contextKey;
+
+            Guideline::updateOrCreate(
+                ['post_id' => $this->post->id],
+                [
+                    'context_key'       => $contextKey,
+                    'next_context_key'  => $this->guidelineNextContextKey ?: null,
+                    'auto_open'         => $this->guidelineAutoOpen ?? false,
+                ]
+            );
         }
 
         // Pour les modèles : pas de galerie, droits, interactions ni notifications
@@ -498,6 +568,18 @@ class EditPostManager extends Component
      * @return \Illuminate\View\View
      */
     public function render() {
+        // Rubrique sélectionnée (peut avoir changé depuis le dernier rendu)
+        $selectedRubric = $this->post->rubric_id
+            ? Rubric::find($this->post->rubric_id)
+            : $this->currentRubric;
+
+        $isGuidelineRubric = $selectedRubric?->segment === 'guide-en-ligne';
+
+        $guidelinesQuery = Guideline::query()->with('post')->whereNotNull('context_key');
+        if ($this->post->exists && $this->guidelineContextKey) {
+            $guidelinesQuery->where('context_key', '!=', $this->guidelineContextKey);
+        }
+
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()
                 ->where('contains_posts', TRUE)
@@ -512,6 +594,8 @@ class EditPostManager extends Component
                 })
                 ->get(),
             'eventTypes' => \App\Models\EventType::orderBy('name', 'ASC')->get(),
+            'isGuidelineRubric' => $isGuidelineRubric,
+            'availableGuidelines' => $guidelinesQuery->orderBy('context_key', 'ASC')->get(),
         ]);
     }
 }

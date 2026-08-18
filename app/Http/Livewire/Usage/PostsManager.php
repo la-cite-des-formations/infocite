@@ -110,6 +110,7 @@ class PostsManager extends Component
         'postsInFavoritesRubrics' => '',
         'allPosts' => '',
     ];
+
     /**
      * Tris actifs pour la liste d'articles.
      *
@@ -142,6 +143,10 @@ class PostsManager extends Component
         $this->setNotifications();
         $this->lastFilterActive();
         $this->lastSorterActive();
+
+        if ($this->rubric) {
+            $this->autoOpenGuideline($this->rubric->segment);
+        }
     }
 
     /**

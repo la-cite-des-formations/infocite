@@ -32,6 +32,19 @@
     <h2>Juillet 2026</h2>
 
     <div class="month-section">
+        <h3><span class="date-label">21-22 Juillet 2026</span> - Module Guide en Ligne & Aide Contextuelle</h3>
+        <p><strong>Contexte :</strong> Mise en place d'un système d'aide contextuelle dynamique pour orienter les utilisateurs et guider les nouveaux arrivants (onboarding).</p>
+        <p><strong>Réalisations :</strong></p>
+        <ul>
+            <li><strong>Base de données :</strong> Création de la table <code>guidelines</code> reliant un article de guide en ligne (rubrique <code>guide-en-ligne</code>) à une clé de contexte (ex: <code>desktop-notifications</code>, <code>une</code>, <code>guide-applis</code>).</li>
+            <li><strong>Bouton d'aide réutilisable :</strong> Composant Blade <code>&lt;x-help-button context-key="..."&gt;</code> utilisable à la fois dans le HTML statique et dans les composants Livewire, déclenchant la modale du guide via <code>Livewire.emitTo('modal-manager', 'show', ...)</code>.</li>
+            <li><strong>Parcours guidés ("Étape suivante") :</strong> Navigation fluide d'un chapitre de guide à un autre via la propriété <code>next_context_key</code> avec suivi de lecture utilisateur automatique (<code>post_user.is_read</code>).</li>
+            <li><strong>Ouverture automatique (Onboarding) :</strong> Ouverture automatique de la modale d'accueil pour les guides non encore lus par l'utilisateur connecté via l'événement <code>livewire:load</code>.</li>
+        </ul>
+        <p><strong>Statut Feuille de route :</strong> ✅ Module d'aide contextuelle et guide en ligne finalisé et livré.</p>
+    </div>
+
+    <div class="month-section">
         <h3><span class="date-label">06 Juillet 2026</span> - Agenda Événementiel (Timeline & Calendrier FullCalendar)</h3>
         <p><strong>Contexte :</strong> Ajout d'une sous-rubrique "Agenda" sous "Événements" pour récapituler de manière chronologique et visuelle les manifestations futures de l'établissement.</p>
         <p><strong>Réalisations :</strong></p>

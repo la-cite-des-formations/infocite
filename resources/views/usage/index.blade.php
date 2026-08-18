@@ -41,11 +41,10 @@
             <!-- Google org-chart JS Files -->
             <script src="{{ asset('js/charts/loader.js') }}" referrerpolicy="origin"></script>
             <script src="{{ asset('js/charts.js') }}?v={{ filemtime(public_path('js/charts.js')) }}" defer></script>
+        @break
+    @endswitch
 
-            @default
-                @can('receiveDesktopNotifs')
-                    @livewire('fcm-notifs-sw-client-manager', [$viewBag])
-                @endcan
-
-        @endswitch
-    @endsection
+    @can('receiveDesktopNotifs')
+        @livewire('fcm-notifs-sw-client-manager', [$viewBag])
+    @endcan
+@endsection

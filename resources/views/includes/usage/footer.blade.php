@@ -3,8 +3,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-6 footer-contact">
-                    <img src="{{ asset('img/logo_cdf.png') }}" alt="La Cité des Formations"
-                         title="La Cité des Formations" class="img-fluid">
+                    <img src="{{ asset('img/logo_cdf.png') }}" alt="La Cité des Formations" title="La Cité des Formations"
+                        class="img-fluid">
                     <p>
                         8 allée Roger Lecotté<br>
                         37100 Tours<br><br>
@@ -17,9 +17,10 @@
                     <h4>Nos réseaux sociaux</h4>
                     <p>Retrouvez notre CFA sur tous ces médias</p>
                     <div class="social-links mt-3">
-                      @foreach(AP::getMedias() as $media)
-                        <a target="_blank" href="{{ $media->url }}" title="{{ $media->title }}"><i class="{{ $media->iconClass }}"></i></a>
-                      @endforeach
+                        @foreach (AP::getMedias() as $media)
+                            <a target="_blank" href="{{ $media->url }}" title="{{ $media->title }}"><i
+                                    class="{{ $media->iconClass }}"></i></a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -37,7 +38,8 @@
     </div>
 </footer>
 <div id="preloader"></div>
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Scripts -->
 <!-- Vendor JS Files -->
@@ -50,11 +52,14 @@
 <script src="{{ asset('vendor/php-email-form/validate.js') }}" defer></script>
 
 <!-- New Tab Redirection JS File -->
-<script src="{{ asset('js/new-tab-redirection.js') }}?v={{ filemtime(public_path('js/new-tab-redirection.js')) }}" defer></script>
+<script src="{{ asset('js/new-tab-redirection.js') }}?v={{ filemtime(public_path('js/new-tab-redirection.js')) }}"
+    defer></script>
 
 <!--auth-->
-@if(isset(auth()->user()->id) )
-<script>window.userId = {{auth()->user()->id}}</script>
+@if (isset(auth()->user()->id))
+    <script>
+        window.userId = {{ auth()->user()->id }}
+    </script>
 @endif
 
 <!-- Template Main JS File -->

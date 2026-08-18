@@ -398,4 +398,14 @@
             </style>
         @endif
     </div>
+    @if ($autoOpenContextKey)
+        <script>
+            document.addEventListener('livewire:load', function () {
+                Livewire.emitTo('modal-manager', 'show', {
+                    component: 'usage.guidelines-manager',
+                    data: { contextKey: @js($autoOpenContextKey) }
+                });
+            });
+        </script>
+    @endif
 </section>

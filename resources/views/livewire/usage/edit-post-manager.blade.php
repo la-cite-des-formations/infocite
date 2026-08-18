@@ -136,83 +136,134 @@
                         </div>
 
                         <div class="col-6 ps-4">
-                            <div class="fw-bold mb-2">Autres options</div>
-                            @can('block', ['App\\Models\\Comment'])
+                            @if ($isGuidelineRubric)
+                                <div class="fw-bold mb-2">Options de guide en ligne</div>
                                 <div class="form-check mb-2">
-                                    <input id="block-comments" wire:model="blockComments" type="checkbox"
+                                    <input id="guideline-auto-open" wire:model="guidelineAutoOpen" type="checkbox"
                                         class="form-check-input">
-                                    <label class="my-auto" for="block-comments">Bloquer les commentaires</label>
+                                    <label class="my-auto form-check-label" for="guideline-auto-open">
+                                        Ouverture automatique (onboarding)
+                                    </label>
                                 </div>
-                            @endcan
-                            <div class="form-check mb-2">
-                                <input id="post-acknowledgment" wire:model="post.is_acknowledgment_required"
-                                    type="checkbox" class="form-check-input">
-                                <label class="my-auto" for="post-acknowledgment">Lecture avec accusé de réception</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input id="post-rating" wire:model="post.is_rating_enabled" type="checkbox"
-                                    class="form-check-input">
-                                <label class="my-auto" for="post-rating">Activer la notation (système d'étoiles)</label>
-                            </div>
+                                <div class="mb-2">
+                                    <label class="small fw-bold" for="guideline-next-context-key">Étape suivante</label>
+                                    <select id="guideline-next-context-key" wire:model="guidelineNextContextKey"
+                                        class="form-select form-select-sm">
+                                        <option value="">Aucune</option>
+                                        @foreach ($availableGuidelines as $g)
+                                            <option value="{{ $g->context_key }}">
+                                                {{ $g->post?->title ?? $g->context_key }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @else
+                                <div class="fw-bold mb-2">Autres options</div>
+                                @can('block', ['App\\Models\\Comment'])
+                                    <div class="form-check mb-2">
+                                        <input id="block-comments" wire:model="blockComments" type="checkbox"
+                                            class="form-check-input">
+                                        <label class="my-auto" for="block-comments">Bloquer les commentaires</label>
+                                    </div>
+                                @endcan
+                                <div class="form-check mb-2">
+                                    <input id="post-acknowledgment" wire:model="post.is_acknowledgment_required"
+                                        type="checkbox" class="form-check-input">
+                                    <label class="my-auto" for="post-acknowledgment">Lecture avec accusé de réception</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input id="post-rating" wire:model="post.is_rating_enabled" type="checkbox"
+                                        class="form-check-input">
+                                    <label class="my-auto" for="post-rating">Activer la notation (système d'étoiles)</label>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
             {{-- Agenda événementiel --}}
-            <div class="row mb-3 mt-3">
-                <div class="col-2"></div>
-                <div class="col-8">
-                    <div class="card p-3 border-0 shadow-sm" style="background-color: #f8fafc; border-radius: 8px;">
-                        <div class="form-check mb-2">
-                            <input id="attach-to-agenda" wire:model="attach_to_agenda" type="checkbox" class="form-check-input">
-                            <label class="fw-bold form-check-label" for="attach-to-agenda">Rattacher l'article à l'agenda événementiel</label>
-                        </div>
-                        
-                        @if ($attach_to_agenda)
-                            <div class="row g-3 mt-1">
-                                <div class="col-md-6">
-                                    <label for="event-type-id" class="form-label small fw-bold text-dark">Type d'événement <span class="text-danger">*</span></label>
-                                    <select id="event-type-id" wire:model="event_type_id" class="form-select form-select-sm">
-                                        <option value="">Choisir un type...</option>
-                                        @foreach ($eventTypes as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('event_type_id') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="event-location" class="form-label small fw-bold text-dark">Lieu</label>
-                                    <input id="event-location" wire:model="location" type="text" class="form-control form-control-sm" placeholder="Ex: Salle de conférence, Zoom, etc.">
-                                    @error('location') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                
-                                <div class="col-md-3">
-                                    <label for="event-start-date" class="form-label small fw-bold text-dark">Date de début <span class="text-danger">*</span></label>
-                                    <input id="event-start-date" wire:model="start_date" type="date" class="form-control form-control-sm">
-                                    @error('start_date') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="event-start-time" class="form-label small fw-bold text-dark">Heure de début</label>
-                                    <input id="event-start-time" wire:model="start_time" type="time" class="form-control form-control-sm">
-                                    @error('start_time') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="event-end-date" class="form-label small fw-bold text-dark">Date de fin</label>
-                                    <input id="event-end-date" wire:model="end_date" type="date" class="form-control form-control-sm">
-                                    @error('end_date') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="event-end-time" class="form-label small fw-bold text-dark">Heure de fin</label>
-                                    <input id="event-end-time" wire:model="end_time" type="time" class="form-control form-control-sm">
-                                    @error('end_time') <span class="text-danger small">{{ $message }}</span> @enderror
-                                </div>
+            @if (!$isGuidelineRubric)
+                <div class="row mb-3 mt-3">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <div class="card p-3 border-0 shadow-sm" style="background-color: #f8fafc; border-radius: 8px;">
+                            <div class="form-check mb-2">
+                                <input id="attach-to-agenda" wire:model="attach_to_agenda" type="checkbox"
+                                    class="form-check-input">
+                                <label class="fw-bold form-check-label" for="attach-to-agenda">Rattacher l'article à l'agenda
+                                    événementiel</label>
                             </div>
-                        @endif
+
+                            @if ($attach_to_agenda)
+                                <div class="row g-3 mt-1">
+                                    <div class="col-md-6">
+                                        <label for="event-type-id" class="form-label small fw-bold text-dark">Type d'événement
+                                            <span class="text-danger">*</span></label>
+                                        <select id="event-type-id" wire:model="event_type_id"
+                                            class="form-select form-select-sm">
+                                            <option value="">Choisir un type...</option>
+                                            @foreach ($eventTypes as $type)
+                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('event_type_id')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="event-location" class="form-label small fw-bold text-dark">Lieu</label>
+                                        <input id="event-location" wire:model="location" type="text"
+                                            class="form-control form-control-sm"
+                                            placeholder="Ex: Salle de conférence, Zoom, etc.">
+                                        @error('location')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="event-start-date" class="form-label small fw-bold text-dark">Date de début
+                                            <span class="text-danger">*</span></label>
+                                        <input id="event-start-date" wire:model="start_date" type="date"
+                                            class="form-control form-control-sm">
+                                        @error('start_date')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="event-start-time" class="form-label small fw-bold text-dark">Heure de
+                                            début</label>
+                                        <input id="event-start-time" wire:model="start_time" type="time"
+                                            class="form-control form-control-sm">
+                                        @error('start_time')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="event-end-date" class="form-label small fw-bold text-dark">Date de
+                                            fin</label>
+                                        <input id="event-end-date" wire:model="end_date" type="date"
+                                            class="form-control form-control-sm">
+                                        @error('end_date')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="event-end-time" class="form-label small fw-bold text-dark">Heure de
+                                            fin</label>
+                                        <input id="event-end-time" wire:model="end_time" type="time"
+                                            class="form-control form-control-sm">
+                                        @error('end_time')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         @endunless
-        <div class="row mt-5">
+        <div class="row">
             <div class="col-10 d-flex justify-content-end">
                 <a href="{{ $backRoute }}" type="button" class="btn btn-secondary me-1"
                     title="Revenir à la page précédente sans enregistrer">

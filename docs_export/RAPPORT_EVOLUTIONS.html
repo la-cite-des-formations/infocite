@@ -202,6 +202,17 @@
     </div>
 
     <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Guide en Ligne & Aide Contextuelle</h3>
+        <p>Mise en place d'un module d'aide contextuelle permettant d'orienter les utilisateurs via des guides accessibles depuis des boutons d'aide (<code>?</code>) intégrés dans l'interface, ou ouverts automatiquement lors du premier chargement (onboarding).</p>
+        <ul>
+            <li><strong>Bouton d'aide réutilisable :</strong> Composant Blade <code>&lt;x-help-button context-key="..."&gt;</code> déclenchant la modale du guide correspondant, fonctionnel dans tout contexte (HTML statique ou composant Livewire).</li>
+            <li><strong>Parcours guidés :</strong> Navigation séquentielle entre chapitres de guide via la propriété <code>next_context_key</code>, avec bouton "Étape suivante" et suivi automatique de lecture par utilisateur.</li>
+            <li><strong>Onboarding automatique :</strong> Les guides configurés avec <code>auto_open = true</code> s'ouvrent au premier chargement de la page si non encore lus par l'utilisateur, via l'événement <code>livewire:load</code>.</li>
+            <li><strong>Marquage de lecture :</strong> Chaque guide affiché est automatiquement marqué comme lu pour l'utilisateur connecté (<code>post_user.is_read</code>).</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
         <h3><span class="badge badge-tech">Évolution</span> Invalidation de Cache Automatique (Cache Busting)</h3>
         <p>Mécanisme forçant le navigateur à recharger les versions les plus récentes des fichiers CSS et JS lors d'une mise à jour de l'application.</p>
         <ul>
@@ -294,7 +305,7 @@
                     <li><del>Point d'ancrage (focal point X/Y) sur la première photo de la galerie pour le recadrage optimal de l'image de fond des vignettes.</del> ✅ <strong>Terminé (10/06/2026)</strong></li>
                     <li><del>Statistiques de notation : Profils des utilisateurs les plus actifs & Top 10 des articles les mieux notés.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
                     <li><del>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
-                    <li>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs. (<em>~1,5 semaine</em>)</li>
+                    <li><del>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs.</del> ✅ <strong>Terminé (22/07/2026)</strong></li>
                     <li><del>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur.</del> ✅ <strong>Terminé (16/06/2026)</strong></li>
                     <li>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE. (<em>~0,3 semaine</em>)</li>
                     <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
