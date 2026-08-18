@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('post_id')->index();
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
 
-            // Identifiant unique du contexte d'interface (ex: 'desktop-notifications')
+            // Identifiant unique du contexte d'interface (ex: 'guideline-notifications-de-bureau')
             $table->string('context_key')->unique();
 
             // Clé du contexte de l'étape suivante pour les parcours guidés

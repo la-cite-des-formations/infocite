@@ -7,7 +7,7 @@
     - $label      (string, optionnel)  : Libellé accessible pour les lecteurs d'écran.
 
     Utilisation :
-        <x-help-button context-key="desktop-notifications" />
+        <x-help-button context-key="guideline-notifications-de-bureau" />
         <x-help-button context-key="post-edition" label="Aide sur l'édition d'articles" />
 --}}
 @props(['contextKey', 'label' => "Afficher l'aide"])
