@@ -1617,6 +1617,29 @@ a:hover {
     position: relative;
 }
 
+/* Annulation des marges lorsque le bloc citation est imbriqué dans un autre bloc (ex: cadre) */
+.editor-block .block-quote,
+[class*="block-frame-"] .block-quote,
+.alert .block-quote,
+.article-template .editor-block .block-quote {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.editor-block .block-quote:first-child,
+[class*="block-frame-"] .block-quote:first-child,
+.article-template .editor-block .block-quote:first-child {
+    margin-top: 0 !important;
+}
+
+.editor-block .block-quote:last-child,
+[class*="block-frame-"] .block-quote:last-child,
+.editor-block .block-quote .quote-author:last-child,
+.editor-block .block-quote .block-content>*:last-child,
+.article-template .editor-block .block-quote:last-child {
+    margin-bottom: 0 !important;
+}
+
 .block-quote .quote-text {
     font-style: italic;
     margin-bottom: 6px;
