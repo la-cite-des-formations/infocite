@@ -181,7 +181,7 @@ class EditPostManager extends Component
             $this->end_time = null;
             $this->location = null;
 
-            if ($this->post->rubric_id) {
+            if ($this->mode === 'creation' && $this->post->rubric_id) {
                 $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
                 $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
                 $rubric = Rubric::find($this->post->rubric_id);
@@ -242,16 +242,20 @@ class EditPostManager extends Component
                 $this->blockComments = true;
                 $this->attach_to_agenda = false;
             } else {
-                $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
-                $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
-                if ($rubric && $rubric->parent_id == $eventsRubricId) {
-                    $this->attach_to_agenda = true;
-                } else {
-                    $this->attach_to_agenda = false;
+                if ($this->mode === 'creation') {
+                    $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+                    $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+                    if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                        $this->attach_to_agenda = true;
+                    } else {
+                        $this->attach_to_agenda = false;
+                    }
                 }
             }
         } else {
-            $this->attach_to_agenda = false;
+            if ($this->mode === 'creation') {
+                $this->attach_to_agenda = false;
+            }
         }
     }
 
