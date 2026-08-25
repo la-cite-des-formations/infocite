@@ -162,17 +162,19 @@ const initEditor = function () {
             editor.ui.registry.addIcon('mi-up', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" fill="currentColor"/></svg>');
             editor.ui.registry.addIcon('mi-down', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" fill="currentColor"/></svg>');
             editor.ui.registry.addIcon('mi-frame', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M0,0h24v24H0V0z" fill="none"/><path d="M18,13c-3.31,0-6,2.69-6,6C15.31,19,18,16.31,18,13z M6,13c0,3.31,2.69,6,6,6C12,15.69,9.31,13,6,13z M8,11.03 c0,0.86,0.7,1.56,1.56,1.56c0.33,0,0.63-0.1,0.89-0.28l-0.01,0.12c0,0.86,0.7,1.56,1.56,1.56s1.56-0.7,1.56-1.56l-0.01-0.12 c0.25,0.17,0.56,0.28,0.89,0.28c0.86,0,1.56-0.7,1.56-1.56c0-0.62-0.37-1.16-0.89-1.41C15.63,9.38,16,8.84,16,8.22 c0-0.86-0.7-1.56-1.56-1.56c-0.33,0-0.63,0.1-0.89,0.28l0.01-0.12c0-0.86-0.7-1.56-1.56-1.56s-1.56,0.7-1.56,1.56l0.01,0.12 C10.2,6.76,9.89,6.66,9.56,6.66C8.7,6.66,8,7.36,8,8.22c0,0.62,0.37,1.16,0.89,1.41C8.37,9.87,8,10.41,8,11.03z M12,8.06 c0.86,0,1.56,0.7,1.56,1.56s-0.7,1.56-1.56,1.56s-1.56-0.7-1.56-1.56S11.14,8.06,12,8.06z M20,4v16H4V4H20 M20,2H4C2.9,2,2,2.9,2,4 v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z" fill="currentColor"/></svg>');
+            editor.ui.registry.addIcon('mi-quote', '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" fill="currentColor"/></svg>');
 
             const BLOCK_DEFINITIONS = [
                 { id: 'intro', title: 'Introduction', icon: 'mi-intro', shortcut: 'alt+shift+i', template: '<div class="editor-block block-intro"><div class="block-content"><p><em>Rédigez l\'introduction ici...</em></p></div></div>' },
                 { id: 'title', title: 'Titre principal', icon: 'mi-title', shortcut: 'alt+shift+t', template: '<div class="editor-block block-title"><div class="block-content"><h2>Titre principal</h2></div></div>' },
                 { id: 'subtitle', title: 'Sous-titre', icon: 'mi-subtitle', shortcut: 'alt+shift+s', template: '<div class="editor-block block-subtitle"><div class="block-content"><h4>Sous-titre de section</h4></div></div>' },
                 { id: 'paragraph', title: 'Paragraphe', icon: 'mi-paragraph', shortcut: 'alt+shift+p', template: '<div class="editor-block block-paragraph"><div class="block-content"><p>Saisissez votre texte ici...</p></div></div>' },
+                { id: 'quote', title: 'Citation', icon: 'mi-quote', shortcut: 'alt+shift+q', template: '<div class="editor-block block-quote quote-style-french"><div class="block-content"><p class="quote-text"><em>Saisissez votre citation ici...</em></p><p class="quote-author" style="text-align: right;"><em>Auteur</em></p></div></div>' },
                 { id: 'columns', title: 'Colonnes x2', icon: 'mi-columns', shortcut: 'alt+shift+c', template: '<div class="row"><div class="col-12 col-md-6 editor-block block-col-left"><div class="block-content"><p>&nbsp;</p></div></div><div class="col-12 col-md-6 editor-block block-col-right"><div class="block-content"><p>&nbsp;</p></div></div></div>' },
                 { id: 'note', title: 'Note', icon: 'mi-info', shortcut: 'alt+shift+n', template: '<div class="editor-block block-note-info alert alert-info"><div class="block-content lc-mb-0"><p><strong>Note :</strong> Saisissez une note importante ici...</p></div></div>' },
                 { id: 'frame', title: 'Cadre', icon: 'mi-frame', shortcut: 'alt+shift+f', template: '<div class="editor-block block-frame-simple"><div class="block-content lc-mb-0"><p>Saisissez le contenu du cadre ici...</p></div></div>' },
                 { id: 'conclusion_title', title: 'Titre conclusif', icon: 'mi-title', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div></div>' },
-                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' },
+                { id: 'conclusion_full', title: 'Conclusion avec titre', icon: 'mi-conclusion', shortcut: 'alt+shift+z', template: '<div class="editor-block block-conclusion-title"><div class="block-content"><h2>Titre de conclusion</h2></div></div><div class="editor-block block-conclusion-content"><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' },
                 { id: 'conclusion_content', title: 'Conclusion sans titre', icon: 'mi-conclusion', template: '<div class="editor-block block-conclusion-content"><div class="block-content"><p><em>Rédigez le mot de la fin ici...</em></p></div></div>' }
             ];
 
@@ -199,6 +201,7 @@ const initEditor = function () {
                 const selection = editor.selection;
                 const isCollapsed = selection.isCollapsed();
                 const isTitleBlock = templateHtml.includes('block-title') || templateHtml.includes('block-subtitle') || templateHtml.includes('block-conclusion-title');
+                const isQuoteBlock = templateHtml.includes('block-quote');
 
                 editor.undoManager.transact(() => {
                     if (!isCollapsed) {
@@ -241,6 +244,12 @@ const initEditor = function () {
                             if (isTitleBlock) {
                                 const titleTag = targetBlock.querySelector('h1, h2, h3, h4, h5, h6');
                                 if (titleTag) titleTag.innerText = cleanTitleText(combinedHtml);
+                            } else if (isQuoteBlock) {
+                                const quoteTextTag = targetBlock.querySelector('.quote-text') || targetBlock.querySelector('p');
+                                if (quoteTextTag) {
+                                    const innerContent = collectedBlocks.map(b => b.innerHTML).join('<br>');
+                                    quoteTextTag.innerHTML = `<em>${innerContent}</em>`;
+                                }
                             } else {
                                 const contentTag = targetBlock.querySelector('p');
                                 if (contentTag) {
@@ -289,6 +298,11 @@ const initEditor = function () {
                                 if (isColumnBlock) {
                                     const leftCol = firstBlock.querySelector('.block-col-left');
                                     if (leftCol) leftCol.innerHTML = `<p>${contentHtml}</p>`;
+                                } else if (isQuoteBlock) {
+                                    const quoteTextTag = firstBlock.querySelector('.quote-text') || firstBlock.querySelector('p');
+                                    if (quoteTextTag) {
+                                        quoteTextTag.innerHTML = `<em>${contentHtml}</em>`;
+                                    }
                                 } else {
                                     const contentTag = firstBlock.querySelector('p, h1, h2, h3, h4, h5, h6');
                                     if (contentTag) {
@@ -308,7 +322,7 @@ const initEditor = function () {
                             });
                             editor.dom.remove(target);
 
-                            const focusNode = firstBlock.querySelector('p, h2, h4') || firstBlock;
+                            const focusNode = firstBlock.querySelector('.quote-text, p, h2, h4') || firstBlock;
                             editor.selection.setCursorLocation(focusNode, 0);
                             editor.fire('change');
                         } else {
@@ -342,11 +356,12 @@ const initEditor = function () {
                         editor.dom.add(el, 'span', { class: 'move-down-btn material-icons-outlined', contenteditable: 'false', title: 'Descendre' }, 'expand_more');
                     }
 
-                    // Bouton Palette de style (Pour les blocs Note et Cadre)
+                    // Bouton Palette de style (Pour les blocs Note, Cadre et Citation)
                     const isNote = el.classList.contains('block-note-info') || el.classList.contains('block-note-success') || el.classList.contains('block-note-warning') || el.classList.contains('block-note-alert');
                     const isFrame = el.classList.contains('block-frame-simple') || el.classList.contains('block-frame-modern') || el.classList.contains('block-frame-elegant') || el.classList.contains('block-frame-dashed');
+                    const isQuote = el.classList.contains('block-quote');
 
-                    if (isNote || isFrame) {
+                    if (isNote || isFrame || isQuote) {
                         if (!editor.dom.select(':scope > .change-style-btn', el).length) {
                             editor.dom.add(el, 'span', { class: 'change-style-btn material-icons-outlined', contenteditable: 'false', title: 'Changer le style' }, 'palette');
 
@@ -372,6 +387,17 @@ const initEditor = function () {
                                         <div class="style-option" data-align-val="left"><i class="material-icons-outlined fs-6">format_align_left</i> Gauche</div>
                                         <div class="style-option" data-align-val="center"><i class="material-icons-outlined fs-6">format_align_center</i> Centrer</div>
                                         <div class="style-option" data-align-val="right"><i class="material-icons-outlined fs-6">format_align_right</i> Droite</div>
+                                    </div>
+                                `;
+                            } else if (isQuote) {
+                                menuHtml = `
+                                    <div class="style-selector-menu" contenteditable="false">
+                                        <div class="style-option" data-quote-style="quote-style-french"><span class="quote-preview">« »</span> Français</div>
+                                        <div class="style-option" data-quote-style="quote-style-english"><span class="quote-preview">“ ”</span> Anglais</div>
+                                        <div class="style-option" data-quote-style="quote-style-german"><span class="quote-preview">„ “</span> Allemand</div>
+                                        <div class="style-option" data-quote-style="quote-style-straight"><span class="quote-preview">" "</span> Droits</div>
+                                        <div class="style-option" data-quote-style="quote-style-single"><span class="quote-preview">‘ ’</span> Simples</div>
+                                        <div class="style-option" data-quote-style="quote-style-none"><span class="quote-preview">—</span> Sans guillemets</div>
                                     </div>
                                 `;
                             }
@@ -500,6 +526,7 @@ const initEditor = function () {
                 if (option) {
                     const styleBlock = option.closest('.editor-block');
                     const newStyle = option.getAttribute('data-style');
+                    const newQuoteStyle = option.getAttribute('data-quote-style');
                     const newAlign = option.getAttribute('data-align-val');
 
                     if (styleBlock) {
@@ -531,6 +558,18 @@ const initEditor = function () {
                                         innerP.classList.remove('mb-0');
                                     }
                                 }
+                            }
+
+                            if (newQuoteStyle) {
+                                styleBlock.classList.remove(
+                                    'quote-style-french',
+                                    'quote-style-english',
+                                    'quote-style-german',
+                                    'quote-style-straight',
+                                    'quote-style-single',
+                                    'quote-style-none'
+                                );
+                                styleBlock.classList.add(newQuoteStyle);
                             }
 
                             if (newAlign) {

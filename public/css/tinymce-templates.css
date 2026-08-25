@@ -157,6 +157,15 @@ body[contenteditable="true"] .block-paragraph::before {
     display: flex !important;
 }
 
+/* Citation */
+body[contenteditable="true"] .block-quote::before,
+.template-preview .block-quote::before {
+    content: "\e244  CITATION" !important;
+    /* format_quote icon code */
+    font-family: 'Material Icons Outlined', sans-serif !important;
+    display: flex !important;
+}
+
 /* Colonnes */
 body[contenteditable="true"] .block-col-left::before {
     content: "\e014  COLONNE GAUCHE" !important;
@@ -346,6 +355,119 @@ body[contenteditable="true"] .block-frame-dashed::before {
     display: flex !important;
 }
 
+/* ==============================================================
+   BLOC CITATION & VARIANTES DE GUILLEMETS
+   ============================================================== */
+.block-quote {
+    margin: 15px 0;
+    position: relative;
+}
+
+.block-quote .quote-text {
+    font-style: italic;
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
+.block-quote .quote-author {
+    text-align: right;
+    font-style: italic;
+    font-size: 0.95em;
+    margin-bottom: 0;
+    opacity: 0.85;
+}
+
+/* Alignement vertical et typographie des guillemets français */
+.block-quote:not([class*="quote-style-"]) .quote-text::before,
+.block-quote:not([class*="quote-style-"]) .quote-text::after,
+.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::before,
+.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::after,
+.block-quote:not([class*="quote-style-"]) > p:first-of-type::before,
+.block-quote:not([class*="quote-style-"]) > p:first-of-type::after,
+.block-quote.quote-style-french .quote-text::before,
+.block-quote.quote-style-french .quote-text::after,
+.block-quote.quote-style-french .block-content > p:first-of-type::before,
+.block-quote.quote-style-french .block-content > p:first-of-type::after,
+.block-quote.quote-style-french > p:first-of-type::before,
+.block-quote.quote-style-french > p:first-of-type::after {
+    display: inline;
+    position: relative;
+    top: -0.15em;
+    font-style: normal;
+}
+
+/* Styles de guillemets */
+.block-quote:not([class*="quote-style-"]) .quote-text::before,
+.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::before,
+.block-quote:not([class*="quote-style-"]) > p:first-of-type::before,
+.block-quote.quote-style-french .quote-text::before,
+.block-quote.quote-style-french .block-content > p:first-of-type::before,
+.block-quote.quote-style-french > p:first-of-type::before {
+    content: "«\00a0" !important;
+}
+
+.block-quote:not([class*="quote-style-"]) .quote-text::after,
+.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::after,
+.block-quote:not([class*="quote-style-"]) > p:first-of-type::after,
+.block-quote.quote-style-french .quote-text::after,
+.block-quote.quote-style-french .block-content > p:first-of-type::after,
+.block-quote.quote-style-french > p:first-of-type::after {
+    content: "\00a0»" !important;
+}
+
+.block-quote.quote-style-english .quote-text::before,
+.block-quote.quote-style-english .block-content > p:first-of-type::before,
+.block-quote.quote-style-english > p:first-of-type::before {
+    content: "“" !important;
+}
+.block-quote.quote-style-english .quote-text::after,
+.block-quote.quote-style-english .block-content > p:first-of-type::after,
+.block-quote.quote-style-english > p:first-of-type::after {
+    content: "”" !important;
+}
+
+.block-quote.quote-style-german .quote-text::before,
+.block-quote.quote-style-german .block-content > p:first-of-type::before,
+.block-quote.quote-style-german > p:first-of-type::before {
+    content: "„" !important;
+}
+.block-quote.quote-style-german .quote-text::after,
+.block-quote.quote-style-german .block-content > p:first-of-type::after,
+.block-quote.quote-style-german > p:first-of-type::after {
+    content: "“" !important;
+}
+
+.block-quote.quote-style-straight .quote-text::before,
+.block-quote.quote-style-straight .block-content > p:first-of-type::before,
+.block-quote.quote-style-straight > p:first-of-type::before {
+    content: '"' !important;
+}
+.block-quote.quote-style-straight .quote-text::after,
+.block-quote.quote-style-straight .block-content > p:first-of-type::after,
+.block-quote.quote-style-straight > p:first-of-type::after {
+    content: '"' !important;
+}
+
+.block-quote.quote-style-single .quote-text::before,
+.block-quote.quote-style-single .block-content > p:first-of-type::before,
+.block-quote.quote-style-single > p:first-of-type::before {
+    content: "‘" !important;
+}
+.block-quote.quote-style-single .quote-text::after,
+.block-quote.quote-style-single .block-content > p:first-of-type::after,
+.block-quote.quote-style-single > p:first-of-type::after {
+    content: "’" !important;
+}
+
+.block-quote.quote-style-none .quote-text::before,
+.block-quote.quote-style-none .quote-text::after,
+.block-quote.quote-style-none .block-content > p:first-of-type::before,
+.block-quote.quote-style-none .block-content > p:first-of-type::after,
+.block-quote.quote-style-none > p:first-of-type::before,
+.block-quote.quote-style-none > p:first-of-type::after {
+    content: "" !important;
+}
+
 /* Pastilles du menu palette */
 .style-dot {
     display: inline-block;
@@ -390,6 +512,16 @@ body[contenteditable="true"] .block-frame-dashed::before {
     background: transparent;
 }
 
+/* Aperçu guillemets pour le menu palette */
+.quote-preview {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 13px;
+    color: #2c3e50;
+    min-width: 24px;
+    text-align: center;
+}
+
 /* MENU DE SÉLECTION DE STYLE */
 body[contenteditable="true"] .style-selector-menu {
     position: absolute;
@@ -403,7 +535,8 @@ body[contenteditable="true"] .style-selector-menu {
     display: none;
     flex-direction: column;
     padding: 5px;
-    width: 120px;
+    width: max-content;
+    min-width: 135px;
 }
 
 body[contenteditable="true"] .show-style-menu .style-selector-menu {
