@@ -101,6 +101,23 @@
             direct avec le Rapport d'Évolutions et la Feuille de Route générale.
         </div>
 
+        <h2>Août 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">25 Août 2026</span> - Bloc Citation TinyMCE & Correctifs Agenda</h3>
+            <p><strong>Contexte :</strong> Enrichissement de la palette de blocs de l'éditeur TinyMCE avec un nouveau bloc sémantique dédié aux citations, et corrections de comportements involontaires sur le formulaire de rattachement à l'agenda.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Nouveau bloc Citation :</strong> Ajout d'un bloc <code>block-quote</code> dans le gestionnaire de blocs TinyMCE, avec rendu en italique, guillemets CSS stylisés et support optionnel d'un auteur/source via <code>.quote-author</code>.</li>
+                <li><strong>Palette de styles Citation :</strong> Menu de sélection de style de guillemets proposant 6 options : Français (« »), Anglais (" "), Allemand („ "), Droits (" "), Simples (' ') et Sans guillemets (—), appliqués par classes CSS (<code>quote-style-*</code>) sans rechargement.</li>
+                <li><strong>Aspiration automatique :</strong> Le mécanisme d'aspiration de texte sélectionné est étendu au bloc Citation : le contenu est injecté dans le <code>.quote-text</code> en italique. La navigation curseur cible en priorité le <code>.quote-text</code> à l'insertion.</li>
+                <li><strong>Fix marges imbriquées :</strong> Les marges externe du bloc Citation sont neutralisées lorsqu'il est imbriqué dans un bloc Cadre (<code>.editor-block .block-quote</code>), pour un rendu visuellement harmonieux.</li>
+                <li><strong>Fix agenda (mode édition) :</strong> La pré-activation automatique de la case « Rattacher à l'agenda » lors du changement de rubrique ne se déclenche plus qu'en <strong>mode création</strong> d'article. En mode modification, la case conserve son état d'origine, évitant les rattachements involontaires sur des articles existants.</li>
+                <li><strong>Refactorisation UI agenda :</strong> Suppression de la classe <code>card</code> sur le composant de liaison à l'agenda dans le formulaire d'édition public (<code>edit-post-manager.blade.php</code>) pour harmoniser la présentation.</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Bloc Citation livré, correctifs agenda appliqués.</p>
+        </div>
+
         <h2>Juillet 2026</h2>
 
         <div class="month-section">
