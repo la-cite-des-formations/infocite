@@ -554,11 +554,13 @@
     </div>
 
     <div class="audit-item">
-        <h3><span class="badge badge-func">Évolution</span> Bloc "Citation" (TinyMCE)</h3>
-        <p>Ajout d'un nouveau modèle sémantique de bloc pour l'éditeur TinyMCE via le gestionnaire de Blocs.</p>
+        <h3><span class="badge badge-func">✅ Livré v1.10</span> Bloc "Citation" (TinyMCE)</h3>
+        <p>Ajout d'un nouveau bloc sémantique dédié aux citations dans l'éditeur TinyMCE. Disponible depuis la <strong>v1.10 (25 Août 2026)</strong>.</p>
         <ul>
-            <li><strong>Design :</strong> Mise en forme spécifique avec des guillemets stylisés et écriture en italique.</li>
-            <li><strong>Comportement :</strong> Intégration dans la palette existante avec support de l'aspiration et du dégroupage.</li>
+            <li><strong>Design :</strong> Mise en forme spécifique avec guillemets stylisés CSS (<code>::before</code>/<code>::after</code>) et écriture en italique via la classe <code>block-quote</code>.</li>
+            <li><strong>Styles de guillemets :</strong> Palette de 6 variantes accessibles via le bouton "Palette" (🎨) : Français (« »), Anglais (" "), Allemand („ "), Droits (" "), Simples (' ') et Sans guillemets (—), appliqués par classes CSS <code>quote-style-*</code>.</li>
+            <li><strong>Auteur/source :</strong> Champ optionnel <code>.quote-author</code> pour renseigner la source de la citation.</li>
+            <li><strong>Comportement :</strong> Intégration complète dans la palette de blocs existante avec support de l'aspiration (texte sélectionné → <code>.quote-text</code> en italique) et du dégroupage. Marges neutralisées en imbrication avec un bloc Cadre.</li>
         </ul>
     </div>
 
@@ -630,7 +632,7 @@
                     <li><del>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
                     <li><del>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs.</del> ✅ <strong>Terminé (22/07/2026)</strong></li>
                     <li><del>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur.</del> ✅ <strong>Terminé (16/06/2026)</strong></li>
-                    <li>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE. (<em>~0,3 semaine</em>)</li>
+                    <li><del>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE.</del> ✅ <strong>Terminé (25/08/2026)</strong></li>
                     <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
                     <li>Mise à jour dynamique de la cloche de notification à la fermeture de sa modale. (<em>~0,3 semaine</em>)</li>
                     <li>Vérification des droits d'accès Google Drive par rapport à l'audience de l'article avec alerte éditeur. (<em>~1,5 semaine</em>)</li>
@@ -754,7 +756,7 @@
         </ul>
 
         <h3>2.4 L'Éditeur Avancé (Blocs intelligents)</h3>
-        <p>L'éditeur d'articles utilise un système de <strong>blocs</strong> (Notes, Cadres, Titres, Colonnes) pour structurer vos contenus de manière professionnelle.</p>
+        <p>L'éditeur d'articles utilise un système de <strong>blocs</strong> (Notes, Cadres, Citations, Titres, Colonnes) pour structurer vos contenus de manière professionnelle.</p>
         
         <div class="tip">
             <strong>Aspiration automatique :</strong> Si vous sélectionnez du texte (un ou plusieurs paragraphes) avant d'insérer un bloc (ex: une Note), le texte sélectionné sera automatiquement placé à l'intérieur du bloc. Si vous ne sélectionnez rien, le paragraphe sous votre curseur sera transformé.
@@ -765,6 +767,7 @@
             <li><strong>Sécurité des Titres</strong> : Les blocs de type "Titre" ne peuvent pas contenir de listes ou de longs paragraphes. Si vous tentez une action impossible, une notification orange vous en informera en haut de l'éditeur.</li>
             <li><strong>Raccourcis Clavier</strong> : Utilisez <code>Alt + Shift + [Initiale]</code> pour insérer rapidement des blocs (ex: <code>Alt+Shift+N</code> pour une Note, <code>Alt+Shift+C</code> pour un Cadre).</li>
             <li><strong>Vidéos Google Drive</strong> : Pour insérer une vidéo stockée sur le Drive de l'entreprise, utilisez simplement l'outil "Insérer un média" (icône caméra) et collez le lien de partage classique de votre fichier. Infocite se charge automatiquement de transformer le lien pour qu'il soit lisible directement dans votre article.</li>
+            <li><strong>Bloc Citation</strong> : Insérez une citation mise en valeur via le menu Blocs. Un sélecteur de style (icône palette 🎨) vous permet de choisir parmi 6 styles de guillemets : Français « », Anglais " ", Allemand „ ", Droits " ", Simples ' ' ou Sans guillemets. Vous pouvez également renseigner une source ou un auteur dans le champ dédié sous la citation.</li>
         </ul>
     </div>
 
@@ -785,7 +788,7 @@
     </ul>
     
     <div class="tip">
-        <strong>Rattachement à l'agenda (Éditeurs) :</strong> Dans le formulaire d'écriture d'un article, cochez <em>"Rattacher l'article à l'agenda événementiel"</em> pour définir le type d'événement, la date/heure de début, de fin et le lieu. Cette case est pré-cochée pour tous les articles des sous-rubriques d'Événements.
+        <strong>Rattachement à l'agenda (Éditeurs) :</strong> Dans le formulaire d'écriture d'un article, cochez <em>"Rattacher l'article à l'agenda événementiel"</em> pour définir le type d'événement, la date/heure de début, de fin et le lieu. Cette case est pré-cochée automatiquement <strong>lors de la création</strong> d'un article dans une sous-rubrique d'Événements (mais pas lors de la modification d'un article existant).
     </div>
 
     <hr>
@@ -1667,6 +1670,18 @@ Cela compresse tous les fichiers pour que le site soit le plus rapide possible p
 
 
 <h1>Journal des Modifications (Changelog)</h1>
+
+<div class="version">
+    <div class="version-title">Version 1.10 - Bloc Citation & Correctifs Agenda</div>
+    <div class="date">25 Août 2026</div>
+    <ul>
+        <li><span class="tag tag-feat">FEAT</span> Ajout du bloc <strong>Citation</strong> dans l'éditeur TinyMCE : guillemets stylisés, texte en italique, champ auteur optionnel (<code>.quote-author</code>) et sélecteur de 6 styles de guillemets via la palette de style existante.</li>
+        <li><span class="tag tag-feat">FEAT</span> Aspiration automatique de texte sélectionné vers le bloc Citation, et navigation curseur privilégiant le <code>.quote-text</code> à l'insertion.</li>
+        <li><span class="tag tag-fix">FIX</span> Neutralisation des marges du bloc Citation imbriqué dans un bloc parent (Cadre) pour conserver un rendu cohérent.</li>
+        <li><span class="tag tag-fix">FIX</span> Le rattachement automatique à l'agenda lors du changement de rubrique ne s'applique désormais <strong>qu'en mode création</strong> d'article (pour éviter de cocher involontairement la case lors d'une modification d'article existant).</li>
+        <li><span class="tag tag-fix">FIX</span> Refactorisation visuelle du formulaire de rattachement à l'agenda (suppression de la classe <code>card</code> parasite).</li>
+    </ul>
+</div>
 
 <div class="version">
     <div class="version-title">Version 1.9 - Guide en Ligne & Aide Contextuelle</div>
