@@ -231,11 +231,12 @@
     </div>
 
     <div class="audit-item">
-        <h3><span class="badge badge-func">Évolution</span> Bloc "Citation" (TinyMCE)</h3>
-        <p>Ajout d'un nouveau modèle sémantique de bloc pour l'éditeur TinyMCE via le gestionnaire de Blocs.</p>
+        <h3><span class="badge badge-func">✅ Livré v1.10</span> Bloc "Citation" (TinyMCE)</h3>
+        <p>Ajout d'un nouveau bloc sémantique dédié aux citations dans l'éditeur TinyMCE. Disponible depuis la <strong>v1.10 (25 Août 2026)</strong>.</p>
         <ul>
-            <li><strong>Design :</strong> Mise en forme spécifique avec des guillemets stylisés et écriture en italique.</li>
-            <li><strong>Comportement :</strong> Intégration dans la palette existante avec support de l'aspiration et du dégroupage.</li>
+            <li><strong>Design :</strong> Mise en forme avec guillemets stylisés CSS (<code>::before</code>/<code>::after</code>) et texte en italique via la classe <code>block-quote</code>. Champ auteur/source optionnel (<code>.quote-author</code>).</li>
+            <li><strong>Styles de guillemets :</strong> Palette de 6 variantes via le bouton "Palette" (🎨) : Français (« »), Anglais (" "), Allemand („ "), Droits (" "), Simples (' ') et Sans guillemets (—), appliqués par classes CSS <code>quote-style-*</code>.</li>
+            <li><strong>Comportement :</strong> Intégration complète dans la palette de blocs existante avec support de l'aspiration (texte sélectionné injecté dans <code>.quote-text</code> en italique), du dégroupage et des marges neutralisées en imbrication avec un bloc Cadre.</li>
         </ul>
     </div>
 
@@ -307,7 +308,7 @@
                     <li><del>Filtre de rubriques multi-sélection (avec prise en compte des rubriques parentes) pour toutes les statistiques.</del> ✅ <strong>Terminé (03/06/2026)</strong></li>
                     <li><del>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs.</del> ✅ <strong>Terminé (22/07/2026)</strong></li>
                     <li><del>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur.</del> ✅ <strong>Terminé (16/06/2026)</strong></li>
-                    <li>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE. (<em>~0,3 semaine</em>)</li>
+                    <li><del>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs TinyMCE.</del> ✅ <strong>Terminé (25/08/2026)</strong></li>
                     <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
                     <li>Mise à jour dynamique de la cloche de notification à la fermeture de sa modale. (<em>~0,3 semaine</em>)</li>
                     <li>Vérification des droits d'accès Google Drive par rapport à l'audience de l'article avec alerte éditeur. (<em>~1,5 semaine</em>)</li>
