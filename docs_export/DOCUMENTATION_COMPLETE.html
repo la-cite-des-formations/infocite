@@ -604,6 +604,38 @@
         </ul>
     </div>
 
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Partage Direct d'Article (Droits d'Accès Ciblés)</h3>
+        <p>Mise en place d'une fonctionnalité permettant d'ouvrir la consultation en lecture seule d'un article spécifique à des utilisateurs ou des groupes n'ayant pas accès à la rubrique parente d'origine.</p>
+        <ul>
+            <li><strong>Droits & Interface Rédacteur :</strong> Présence d'un bouton d'action "Partager l'article" accessible aux utilisateurs disposant des droits suffisants (auteur, éditeur de la rubrique ou administrateur). Ouverture d'une modale permettant de sélectionner unitairement des utilisateurs ou des groupes.</li>
+            <li><strong>Niveau d'Autorisation :</strong> Les accès attribués via ce partage sont strictement restreints à la <em>lecture seule</em> (consultation de l'article uniquement, sans droits de modification ni d'accès au reste de la rubrique d'origine).</li>
+            <li><strong>Expérience Utilisateur & Visibilité :</strong>
+                <ul>
+                    <li><strong>À la Une :</strong> Les articles partagés apparaissent automatiquement sur la page d'accueil (Une) des destinataires concernés.</li>
+                    <li><strong>Rubrique dédiée "Partagé avec moi" :</strong> Création d'une rubrique / vue spécifique regroupant l'ensemble des articles partagés directement avec l'utilisateur, facilitant leur consultation sans compromettre l'arborescence ni la confidentialité de la rubrique parente.</li>
+                </ul>
+            </li>
+            <li><strong>Architecture Technique :</strong> Gestion fine des autorisations (table pivot ou table d'ACL/interactions ciblées) permettant un contournement sécurisé du filtre d'accès de la rubrique d'origine pour l'affichage de l'article seul.</li>
+        </ul>
+    </div>
+
+    <div class="audit-item">
+        <h3><span class="badge badge-func">Évolution</span> Gestion du Cycle de Vie des Articles & Alertes Éditeurs</h3>
+        <p>Système proactif de notification et de revue de contenu à destination des rédacteurs/éditeurs pour maintenir la fraîcheur et la qualité des articles publiés sur l'intranet.</p>
+        <ul>
+            <li><strong>Alerte d'Obsolescence (Articles &gt; 1 an) :</strong> Détection automatique des articles rédigés par l'éditeur dont la date de publication ou de dernière modification dépasse une durée définie (1 an par défaut, durée paramétrable). Notification par modale ou message d'alerte dédié lors de la connexion ou dans l'espace éditeur.</li>
+            <li><strong>Actions Rapides Proposées :</strong> Pour chaque article signalé, l'éditeur dispose d'un arbitrage immédiat :
+                <ul>
+                    <li><strong>Toujours publié :</strong> Maintien de la publication avec actualisation automatique de la date de modification/revue.</li>
+                    <li><strong>Archiver :</strong> Passage au statut archivé (retrait du flux public tout en conservant l'historique).</li>
+                    <li><strong>Supprimer :</strong> Suppression définitive ou mise à la corbeille de l'article obsolète.</li>
+                </ul>
+            </li>
+            <li><strong>Incitation à l'Usage des Modèles :</strong> Alerte pédagogique complémentaire ciblant les articles publiés n'utilisant toujours pas de modèles prédéfinis (templates), incitant l'éditeur à harmoniser et restructurer ses contenus.</li>
+        </ul>
+    </div>
+
     <h2>5. Feuille de Route Stratégique (Priorisation)</h2>
     <div class="highlight" style="margin-bottom: 30px;">
         Note de priorisation : La gestion des développements s'inscrit dans une logique de qualité et de robustesse (pas de pression sur les délais stricts de la part de la direction). Les temps de traitement donnés ci-dessous sont des estimations "confortables" permettant de sécuriser le code (refactoring continu, tests) plutôt que de s'engager dans des <em>"Quick Wins"</em> précipités. L'objectif est d'alterner habilement fonctionnalités métiers et remboursement de la dette technique.
@@ -636,6 +668,7 @@
                     <li>Revue des filtres et du tri sur la Une de l'Intranet. (<em>~0,5 semaine</em>)</li>
                     <li>Mise à jour dynamique de la cloche de notification à la fermeture de sa modale. (<em>~0,3 semaine</em>)</li>
                     <li>Vérification des droits d'accès Google Drive par rapport à l'audience de l'article avec alerte éditeur. (<em>~1,5 semaine</em>)</li>
+                    <li>Système d'alerte éditeur sur le cycle de vie des articles (> 1 an : renouvellement, archivage, suppression) et incitation aux modèles. (<em>~1 semaine</em>)</li>
                     <li><del>Sous-rubrique 'Agenda' dans 'Événements' avec double affichage Timeline et Calendrier FullCalendar.</del> ✅ <strong>Terminé (06/07/2026)</strong></li>
                 </ul>
             </li>
@@ -657,7 +690,7 @@
                 <ul>
                     <li>Amélioration poussée du Moteur de Recherche avec module "Nuage de Mots-Clés" (Voir l'étude dédiée : <a href="ETUDE_MOTEUR_RECHERCHE_DRIVE.html">ETUDE_MOTEUR_RECHERCHE_DRIVE.html</a>).</li>
                     <li>Écosystème Ypareo : Passerelles de connexion lourdes (Agenda, Notes, Emploi du temps).</li>
-                    <li>Partage direct d'articles ciblé hors des logiques parents/enfants standards.</li>
+                    <li>Partage direct d'articles : droit de consultation ciblé par utilisateur/groupe (lecture seule) avec affichage à la Une et rubrique dédiée "Partagé avec moi".</li>
                     <li>Transformation du site en Progressive Web App (PWA) pour terminaux mobiles.</li>
                 </ul>
             </li>
