@@ -101,6 +101,20 @@
             direct avec le Rapport d'Évolutions et la Feuille de Route générale.
         </div>
 
+        <h2>Septembre 2026</h2>
+
+        <div class="month-section">
+            <h3><span class="date-label">01 Septembre 2026</span> - Correctifs Tri Persistant (Une) & Modèles (Archives)</h3>
+            <p><strong>Contexte :</strong> Résolution d'un problème d'incohérence sur la page d'accueil de la Une lors du masquage de la zone de filtrage/tri, et masquage du bouton de création de modèle sur la rubrique Archives.</p>
+            <p><strong>Réalisations :</strong></p>
+            <ul>
+                <li><strong>Persistance du tri des articles :</strong> Mise à jour du middleware <code>SetDefaultSessionValues</code> pour conditionner l'initialisation de <code>lastFilter = 'allPosts'</code> à l'absence simultanée de <code>lastFilter</code> et de <code>lastSorter</code>. Suppression de la réinitialisation parasite du filtre lors du masquage du panneau de filtrage.</li>
+                <li><strong>Gestion symétrique filtres / tris :</strong> Utilisation explicite de <code>session()->forget()</code> pour garantir l'exclusion mutuelle des clés de session de tri et de filtre. Prise en compte dynamique dans <code>getFilteredOrSortedPosts()</code>.</li>
+                <li><strong>Restriction création modèles :</strong> Masquage du bouton d'ajout de modèle d'article (<code>+</code>) en mode édition lorsque l'utilisateur consulte la rubrique « Archives ».</li>
+            </ul>
+            <p><strong>Statut Feuille de route :</strong> ✅ Correctif livré (v1.10.1).</p>
+        </div>
+
         <h2>Août 2026</h2>
 
         <div class="month-section">
