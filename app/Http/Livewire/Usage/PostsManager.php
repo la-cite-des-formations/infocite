@@ -311,9 +311,9 @@ class PostsManager extends Component
             $this->recentPosts = collect();
         }
 
-        if (session()->has('lastFilter') && $this->rubric->name === 'Une'){
+        if (session('lastFilter') && $this->rubric->name === 'Une'){
             return $this->lastFilterActive();
-        }elseif (session()->has('lastSorter') && $this->rubric->name === 'Une'){
+        }elseif (session('lastSorter') && $this->rubric->name === 'Une'){
             return $this->lastSorterActive();
         }else{
             return $this->allPosts();
