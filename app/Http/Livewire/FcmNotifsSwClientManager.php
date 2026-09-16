@@ -20,8 +20,19 @@ class FcmNotifsSwClientManager extends Component
      */
     public $currentRoute;
 
-    protected $closedModalCallback = ['guidelinesRead'];
     protected $listeners = ['showModal', 'modalClosed', 'traitFcmToken', 'registerNotificationPermission'];
+
+    /**
+     * Callback appelé lors de la fermeture d'une modale.
+     * Déclenche la notification de lecture uniquement si la modale fermée est le guide technique FCM.
+     *
+     * @param string|null $modal Nom du composant modal fermé.
+     */
+    public function modalClosed($modal = null) {
+        if ($modal === 'usage.guidelines-manager') {
+            $this->guidelinesRead();
+        }
+    }
 
     /**
      * Initialisation du composant.

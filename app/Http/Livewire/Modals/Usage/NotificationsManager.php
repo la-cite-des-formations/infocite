@@ -23,6 +23,7 @@ class NotificationsManager extends Component
      */
     public function consumedNotif($notificationId) {
         auth()->user()->newNotifications()->detach($notificationId);
+        auth()->user()->unsetRelation('newNotifications');
     }
 
     /**
@@ -33,9 +34,10 @@ class NotificationsManager extends Component
      */
     public function render()
     {
+        auth()->user()->unsetRelation('newNotifications');
         $newNotifications = auth()->user()
             ->newNotifications
-            ->where('release_at', '<=', today())
+            ->where('release_at', '<=', now())
             ->sortByDesc('release_at')
             ->sortByDesc('created_at');
 

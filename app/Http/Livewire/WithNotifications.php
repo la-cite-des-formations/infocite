@@ -23,19 +23,29 @@ trait WithNotifications
 
     /**
      * Initialise la liste des nouvelles notifications non lues.
+     *
+     * @param string|null $modal Nom du composant modal fermé.
      */
-    public function setNotifications() {
+    public function setNotifications($modal = null) {
+        auth()->user()->unsetRelation('newNotifications');
         $this->notifications = auth()->user()
             ->newNotifications
-            ->where('release_at', '<=', today());
+            ->where('release_at', '<=', now());
     }
 
     /**
      * Marque les notifications comme lues en les détachant de l'utilisateur.
+     *
+     * @param string|null $modal Nom du composant modal fermé.
      */
-    public function detachNotifications() {
+    public function detachNotifications($modal = null) {
+        if ($modal && $modal !== 'usage.notifications-manager') {
+            return;
+        }
+
         $notificationsIds = $this->notifications->pluck('id');
 
         auth()->user()->newNotifications()->detach($notificationsIds);
+        auth()->user()->unsetRelation('newNotifications');
     }
 }
