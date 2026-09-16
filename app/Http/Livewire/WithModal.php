@@ -16,11 +16,13 @@ trait WithModal
 
     /**
      * Callback appelé lors de la fermeture d'une modale.
+     *
+     * @param string|null $modal Nom du composant modal fermé.
      */
-    public function modalClosed() {
+    public function modalClosed($modal = null) {
         if (isset($this->closedModalCallback)) {
             foreach($this->closedModalCallback as $function) {
-                $this->$function();
+                $this->$function($modal);
             }
         }
         $this->emit('render')->self();
