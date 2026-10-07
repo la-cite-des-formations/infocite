@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\PurgeInvalidFcmTokens;
+use App\Models\Interaction;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,6 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new PurgeInvalidFcmTokens())->daily()->withoutOverlapping();
         $schedule->command('fcm:retain-latest-tokens --keep=5')->daily()->withoutOverlapping();
         $schedule->command('posts:check-obsolescence')->weeklyOn(1, '07:00')->withoutOverlapping();
+        $schedule->command('model:prune', ['--model' => Interaction::class])->weeklyOn(1, '07:00')->withoutOverlapping();
         $schedule->command('posts:remind-templates')->quarterly()->withoutOverlapping();
     }
 
