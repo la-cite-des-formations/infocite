@@ -253,13 +253,31 @@ class User extends Authenticatable
             $rubric->posts->each(function ($post) use (&$myNotifications) {
                 $myNotifications = $myNotifications->merge($post->notifications);
             });
+            $myNotifications = $myNotifications->merge($rubric->notifications);
         });
 
         $this->favoritePosts->each(function ($post) use (&$myNotifications) {
             $myNotifications = $myNotifications->merge($post->notifications);
         });
 
-        return $myNotifications;
+        // Notifications d'information générale (DF) destinées aux rédacteurs
+        $isEditor = $this->hasRole('posts', Roles::IS_EDITR) || Post::where('author_id', $this->id)->exists();
+        if ($isEditor) {
+            $dfNotifications = Notification::where('content_type', 'DF')
+                ->where('release_at', '<=', now())
+                ->get();
+            $myNotifications = $myNotifications->merge($dfNotifications);
+        }
+
+        // Notifications de révision de contenus (RP) adressées à cet utilisateur
+        $rpNotifications = Notification::where('content_type', 'RP')
+            ->where('object_type', User::class)
+            ->where('object_id', $this->id)
+            ->where('release_at', '<=', now())
+            ->get();
+        $myNotifications = $myNotifications->merge($rpNotifications);
+
+        return $myNotifications->unique('id');
     }
 
     /**
@@ -633,11 +651,15 @@ class User extends Authenticatable
      * @return string
      */
     public function getProcessAttribute() {
+        if (!$this->groups(['P'])->first()) {
+            return 'N/A';
+        }
+
         $processUser = Chartnode::query()
             ->where('code_fonction', $this->groups(['P'])->first()->code_ypareo)
             ->first();
 
-        return is_object($processUser) ? $processUser->name : '';
+        return is_object($processUser) ? $processUser->name : 'N/A';
     }
 
     /**
@@ -645,7 +667,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getConnectedTodaydAttribute() {
+    public function getConnectedTodayAttribute() {
         return Interaction::ofType('connection')
             ->byUser(auth()->user())
             ->forDate(today())

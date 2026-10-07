@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->enum('content_type', ['NP', 'UP', 'CP', 'NA', 'UA', 'UO', 'DF']);
+            $table->enum('content_type', ['NP', 'UP', 'CP', 'RP', 'NA', 'UA', 'UO', 'DF']);
             $table->morphs('object');
             $table->dateTime('release_at')->nullable();
             $table->timestamps();

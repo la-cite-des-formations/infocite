@@ -57,6 +57,11 @@ Route::get('personal-apps/{app_id}/edit', 'ViewController@editPersonalApp')
     ->where(['rubric' => AP::RUBRIC_REGEX, 'app_id' => AP::ID_REGEX])
     ->name('personal-apps.edit');
 
+Route::get('templates-reminder', function () {
+    session(['mode' => 'edition']);
+    return redirect()->route('home');
+})->middleware('auth')->name('templates.reminder');
+
 Route::get('{rubric}/create', 'ViewController@createPost')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('post.create');

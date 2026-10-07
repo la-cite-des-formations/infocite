@@ -35,6 +35,9 @@ trait WithNotifications
 
     /**
      * Marque les notifications comme lues en les détachant de l'utilisateur.
+     * Exception : les notifications de type 'RP' (révision d'articles) ne sont pas détachées
+     * automatiquement à la fermeture de la modale. Elles persistent tant que l'utilisateur
+     * a des articles obsolètes à arbitrer dans la section "Mes articles à réviser".
      *
      * @param string|null $modal Nom du composant modal fermé.
      */
@@ -43,7 +46,9 @@ trait WithNotifications
             return;
         }
 
-        $notificationsIds = $this->notifications->pluck('id');
+        $notificationsIds = $this->notifications
+            ->reject(fn($n) => $n->content_type === 'RP')
+            ->pluck('id');
 
         auth()->user()->newNotifications()->detach($notificationsIds);
         auth()->user()->unsetRelation('newNotifications');
