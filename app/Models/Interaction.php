@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Interaction extends Model
 {
+    use MassPrunable;
+
     /** @var string Nom de la table associée. */
     protected $table = 'interactions';
 
@@ -228,5 +231,14 @@ class Interaction extends Model
             'target_id' => $target?->getKey(),
             'occurred_at' => $datetime ?? today(),
         ]);
+    }
+
+    /**
+     * Retourne le query builder pour le nettoyage.
+     * Supprime les interactions vieilles de plus de 2 ans.
+     */
+    public function prunable()
+    {
+        return $this->where('occurred_at', '<', now()->subYears(2));
     }
 }
