@@ -206,6 +206,137 @@
       @endif
     </div>
 
+    <!-- Mes articles à réviser -->
+    <!-- Mes articles à réviser -->
+    @if ($reviewCounts['all'] > 0)
+    <div class="container mt-5" id="review-posts" @if ($firstLoad) data-aos="fade-up" @endif>
+        <div class="row mb-3">
+            <h3 class="title-icon text-center mb-2"><i class="material-icons fs-2 me-2">history_toggle_off</i>Mes articles à réviser ({{ $reviewCounts['all'] }})</h3>
+            <p class="text-center text-muted mb-3 small">Articles inactifs depuis plus d'un an nécessitant un arbitrage de maintien, d'archivage ou de suppression.</p>
+
+            @if (session()->has('review_success'))
+                <div class="col-12 mb-3">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bx bx-check-circle me-1 align-middle"></i> {{ session('review_success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Filtres par type de responsabilité -->
+            <div class="col-12 text-center mb-3">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Filtrer les articles à réviser">
+                    <button wire:click="setReviewFilter('all')" type="button"
+                            class="btn {{ $reviewFilter === 'all' ? 'btn-dark' : 'btn-outline-dark' }}">
+                        Tous ({{ $reviewCounts['all'] }})
+                    </button>
+                    @if ($reviewCounts['author'] > 0)
+                    <button wire:click="setReviewFilter('author')" type="button"
+                            class="btn {{ $reviewFilter === 'author' ? 'btn-primary' : 'btn-outline-primary' }}">
+                        <i class="bx bx-user-voice me-1 align-middle"></i>Auteur ({{ $reviewCounts['author'] }})
+                    </button>
+                    @endif
+                    @if ($reviewCounts['corrector'] > 0)
+                    <button wire:click="setReviewFilter('corrector')" type="button"
+                            class="btn {{ $reviewFilter === 'corrector' ? 'btn-info text-dark' : 'btn-outline-info' }}">
+                        <i class="bx bx-check-double me-1 align-middle"></i>Correcteur ({{ $reviewCounts['corrector'] }})
+                    </button>
+                    @endif
+                    @if ($reviewCounts['orphan'] > 0)
+                    <button wire:click="setReviewFilter('orphan')" type="button"
+                            class="btn {{ $reviewFilter === 'orphan' ? 'btn-warning text-dark' : 'btn-outline-warning text-dark' }}">
+                        <i class="bx bx-help-circle me-1 align-middle"></i>Orphelin ({{ $reviewCounts['orphan'] }})
+                    </button>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Encart pédagogique d'incitation aux modèles -->
+            <div class="col-12 mb-4">
+                <div class="alert alert-info border-primary d-flex align-items-center py-2 px-3 mb-0" role="alert">
+                    <i class="material-icons text-primary fs-3 me-3">lightbulb</i>
+                    <div class="small">
+                        <strong>Conseil éditorial :</strong> Profitez de cette phase de révision pour rafraîchir vos contenus à l'aide des <strong>modèles d'articles</strong> mis à disposition dans l'éditeur afin d'harmoniser la mise en forme du portail.
+                    </div>
+                </div>
+            </div>
+
+            @if ($reviewPosts->isEmpty())
+                <div class="col-12 text-center text-muted py-4">
+                    <p>Aucun article à réviser dans cette catégorie.</p>
+                </div>
+            @endif
+
+            @foreach ($reviewPosts as $i => $post)
+            @php $role = $post->reviewRole($user); @endphp
+            <div wire:click='redirectToPost({{ $post->id }})' role="button"
+                 class="col-sm-12 col-md-4 col-lg-2 d-flex align-items-stretch mt-2 mb-3"
+                 @if ($firstLoad) data-aos="zoom-in" data-aos-delay="{{ ($i % 6 + 1) * 100 }}" @endif>
+                <div class="position-relative icon-box d-flex flex-column w-100">
+                    <!-- Badges en haut à droite (Statut puis Rôle) -->
+                    <div class="position-absolute top-0 end-0 mt-2 me-2 d-flex flex-column align-items-end gap-1">
+                        <!-- Badge Statut (Archivé / En ligne) -->
+                        <span class="badge {{ $post->expired ? 'bg-secondary' : 'bg-success text-white' }}"
+                              style="font-size: 0.65rem;" title="{{ $post->expired ? 'Archivé' : 'En ligne' }}">
+                            {{ $post->expired ? 'Archivé' : 'En ligne' }}
+                        </span>
+
+                        <!-- Badge Rôle (Auteur / Correcteur / Orphelin) -->
+                        <span class="badge {{ $role['badge_class'] }}"
+                              style="font-size: 0.65rem;" title="{{ $role['description'] }}">
+                            <i class="bx {{ $role['icon'] }} me-1 align-middle"></i>{{ $role['label'] }}
+                        </span>
+                    </div>
+                    <!-- Titre de l'article -->
+                    <h4>
+                        <!-- Icone -->
+                        <div class="icon"><i class="material-icons">{{ $post->icon }}</i></div>
+                        <p class="m-1 fs-6"><i>Rubrique : {{ $post->rubric->name }}</i></p>
+                        <a>{{ $post->title }}</a>
+                    </h4>
+
+                    <!-- Sous Titre de l'article -->
+                    <p>{!! $post->preview() !!}</p>
+                    <div class="small text-muted mb-2">
+                        <i class="material-icons fs-6 align-middle">schedule</i> {{ $post->updated_at ? $post->updated_at->format('d/m/Y') : $post->created_at->format('d/m/Y') }}
+                    </div>
+
+                    <!-- Boutons d'actions d'arbitrage -->
+                    <div wire:click.prefetch='blockRedirection' class="align-self-end mt-auto w-100">
+                        <div class="btn-group btn-group-sm w-100" role="group" aria-label="Actions d'arbitrage">
+                            <!-- 1. Toujours d'actualité -->
+                            <button class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
+                                    title="Toujours d'actualité (reconduit pour 12 mois)"
+                                    wire:click="confirmCurrent({{ $post->id }})" type="button">
+                                <i class="bx bx-check"></i>
+                            </button>
+                            <!-- 2. Archiver -->
+                            <button class="btn btn-sm btn-secondary d-flex align-items-center justify-content-center"
+                                    title="Archiver (conserver hors ligne)"
+                                    wire:click="archivePost({{ $post->id }})" type="button">
+                                <i class="material-icons fs-6">inventory_2</i>
+                            </button>
+                            <!-- 3. Supprimer -->
+                            <button class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+                                    title="Supprimer"
+                                    wire:click="deletePost({{ $post->id }})" type="button">
+                                <i class="bx bx-trash"></i>
+                            </button>
+                            <!-- 4. Modifier & Appliquer un modèle -->
+                            <a href="{{ route('post.edit', ['rubric' => $post->rubric->route(), 'post_id' => $post->id]) }}"
+                               class="btn btn-sm btn-primary"
+                               title="Modifier & Appliquer un modèle">
+                                <i class="bx bx-pencil"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <!-- Mes articles favoris -->
     <div class="container mt-5" @if ($firstLoad) data-aos="fade-up" @endif>
         <div class="row mb-3">

@@ -133,6 +133,15 @@ class Rubric extends Model
             ->where('resource_id', $this->id);
     }
 
+    /**
+     * Relation vers les notifications associées à cette rubrique.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function notifications() {
+        return $this->morphMany(Notification::class, 'object');
+    }
+
 
     /**
      * Retourne le chemin relatif (URL) vers la rubrique.
@@ -148,6 +157,15 @@ class Rubric extends Model
                     $this->parent->segment.AP::RUBRIC_SEPARATOR :
                     ''
             ).$this->segment;
+    }
+
+    /**
+     * Accesseur retournant le chemin relatif vers la rubrique.
+     *
+     * @return string
+     */
+    public function getRouteAttribute() {
+        return $this->route();
     }
 
     /**

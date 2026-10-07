@@ -23,6 +23,7 @@ class AppNotification extends Notification implements ShouldQueue
         'UA' => 'Application mise à jour : ',
         'UO' => 'Organigramme mis à jour : ',
         'DF' => 'Information : ',
+        'RP' => 'Contenus à réviser — ',
     ];
 
     /** @var array Stockage des données de la notification (url, titre, corps, icône). */
@@ -58,6 +59,14 @@ class AppNotification extends Notification implements ShouldQueue
 
             case $type === 'UO':
                 $this->data['url'] = config('app.url') . '/rh.org-chart';
+                break;
+
+            case $type === 'RP':
+                $this->data['url'] = config('app.url') . '/infos#review-posts';
+                break;
+
+            case $type === 'DF':
+                $this->data['url'] = $data['url'] ?? (config('app.url') . '/templates-reminder');
                 break;
 
             default :

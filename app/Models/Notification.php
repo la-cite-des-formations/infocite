@@ -50,6 +50,10 @@ class Notification extends Model {
                 return '#apps';
             case 'UO' :
                 return 'rh.org-chart';
+            case 'RP' :
+                return '/infos#review-posts';
+            case 'DF' :
+                return route('templates.reminder');
         }
     }
 
