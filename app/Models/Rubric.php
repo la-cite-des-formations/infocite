@@ -92,7 +92,7 @@ class Rubric extends Model
      */
 
     /**
-     * Récupère les groupes ayant des droits spécifiques sur les messages de cette rubrique.
+     * Récupère les groupes ayant des droits spécifiques sur les articles de cette rubrique.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -106,7 +106,7 @@ class Rubric extends Model
     }
 
     /**
-     * Récupère les utilisateurs réels ayant des droits spécifiques sur les messages de cette rubrique.
+     * Récupère les utilisateurs réels ayant des droits spécifiques sur les articles de cette rubrique.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -120,7 +120,7 @@ class Rubric extends Model
     }
 
     /**
-     * Récupère les profils ayant des droits spécifiques sur les messages de cette rubrique.
+     * Récupère les profils ayant des droits spécifiques sur les articles de cette rubrique.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

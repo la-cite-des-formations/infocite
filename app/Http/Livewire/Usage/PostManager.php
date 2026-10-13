@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Usage;
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithFavoritesHandling;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Models\Notification as PostNotification;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -13,8 +12,7 @@ use Livewire\Component;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithNotifications;
 use App\Http\Livewire\WithUsageMode;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\AppNotification;
+use App\Services\PostNotificationService;
 
 /**
  * Composant Livewire pour la consultation et la gestion d'un article spécifique (côté usage).
@@ -113,39 +111,7 @@ class PostManager extends Component
             $this->post->comments()->save($comment);
             $this->post->ensureInteraction('comment', now());
 
-            // notification associée
-            $newNotification = PostNotification::updateOrCreate(
-                ['content_type' => 'CP', 'object_type' => Post::class, 'object_id' => $this->post->id],
-                ['release_at' => today()->format('Y-m-d')]
-            );
-            $newNotification->users()->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
-
-            // Recupération de tous les utilisateurs notifiable via Firebase,
-            // sauf l'utilisateur courant à l'origine du commentaire
-            $users = User::query()
-                ->whereHas('employee', function ($employee) {
-                    $employee->where('desktop_notifications_granted', TRUE);
-                })
-                ->where('id', '!=', auth()->user()->id)
-                ->where(function ($query) {
-                    $query
-                        ->whereHas('employee', function ($employee) {
-                            $employee->where('notify_only_favorites', FALSE);
-                        })
-                        ->orWhereHas('favoriteRubrics', function ($favoritesRubrics) {
-                            $favoritesRubrics->where('favoriteable_id', $this->post->rubric_id);
-                        })
-                        ->orWhereHas('favoritePosts',function ($favoritesPosts) {
-                            $favoritesPosts->where('favoriteable_id', $this->post->id);
-                        });
-                })
-                ->get();
-
-            // Envoi de la notification aux utilisateurs concernés
-            Notification::send($users, new AppNotification([
-                'type' => $newNotification->content_type,
-                'post' => $this->post
-            ]));
+            app(PostNotificationService::class)->notifyComment($this->post);
 
             $this->emitSelf('render');
         }
