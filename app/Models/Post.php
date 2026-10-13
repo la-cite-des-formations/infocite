@@ -177,6 +177,51 @@ class Post extends Model
     }
 
     /**
+     * Récupère les utilisateurs éligibles aux notifications de bureau (Firebase) pour cet article.
+     * Prend en compte les autorisations de rubrique, les droits d'accès spécifiques,
+     * l'accord utilisateur et les préférences de favoris.
+     *
+     * @param User|null $authorToExclude Utilisateur à l'origine de l'action à exclure
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function notificableDesktopUsers(?User $authorToExclude = null)
+    {
+        $authorId = $authorToExclude?->id ?? auth()->id();
+
+        return User::query()
+            ->where('id', '!=', $authorId)
+            ->whereHas('employee', function ($employee) {
+                $employee->where('desktop_notifications_granted', TRUE);
+            })
+            ->where(function ($query) {
+                $query
+                    ->whereHas('employee', function ($employee) {
+                        $employee->where('notify_only_favorites', FALSE);
+                    })
+                    ->orWhereHas('favoriteRubrics', function ($favoritesRubrics) {
+                        $favoritesRubrics->where('favoriteable_id', $this->rubric_id);
+                    })
+                    ->orWhereHas('favoritePosts', function ($favoritesPosts) {
+                        $favoritesPosts->where('favoriteable_id', $this->id);
+                    });
+            })
+            ->when($this->rubric_id, function ($query, $rubricId) {
+                $query->where(function ($query) use ($rubricId) {
+                    $query->whereHas('groups.rubrics', function ($query) use ($rubricId) {
+                        $query->where('rubrics.id', $rubricId);
+                    })
+                    ->orWhereHas('profiles.groups.rubrics', function ($query) use ($rubricId) {
+                        $query->where('rubrics.id', $rubricId);
+                    });
+                });
+            })
+            ->get()
+            ->filter(function ($user) {
+                return $user->can('read', $this);
+            });
+    }
+
+    /**
      * Relation vers les notifications générées par cet article.
      *
      * @return MorphMany
