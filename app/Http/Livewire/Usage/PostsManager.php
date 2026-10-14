@@ -96,7 +96,7 @@ class PostsManager extends Component
     public $blockRedirection = FALSE;
 
 
-    protected $listeners = ['modalClosed', 'deletePost', 'refreshPage' => '$refresh'];
+    protected $listeners = ['modalClosed', 'deletePost', 'refreshPage' => '$refresh', 'refreshNotifications' => 'refreshNotifications'];
 
     /**
      * Filtres actifs pour la liste d'articles.

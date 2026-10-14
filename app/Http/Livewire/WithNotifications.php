@@ -27,10 +27,23 @@ trait WithNotifications
      * @param string|null $modal Nom du composant modal fermé.
      */
     public function setNotifications($modal = null) {
+        if (!auth()->check()) {
+            $this->notifications = collect();
+            return;
+        }
+
         auth()->user()->unsetRelation('newNotifications');
         $this->notifications = auth()->user()
-            ->newNotifications
-            ->where('release_at', '<=', now());
+            ->newNotifications()
+            ->where('notifications.release_at', '<=', now())
+            ->get();
+    }
+
+    /**
+     * Rafraîchit la collection de notifications non lues (écouteur d'événement Livewire).
+     */
+    public function refreshNotifications() {
+        $this->setNotifications();
     }
 
     /**

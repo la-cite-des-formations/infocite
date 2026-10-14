@@ -31,6 +31,9 @@ class NotificationsManager extends Component
 
         auth()->user()->newNotifications()->detach($notificationId);
         auth()->user()->unsetRelation('newNotifications');
+
+        $this->emit('refreshNotifications');
+        $this->emit('refreshAlerts');
     }
 
     /**
