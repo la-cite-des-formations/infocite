@@ -62,7 +62,7 @@ class PostManager extends Component
      */
     public $firstLoad = TRUE;
 
-    protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment'];
+    protected $listeners = ['modalClosed', 'render', 'deletePost', 'deleteComment', 'refreshNotifications' => 'refreshNotifications'];
 
 
     /**

@@ -9,6 +9,8 @@
     <section id="breadcrumbs" class="breadcrumbs my-4">
     </section>
 
+    @livewire('usage.notifications-alerts')
+
     @livewire("usage.{$viewBag->template}-manager", ['viewBag' => $viewBag])
 
     @can('viewAny', 'App\\Models\\App')
