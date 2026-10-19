@@ -1580,6 +1580,38 @@ a:hover {
     background: rgba(0, 0, 0, 0.4);
 }
 
+/* Badge Vidéo dans la galerie */
+.gallery-video-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    color: #fff;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+}
+
+.gallery-item:hover .gallery-video-overlay {
+    background: rgba(220, 53, 69, 0.9);
+    border-color: #fff;
+    transform: translate(-50%, -50%) scale(1.12);
+}
+
+.gallery-video-overlay i {
+    font-size: 28px;
+    margin-left: 2px;
+}
+
 /* Responsive galerie */
 @media (max-width: 767px) {
 

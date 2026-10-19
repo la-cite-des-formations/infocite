@@ -9,7 +9,8 @@
                 $bgImage = '/img/default-post-bg.png';
                 $bgSize = '100% 100%';
                 if ($post->gallery && $post->gallery->imagesCount() > 0) {
-                    $bgImage = $post->gallery->sortedImages()->first()['path'];
+                    $firstMedia = $post->gallery->sortedImages()->first();
+                    $bgImage = $firstMedia['thumbnail'] ?? $firstMedia['path'];
                     $bgSize = 'cover';
                 }
                 $bgStyle =

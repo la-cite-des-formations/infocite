@@ -9,7 +9,8 @@
                     $bgPosition = 'center';
 
                     if ($post->gallery && $post->gallery->imagesCount() > 0) {
-                        $bgImage = $post->gallery->sortedImages()->first()['path'];
+                        $firstMedia = $post->gallery->sortedImages()->first();
+                        $bgImage = $firstMedia['thumbnail'] ?? $firstMedia['path'];
                         $bgPosition = $post->gallery->focalPointCss();
                     }
                 @endphp

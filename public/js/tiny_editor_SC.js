@@ -101,6 +101,9 @@ const initEditor = function () {
         entity_encoding: 'raw',
         content_style: `.mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before { display: block; width: 100%; text-align: center; padding-top: 40px; }`,
         media_url_resolver: function (data, resolve) {
+            if (data.url && typeof Livewire !== 'undefined') {
+                Livewire.emitTo('usage.post-gallery', 'autoAddVideo', data.url);
+            }
             var driveMatch = data.url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
             if (driveMatch) {
                 var embedUrl = 'https://drive.google.com/file/d/' + driveMatch[1] + '/preview';
@@ -125,6 +128,53 @@ const initEditor = function () {
         browser_spellcheck: true,
         images_upload_url: '/upload',
         automatic_uploads: true,
+        images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload');
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (token) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', token);
+            }
+            xhr.upload.onprogress = (e) => {
+                progress(e.loaded / e.total * 100);
+            };
+            xhr.onload = () => {
+                if (xhr.status === 403) {
+                    reject({ message: 'Erreur HTTP: ' + xhr.status, remove: true });
+                    return;
+                }
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    reject('Erreur HTTP: ' + xhr.status);
+                    return;
+                }
+                let json;
+                try {
+                    json = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    reject('JSON invalide: ' + xhr.responseText);
+                    return;
+                }
+                if (!json || typeof json.location !== 'string') {
+                    reject('Réponse serveur invalide');
+                    return;
+                }
+
+                if (typeof Livewire !== 'undefined') {
+                    Livewire.emitTo('usage.post-gallery', 'autoAddImage', {
+                        path: json.location,
+                        filename: blobInfo.filename()
+                    });
+                }
+
+                resolve(json.location);
+            };
+            xhr.onerror = () => {
+                reject('Échec du téléversement de l\'image.');
+            };
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+            xhr.send(formData);
+        }),
         file_picker_types: 'image',
         file_picker_callback: (cb, value, meta) => {
             var input = document.createElement('input');
@@ -611,7 +661,45 @@ const initEditor = function () {
                 }
             });
 
-            editor.on('change', () => { Livewire.emit('contentChange', editor.getContent()); });
+            const syncMediaToGallery = () => {
+                if (typeof Livewire === 'undefined') return;
+
+                // 1. Synchronisation des images
+                const imgs = editor.dom.select('img');
+                imgs.forEach(img => {
+                    const src = img.getAttribute('src');
+                    if (src && !src.startsWith('blob:') && !src.startsWith('data:') && src.includes('/storage/')) {
+                        const filename = img.getAttribute('alt') || src.split('/').pop();
+                        Livewire.emitTo('usage.post-gallery', 'autoAddImage', {
+                            path: src,
+                            filename: filename
+                        });
+                    }
+                });
+
+                // 2. Synchronisation des vidéos (YouTube, Google Drive dans les iframes)
+                const iframes = editor.dom.select('iframe');
+                iframes.forEach(iframe => {
+                    const src = iframe.getAttribute('src');
+                    if (src && (src.includes('youtube.com') || src.includes('youtu.be') || src.includes('drive.google.com'))) {
+                        Livewire.emitTo('usage.post-gallery', 'autoAddVideo', src);
+                    }
+                });
+
+                // 3. Synchronisation des balises vidéo HTML5 locales
+                const videos = editor.dom.select('video, video source');
+                videos.forEach(vid => {
+                    const src = vid.getAttribute('src');
+                    if (src && !src.startsWith('blob:') && !src.startsWith('data:')) {
+                        Livewire.emitTo('usage.post-gallery', 'autoAddVideo', src);
+                    }
+                });
+            };
+
+            editor.on('change SetContent', () => {
+                Livewire.emit('contentChange', editor.getContent());
+                syncMediaToGallery();
+            });
 
             // Note: On n'enregistre plus de Livewire.on ici pour éviter les doublons lors des re-init
         }

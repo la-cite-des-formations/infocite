@@ -69,7 +69,7 @@
             </div>
         </div>
         @unless ($post->is_template)
-            {{-- Galerie Photos --}}
+            {{-- Galerie Multimédia --}}
             <div class="row mb-3">
                 <div class="col-2"></div>
                 <div class="col-8">
