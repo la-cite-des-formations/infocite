@@ -1689,16 +1689,16 @@ a:hover {
 /* Alignement vertical et typographie des guillemets français */
 .block-quote:not([class*="quote-style-"]) .quote-text::before,
 .block-quote:not([class*="quote-style-"]) .quote-text::after,
-.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::before,
-.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::after,
-.block-quote:not([class*="quote-style-"]) > p:first-of-type::before,
-.block-quote:not([class*="quote-style-"]) > p:first-of-type::after,
+.block-quote:not([class*="quote-style-"]) .block-content>p:first-of-type::before,
+.block-quote:not([class*="quote-style-"]) .block-content>p:first-of-type::after,
+.block-quote:not([class*="quote-style-"])>p:first-of-type::before,
+.block-quote:not([class*="quote-style-"])>p:first-of-type::after,
 .block-quote.quote-style-french .quote-text::before,
 .block-quote.quote-style-french .quote-text::after,
-.block-quote.quote-style-french .block-content > p:first-of-type::before,
-.block-quote.quote-style-french .block-content > p:first-of-type::after,
-.block-quote.quote-style-french > p:first-of-type::before,
-.block-quote.quote-style-french > p:first-of-type::after {
+.block-quote.quote-style-french .block-content>p:first-of-type::before,
+.block-quote.quote-style-french .block-content>p:first-of-type::after,
+.block-quote.quote-style-french>p:first-of-type::before,
+.block-quote.quote-style-french>p:first-of-type::after {
     display: inline;
     position: relative;
     top: -0.15em;
@@ -1707,73 +1707,77 @@ a:hover {
 
 /* Styles de guillemets */
 .block-quote:not([class*="quote-style-"]) .quote-text::before,
-.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::before,
-.block-quote:not([class*="quote-style-"]) > p:first-of-type::before,
+.block-quote:not([class*="quote-style-"]) .block-content>p:first-of-type::before,
+.block-quote:not([class*="quote-style-"])>p:first-of-type::before,
 .block-quote.quote-style-french .quote-text::before,
-.block-quote.quote-style-french .block-content > p:first-of-type::before,
-.block-quote.quote-style-french > p:first-of-type::before {
+.block-quote.quote-style-french .block-content>p:first-of-type::before,
+.block-quote.quote-style-french>p:first-of-type::before {
     content: "«\00a0" !important;
 }
 
 .block-quote:not([class*="quote-style-"]) .quote-text::after,
-.block-quote:not([class*="quote-style-"]) .block-content > p:first-of-type::after,
-.block-quote:not([class*="quote-style-"]) > p:first-of-type::after,
+.block-quote:not([class*="quote-style-"]) .block-content>p:first-of-type::after,
+.block-quote:not([class*="quote-style-"])>p:first-of-type::after,
 .block-quote.quote-style-french .quote-text::after,
-.block-quote.quote-style-french .block-content > p:first-of-type::after,
-.block-quote.quote-style-french > p:first-of-type::after {
+.block-quote.quote-style-french .block-content>p:first-of-type::after,
+.block-quote.quote-style-french>p:first-of-type::after {
     content: "\00a0»" !important;
 }
 
 .block-quote.quote-style-english .quote-text::before,
-.block-quote.quote-style-english .block-content > p:first-of-type::before,
-.block-quote.quote-style-english > p:first-of-type::before {
+.block-quote.quote-style-english .block-content>p:first-of-type::before,
+.block-quote.quote-style-english>p:first-of-type::before {
     content: "“" !important;
 }
+
 .block-quote.quote-style-english .quote-text::after,
-.block-quote.quote-style-english .block-content > p:first-of-type::after,
-.block-quote.quote-style-english > p:first-of-type::after {
+.block-quote.quote-style-english .block-content>p:first-of-type::after,
+.block-quote.quote-style-english>p:first-of-type::after {
     content: "”" !important;
 }
 
 .block-quote.quote-style-german .quote-text::before,
-.block-quote.quote-style-german .block-content > p:first-of-type::before,
-.block-quote.quote-style-german > p:first-of-type::before {
+.block-quote.quote-style-german .block-content>p:first-of-type::before,
+.block-quote.quote-style-german>p:first-of-type::before {
     content: "„" !important;
 }
+
 .block-quote.quote-style-german .quote-text::after,
-.block-quote.quote-style-german .block-content > p:first-of-type::after,
-.block-quote.quote-style-german > p:first-of-type::after {
+.block-quote.quote-style-german .block-content>p:first-of-type::after,
+.block-quote.quote-style-german>p:first-of-type::after {
     content: "“" !important;
 }
 
 .block-quote.quote-style-straight .quote-text::before,
-.block-quote.quote-style-straight .block-content > p:first-of-type::before,
-.block-quote.quote-style-straight > p:first-of-type::before {
+.block-quote.quote-style-straight .block-content>p:first-of-type::before,
+.block-quote.quote-style-straight>p:first-of-type::before {
     content: '"' !important;
 }
+
 .block-quote.quote-style-straight .quote-text::after,
-.block-quote.quote-style-straight .block-content > p:first-of-type::after,
-.block-quote.quote-style-straight > p:first-of-type::after {
+.block-quote.quote-style-straight .block-content>p:first-of-type::after,
+.block-quote.quote-style-straight>p:first-of-type::after {
     content: '"' !important;
 }
 
 .block-quote.quote-style-single .quote-text::before,
-.block-quote.quote-style-single .block-content > p:first-of-type::before,
-.block-quote.quote-style-single > p:first-of-type::before {
+.block-quote.quote-style-single .block-content>p:first-of-type::before,
+.block-quote.quote-style-single>p:first-of-type::before {
     content: "‘" !important;
 }
+
 .block-quote.quote-style-single .quote-text::after,
-.block-quote.quote-style-single .block-content > p:first-of-type::after,
-.block-quote.quote-style-single > p:first-of-type::after {
+.block-quote.quote-style-single .block-content>p:first-of-type::after,
+.block-quote.quote-style-single>p:first-of-type::after {
     content: "’" !important;
 }
 
 .block-quote.quote-style-none .quote-text::before,
 .block-quote.quote-style-none .quote-text::after,
-.block-quote.quote-style-none .block-content > p:first-of-type::before,
-.block-quote.quote-style-none .block-content > p:first-of-type::after,
-.block-quote.quote-style-none > p:first-of-type::before,
-.block-quote.quote-style-none > p:first-of-type::after {
+.block-quote.quote-style-none .block-content>p:first-of-type::before,
+.block-quote.quote-style-none .block-content>p:first-of-type::after,
+.block-quote.quote-style-none>p:first-of-type::before,
+.block-quote.quote-style-none>p:first-of-type::after {
     content: "" !important;
 }
 
@@ -1869,7 +1873,7 @@ img::after {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.1) 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.35) 65%, rgba(0, 0, 0, 0.1) 100%);
     z-index: 1;
 }
 
@@ -1940,12 +1944,20 @@ img::after {
     color: white !important;
     font-size: 20px;
     font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .recent-post-box p {
     font-size: 0.8rem;
     opacity: 0.9;
     line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .recent-post-box .actions,
