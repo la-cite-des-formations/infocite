@@ -80,11 +80,46 @@ class Gallery extends Model
     }
 
     /**
-     * Retire une image de la galerie par son chemin et supprime le fichier physique.
+     * Retourne l'URL de la vignette du premier élément (image ou vidéo) de la galerie.
+     */
+    public function firstThumbnail(): ?string
+    {
+        $first = $this->sortedImages()->first();
+        if (!$first) return null;
+        return $first['thumbnail'] ?? $first['path'] ?? null;
+    }
+
+    /**
+     * Retourne le premier média de la galerie.
+     */
+    public function firstMedia(): ?array
+    {
+        return $this->sortedImages()->first();
+    }
+
+    /**
+     * Indique si le premier média de la galerie est une vidéo.
+     */
+    public function isFirstMediaVideo(): bool
+    {
+        $first = $this->firstMedia();
+        return ($first['type'] ?? 'image') === 'video';
+    }
+
+    /**
+     * Retire un média de la galerie par son chemin et supprime les fichiers physiques associés.
      */
     public function removeImage(string $path): void
     {
-        Storage::disk('public')->delete(str_replace('/storage/', '', $path));
+        $item = collect($this->images ?? [])->firstWhere('path', $path);
+        if ($item) {
+            if (!empty($item['path']) && !str_starts_with($item['path'], 'http')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $item['path']));
+            }
+            if (!empty($item['thumbnail']) && !str_starts_with($item['thumbnail'], 'http') && $item['thumbnail'] !== $item['path']) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $item['thumbnail']));
+            }
+        }
 
         $newImages = collect($this->images ?? [])
             ->reject(fn ($img) => $img['path'] === $path)
@@ -101,8 +136,12 @@ class Gallery extends Model
     public function deleteAllFiles(): void
     {
         foreach ($this->images ?? [] as $image) {
-            if (!isset($image['path'])) continue;
-            Storage::disk('public')->delete(str_replace('/storage/', '', $image['path']));
+            if (isset($image['path']) && !str_starts_with($image['path'], 'http')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $image['path']));
+            }
+            if (isset($image['thumbnail']) && !str_starts_with($image['thumbnail'], 'http')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $image['thumbnail']));
+            }
         }
     }
 
