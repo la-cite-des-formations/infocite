@@ -58,6 +58,8 @@ class FavorisManager extends Component
      */
     public $firstLoad = TRUE;
 
+    protected $listeners = ['modalClosed', 'render'];
+
     /**
      * Indique si la redirection est bloquée.
      *

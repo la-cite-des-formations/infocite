@@ -8,15 +8,14 @@ use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithIconpicker;
 use App\Http\Livewire\WithModal;
 use App\Http\Livewire\WithPinnedHandling;
-use App\Models\Notification as PostNotification;
+use App\Models\Guideline;
 use App\Models\Post;
 use App\Models\Group;
 use App\Models\Right;
 use App\Models\Roles;
 use App\Models\Rubric;
 use App\Models\User;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\AppNotification;
+use App\Services\PostNotificationService;
 
 /**
  * Composant Livewire pour l'édition d'un article existant ou la création d'un nouveau.
@@ -57,12 +56,42 @@ class EditPostManager extends Component
      */
     public $post;
 
+    public $attach_to_agenda = false;
+    public $event_type_id;
+    public $start_date;
+    public $start_time;
+    public $end_date;
+    public $end_time;
+    public $location;
+
     /**
      * Indique si les commentaires sont bloqués pour cet article.
      *
      * @var bool
      */
     public $blockComments;
+
+    /**
+     * Clé de contexte du guide en ligne associé à cet article.
+     * Uniquement applicable si l'article appartient à la rubrique "Guide en ligne".
+     *
+     * @var string|null
+     */
+    public $guidelineContextKey;
+
+    /**
+     * Clé du contexte du guide de l'étape suivante (parcours guidé).
+     *
+     * @var string|null
+     */
+    public $guidelineNextContextKey;
+
+    /**
+     * Ouverture automatique du guide à la première visite.
+     *
+     * @var bool
+     */
+    public $guidelineAutoOpen = false;
 
     /**
      * Écouteurs d'événements.
@@ -77,7 +106,7 @@ class EditPostManager extends Component
      * @var array
      */
     protected function rules() {
-        return [
+        $rules = [
             'post.title'                      => 'required|string|max:255',
             'post.icon'                       => 'required|string|max:255',
             'post.content'                    => 'required|string',
@@ -91,6 +120,17 @@ class EditPostManager extends Component
             'post.is_rating_enabled'          => 'boolean',
             'post.is_template'                => 'boolean',
         ];
+
+        if ($this->attach_to_agenda) {
+            $rules['event_type_id'] = 'required|integer|exists:event_types,id';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'nullable';
+            $rules['end_date'] = 'nullable|date|after_or_equal:start_date';
+            $rules['end_time'] = 'nullable';
+            $rules['location'] = 'nullable|string|max:150';
+        }
+
+        return $rules;
     }
 
     /**
@@ -122,8 +162,57 @@ class EditPostManager extends Component
             }
         }
 
+        if ($this->post->exists && $this->post->event) {
+            $this->attach_to_agenda = true;
+            $this->event_type_id = $this->post->event->event_type_id;
+            $this->start_date = $this->post->event->start_date ? $this->post->event->start_date->format('Y-m-d') : null;
+            $this->start_time = $this->post->event->start_time ? substr($this->post->event->start_time, 0, 5) : null;
+            $this->end_date = $this->post->event->end_date ? $this->post->event->end_date->format('Y-m-d') : null;
+            $this->end_time = $this->post->event->end_time ? substr($this->post->event->end_time, 0, 5) : null;
+            $this->location = $this->post->event->location;
+        } else {
+            $this->attach_to_agenda = false;
+            $this->event_type_id = null;
+            $this->start_date = null;
+            $this->start_time = null;
+            $this->end_date = null;
+            $this->end_time = null;
+            $this->location = null;
+
+            if ($this->mode === 'creation' && $this->post->rubric_id) {
+                $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+                $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+                $rubric = Rubric::find($this->post->rubric_id);
+                if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                    $this->attach_to_agenda = true;
+                }
+            }
+        }
+
         $this->blockComments = !$this->post->isCommentable() && $this->mode == 'edition';
         $this->initTinymceContent('post.content');
+
+        // Rubrique sélectionnée
+        $selectedRubric = $this->post->rubric_id
+            ? Rubric::find($this->post->rubric_id)
+            : $this->currentRubric;
+
+        if ($selectedRubric?->segment === 'guide-en-ligne') {
+            $this->blockComments = true;
+            $this->attach_to_agenda = false;
+        }
+
+        // Chargement des données de guideline si l'article est un guide en ligne
+        if ($this->post->exists) {
+            $guideline = $this->post->guideline;
+            if ($guideline) {
+                $this->guidelineContextKey     = $guideline->context_key;
+                $this->guidelineNextContextKey = $guideline->next_context_key;
+                $this->guidelineAutoOpen       = $guideline->auto_open;
+            }
+        }
+
+        $this->autoOpenGuideline('edit-post');
     }
 
     /**
@@ -144,6 +233,31 @@ class EditPostManager extends Component
         $this->post->expired_at = NULL;
     }
 
+    public function updatedPostRubricId($value) {
+        if ($value) {
+            $rubric = Rubric::find($value);
+            if ($rubric?->segment === 'guide-en-ligne') {
+                $this->blockComments = true;
+                $this->attach_to_agenda = false;
+            } else {
+                if ($this->mode === 'creation') {
+                    $eventsRubric = Rubric::whereIn('name', ['Evénements', 'Événements', 'Evenements'])->first();
+                    $eventsRubricId = $eventsRubric ? $eventsRubric->id : 15;
+                    if ($rubric && $rubric->parent_id == $eventsRubricId) {
+                        $this->attach_to_agenda = true;
+                    } else {
+                        $this->attach_to_agenda = false;
+                    }
+                }
+            }
+        } else {
+            if ($this->mode === 'creation') {
+                $this->attach_to_agenda = false;
+            }
+        }
+    }
+
+
     /**
      * Enregistre l'article (création ou modification).
      * Gère les notifications (Firebase et internes) et la mise au propre du contenu TinyMCE.
@@ -158,6 +272,11 @@ class EditPostManager extends Component
         $this->post->is_rating_enabled = $this->post->is_rating_enabled ?? FALSE;
         $this->post->is_template = $this->post->is_template ?? FALSE;
         $this->post->published = $this->post->published ?? FALSE;
+
+        if ($this->post->rubric?->segment === 'guide-en-ligne') {
+            $this->blockComments = true;
+            $this->attach_to_agenda = false;
+        }
 
         $this->validate();
 
@@ -183,6 +302,34 @@ class EditPostManager extends Component
 
         // sauvegarde
         $this->post->save();
+
+        if ($this->attach_to_agenda) {
+            $this->post->event()->updateOrCreate([], [
+                'event_type_id' => $this->event_type_id,
+                'start_date' => $this->start_date,
+                'start_time' => $this->start_time ?: null,
+                'end_date' => $this->end_date ?: null,
+                'end_time' => $this->end_time ?: null,
+                'location' => $this->location ?: null,
+            ]);
+        } else {
+            $this->post->event()->delete();
+        }
+
+        // Sauvegarde du contexte de guide en ligne (génération automatique de context_key si absent)
+        if ($this->post->rubric?->segment === 'guide-en-ligne') {
+            $contextKey = $this->guidelineContextKey ?: ('guideline-' . (\Illuminate\Support\Str::slug($this->post->title) ?: $this->post->id));
+            $this->guidelineContextKey = $contextKey;
+
+            Guideline::updateOrCreate(
+                ['post_id' => $this->post->id],
+                [
+                    'context_key'       => $contextKey,
+                    'next_context_key'  => $this->guidelineNextContextKey ?: null,
+                    'auto_open'         => $this->guidelineAutoOpen ?? false,
+                ]
+            );
+        }
 
         // Pour les modèles : pas de galerie, droits, interactions ni notifications
         if ($this->post->is_template) {
@@ -243,55 +390,7 @@ class EditPostManager extends Component
 
         // enregistrement en bdd de la notification associée si l'article est paru
         if ($this->post->released) {
-            $newPostNotification = PostNotification::query()
-                ->where('content_type', 'NP')
-                ->where('object_type', Post::class)
-                ->where('object_id', $this->post->id);
-
-            if ($newPostNotification->exists()) {
-                $newPostNotification->update(['release_at' => $this->post->published_at]);
-
-                $postNotification = PostNotification::updateOrCreate(
-                    ['content_type' => 'UP', 'object_type' => Post::class, 'object_id' => $this->post->id],
-                    ['release_at' => $this->post->updated_at]
-                );
-            }
-            else {
-                $postNotification = PostNotification::create(
-                    ['content_type' => 'NP', 'object_type' => Post::class, 'object_id' => $this->post->id, 'release_at' => $this->post->published_at]
-                );
-            }
-
-            $postNotification
-                ->users()
-                ->syncWithoutDetaching($this->post->notificableReaders()->pluck('id'));
-
-            // Recupération de tous les utilisateurs notifiables via Firebase,
-            // sauf l'utilisateur courant à l'origine de l'action (création ou modification de l'article)
-            $users = User::query()
-                ->where('id', '!=', auth()->user()->id)
-                ->whereHas('employee', function ($employee) {
-                    $employee->where('desktop_notifications_granted', TRUE);
-                })
-                ->where(function ($query) {
-                    $query
-                        ->whereHas('employee', function ($employee) {
-                            $employee->where('notify_only_favorites', FALSE);
-                        })
-                        ->orWhereHas('favoriteRubrics', function ($favoritesRubrics) {
-                            $favoritesRubrics->where('favoriteable_id', $this->post->rubric_id);
-                        })
-                        ->orWhereHas('favoritePosts',function ($favoritesPosts) {
-                            $favoritesPosts->where('favoriteable_id', $this->post->id);
-                        });
-                })
-                ->get();
-
-            // Envoi de la notification firebase aux utilisateurs concernés
-            Notification::send($users, new AppNotification([
-                'type' => $postNotification->content_type,
-                'post' => $this->post,
-            ]));
+            app(PostNotificationService::class)->notifyPostSave($this->post);
         }
 
         // redirection
@@ -423,6 +522,18 @@ class EditPostManager extends Component
      * @return \Illuminate\View\View
      */
     public function render() {
+        // Rubrique sélectionnée (peut avoir changé depuis le dernier rendu)
+        $selectedRubric = $this->post->rubric_id
+            ? Rubric::find($this->post->rubric_id)
+            : $this->currentRubric;
+
+        $isGuidelineRubric = $selectedRubric?->segment === 'guide-en-ligne';
+
+        $guidelinesQuery = Guideline::query()->with('post')->whereNotNull('context_key');
+        if ($this->post->exists && $this->guidelineContextKey) {
+            $guidelinesQuery->where('context_key', '!=', $this->guidelineContextKey);
+        }
+
         return view('livewire.usage.edit-post-manager', [
             'rubrics' => Rubric::query()
                 ->where('contains_posts', TRUE)
@@ -436,6 +547,9 @@ class EditPostManager extends Component
                           ->orWhere('rubric_id', $this->currentRubric->id);
                 })
                 ->get(),
+            'eventTypes' => \App\Models\EventType::orderBy('name', 'ASC')->get(),
+            'isGuidelineRubric' => $isGuidelineRubric,
+            'availableGuidelines' => $guidelinesQuery->orderBy('context_key', 'ASC')->get(),
         ]);
     }
 }

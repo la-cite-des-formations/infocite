@@ -23,10 +23,13 @@
         "@popperjs/core": "^2.11.8",
         "bootstrap": "^5.3.3",
         "firebase": "^11.4.0",
+        "fullcalendar": "^6.1.21",
+        "fullcalendar-scheduler": "^6.1.21",
         "jquery": "^3.7.1",
         "material-icons": "^1.10.11",
         "pusher-js": "^8.4.0",
         "socket.io-client": "^4.8.1",
+        "temporal-polyfill": "^1.0.1",
         "tinymce": "^7.6.1"
     }
 }

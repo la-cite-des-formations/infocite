@@ -60,7 +60,7 @@
                     ])></span>
                 </button>
             @endcan
-            @if ($mode == 'edition')
+            @if ($mode == 'edition' && $rubric->name !== 'Archives')
                 @can('create', ['App\\Models\\Post', $rubric->id])
                     <button class="d-flex align-items-center btn btn-sm btn-info text-white"
                         wire:click="$emitTo('modal-manager', 'show', {component: 'usage.post-templates-manager', data: {rubricId: {{ $rubric->id }}}})"
@@ -398,4 +398,16 @@
             </style>
         @endif
     </div>
+    @if ($autoOpenContextKey)
+        <script>
+            document.addEventListener('livewire:load', function() {
+                Livewire.emitTo('modal-manager', 'show', {
+                    component: 'usage.guidelines-manager',
+                    data: {
+                        contextKey: @js($autoOpenContextKey)
+                    }
+                });
+            });
+        </script>
+    @endif
 </section>

@@ -16,11 +16,13 @@ trait WithModal
 
     /**
      * Callback appelé lors de la fermeture d'une modale.
+     *
+     * @param string|null $modal Nom du composant modal fermé.
      */
-    public function modalClosed() {
+    public function modalClosed($modal = null) {
         if (isset($this->closedModalCallback)) {
             foreach($this->closedModalCallback as $function) {
-                $this->$function();
+                $this->$function($modal);
             }
         }
         $this->emit('render')->self();
@@ -83,5 +85,29 @@ trait WithModal
             'data' => $data,
             'filter' => $this->filter ?? NULL,
         ])->to('modal-manager');
+    }
+
+    /**
+     * Clé de contexte du guide à ouvrir automatiquement au chargement.
+     *
+     * @var string|null
+     */
+    public $autoOpenContextKey = null;
+
+    /**
+     * Tente d'ouvrir automatiquement la modale de guide pour un contexte donné
+     * si configuré en auto_open et non encore lu par l'utilisateur.
+     *
+     * @param string $contextKey Clé de contexte du guide.
+     */
+    public function autoOpenGuideline(string $contextKey) {
+        if (!auth()->check()) return;
+
+        $guideline = \App\Models\Guideline::forContext($contextKey);
+        if ($guideline && $guideline->auto_open && $guideline->post) {
+            if (!$guideline->post->isRead()) {
+                $this->autoOpenContextKey = $contextKey;
+            }
+        }
     }
 }

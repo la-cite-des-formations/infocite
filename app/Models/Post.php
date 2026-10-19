@@ -24,7 +24,7 @@ class Post extends Model
      *
      * @var array<string>
      */
-    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required', 'is_rating_enabled', 'is_template'];
+    protected $fillable = ['title', 'content', 'icon', 'rubric_id', 'author_id', 'updated_by', 'published_at', 'expired_at', 'is_acknowledgment_required', 'is_rating_enabled', 'is_template', 'auto_delete'];
 
     /** @var array<string, bool> Valeurs par défaut pour les attributs. */
     protected $attributes = ['published' => FALSE, 'auto_delete' => FALSE, 'is_template' => FALSE, 'is_pinned' => FALSE, 'is_acknowledgment_required' => FALSE, 'is_rating_enabled' => FALSE];
@@ -41,6 +41,7 @@ class Post extends Model
         'is_acknowledgment_required' => 'boolean',
         'is_rating_enabled'          => 'boolean',
         'is_template'                => 'boolean',
+        'auto_delete'                => 'boolean',
     ];
 
     /**
@@ -51,6 +52,18 @@ class Post extends Model
     public function rubric()
     {
         return $this->belongsTo('App\Models\Rubric');
+    }
+
+    /**
+     * Relation vers le contexte de guide en ligne associé à cet article.
+     * Permet de savoir si un article est un guide contextuel et d'accéder à ses paramètres
+     * (context_key, css_selector, next_context_key, auto_open).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function guideline()
+    {
+        return $this->hasOne('App\Models\Guideline');
     }
 
     /**
@@ -138,6 +151,16 @@ class Post extends Model
     }
 
     /**
+     * Relation vers l'événement associé à l'article (0 ou 1).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function event()
+    {
+        return $this->hasOne(Event::class);
+    }
+
+    /**
      * Récupère la liste des utilisateurs à notifier pour cet article.
      * Combine les utilisateurs ayant mis la rubrique en favori et ceux ayant mis l'article lui-même en favori.
      *
@@ -151,6 +174,51 @@ class Post extends Model
         }
 
         return $notificableUsers->merge($this->favoritedBy)->unique('id');
+    }
+
+    /**
+     * Récupère les utilisateurs éligibles aux notifications de bureau (Firebase) pour cet article.
+     * Prend en compte les autorisations de rubrique, les droits d'accès spécifiques,
+     * l'accord utilisateur et les préférences de favoris.
+     *
+     * @param User|null $authorToExclude Utilisateur à l'origine de l'action à exclure
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function notificableDesktopUsers(?User $authorToExclude = null)
+    {
+        $authorId = $authorToExclude?->id ?? auth()->id();
+
+        return User::query()
+            ->where('id', '!=', $authorId)
+            ->whereHas('employee', function ($employee) {
+                $employee->where('desktop_notifications_granted', TRUE);
+            })
+            ->where(function ($query) {
+                $query
+                    ->whereHas('employee', function ($employee) {
+                        $employee->where('notify_only_favorites', FALSE);
+                    })
+                    ->orWhereHas('favoriteRubrics', function ($favoritesRubrics) {
+                        $favoritesRubrics->where('favoriteable_id', $this->rubric_id);
+                    })
+                    ->orWhereHas('favoritePosts', function ($favoritesPosts) {
+                        $favoritesPosts->where('favoriteable_id', $this->id);
+                    });
+            })
+            ->when($this->rubric_id, function ($query, $rubricId) {
+                $query->where(function ($query) use ($rubricId) {
+                    $query->whereHas('groups.rubrics', function ($query) use ($rubricId) {
+                        $query->where('rubrics.id', $rubricId);
+                    })
+                    ->orWhereHas('profiles.groups.rubrics', function ($query) use ($rubricId) {
+                        $query->where('rubrics.id', $rubricId);
+                    });
+                });
+            })
+            ->get()
+            ->filter(function ($user) {
+                return $user->can('read', $this);
+            });
     }
 
     /**
@@ -185,6 +253,132 @@ class Post extends Model
     public function scopeNotTemplates($query)
     {
         return $query->where('is_template', false);
+    }
+
+    /**
+     * Scope pour filtrer les articles actuellement publiés et actifs.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('published', true)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                  ->orWhere('expired_at', '>', now());
+            });
+    }
+
+    /**
+     * Scope pour filtrer les articles expirés (archivés).
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeArchived($query)
+    {
+        return $query->whereNotNull('expired_at')
+            ->where('expired_at', '<=', now());
+    }
+
+    /**
+     * Scope pour récupérer les articles nécessitant une révision par l'éditeur.
+     * Critères :
+     * - Date de dernière activité COALESCE(updated_at, created_at) > 1 an (12 mois)
+     * - Exclusion stricte des modèles d'articles (is_template = 0)
+     * - Cas A (Archivés conservés sciemment) : expired_at <= NOW() ET auto_delete = 0
+     * - Cas B (Publiés sans fin programmée) : published = 1, published_at <= NOW() ET expired_at IS NULL
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  int  $years  Nombre d'années d'inactivité avant alerte (défaut: 1)
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNeedsReview($query, int $years = 1)
+    {
+        $threshold = now()->subYears($years);
+
+        return $query->where('is_template', false)
+            ->whereRaw('COALESCE(updated_at, created_at) <= ?', [$threshold])
+            ->where(function ($subQuery) {
+                // Cas A : Articles archivés sciemment conservés
+                $subQuery->where(function ($q) {
+                    $q->whereNotNull('expired_at')
+                      ->where('expired_at', '<=', now())
+                      ->where('auto_delete', false);
+                })
+                // Cas B : Articles publiés sans fin programmée
+                ->orWhere(function ($q) {
+                    $q->where('published', true)
+                      ->whereNotNull('published_at')
+                      ->where('published_at', '<=', now())
+                      ->whereNull('expired_at');
+                });
+            });
+    }
+
+    /**
+     * Vérifie si un utilisateur est habilité à arbitrer sur cet article obsolète :
+     * 1. Auteur de l'article (author_id = user_id)
+     * 2. Correcteur si auteur absent (author_id IS NULL et corrector_id = user_id)
+     * 3. Gestionnaire complet (Éditeur + Modérateur + Administrateur les 3 en même temps) si orphelin total
+     *
+     * @param  \App\Models\User  $user
+     * @return bool
+     */
+    public function isReviewableBy(User $user): bool
+    {
+        if ($this->author_id) {
+            return $this->author_id === $user->id;
+        }
+
+        if ($this->corrector_id) {
+            return $this->corrector_id === $user->id;
+        }
+
+        // Orphelin total : requiert les 3 rôles (Éditeur + Modérateur + Administrateur)
+        $fullRolesMask = Roles::IS_EDITR | Roles::IS_MODER | Roles::IS_ADMIN;
+        return (bool) $user->hasStrictRole('posts', $fullRolesMask, 'Rubric', $this->rubric_id);
+    }
+
+    /**
+     * Retourne les métadonnées de typage de révision pour un utilisateur :
+     * Auteur, Correcteur ou Orphelin (avec libellé, badge CSS et icône).
+     *
+     * @param  \App\Models\User  $user
+     * @return array{type: string, label: string, badge_class: string, icon: string, description: string}
+     */
+    public function reviewRole(User $user): array
+    {
+        if ($this->author_id === $user->id) {
+            return [
+                'type'        => 'author',
+                'label'       => 'Auteur',
+                'badge_class' => 'bg-primary text-white',
+                'icon'        => 'bx-user-voice',
+                'description' => "Vous êtes l'auteur de cet article",
+            ];
+        }
+
+        if (!$this->author_id && $this->corrector_id === $user->id) {
+            return [
+                'type'        => 'corrector',
+                'label'       => 'Correcteur',
+                'badge_class' => 'bg-info text-dark',
+                'icon'        => 'bx-check-double',
+                'description' => "Vous êtes le correcteur de cet article (auteur non renseigné)",
+            ];
+        }
+
+        return [
+            'type'        => 'orphan',
+            'label'       => 'Orphelin',
+            'badge_class' => 'bg-warning text-dark',
+            'icon'        => 'bx-help-circle',
+            'description' => "Article orphelin (sans auteur ni correcteur), révisable en tant que gestionnaire",
+        ];
     }
 
     /**

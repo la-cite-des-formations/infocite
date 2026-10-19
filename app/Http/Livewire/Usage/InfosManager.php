@@ -84,6 +84,13 @@ class InfosManager extends Component
      */
     public $browserDesktopNotificationsDenied = FALSE;
 
+    /**
+     * Filtre actif pour les articles à réviser ('all', 'author', 'corrector', 'orphan').
+     *
+     * @var string
+     */
+    public $reviewFilter = 'all';
+
     protected $rules = [
         'employee.desktop_notifications_granted' => 'required',
         'employee.notify_only_favorites' => 'required',
@@ -195,6 +202,80 @@ class InfosManager extends Component
     }
 
     /**
+     * Confirme qu'un article obsolète est toujours d'actualité.
+     * Réinitialise updated_at à la date du jour via touch(), ce qui sort l'article du scope pour 1 an.
+     *
+     * @param int $postId
+     */
+    public function confirmCurrent(int $postId) {
+        $post = Post::findOrFail($postId);
+        $this->authorizeReview($post);
+
+        $post->touch();
+        session()->flash('review_success', "L'article \"{$post->title}\" a été confirmé d'actualité pour 12 mois.");
+    }
+
+    /**
+     * Archive un article obsolète.
+     * Passe expired_at à aujourd'hui et auto_delete à 0 (retrait du flux public mais conservation en BDD).
+     *
+     * @param int $postId
+     */
+    public function archivePost(int $postId) {
+        $post = Post::findOrFail($postId);
+        $this->authorizeReview($post);
+
+        $post->update([
+            'expired_at'  => now(),
+            'auto_delete' => false,
+        ]);
+        session()->flash('review_success', "L'article \"{$post->title}\" a été archivé (conservé hors ligne).");
+    }
+
+    /**
+     * Supprime un article obsolète selon les droits de l'utilisateur.
+     * Si l'utilisateur a le droit de suppression : delete immédiat.
+     * Sinon : retrait immédiat du flux (expired_at = now) et auto_delete = 1 (purge prochaine par script Plesk).
+     *
+     * @param int $postId
+     */
+    public function deletePost(int $postId) {
+        $post = Post::findOrFail($postId);
+        $this->authorizeReview($post);
+
+        if (auth()->user()->can('delete', $post)) {
+            $post->delete();
+            session()->flash('review_success', "L'article \"{$post->title}\" a été définitivement supprimé.");
+        } else {
+            $post->update([
+                'expired_at'  => now(),
+                'auto_delete' => true,
+            ]);
+            session()->flash('review_success', "L'article \"{$post->title}\" a été retiré de la publication et sera purgé prochainement.");
+        }
+    }
+
+    /**
+     * Vérifie que l'utilisateur courant est habilité à arbitrer sur cet article.
+     *
+     * @param \App\Models\Post $post
+     */
+    protected function authorizeReview(Post $post): void {
+        abort_unless($post->isReviewableBy(auth()->user()), 403, "Action non autorisée sur cet article.");
+    }
+
+    /**
+     * Définit le filtre actif pour la liste des articles à réviser.
+     *
+     * @param string $filter
+     */
+    public function setReviewFilter(string $filter): void {
+        if (in_array($filter, ['all', 'author', 'corrector', 'orphan'])) {
+            $this->reviewFilter = $filter;
+        }
+    }
+
+    /**
      * Rendu du composant.
      *
      * @return \Illuminate\View\View
@@ -202,10 +283,42 @@ class InfosManager extends Component
     public function render() {
         $this->rendered = TRUE;
 
+        $allReviewPosts = Post::needsReview()
+            ->with(['rubric'])
+            ->get()
+            ->filter(fn($p) => $p->isReviewableBy($this->user));
+
+        // Si l'utilisateur n'a plus aucun article à réviser, auto-détacher les notifications 'RP'
+        if ($allReviewPosts->isEmpty()) {
+            $this->user->newNotifications()
+                ->where('content_type', 'RP')
+                ->detach();
+            $this->user->unsetRelation('newNotifications');
+        }
+
+        // Compteurs par type de responsabilité
+        $reviewCounts = [
+            'all'       => $allReviewPosts->count(),
+            'author'    => $allReviewPosts->filter(fn($p) => $p->author_id === $this->user->id)->count(),
+            'corrector' => $allReviewPosts->filter(fn($p) => !$p->author_id && $p->corrector_id === $this->user->id)->count(),
+            'orphan'    => $allReviewPosts->filter(fn($p) => !$p->author_id && !$p->corrector_id)->count(),
+        ];
+
+        // Application du filtre sélectionné
+        $reviewPosts = match ($this->reviewFilter) {
+            'author'    => $allReviewPosts->filter(fn($p) => $p->author_id === $this->user->id),
+            'corrector' => $allReviewPosts->filter(fn($p) => !$p->author_id && $p->corrector_id === $this->user->id),
+            'orphan'    => $allReviewPosts->filter(fn($p) => !$p->author_id && !$p->corrector_id),
+            default     => $allReviewPosts,
+        };
+
         return view('livewire.usage.infos-manager', [
             'favoritesPosts' => $this->user
                 ->favoritePosts()
                 ->paginate($this->perPage),
+            'reviewPosts'    => $reviewPosts,
+            'reviewCounts'   => $reviewCounts,
+            'reviewFilter'   => $this->reviewFilter,
         ]);
     }
 }

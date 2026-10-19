@@ -92,7 +92,7 @@ class Rubric extends Model
      */
 
     /**
-     * Récupère les groupes ayant des droits spécifiques sur les messages de cette rubrique.
+     * Récupère les groupes ayant des droits spécifiques sur les articles de cette rubrique.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -106,7 +106,7 @@ class Rubric extends Model
     }
 
     /**
-     * Récupère les utilisateurs réels ayant des droits spécifiques sur les messages de cette rubrique.
+     * Récupère les utilisateurs réels ayant des droits spécifiques sur les articles de cette rubrique.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -120,7 +120,7 @@ class Rubric extends Model
     }
 
     /**
-     * Récupère les profils ayant des droits spécifiques sur les messages de cette rubrique.
+     * Récupère les profils ayant des droits spécifiques sur les articles de cette rubrique.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -131,6 +131,15 @@ class Rubric extends Model
             ->profiles()
             ->where('resource_type', 'Rubric')
             ->where('resource_id', $this->id);
+    }
+
+    /**
+     * Relation vers les notifications associées à cette rubrique.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function notifications() {
+        return $this->morphMany(Notification::class, 'object');
     }
 
 
@@ -148,6 +157,15 @@ class Rubric extends Model
                     $this->parent->segment.AP::RUBRIC_SEPARATOR :
                     ''
             ).$this->segment;
+    }
+
+    /**
+     * Accesseur retournant le chemin relatif vers la rubrique.
+     *
+     * @return string
+     */
+    public function getRouteAttribute() {
+        return $this->route();
     }
 
     /**

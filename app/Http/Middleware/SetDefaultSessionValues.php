@@ -14,7 +14,7 @@ class SetDefaultSessionValues
             $request->session()->put('displayPosts', 'grid');
         }
 
-        if (!$request->session()->has('lastFilter')) {
+        if (!$request->session()->has('lastFilter') && !$request->session()->has('lastSorter')) {
             $request->session()->put('lastFilter', 'allPosts');
         }
 

@@ -96,7 +96,7 @@ class PostsManager extends Component
     public $blockRedirection = FALSE;
 
 
-    protected $listeners = ['deletePost', 'refreshPage' => '$refresh'];
+    protected $listeners = ['modalClosed', 'deletePost', 'refreshPage' => '$refresh', 'refreshNotifications' => 'refreshNotifications'];
 
     /**
      * Filtres actifs pour la liste d'articles.
@@ -110,6 +110,7 @@ class PostsManager extends Component
         'postsInFavoritesRubrics' => '',
         'allPosts' => '',
     ];
+
     /**
      * Tris actifs pour la liste d'articles.
      *
@@ -142,6 +143,10 @@ class PostsManager extends Component
         $this->setNotifications();
         $this->lastFilterActive();
         $this->lastSorterActive();
+
+        if ($this->rubric) {
+            $this->autoOpenGuideline($this->rubric->segment);
+        }
     }
 
     /**
@@ -306,9 +311,9 @@ class PostsManager extends Component
             $this->recentPosts = collect();
         }
 
-        if (session()->has('lastFilter') && $this->rubric->name === 'Une'){
+        if (session('lastFilter') && $this->rubric->name === 'Une'){
             return $this->lastFilterActive();
-        }elseif (session()->has('lastSorter') && $this->rubric->name === 'Une'){
+        }elseif (session('lastSorter') && $this->rubric->name === 'Une'){
             return $this->lastSorterActive();
         }else{
             return $this->allPosts();

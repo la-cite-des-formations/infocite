@@ -22,7 +22,9 @@ window.addEventListener('showModal', () => {
     const modalElement = document.getElementById('modal');
     if (!modalElement) return;
 
-    // Récupérer l'instance existante ou en créer une nouvelle
+    // Nettoyer les éventuels backdrops existants pour éviter l'accumulation au changement d'étape
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+
     let modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (!modalInstance) {
         modalInstance = new bootstrap.Modal(modalElement);
@@ -54,3 +56,15 @@ window.addEventListener('mark-needs-refresh', () => {
 
 window.addEventListener('close-modal', closeModal);
 window.addEventListener('hideModal', closeModal);
+
+window.addEventListener('autoOpenGuideline', event => {
+    console.log('[autoOpenGuideline] Événement navigateur reçu:', event.detail);
+    const contextKey = event.detail ? event.detail.contextKey : null;
+    if (contextKey) {
+        console.log('[autoOpenGuideline] Émission Livewire.emitTo pour contextKey:', contextKey);
+        Livewire.emitTo('modal-manager', 'show', {
+            component: 'usage.guidelines-manager',
+            data: { contextKey: contextKey }
+        });
+    }
+});

@@ -10,6 +10,7 @@
             @include('includes.admin.nav')
           @endauth
             <main class="py-4">
+                @livewire('usage.notifications-alerts')
                 @yield('content')
             </main>
         </div>

@@ -142,6 +142,7 @@ C'est ici que l'on définit quels modèles (Utilisateurs, Articles, etc.) sont g
     <li><strong>Posts (Articles)</strong> : Chaque article est lié à une <strong>Rubric</strong> (Rubrique) et possède un <strong>User</strong> comme auteur.</li>
     <li><strong>Interactions</strong> : C'est ici que l'on enregistre qui a lu quel article et à quel moment. Cela permet de calculer les statistiques de consultation.</li>
     <li><strong>Groups</strong> : Les utilisateurs sont regroupés dans des classes, des services ou des équipes. Cela sert à donner des droits d'accès massifs.</li>
+    <li><strong>Events / EventTypes (Agenda)</strong> : Les informations temporelles et géographiques de planification sont stockées dans la table <code>events</code> en relation 1:1 avec les <code>posts</code>. Le type d'événement et sa couleur associée sont configurés dans <code>event_types</code>.</li>
 </ul>
 
 <h3>4.5 Le Cycle de vie d'un Article</h3>
@@ -202,6 +203,14 @@ C'est ici que l'on définit quels modèles (Utilisateurs, Articles, etc.) sont g
     <li><strong>Gardes-fous Sémantiques</strong> : Utilisation de l'API <code>notificationManager</code> pour bloquer les actions invalides (ex: insertion de listes ou multi-sélections dans des titres) avant qu'elles ne corrompent la structure du DOM.</li>
     <li><strong>Persistance Multimédia</strong> : La fonction <code>GetContent</code> de TinyMCE a été surchargée pour garantir que les balises <code>IFRAME</code>, <code>VIDEO</code>, <code>IMG</code> et <code>TABLE</code> ne soient jamais considérées comme du contenu vide et supprimées par erreur lors du nettoyage automatique.</li>
     <li><strong>Intégration Google Drive</strong> : Implémentation d'un <code>media_url_resolver</code> qui transforme automatiquement les liens de partage Google Drive (<code>/view</code>) en liens intégrables (<code>/preview</code>). Ce mécanisme permet d'utiliser l'outil "Média" natif de TinyMCE pour insérer des vidéos institutionnelles sans avoir à manipuler manuellement le code HTML de l'iframe.</li>
+</ul>
+
+<h3>4.11 Agenda Événementiel (Timeline & Calendrier)</h3>
+<p>L'agenda d'Infocite regroupe les manifestations futures sous une double vue ergonomique :</p>
+<ul>
+    <li><strong>Ligne du Temps (Timeline)</strong> : Rendue de manière responsive sous forme de flux chronologique vertical. Les vignettes illustrées sont récupérées dynamiquement depuis la galerie associée à l'article parent. Le point d'ancrage visuel est colorisé à la volée en fonction de la couleur définie pour le type d'événement.</li>
+    <li><strong>Calendrier Mensuel (FullCalendar)</strong> : Intègre la bibliothèque open-source <code>FullCalendar v6</code> via CDN. La transition entre les vues se fait côté client sans rechargement. Les données des événements sont sérialisées en JSON par le contrôleur Livewire <code>AgendaManager.php</code> et chargées directement dans l'instance de FullCalendar.</li>
+    <li><strong>Tooltips Dynamiques</strong> : Lors du survol des événements dans le calendrier, un tooltip personnalisé est généré en JS pour afficher le lieu et le type de l'événement en s'adaptant à la position de l'élément dans le viewport.</li>
 </ul>
 
 <hr>

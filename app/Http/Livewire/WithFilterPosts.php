@@ -241,7 +241,7 @@ trait WithFilterPosts
      * Se déclenche avant la mise à jour des filtres pour réinitialisation.
      */
     public function updatingFilter(){
-        session(['lastSorter'=>null]);
+        session()->forget('lastSorter');
         $this->firstLoad = true;
         $this->resetFilter();
     }
@@ -278,7 +278,7 @@ trait WithFilterPosts
      * Se déclenche avant la mise à jour du tri pour réinitialisation.
      */
     public function updatingSorter(){
-        session(['lastFilter'=>null]);
+        session()->forget('lastFilter');
         $this->firstLoad = true;
         $this->resetFilter();
     }
@@ -337,8 +337,8 @@ trait WithFilterPosts
         $this->filter['allPosts'] = 'on';
         session([
             'lastFilter'=>'allPosts',
-            'lastSorter'=>null,
         ]);
+        session()->forget('lastSorter');
         $this->toggleFilter();
 
     }
