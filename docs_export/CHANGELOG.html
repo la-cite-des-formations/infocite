@@ -81,13 +81,59 @@
     <h1>Journal des Modifications (Changelog)</h1>
 
     <div class="version">
+        <div class="version-title">Version 1.10.5 - Galerie multimédia unifiée</div>
+        <div class="date">19 Octobre 2026</div>
+        <ul>
+            <li><span class="tag tag-feat">FEAT</span> Transformation de la galerie photos en galerie multimédia
+                étendant les contenus aux vidéos. Ajout automatisé à la galerie des fichiers d'images et vidéos insérés
+                dans le corps de l'article. Possibilité d'utiliser les vignettes des vidéos en tant que vignettes des
+                articles récents apparaissant à la Une avec option de recadrage conservée.
+            </li>
+        </ul>
+    </div>
+
+    <div class="version">
+        <div class="version-title">Version 1.10.4 - Notifications d'obsolescence des articles et de sensibilisation à
+            l'utilisation des modèles d'articles</div>
+        <div class="date">14 Octobre 2026</div>
+        <ul>
+            <li><span class="tag tag-feat">FEAT</span> Ajout de 2 commandes dans <code>app/Console/Commands</code> :
+                <ul>
+                    <li><code>CheckObsoletePosts</code> : envoi d'une notification hebdomadaire d'arbitrage (conserver,
+                        modifier, archiver ou supprimer) aux auteurs, correcteurs et gestionnaires d'articles inactifs
+                        depuis plus d'un an. Ajout d'une option 'RP' supplémentaire à l'enum du champ
+                        <code>content_type</code>
+                        du modèle <code>Notification</code>.
+                    </li>
+                    <li><code>RemindArticleTemplates</code> : envoi d'une notification trimestrielle de sensibilisation
+                        à l'usage des modèles d'articles visant l'ensemble des rédacteurs.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="version">
+        <div class="version-title">Version 1.10.3 - Purge planifiée des interactions</div>
+        <div class="date">7 Octobre 2026</div>
+        <ul>
+            <li><span class="tag tag-feat">FEAT</span>Ajout d'une commande de purge des interactions avec planification
+                hebdomadaire. Ajout de la fonction <code>prunable</code> au modèle <code>Interaction</code> et ajout de
+                la commande
+                <code>$schedule->command('model:prune', ['--model' => Interaction::class])...</code>
+                à la fonction <code>schedule</code> dans <code>App/Console/Kernel.php</code>.
+            </li>
+        </ul>
+    </div>
+
+    <div class="version">
         <div class="version-title">Version 1.10.2 - Correctif Conflit Modales & Notifications</div>
         <div class="date">16 Septembre 2026</div>
         <ul>
             <li><span class="tag tag-fix">FIX</span> Résolution du conflit Livewire sur <code>modalClosed</code> entre
                 <code>FcmNotifsSwClientManager</code> et le trait <code>WithNotifications</code> : rétablissement de
                 l'exécution des callbacks <code>detachNotifications</code> et <code>setNotifications</code> à la
-                fermeture de la modale pour marquer les notifications comme lues.</li>
+                fermeture de la modale pour marquer les notifications comme lues.
+            </li>
         </ul>
     </div>
 
