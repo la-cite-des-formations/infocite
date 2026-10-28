@@ -109,7 +109,8 @@
                 à maintenir.</p>
             <p><span class="improvement">Piste d'amélioration :</span> Extraire la logique de droits dans un
                 <code>Trait</code> (ex: <code>HasPermissions</code>) ou utiliser des <strong>Service Classes</strong>
-                pour les calculs complexes. Cela allègera le modèle pour ne garder que les relations Eloquent.</p>
+                pour les calculs complexes. Cela allègera le modèle pour ne garder que les relations Eloquent.
+            </p>
         </div>
 
         <div class="audit-item">
@@ -189,7 +190,8 @@
                 <li><strong>Interface d'Utilisation :</strong> Ajout d'une liste déroulante "Modèles" dans l'éditeur
                     (filtrée par la rubrique en cours + modèles génériques via Livewire). La sélection injecte le code
                     du modèle <strong>en-dessous</strong> du contenu déjà saisi. Le menu n'est visible qu'en mode
-                    <em>Création</em>, pas en mode de <em>Modification</em>.</li>
+                    <em>Création</em>, pas en mode de <em>Modification</em>.
+                </li>
                 <li><strong>Gestion (CRUD) :</strong> Bouton dédié "Gérer les modèles" à côté de la création d'article
                     ouvrant un éditeur spécifique (titre, liste des modèles, contenu).</li>
                 <li><strong>Base de données (Table <code>articles</code>) :</strong>
@@ -277,7 +279,8 @@
                     de blocs, facilitant l'ajout de nouveaux templates et la maintenance des raccourcis clavier.</li>
                 <li><strong>Protection des Médias :</strong> Sécurisation des balises <code>IFRAME</code> et
                     <code>VIDEO</code> pour garantir leur persistance lors des sauvegardes et des changements de mode
-                    (aperçu/code).</li>
+                    (aperçu/code).
+                </li>
             </ul>
         </div>
 
@@ -286,7 +289,8 @@
             <p>Un bug bloquant empêchait la création d'articles lorsque certains champs optionnels (acquittement,
                 notation) étaient nuls dans le formulaire.</p>
             <p><span class="improvement">Résolution :</span> Initialisation forcée des valeurs booléennes dans
-                <code>EditPostManager</code> avant la validation Laravel.</p>
+                <code>EditPostManager</code> avant la validation Laravel.
+            </p>
         </div>
 
         <div class="audit-item">
@@ -312,7 +316,8 @@
             <p><span class="improvement">Résolution :</span> Introduction de la variable
                 <code>FCM_NOTIFICATIONS_ENABLED</code>. La logique a été déplacée de <code>isLocal()</code> vers cette
                 variable dédiée pour permettre une activation/désactivation granulaire quel que soit l'environnement
-                (production ou développement).</p>
+                (production ou développement).
+            </p>
         </div>
 
         <div class="audit-item">
@@ -361,13 +366,16 @@
         <ul>
             <li><strong>Bouton d'aide réutilisable :</strong> Composant Blade
                 <code>&lt;x-help-button context-key="..."&gt;</code> déclenchant la modale du guide correspondant,
-                fonctionnel dans tout contexte (HTML statique ou composant Livewire).</li>
+                fonctionnel dans tout contexte (HTML statique ou composant Livewire).
+            </li>
             <li><strong>Parcours guidés :</strong> Navigation séquentielle entre chapitres de guide via la propriété
                 <code>next_context_key</code>, avec bouton "Étape suivante" et suivi automatique de lecture par
-                utilisateur.</li>
+                utilisateur.
+            </li>
             <li><strong>Onboarding automatique :</strong> Les guides configurés avec <code>auto_open = true</code>
                 s'ouvrent au premier chargement de la page si non encore lus par l'utilisateur, via l'événement
-                <code>livewire:load</code>.</li>
+                <code>livewire:load</code>.
+            </li>
             <li><strong>Marquage de lecture :</strong> Chaque guide affiché est automatiquement marqué comme lu pour
                 l'utilisateur connecté (<code>post_user.is_read</code>).</li>
         </ul>
@@ -399,11 +407,13 @@
     <div class="audit-item">
         <h3><span class="badge badge-func">✅ Livré v1.10</span> Bloc "Citation" (TinyMCE)</h3>
         <p>Ajout d'un nouveau bloc sémantique dédié aux citations dans l'éditeur TinyMCE. Disponible depuis la
-            <strong>v1.10 (25 Août 2026)</strong>.</p>
+            <strong>v1.10 (25 Août 2026)</strong>.
+        </p>
         <ul>
             <li><strong>Design :</strong> Mise en forme avec guillemets stylisés CSS
                 (<code>::before</code>/<code>::after</code>) et texte en italique via la classe
-                <code>block-quote</code>. Champ auteur/source optionnel (<code>.quote-author</code>).</li>
+                <code>block-quote</code>. Champ auteur/source optionnel (<code>.quote-author</code>).
+            </li>
             <li><strong>Styles de guillemets :</strong> Palette de 6 variantes via le bouton "Palette" (🎨) : Français
                 (« »), Anglais (" "), Allemand („ "), Droits (" "), Simples (' ') et Sans guillemets (—), appliqués par
                 classes CSS <code>quote-style-*</code>.</li>
@@ -540,12 +550,14 @@
                 <p><em>Charge estimée assumée qualitativement pour sécuriser les bases.</em></p>
                 <ul>
                     <li><del>Bouton d'information (droits et éditeurs) sur les fiches de Rubrique.</del> ✅
-                        <strong>Terminé</strong></li>
+                        <strong>Terminé</strong>
+                    </li>
                     <li><del>Système "Acquittement / Article Lu" avec horodatage.</del> ✅ <strong>Terminé
                             (08/04/2026)</strong></li>
                     <li><del>Module de notation par étoiles (1 à 5).</del> ✅ <strong>Terminé (08/04/2026)</strong></li>
                     <li><del>Module "Galeries Photos" complet (upload, rendu hybride, GLightbox).</del> ✅
-                        <strong>Terminé (14/04/2026)</strong></li>
+                        <strong>Terminé (14/04/2026)</strong>
+                    </li>
                     <li><del>Système avancé de Modèles d'Articles (Templates).</del> ✅ <strong>Terminé
                             (22/04/2026)</strong></li>
                     <li><del>Insertion Universelle de Blocs et Dégroupage.</del> ✅ <strong>Terminé (04/05/2026)</strong>
@@ -567,19 +579,26 @@
                     <li><del>Mise en place d'un Guide interactif en Ligne pour l'accompagnement des utilisateurs.</del>
                         ✅ <strong>Terminé (22/07/2026)</strong></li>
                     <li><del>Duplication de l'accès à la "Boite à idées" dans le menu utilisateur.</del> ✅
-                        <strong>Terminé (16/06/2026)</strong></li>
+                        <strong>Terminé (16/06/2026)</strong>
+                    </li>
                     <li><del>Ajout du bloc "Citation" (guillemets + italique) dans le gestionnaire de Blocs
                             TinyMCE.</del> ✅ <strong>Terminé (25/08/2026)</strong></li>
                     <li><del>Revue des filtres et du tri sur la Une de l'Intranet.</del> ✅ <strong>Terminé
                             (01/09/2026)</strong></li>
                     <li><del>Mise à jour dynamique de la cloche de notification à la fermeture de sa modale.</del> ✅
-                        <strong>Terminé (17/09/2026)</strong></li>
+                        <strong>Terminé (17/09/2026)</strong>
+                    </li>
                     <li>Vérification des droits d'accès Google Drive par rapport à l'audience de l'article avec alerte
                         éditeur. (<em>~1,5 semaine</em>)</li>
-                    <li>Système d'alerte éditeur sur le cycle de vie des articles (> 1 an : renouvellement, archivage,
-                        suppression) et incitation aux modèles. (<em>~1 semaine</em>)</li>
+                    <li><del>Système d'alerte éditeur sur le cycle de vie des articles (> 1 an : renouvellement,
+                            archivage,
+                            suppression) et incitation aux modèles.</del> ✅ <strong>Terminé (14/10/2026)</strong></li>
                     <li><del>Sous-rubrique 'Agenda' dans 'Événements' avec double affichage Timeline et Calendrier
                             FullCalendar.</del> ✅ <strong>Terminé (06/07/2026)</strong></li>
+                    <li><del>Ajout d'une commande de purge des interactions avec planification hebdomadaire</del> ✅
+                        <strong>Terminé (07/10/2026)</strong></li>
+                    <li><del>Galerie multimédia unifiée avec vidéos et synchronisation automatique depuis TinyMCE</del>
+                        ✅ <strong>Terminé (19/10/2026)</strong></li>
                 </ul>
             </li>
 
