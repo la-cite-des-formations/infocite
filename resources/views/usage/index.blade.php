@@ -34,7 +34,7 @@
             <script src="{{ asset('vendor/fullcalendar/index.global.min.js') }}" referrerpolicy="origin"></script>
             <script src="{{ asset('vendor/fullcalendar/fr.global.min.js') }}" referrerpolicy="origin"></script>
             <script src="{{ asset('js/fullcalendar-script.js') }}?v={{ filemtime(public_path('js/fullcalendar-script.js')) }}"
-                defer></script>
+                ></script>
         @break
 
         @case('org-chart')

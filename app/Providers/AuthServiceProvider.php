@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         Models\Post::class => Policies\PostPolicy::class,
         Models\Rubric::class => Policies\RubricPolicy::class,
         Models\Group::class => Policies\GroupPolicy::class,
+        Models\Event::class => Policies\EventPolicy::class,
     ];
 
     /**

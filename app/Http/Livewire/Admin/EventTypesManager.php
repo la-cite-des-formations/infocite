@@ -66,6 +66,7 @@ class EventTypesManager extends Component
     public function render()
     {
         return view('livewire.admin.models-manager', [
+            'dashboard' => 'events',
             'eventTypes' => EventType::filter($this->filter)
                 ->orderByRaw('name ASC')
                 ->paginate($this->perPage),

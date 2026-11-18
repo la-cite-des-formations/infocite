@@ -1,34 +1,49 @@
 /**
- * Bascule entre la vue Timeline et la vue Calendrier FullCalendar.
+ * Gestion du calendrier FullCalendar pour l'agenda Info Cité.
  */
 var fcCalendar = null;
 var fcTooltipEl = null;
+window.currentAgendaView = window.currentAgendaView || 'timeline';
 
-function switchAgendaView(view) {
+/**
+ * Applique la visibilité de la vue courante (timeline ou calendar).
+ */
+function applyCurrentAgendaView() {
     var timelineView = document.getElementById('agenda-timeline-view');
     var calendarView = document.getElementById('agenda-calendar-view');
     var btnTimeline = document.getElementById('btn-timeline');
     var btnCalendar = document.getElementById('btn-calendar');
 
-    if (view === 'calendar') {
+    if (!timelineView || !calendarView) return;
+
+    if (window.currentAgendaView === 'calendar') {
         timelineView.style.display = 'none';
         calendarView.style.display = 'block';
-        btnTimeline.classList.remove('active');
-        btnCalendar.classList.add('active');
+        if (btnTimeline) btnTimeline.classList.remove('active');
+        if (btnCalendar) btnCalendar.classList.add('active');
 
-        // Initialiser FullCalendar au premier affichage
-        if (!fcCalendar) {
+        var calendarEl = document.getElementById('fullcalendar-container');
+        if (!fcCalendar || (calendarEl && calendarEl.children.length === 0)) {
             initFullCalendar();
         } else {
-            // Forcer le re-rendu quand on revient sur le calendrier
-            fcCalendar.updateSize();
+            setTimeout(function () {
+                if (fcCalendar) fcCalendar.updateSize();
+            }, 50);
         }
     } else {
         calendarView.style.display = 'none';
         timelineView.style.display = 'block';
-        btnCalendar.classList.remove('active');
-        btnTimeline.classList.add('active');
+        if (btnCalendar) btnCalendar.classList.remove('active');
+        if (btnTimeline) btnTimeline.classList.add('active');
     }
+}
+
+/**
+ * Bascule entre la vue Timeline et la vue Calendrier.
+ */
+function switchAgendaView(view) {
+    window.currentAgendaView = view;
+    applyCurrentAgendaView();
 }
 
 /**
@@ -36,11 +51,33 @@ function switchAgendaView(view) {
  */
 function initFullCalendar() {
     var calendarEl = document.getElementById('fullcalendar-container');
+    if (!calendarEl) return;
 
-    // Créer l'élément tooltip
-    fcTooltipEl = document.createElement('div');
-    fcTooltipEl.className = 'fc-event-tooltip';
-    document.body.appendChild(fcTooltipEl);
+    if (typeof FullCalendar === 'undefined') {
+        console.warn('FullCalendar library not yet loaded.');
+        return;
+    }
+
+    // Si une instance précédente existe, la détruire proprement
+    if (fcCalendar) {
+        try {
+            fcCalendar.destroy();
+        } catch (e) {
+            console.warn(e);
+        }
+        fcCalendar = null;
+    }
+
+    calendarEl.innerHTML = '';
+
+    // Créer l'élément tooltip si inexistant
+    if (!fcTooltipEl) {
+        fcTooltipEl = document.createElement('div');
+        fcTooltipEl.className = 'fc-event-tooltip';
+        document.body.appendChild(fcTooltipEl);
+    }
+
+    var eventsData = window.agendaCalendarEvents || [];
 
     fcCalendar = new FullCalendar.Calendar(calendarEl, {
         schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
@@ -50,22 +87,25 @@ function initFullCalendar() {
         firstDay: 1,
         fixedWeekCount: false,
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next',
             center: 'title',
-            right: ''
+            right: 'today'
         },
         buttonText: {
             today: "Aujourd'hui"
         },
-        events: agendaCalendarEvents,
+        events: eventsData,
         eventClick: function (info) {
             info.jsEvent.preventDefault();
-            if (info.event.url) {
-                window.location.href = info.event.url;
+            if (window.Livewire) {
+                window.Livewire.emitTo('modal-manager', 'show', {
+                    component: 'usage.event-detail',
+                    data: { eventId: info.event.id }
+                });
             }
         },
         eventMouseEnter: function (info) {
-            var props = info.event.extendedProps;
+            var props = info.event.extendedProps || {};
             var color = info.event.backgroundColor || '#3498db';
             var html = '<div class="tooltip-type" style="background-color: ' + color + ';">' + (props.type || '') + '</div>';
             html += '<div class="fw-bold mt-1">' + info.event.title + '</div>';
@@ -81,9 +121,41 @@ function initFullCalendar() {
             fcTooltipEl.style.top = (rect.top + window.scrollY - fcTooltipEl.offsetHeight - 8) + 'px';
         },
         eventMouseLeave: function (info) {
-            fcTooltipEl.classList.remove('visible');
+            if (fcTooltipEl) {
+                fcTooltipEl.classList.remove('visible');
+            }
         }
     });
 
     fcCalendar.render();
+    window.fcCalendar = fcCalendar;
 }
+
+/**
+ * Écouteur pour la mise à jour dynamique des événements (changement de filtres).
+ */
+window.addEventListener('agenda-events-updated', function (event) {
+    window.agendaCalendarEvents = event.detail.events;
+    if (window.fcCalendar) {
+        window.fcCalendar.removeAllEvents();
+        window.fcCalendar.addEventSource(window.agendaCalendarEvents);
+    }
+});
+
+/**
+ * Enregistrement du hook Livewire pour préserver la vue active lors des requêtes Livewire.
+ */
+function registerLivewireAgendaHook() {
+    if (window.Livewire && window.Livewire.hook) {
+        window.Livewire.hook('message.processed', function () {
+            applyCurrentAgendaView();
+        });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', registerLivewireAgendaHook);
+} else {
+    registerLivewireAgendaHook();
+}
+document.addEventListener('livewire:load', registerLivewireAgendaHook);

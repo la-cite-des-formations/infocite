@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Modals\Usage;
 
 use App\Http\Livewire\WithAlert;
 use App\Http\Livewire\WithModal;
+use App\Models\Post;
 use Livewire\Component;
 
 /**
@@ -57,6 +58,13 @@ class Confirm extends Component
     public $message;
 
     /**
+     * Indique si l'article possède un événement associé dans l'agenda.
+     *
+     * @var bool
+     */
+    public $hasLinkedEvent = false;
+
+    /**
      * Nombre d'éléments par page.
      *
      * @var int
@@ -90,8 +98,12 @@ class Confirm extends Component
         switch($this->handling){
             case 'deletePost':
             case 'deletePostFromRubric':
-                    $isTemplate = $data['isTemplate'] ?? FALSE;
-                    $this->message = $isTemplate ? "Êtes-vous sûr de vouloir supprimer ce modèle ?" : "Êtes-vous sûr de vouloir supprimer cet article ?";
+                $isTemplate = $data['isTemplate'] ?? FALSE;
+                $this->message = $isTemplate ? "Êtes-vous sûr de vouloir supprimer ce modèle ?" : "Êtes-vous sûr de vouloir supprimer cet article ?";
+                if ($this->postId) {
+                    $post = Post::find($this->postId);
+                    $this->hasLinkedEvent = $post && $post->event()->exists();
+                }
             break;
             case 'deleteComment':
                 $this->message = "Êtes-vous sûr de vouloir supprimer ce commentaire ?";
@@ -112,20 +124,22 @@ class Confirm extends Component
 
     /**
      * Confirme l'action demandée en émettant l'événement approprié vers le manager concerné.
+     *
+     * @param bool $deleteLinkedEvent
      */
-    public function confirm() {
+    public function confirm($deleteLinkedEvent = true) {
         switch($this->handling){
             case('deletePost'):
-                $this->emit('deletePost')->to('PostsManager');
+                $this->emit('deletePost', $deleteLinkedEvent);
             break;
             case('deletePostFromRubric'):
-                $this->emit('deletePost', $this->postId)->to('PostsManager');
+                $this->emit('deletePost', $this->postId, $deleteLinkedEvent);
             break;
             case('deleteComment'):
-                $this->emit('deleteComment', $this->commentId)->to('PostsManager');
+                $this->emit('deleteComment', $this->commentId);
             break;
             case('deleteApp'):
-                $this->emit('deleteApp', $this->appId)->to('AppsManager');
+                $this->emit('deleteApp', $this->appId);
             break;
             case('update'):
             case('create'):
@@ -147,7 +161,6 @@ class Confirm extends Component
 
     /**
      * Rendu du composant.
-     * Récupère les nouvelles et les anciennes notifications de l'utilisateur.
      *
      * @return \Illuminate\View\View
      */

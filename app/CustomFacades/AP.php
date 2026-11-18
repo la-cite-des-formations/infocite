@@ -52,7 +52,6 @@ class AP // Application Parameters
             'data' => ['name' => 'data'],
             'groups' => ['name' => 'groups'],
             'posts' => ['name' => 'posts'],
-            'event-types' => ['name' => 'posts'],
             'comments' => ['name' => 'comments'],
             'profiles' => ['name' => 'profiles'],
             'rights' => [
@@ -71,6 +70,10 @@ class AP // Application Parameters
             'chartnodes' => ['name' => 'org-chart'],
             'labels' => ['name' => 'org-chart'],
             //'actors' => ['name' => 'org-chart'],
+        ],
+        'events' => [
+            'events' => ['name' => 'posts'],
+            'event-types' => ['name' => 'posts'],
         ],
         'stats' => [
             'connections' => ['name' => 'stats'],
@@ -375,14 +378,14 @@ class AP // Application Parameters
                 'gate' => 'manage-rubrics',
                 'route' => ['name' => 'admin.rubrics.index', 'parameters' => NULL]
             ],
-            'event-types' => [
-                'title' => "Événements",
-                'table_title' => "Gestion des types d'événements",
-                'description' => "Gérer les types d'événements",
+            'events' => [
+                'title' => 'Événements',
+                'table_title' => NULL,
+                'description' => "Gérer les événements et leurs types",
                 'icon_name' => 'event',
                 'color' => 'teal',
-                'gate' => 'manage-event-types',
-                'route' => ['name' => 'admin.event-types.index', 'parameters' => NULL]
+                'gate' => ['name' => 'access-dashboard', 'dashboard' => 'events'],
+                'route' => ['name' => 'dashboard.sub-dashboard', 'parameters' => ['events']]
             ],
             'posts' => [
                 'title' => 'Contenus',
@@ -458,6 +461,26 @@ class AP // Application Parameters
             //     'gate' => 'manage-actors',
             //     'route' => ['name' => 'admin.actors.index', 'parameters' => NULL]
             // ],
+        ],
+        'events' => [
+            'events' => [
+                'title' => 'Événements',
+                'table_title' => 'Gestion des événements',
+                'description' => 'Lister, voir, modifier ou supprimer des événements',
+                'icon_name' => 'calendar_today',
+                'color' => 'teal',
+                'gate' => 'manage-events',
+                'route' => ['name' => 'admin.events.index', 'parameters' => NULL]
+            ],
+            'event-types' => [
+                'title' => "Types d'événements",
+                'table_title' => "Gestion des types d'événements",
+                'description' => "Gérer les types d'événements",
+                'icon_name' => 'category',
+                'color' => 'teal',
+                'gate' => 'manage-event-types',
+                'route' => ['name' => 'admin.event-types.index', 'parameters' => NULL]
+            ],
         ],
         'stats' => [
             'connections' => [
@@ -765,8 +788,15 @@ class AP // Application Parameters
      * @return object|null
      */
     public static function getDashboardFunction($function, $dashboard = 'main') {
-        return static::getDashboardFunctions($dashboard)
-            ->get($function);
+        if (isset(static::DASHBOARD_FUNCTIONS[$dashboard][$function])) {
+            return (object) static::DASHBOARD_FUNCTIONS[$dashboard][$function];
+        }
+        foreach (static::DASHBOARD_FUNCTIONS as $subDashboard => $functions) {
+            if (isset($functions[$function])) {
+                return (object) $functions[$function];
+            }
+        }
+        return null;
     }
 
     /**
