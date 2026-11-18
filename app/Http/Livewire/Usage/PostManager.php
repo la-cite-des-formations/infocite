@@ -146,9 +146,17 @@ class PostManager extends Component
     }
 
     /**
-     * Supprime l'article en cours.
+     * Supprime l'article en cours avec gestion de l'événement lié.
+     *
+     * @param bool $deleteLinkedEvent
      */
-    public function deletePost() {
+    public function deletePost($deleteLinkedEvent = true) {
+        if (!$deleteLinkedEvent && $this->post->event) {
+            $this->post->event->update(['post_id' => null]);
+        } elseif ($deleteLinkedEvent && $this->post->event) {
+            $this->post->event->delete();
+        }
+
         $this->post->delete();
 
         redirect($this->post->rubric->route());

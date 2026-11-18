@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Modals;
 use Livewire\Component;
 
 /**
- * Modale de sélection du point focal pour la première image de galerie.
+ * Modale de sélection du point focal pour la première image de galerie ou pour une vignette événementielle.
  * Reçoit l'URL de l'image et les coordonnées courantes, émet focalPointUpdated.
  */
 class FocalPointPicker extends Component
@@ -17,19 +17,23 @@ class FocalPointPicker extends Component
     public float $focalX = 50.0;
     public float $focalY = 50.0;
 
-    /** Métadonnées de l'article pour l'aperçu simulé. */
+    /** Composant cible qui recevra l'événement focalPointUpdated. */
+    public string $targetComponent = 'usage.post-gallery';
+
+    /** Métadonnées pour l'aperçu simulé. */
     public string $postTitle   = '';
     public string $postIcon    = '';
     public string $postExcerpt = '';
 
     public function mount($data = [], $filter = null): void
     {
-        $this->imagePath   = $data['imagePath']   ?? '';
-        $this->focalX      = (float) ($data['focalX']      ?? 50.0);
-        $this->focalY      = (float) ($data['focalY']      ?? 50.0);
-        $this->postTitle   = $data['postTitle']   ?? '';
-        $this->postIcon    = $data['postIcon']    ?? '';
-        $this->postExcerpt = $data['postExcerpt'] ?? '';
+        $this->imagePath       = $data['imagePath']       ?? '';
+        $this->focalX          = (float) ($data['focalX']          ?? 50.0);
+        $this->focalY          = (float) ($data['focalY']          ?? 50.0);
+        $this->targetComponent = $data['targetComponent'] ?? 'usage.post-gallery';
+        $this->postTitle       = $data['postTitle']       ?? '';
+        $this->postIcon        = $data['postIcon']        ?? '';
+        $this->postExcerpt     = $data['postExcerpt']     ?? '';
     }
 
     protected $listeners = [
@@ -46,11 +50,11 @@ class FocalPointPicker extends Component
     }
 
     /**
-     * Valide et transmet le point focal au composant PostGallery puis ferme la modale.
+     * Valide et transmet le point focal au composant cible puis ferme la modale.
      */
     public function confirm(): void
     {
-        $this->emitTo('usage.post-gallery', 'focalPointUpdated', $this->focalX, $this->focalY);
+        $this->emitTo($this->targetComponent, 'focalPointUpdated', $this->focalX, $this->focalY);
         $this->emit('modalClosed');
     }
 

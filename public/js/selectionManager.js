@@ -18,7 +18,7 @@ function onchoiceSelection(collectionSelector, selection) {
 }
 
 function getSelectionIDs(collectionSelector) {
-    return Array.from($('.' + collectionSelector + ':checked'), cbx => cbx.id)
+    return Array.from($('.' + collectionSelector + ':checked'), cbx => cbx.value || cbx.id)
 }
 
 window.addEventListener('load', () => {

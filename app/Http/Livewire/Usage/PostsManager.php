@@ -171,9 +171,17 @@ class PostsManager extends Component
      *
      * @param int $postId Identifiant de l'article.
      */
-    public function deletePost($postId)
+    public function deletePost($postId, $deleteLinkedEvent = true)
     {
-        Post::find($postId)->delete();
+        $post = Post::find($postId);
+        if ($post) {
+            if (!$deleteLinkedEvent && $post->event) {
+                $post->event->update(['post_id' => null]);
+            } elseif ($deleteLinkedEvent && $post->event) {
+                $post->event->delete();
+            }
+            $post->delete();
+        }
     }
 
     /**

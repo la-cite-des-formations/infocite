@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\CustomFacades\AP;
-use App\Models\Rubric;
+use App\Models\Event;
 use App\Models\Interaction;
+use App\Models\Rubric;
 use Illuminate\Http\Request;
 
 /**
@@ -24,7 +25,7 @@ class ViewController extends Controller
         // vérification de l'enregistrement de la connexion
         $currentUser = auth()->user();
 
-        if (!$currentUser->connected_today) {
+        if ($currentUser && !$currentUser->connected_today) {
             // enregistrement de la connexion journalière pour l'utilisateur courant
             Interaction::create([
                 'user_id' => $currentUser->id,
@@ -43,10 +44,14 @@ class ViewController extends Controller
      */
     private function getRubric(Request $request) {
         $rubricStr = $request->route()->parameter('rubric');
+        if (!$rubricStr) {
+            return null;
+        }
+
         $rubricSegments = explode(AP::RUBRIC_SEPARATOR, $rubricStr);
         $rubric = Rubric::firstWhere('segment', $rubricSegments[0]);
 
-        if (count($rubricSegments) > 1) {
+        if (count($rubricSegments) > 1 && $rubric) {
             $rubric = $rubric->childs->firstWhere('segment', $rubricSegments[1]);
         }
 
@@ -58,16 +63,21 @@ class ViewController extends Controller
      * Regroupe les rubriques de navigation, la rubrique courante, les IDs de ressources et le mode.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  string $template Nom du template de contenu à charger (ex: 'posts', 'post').
-     * @param  string|null $mode Mode d'affichage/action (ex: 'creation', 'edition').
+     * @param  string $template Nom du template à utiliser (défaut: 'posts').
+     * @param  string|null $mode Mode d'affichage ('creation', 'edition', etc.).
      * @return object
      */
     private function getViewBag(Request $request, string $template = 'posts', ? string $mode = NULL)
     {
         $route = $request->route();
         $rubric = $this->getRubric($request);
-        $post_id = $route->parameter('post_id');
-        $app_id = $route->parameter('app_id');
+        $post_id = $route ? $route->parameter('post_id') : null;
+        $app_id = $route ? $route->parameter('app_id') : null;
+        $event_id = $route ? $route->parameter('event_id') : null;
+
+        $chosenTemplate = in_array($template, ['edit-post', 'edit-app', 'edit-event'])
+            ? $template
+            : (is_object($rubric) ? ($rubric->view ?: $template) : $template);
 
         return (object) [
             'navRubrics' => Rubric::getRubrics('N'),
@@ -75,9 +85,10 @@ class ViewController extends Controller
             'rubric' => $rubric,
             'rubricSegment' => is_object($rubric) ? $rubric->segment : '',
             'currentRoute' => $request->getRequestUri(),
-            'template' => is_object($rubric) ? ($rubric->view ?: $template) : $template,
+            'template' => $chosenTemplate,
             'post_id' => $post_id,
             'app_id' => $app_id,
+            'event_id' => $event_id,
             'mode' => $mode,
         ];
     }
@@ -89,7 +100,7 @@ class ViewController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-     public function index(Request $request)
+    public function index(Request $request)
     {
         $this->verifyConnectionRecord();
 
@@ -173,8 +184,64 @@ class ViewController extends Controller
     }
 
     /**
-     * Gère l'upload de fichiers vers le dossier /public/storage/uploads.
-     * Retourne le chemin JSON du fichier pour intégration (ex: dans un éditeur WYSIWYG).
+     * Affiche le formulaire de création d'un événement autonome dans l'agenda.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createEvent(Request $request)
+    {
+        $this->verifyConnectionRecord();
+        $this->authorize('create', Event::class);
+
+        $rubric = Rubric::where('segment', 'agenda')->orWhere('name', 'Agenda')->first();
+
+        $viewBag = (object) [
+            'navRubrics' => Rubric::getRubrics('N'),
+            'footerRubrics' => Rubric::getRubrics('F'),
+            'rubric' => $rubric,
+            'rubricSegment' => $rubric ? $rubric->segment : 'agenda',
+            'currentRoute' => $request->getRequestUri(),
+            'template' => 'edit-event',
+            'event_id' => null,
+            'mode' => 'creation',
+        ];
+
+        return view("usage.index", ['viewBag' => $viewBag]);
+    }
+
+    /**
+     * Affiche le formulaire de modification d'un événement autonome dans l'agenda.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $event_id
+     * @return \Illuminate\Http\Response
+     */
+    public function editEvent(Request $request, $event_id)
+    {
+        $this->verifyConnectionRecord();
+
+        $event = Event::findOrFail($event_id);
+        $this->authorize('update', $event);
+
+        $rubric = Rubric::where('segment', 'agenda')->orWhere('name', 'Agenda')->first();
+
+        $viewBag = (object) [
+            'navRubrics' => Rubric::getRubrics('N'),
+            'footerRubrics' => Rubric::getRubrics('F'),
+            'rubric' => $rubric,
+            'rubricSegment' => $rubric ? $rubric->segment : 'agenda',
+            'currentRoute' => $request->getRequestUri(),
+            'template' => 'edit-event',
+            'event_id' => $event_id,
+            'mode' => 'edition',
+        ];
+
+        return view("usage.index", ['viewBag' => $viewBag]);
+    }
+
+    /**
+     * Gère l'upload de fichiers (ex: images de l'éditeur TinyMCE).
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -184,19 +251,6 @@ class ViewController extends Controller
         $fileName = $request->file('file')->getClientOriginalName();
         $path = $request->file('file')->storeAs('uploads', $fileName, 'public');
 
-        return response()->json(['location'=>"/storage/$path"]);
-
-        /*$imgpath = request()->file('file')->store('uploads', 'public');
-        return response()->json(['location' => "/storage/$imgpath"]);*/
-    }
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
+        return response()->json(['location' => "/storage/$path"]);
     }
 }

@@ -86,7 +86,7 @@
                                 </a>
                             @endcan
                             @can('delete', $post)
-                                <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePost'}})" type="button"
+                                <button wire:click="$emitTo('modal-manager', 'show', {component: 'usage.confirm', data: {handling : 'deletePost', postId : {{ $post->id }}}})" type="button"
                                     class="btn btn-sm btn-danger" title="Supprimer">
                                     <i class="bx bx-trash"></i>
                                 </button>

@@ -264,14 +264,23 @@ class Edit extends Component
             ->save();
 
         if ($this->attach_to_agenda) {
-            $this->post->event()->updateOrCreate([], [
+            $eventData = [
                 'event_type_id' => $this->event_type_id,
                 'start_date' => $this->start_date,
                 'start_time' => $this->start_time ?: null,
                 'end_date' => $this->end_date ?: null,
                 'end_time' => $this->end_time ?: null,
                 'location' => $this->location ?: null,
-            ]);
+            ];
+
+            // Synchronisation du titre et de la description uniquement en création d'article
+            $existingEvent = $this->post->event;
+            if ($this->mode === 'creation' || !$existingEvent) {
+                $eventData['title'] = $this->post->title;
+                $eventData['description'] = strip_tags($this->post->content) ?: $this->post->title;
+            }
+
+            $this->post->event()->updateOrCreate([], $eventData);
         } else {
             $this->post->event()->delete();
         }

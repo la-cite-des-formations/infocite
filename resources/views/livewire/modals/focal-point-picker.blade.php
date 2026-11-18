@@ -24,7 +24,7 @@
 
         {{-- Image source --}}
         <img id="fpp-image"
-             src="{{ dirname($imagePath) . '/' . rawurlencode(basename($imagePath)) }}"
+             src="{{ $imagePath }}"
              alt="Image à cadrer"
              class="d-block"
              style="max-width: 100%; max-height: 420px; width: auto; height: auto;">

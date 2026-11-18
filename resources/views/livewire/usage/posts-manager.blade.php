@@ -16,7 +16,7 @@
                 'd-flex align-items-center',
                 'btn btn-sm',
                 'btn-primary' => session('displayPosts') === 'grid',
-                'btn-secondary' => session('displayPosts') !== 'grid',
+                'btn-outline-primary' => session('displayPosts') !== 'grid',
             ]) title="Grille" wire:click="displayGridPosts()">
                 <span class="bx bxs-grid-alt me-1"></span>
                 Grille
@@ -25,7 +25,7 @@
                 'd-flex align-items-center',
                 'btn btn-sm',
                 'btn-primary' => session('displayPosts') === 'list',
-                'btn-secondary' => session('displayPosts') !== 'list',
+                'btn-outline-primary' => session('displayPosts') !== 'list',
             ]) title="Liste" wire:click="displayListPosts()">
                 <span class="bx bx-list-ul me-1"></span>
                 Liste

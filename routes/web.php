@@ -62,6 +62,13 @@ Route::get('templates-reminder', function () {
     return redirect()->route('home');
 })->middleware('auth')->name('templates.reminder');
 
+Route::get('agenda/create', 'ViewController@createEvent')
+    ->name('event.create');
+
+Route::get('agenda/{event_id}/edit', 'ViewController@editEvent')
+    ->where(['event_id' => AP::ID_REGEX])
+    ->name('event.edit');
+
 Route::get('{rubric}/create', 'ViewController@createPost')
     ->where(['rubric' => AP::RUBRIC_REGEX])
     ->name('post.create');

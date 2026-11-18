@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Modals\Admin\Posts;
 
+use App\Models\Event;
 use App\Models\Post;
 use App\Models\Right;
 use Livewire\Component;
@@ -19,6 +20,20 @@ class Delete extends Component
     public $postsIDs;
 
     /**
+     * Indique si les événements liés doivent également être supprimés.
+     *
+     * @var bool
+     */
+    public $deleteLinkedEvents = false;
+
+    /**
+     * Nombre d'événements liés concernés.
+     *
+     * @var int
+     */
+    public $linkedEventsCount = 0;
+
+    /**
      * Indique si la suppression a été effectuée.
      *
      * @var bool
@@ -32,6 +47,7 @@ class Delete extends Component
      */
     public function mount($postsIDs) {
         $this->postsIDs = $postsIDs;
+        $this->linkedEventsCount = Event::whereIn('post_id', $this->postsIDs)->count();
     }
 
     /**
@@ -53,6 +69,13 @@ class Delete extends Component
                 ->whereIn('resource_id', $this->postsIDs)
                 ->delete();
         });
+
+        if ($this->deleteLinkedEvents) {
+            Event::whereIn('post_id', $this->postsIDs)->delete();
+        } else {
+            Event::whereIn('post_id', $this->postsIDs)->update(['post_id' => null]);
+        }
+
         Post::whereIn('id', $this->postsIDs)->delete();
 
         $this->deletionPerformed = TRUE;
